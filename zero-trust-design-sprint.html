@@ -532,8 +532,57 @@
   .sheet-field.filled{border-color:var(--cyan);background:#FAFEFF}
   .sheet-field:focus-within{border-color:var(--cyan-deep);box-shadow:0 0 0 3px rgba(15,169,190,.12)}
 
+  /* --- persona "take your seat" login --- */
+  .persona-btn{
+    font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;letter-spacing:.04em;
+    color:#EAF1F8;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
+    border-radius:8px;padding:7px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+    transition:background .15s,border-color .15s;white-space:nowrap;
+  }
+  .persona-btn:hover{background:rgba(255,255,255,.16)}
+  .persona-btn .dot{width:10px;height:10px;border-radius:50%;background:var(--you,#7E8CA1);flex-shrink:0;box-shadow:0 0 0 2px rgba(255,255,255,.18)}
+  .persona-btn .pl{max-width:120px;overflow:hidden;text-overflow:ellipsis}
+
+  .persona-modal{position:fixed;inset:0;z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(8,18,34,.72);backdrop-filter:blur(3px)}
+  .persona-modal[hidden]{display:none}
+  .pm-card{
+    position:relative;width:min(560px,100%);max-height:90vh;overflow:auto;
+    background:var(--surface);border-radius:18px;padding:26px 26px 22px;box-shadow:0 30px 70px -20px rgba(0,0,0,.6);
+    border-top:4px solid var(--cyan);animation:rise .4s cubic-bezier(.2,.7,.3,1) both;
+  }
+  .pm-close{position:absolute;top:14px;right:16px;border:none;background:transparent;font-size:24px;line-height:1;color:var(--ink-faint);cursor:pointer}
+  .pm-close:hover{color:var(--ink)}
+  .pm-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan-deep)}
+  .pm-card h2{font-size:26px;font-weight:700;margin:6px 0 8px}
+  .pm-sub{font-size:13.5px;color:var(--ink-soft);margin-bottom:16px}
+  .pm-sub b{color:var(--ink)}
+  .pm-name{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-family:"IBM Plex Sans",sans-serif;font-size:14px;color:var(--ink);margin-bottom:14px;outline:none}
+  .pm-name:focus{border-color:var(--cyan-deep);box-shadow:0 0 0 3px rgba(15,169,190,.12)}
+  .pm-roles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .pm-role{
+    text-align:left;border:1.5px solid var(--line);border-radius:12px;padding:13px 14px;cursor:pointer;
+    background:#fff;transition:border-color .15s,box-shadow .15s,transform .05s;border-top:4px solid var(--rc,var(--line));
+  }
+  .pm-role:hover{box-shadow:0 10px 24px -14px rgba(14,26,43,.5)}
+  .pm-role:active{transform:translateY(1px)}
+  .pm-role.facil{grid-column:1 / -1}
+  .pm-role b{font-family:"Chakra Petch",sans-serif;font-size:16px;display:block;color:var(--ink)}
+  .pm-role span{font-size:12px;color:var(--ink-soft)}
+  .pm-skip{display:block;width:100%;margin-top:14px;border:none;background:transparent;color:var(--ink-faint);font-family:"IBM Plex Mono",monospace;font-size:12px;cursor:pointer;padding:6px}
+  .pm-skip:hover{color:var(--ink-soft);text-decoration:underline}
+
+  /* persona highlights across the page */
+  .you-act{font-weight:600;color:var(--ink);position:relative}
+  .you-act::after{content:"YOU";font-family:"IBM Plex Mono",monospace;font-size:8.5px;font-weight:700;letter-spacing:.08em;color:#fff;background:var(--you,#7E8CA1);border-radius:4px;padding:1px 5px;margin-left:7px;vertical-align:middle}
+  .role.you-role{outline:3px solid var(--you,#7E8CA1);outline-offset:3px}
+  .you-role-badge{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:9.5px;font-weight:700;letter-spacing:.1em;color:#fff;background:var(--you,#7E8CA1);border-radius:5px;padding:2px 8px;margin-left:8px;vertical-align:middle}
+  .jtable td.you-col{box-shadow:inset 3px 0 0 var(--you,#7E8CA1);background:#FAFCFF}
+  .jtable th.you-col{box-shadow:inset 0 -3px 0 #fff}
+
+  @media (max-width:520px){ .pm-roles{grid-template-columns:1fr} }
+
   @media print{
-    .facilbar,.toast-wrap,.inj-seal{display:none !important}
+    .facilbar,.toast-wrap,.inj-seal,.persona-modal{display:none !important}
     body.has-bar{padding-top:0}
     .inj.sealed .inj-body{filter:none}
     .sheet-tools{display:none}
@@ -555,6 +604,9 @@
   </div>
   <div class="fb-bar" aria-hidden="true"><i id="barFill"></i></div>
   <div class="fb-spacer"></div>
+  <button class="persona-btn" id="btnPersona" title="Take your seat / switch persona">
+    <span class="dot"></span><span class="pl" id="personaLabel">Take your seat</span>
+  </button>
   <div class="fb-btns">
     <button class="fb-btn primary" id="btnStart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 4l14 8-14 8z"/></svg><span id="btnStartLabel">Start</span></button>
     <button class="fb-btn warn icon" id="btnSkip" title="Jump to next phase" aria-label="Jump to next phase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 4l10 8-10 8z"/><path d="M19 4v16"/></svg></button>
@@ -563,6 +615,19 @@
   </div>
 </div>
 <div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
+
+<!-- ============ PERSONA LOGIN (interactive) ============ -->
+<div class="persona-modal" id="personaModal" hidden role="dialog" aria-modal="true" aria-labelledby="pmTitle">
+  <div class="pm-card">
+    <button class="pm-close" id="pmClose" aria-label="Close">&times;</button>
+    <div class="pm-eyebrow">Join the sprint</div>
+    <h2 id="pmTitle">Take your seat</h2>
+    <p class="pm-sub">Open this on your own device and pick the role you're playing. Your view then highlights what <b>you</b> do in every phase, on the board, and in the journey grid. Switch any time from the bar at the top.</p>
+    <input class="pm-name" id="pmName" type="text" placeholder="Your name or initials (optional)" maxlength="40" autocomplete="off">
+    <div class="pm-roles" id="pmRoles"></div>
+    <button class="pm-skip" id="pmSkip">I'm just watching — skip for now</button>
+  </div>
+</div>
 
 <!-- ============ HERO ============ -->
 <header class="hero">
@@ -1969,9 +2034,94 @@
     }
   }
 
+  // ---------- persona "take your seat" login ----------
+  var ROLES = {
+    conductor:{label:"The Conductor", short:"Conductor", color:"#E2891F", chip:"con", col:1, card:"The Conductor", tag:"Owns the clock · leads Brief-In & Submit"},
+    critic:{label:"The Critic", short:"Critic", color:"#DB4A4A", chip:"thr", col:2, card:"The Critic", tag:"Owns the challenge · leads Expose"},
+    architect:{label:"The Architect", short:"Architect", color:"#0FA9BE", chip:"arc", col:3, card:"The Architect", tag:"Owns the design · leads Design"},
+    scribe:{label:"The Scribe", short:"Scribe", color:"#27A276", chip:"scr", col:4, card:"The Scribe", tag:"Owns the write-up · leads Document"},
+    facilitator:{label:"Facilitator / Observer", short:"Facilitator", color:"#7E8CA1", chip:null, col:0, card:null, tag:"Runs the session — not an in-game seat"}
+  };
+  var personaModal=$("#personaModal"), personaLabel=$("#personaLabel"), pmRoles=$("#pmRoles"), pmName=$("#pmName");
+  var persona=null;
+  try{ persona=JSON.parse(localStorage.getItem("ztds.persona")||"null"); }catch(e){}
+
+  // build role buttons
+  Object.keys(ROLES).forEach(function(key){
+    var r=ROLES[key];
+    var b=document.createElement("button");
+    b.className="pm-role"+(key==="facilitator"?" facil":"");
+    b.style.setProperty("--rc", r.color);
+    b.innerHTML="<b>"+r.label+"</b><span>"+r.tag+"</span>";
+    b.addEventListener("click", function(){ choosePersona(key); });
+    pmRoles.appendChild(b);
+  });
+
+  function clearPersonaHighlights(){
+    $$(".you-act").forEach(function(el){ el.classList.remove("you-act"); });
+    $$(".you-role").forEach(function(el){ el.classList.remove("you-role"); });
+    $$(".you-role-badge").forEach(function(el){ if(el.parentNode) el.parentNode.removeChild(el); });
+    $$(".you-col").forEach(function(el){ el.classList.remove("you-col"); });
+  }
+  function applyPersona(){
+    clearPersonaHighlights();
+    if(persona && persona.role && ROLES[persona.role]){
+      var r=ROLES[persona.role];
+      document.body.style.setProperty("--you", r.color);
+      personaLabel.textContent = persona.name ? (persona.name+" · "+r.short) : ("You: "+r.short);
+      $("#btnPersona").querySelector(".dot").style.background=r.color;
+      if(r.chip){
+        // phase action lines led by this role
+        $$("#play .act").forEach(function(act){
+          var chip=act.querySelector(".chip");
+          if(chip && chip.classList.contains(r.chip)) act.classList.add("you-act");
+        });
+        // role card
+        $$("#roles .role").forEach(function(card){
+          var h=card.querySelector("h3");
+          if(h && h.textContent.trim()===r.card){
+            card.classList.add("you-role");
+            if(!card.querySelector(".you-role-badge")){
+              var badge=document.createElement("span"); badge.className="you-role-badge"; badge.textContent="THIS IS YOU";
+              h.appendChild(badge);
+            }
+          }
+        });
+        // journey grid column
+        $$("#journey .jtable tr").forEach(function(tr){
+          var cells=tr.children;
+          if(cells[r.col]) cells[r.col].classList.add("you-col");
+        });
+      } else {
+        // facilitator / observer: neutral, no per-role highlight
+      }
+    } else {
+      document.body.style.setProperty("--you", "#7E8CA1");
+      personaLabel.textContent="Take your seat";
+      $("#btnPersona").querySelector(".dot").style.background="#7E8CA1";
+    }
+  }
+  function openPersona(){ pmName.value = persona && persona.name ? persona.name : ""; personaModal.hidden=false; setTimeout(function(){ pmName.focus(); },50); }
+  function closePersona(){ personaModal.hidden=true; try{ localStorage.setItem("ztds.personaSeen","1"); }catch(e){} }
+  function choosePersona(key){
+    persona={ role:key, name:(pmName.value||"").trim() };
+    try{ localStorage.setItem("ztds.persona", JSON.stringify(persona)); }catch(e){}
+    applyPersona(); closePersona();
+    var r=ROLES[key];
+    toast("Seat taken", (persona.name?persona.name+", you":"You")+" are <b>"+r.label+"</b> — "+r.tag+".", "phase");
+  }
+  $("#btnPersona").addEventListener("click", openPersona);
+  $("#pmClose").addEventListener("click", closePersona);
+  $("#pmSkip").addEventListener("click", function(){ closePersona(); });
+  personaModal.addEventListener("click", function(e){ if(e.target===personaModal) closePersona(); });
+  document.addEventListener("keydown", function(e){ if(e.key==="Escape" && !personaModal.hidden) closePersona(); });
+
   // ---------- boot ----------
   load();
   render();
+  applyPersona();
+  var seen=false; try{ seen=localStorage.getItem("ztds.personaSeen")==="1"; }catch(e){}
+  if(!persona && !seen) openPersona();
   if(running){ lastTs=Date.now(); ticker=setInterval(tick,250); }
 })();
 </script>
