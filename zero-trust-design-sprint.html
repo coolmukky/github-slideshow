@@ -1,0 +1,1979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zero Trust Agentic Design Sprint — Team Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E9EEF5;
+    --surface:#FFFFFF;
+    --ink:#0E1A2B;
+    --ink-soft:#46566E;
+    --ink-faint:#7E8CA1;
+    --line:#CBD5E3;
+    --line-soft:#E1E8F1;
+    --navy:#122A47;
+    --navy-deep:#0A1830;
+    --cyan:#0FA9BE;
+    --cyan-deep:#0A7C8C;
+    --amber:#E2891F;
+    --amber-soft:#FBEBD3;
+    --red:#DB4A4A;
+    --red-soft:#FBE2E2;
+    --green:#27A276;
+    --green-soft:#D7F0E6;
+    --shadow:0 1px 0 rgba(14,26,43,.04), 0 18px 40px -28px rgba(14,26,43,.55);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:"IBM Plex Sans",system-ui,sans-serif;
+    color:var(--ink);
+    background:#F3F6FA;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  h1,h2,h3,h4{font-family:"Chakra Petch",sans-serif;margin:0;line-height:1.08;letter-spacing:-.01em}
+  .mono{font-family:"IBM Plex Mono",monospace}
+  p{margin:0 0 .7em}
+  a{color:var(--cyan-deep)}
+
+  /* eyebrows */
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:11.5px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--cyan-deep);
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:radial-gradient(120% 140% at 88% -10%,#1c3a5e 0%,var(--navy) 42%,var(--navy-deep) 100%);
+    color:#EAF1F8;border-radius:0 0 26px 26px;border-bottom:3px solid var(--cyan);
+    position:relative;overflow:hidden;
+  }
+  .hero::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+    background-size:34px 34px;mask-image:radial-gradient(70% 90% at 80% 0%,#000,transparent 75%);
+  }
+  .hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:1.5fr .8fr;gap:30px;align-items:center;padding:34px 0 40px}
+  .hero .eyebrow{color:#7FE2EF}
+  .hero h1{font-size:clamp(34px,5.6vw,60px);font-weight:700;margin:.28em 0 .35em;color:#fff}
+  .hero h1 span{color:var(--cyan)}
+  .hero .lede{color:#AEC4DC;font-size:16px;max-width:42ch;margin-bottom:18px}
+  .facts{display:flex;gap:10px;flex-wrap:wrap}
+  .fact{
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:11px;
+    padding:9px 13px;min-width:96px;
+  }
+  .fact b{font-family:"Chakra Petch";font-size:20px;display:block;color:#fff;line-height:1}
+  .fact small{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#8FA8C4}
+
+  /* clock dial */
+  .dial{display:flex;justify-content:center}
+  .dial svg{width:200px;height:200px;filter:drop-shadow(0 12px 26px rgba(0,0,0,.45))}
+
+  /* ---------- SECTION SHELL ---------- */
+  .sec{padding:46px 0 8px}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:20px;flex-wrap:wrap}
+  .sec-no{font-family:"IBM Plex Mono";font-size:12px;font-weight:600;color:var(--cyan-deep);border:1.5px solid var(--cyan);border-radius:7px;padding:3px 8px}
+  .sec-head h2{font-size:clamp(22px,3vw,30px);font-weight:700}
+  .sec-sub{color:var(--ink-soft);max-width:64ch;margin-top:-6px}
+
+  /* ---------- TIMELINE TRACK (signature) ---------- */
+  .track-card{
+    background:var(--navy);color:#fff;border-radius:18px;padding:26px 26px 22px;box-shadow:var(--shadow);
+    border:1px solid rgba(255,255,255,.08);
+  }
+  .track-card .eyebrow{color:#7FE2EF}
+  .track-scroll{overflow-x:auto;padding-bottom:6px}
+  .track{display:flex;gap:6px;min-width:680px;margin:18px 0 8px}
+  .stop{flex-grow:var(--g);flex-basis:0;min-width:92px;position:relative}
+  .stop .bar{height:13px;border-radius:5px;background:var(--c);position:relative;opacity:.92}
+  .stop .ph{font-family:"Chakra Petch";font-weight:700;font-size:13px;margin-top:11px;color:#fff;display:flex;align-items:center;gap:6px}
+  .stop .ph i{width:8px;height:8px;border-radius:50%;background:var(--c);display:inline-block}
+  .stop .nm{font-size:12px;color:#B8CCE2;line-height:1.3}
+  .stop .tc{font-family:"IBM Plex Mono";font-size:11px;color:#7FE2EF;margin-top:3px;letter-spacing:.04em}
+  .track-scale{display:flex;justify-content:space-between;font-family:"IBM Plex Mono";font-size:10.5px;color:#6F87A4;border-top:1px dashed rgba(255,255,255,.18);padding-top:8px;margin-top:6px}
+
+  /* ---------- generic cards/grids ---------- */
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px 18px;box-shadow:var(--shadow)}
+  .card h3{font-size:16px;font-weight:600;margin-bottom:6px}
+  .card p{font-size:14px;color:var(--ink-soft);margin-bottom:0}
+  .ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:11px}
+  .ic svg{width:17px;height:17px;stroke-width:1.8}
+
+  /* objective / deliverables */
+  .win{display:grid;grid-template-columns:1.2fr 1fr;gap:16px}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+  .panel.accent-cyan{border-top:4px solid var(--cyan)}
+  .panel.accent-green{border-top:4px solid var(--green)}
+  .panel h3{font-size:17px;margin-bottom:10px;display:flex;align-items:center;gap:9px}
+  .checklist{list-style:none;padding:0;margin:0}
+  .checklist li{position:relative;padding:7px 0 7px 28px;font-size:14px;color:var(--ink-soft);border-bottom:1px dashed var(--line-soft)}
+  .checklist li:last-child{border-bottom:none}
+  .checklist li::before{content:"";position:absolute;left:0;top:11px;width:15px;height:15px;border-radius:4px;border:2px solid var(--cyan)}
+  .deliver{display:flex;gap:13px;align-items:flex-start;padding:13px 0;border-bottom:1px dashed var(--line-soft)}
+  .deliver:last-child{border-bottom:none}
+  .deliver .num{font-family:"Chakra Petch";font-weight:700;font-size:15px;color:#fff;background:var(--green);min-width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+  .deliver b{font-size:14.5px}
+  .deliver p{font-size:13px;margin:2px 0 0;color:var(--ink-soft)}
+
+  /* role cards */
+  .role{position:relative;overflow:hidden}
+  .role::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:var(--rc)}
+  .role .rtag{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:var(--rc);display:inline-block;padding:3px 8px;border-radius:5px;margin:4px 0 9px}
+  .role h3{font-size:17px}
+  .role .owns{font-size:12px;font-family:"IBM Plex Mono";color:var(--ink-faint);margin:8px 0 9px;letter-spacing:.03em}
+  .role ul{margin:0;padding-left:17px;font-size:13.5px;color:var(--ink-soft)}
+  .role ul li{margin-bottom:5px}
+  .role .always{margin-top:11px;padding-top:10px;border-top:1px dashed var(--line-soft);font-size:12.5px}
+  .role .always b{color:var(--rc-ink)}
+
+  /* phase cards */
+  .phase{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:18px}
+  .phase-top{display:flex;align-items:stretch;gap:0;border-bottom:1px solid var(--line-soft)}
+  .phase-badge{background:var(--pc);color:#fff;padding:16px 18px;min-width:118px;display:flex;flex-direction:column;justify-content:center}
+  .phase-badge .pno{font-family:"IBM Plex Mono";font-size:11px;letter-spacing:.16em;opacity:.85}
+  .phase-badge .pnm{font-family:"Chakra Petch";font-weight:700;font-size:22px;line-height:1;margin-top:3px}
+  .phase-badge .pmin{font-family:"IBM Plex Mono";font-size:11px;margin-top:7px;opacity:.9}
+  .phase-meta{flex:1;padding:14px 18px;display:flex;flex-direction:column;justify-content:center;gap:9px}
+  .phase-meta .goal{font-size:14.5px;color:var(--ink);font-weight:500}
+  .minitrack{display:flex;gap:3px}
+  .minitrack span{height:7px;border-radius:3px;background:var(--line);flex:1}
+  .minitrack span.on{background:var(--pc)}
+  /* prominent per-phase progress tracker */
+  .progress{margin-top:6px}
+  .progress-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px;gap:10px}
+  .progress-head .pl{font-family:"IBM Plex Mono";font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)}
+  .progress-head .pr{font-family:"IBM Plex Mono";font-size:11.5px;font-weight:600;color:var(--pc);white-space:nowrap}
+  .ptrack{display:flex;gap:3px}
+  .pseg{flex-grow:var(--g);flex-basis:0;min-width:28px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;background:#E4EAF2;position:relative}
+  .pseg b{font-family:"IBM Plex Mono";font-size:9.5px;font-weight:600;color:#A6B3C5}
+  .pseg.done{background:#93A4B8}
+  .pseg.done b{color:#fff}
+  .pseg.now{background:var(--pc)}
+  .pseg.now b{color:#fff;font-weight:700}
+  .pseg.now::before{content:"";position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid var(--pc)}
+  .phase-body{padding:16px 18px 18px}
+  .phase-body > .lbl{font-family:"IBM Plex Mono";font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin:2px 0 9px}
+  .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin-bottom:6px}
+  .act{display:flex;gap:9px;font-size:13.5px;color:var(--ink-soft);padding:5px 0}
+  .act .chip{font-family:"IBM Plex Mono";font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#fff;border-radius:5px;padding:3px 6px;height:fit-content;white-space:nowrap;margin-top:1px}
+  .chip.con{background:var(--amber)} .chip.thr{background:var(--red)} .chip.arc{background:var(--cyan)} .chip.scr{background:var(--green)} .chip.all{background:var(--navy)}
+  .timecheck{display:flex;align-items:center;gap:11px;background:var(--amber-soft);border:1px solid #F0CE97;border-radius:10px;padding:10px 14px;margin-top:13px}
+  .timecheck svg{width:18px;height:18px;color:var(--amber);flex-shrink:0}
+  .timecheck p{margin:0;font-size:13px;color:#8a560f}
+  .timecheck b{font-family:"IBM Plex Mono";color:#6e440a}
+  .exit{margin-top:11px;font-size:13px;color:var(--ink);background:var(--green-soft);border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:9px 13px}
+  .exit b{font-family:"Chakra Petch";font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--green);display:block;margin-bottom:2px}
+  .inj-flag{display:inline-flex;align-items:center;gap:7px;font-family:"IBM Plex Mono";font-size:11px;font-weight:600;color:#fff;background:var(--red);border-radius:6px;padding:4px 9px;margin-top:13px}
+  .inj-flag svg{width:13px;height:13px}
+
+  /* injection cards */
+  .inj{background:var(--surface);border:1px solid #F0C4C4;border-radius:14px;box-shadow:var(--shadow);overflow:hidden;position:relative}
+  .inj-head{background:var(--red);color:#fff;padding:13px 16px;display:flex;align-items:center;justify-content:space-between}
+  .inj-head .l{display:flex;align-items:center;gap:10px}
+  .inj-head svg{width:18px;height:18px}
+  .inj-head .tt{font-family:"Chakra Petch";font-weight:700;font-size:15px}
+  .inj-head .when{font-family:"IBM Plex Mono";font-size:11px;background:rgba(255,255,255,.18);padding:3px 8px;border-radius:6px}
+  .inj-body{padding:15px 16px}
+  .inj-body .scn{font-size:14px;color:var(--ink);margin-bottom:11px}
+  .inj-body .scn b{color:var(--red)}
+  .inj-body .dec{font-family:"IBM Plex Mono";font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:5px}
+  .inj-body .tests{font-size:12.5px;color:var(--ink-soft);background:#F7F9FC;border:1px solid var(--line-soft);border-radius:9px;padding:9px 12px}
+  .inj-body .tests b{color:var(--cyan-deep)}
+
+  /* scenario dossier */
+  .dossier{background:linear-gradient(160deg,var(--navy) 0%,var(--navy-deep) 100%);color:#E7EFF8;border-radius:18px;padding:0;overflow:hidden;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.08)}
+  .dossier-top{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.18)}
+  .dossier-top .eyebrow{color:#7FE2EF}
+  .dossier-top .stamp{font-family:"IBM Plex Mono";font-size:11px;border:1.5px solid var(--red);color:#ff9a9a;padding:4px 10px;border-radius:6px;letter-spacing:.14em;transform:rotate(-2deg)}
+  .dossier-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:0}
+  .dossier-main{padding:22px 24px}
+  .dossier-main h3{font-size:21px;color:#fff;margin-bottom:8px}
+  .dossier-main p{color:#B7CADF;font-size:14px}
+  .dossier-side{padding:22px 24px;background:rgba(0,0,0,.22);border-left:1px solid rgba(255,255,255,.1)}
+  .dossier-side h4{font-family:"IBM Plex Mono";font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#7FE2EF;margin-bottom:10px}
+  .painlist{list-style:none;margin:0;padding:0}
+  .painlist li{font-size:13px;color:#CBD9E8;padding:6px 0 6px 22px;position:relative;border-bottom:1px dashed rgba(255,255,255,.1)}
+  .painlist li:last-child{border-bottom:none}
+  .painlist li::before{content:"!";position:absolute;left:0;top:6px;width:15px;height:15px;border-radius:50%;background:var(--red);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:"Chakra Petch"}
+  .state-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .state{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);border-radius:9px;padding:9px 12px;flex:1;min-width:120px}
+  .state b{font-family:"Chakra Petch";font-size:12px;color:#fff;display:block}
+  .state span{font-size:12px;color:#9FB6CE}
+
+  /* templates */
+  .tmpl{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+  .tmpl-h{padding:13px 16px;border-bottom:1px solid var(--line-soft);display:flex;align-items:center;gap:10px}
+  .tmpl-h svg{width:18px;height:18px;color:var(--cyan-deep)}
+  .tmpl-h h3{font-size:15px}
+  .tmpl-b{padding:16px}
+  .canvas{border:2px dashed var(--line);border-radius:10px;height:150px;display:flex;align-items:center;justify-content:center;color:var(--ink-faint);font-size:13px;background:repeating-linear-gradient(45deg,#fbfcfe,#fbfcfe 12px,#f4f7fb 12px,#f4f7fb 24px);text-align:center;padding:14px}
+  .legend{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+  .legend span{font-family:"IBM Plex Mono";font-size:11px;color:var(--ink-soft);background:#F4F7FB;border:1px solid var(--line-soft);border-radius:20px;padding:4px 10px}
+  .sheet-field{border:1px solid var(--line-soft);border-radius:9px;padding:9px 12px;margin-bottom:9px}
+  .sheet-field .k{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan-deep);margin-bottom:3px}
+  .sheet-field .v{font-size:12.5px;color:var(--ink-faint);font-style:italic}
+
+  /* evaluation flow */
+  .flow{display:flex;gap:0;align-items:stretch;margin-top:6px}
+  .fstep{flex:1 1 0;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:15px 13px;text-align:center;position:relative;box-shadow:var(--shadow)}
+  .fstep .fn{font-family:"IBM Plex Mono";font-size:10px;color:var(--cyan-deep);letter-spacing:.12em}
+  .fstep .fic{width:38px;height:38px;border-radius:10px;background:var(--navy);display:flex;align-items:center;justify-content:center;margin:9px auto 10px}
+  .fstep .fic svg{width:19px;height:19px;color:#7FE2EF;stroke-width:1.7}
+  .fstep h4{font-size:13.5px;margin-bottom:4px}
+  .fstep p{font-size:11.5px;color:var(--ink-soft);margin:0}
+  .farrow{flex:0 0 auto;padding:0 5px;display:flex;align-items:center;justify-content:center;color:var(--cyan);font-weight:700;font-size:20px}
+  .proctor-note{display:flex;gap:12px;align-items:center;background:#EAF7F9;border:1px solid #B6E4EB;border-radius:12px;padding:13px 16px;margin-top:16px}
+  .proctor-note svg{width:22px;height:22px;color:var(--cyan-deep);flex-shrink:0}
+  .proctor-note p{margin:0;font-size:13px;color:#0a5560}
+
+  /* rubric */
+  .rubric{width:100%;border-collapse:collapse;background:var(--surface);border-radius:13px;overflow:hidden;box-shadow:var(--shadow);font-size:13.5px}
+  .rubric th{background:var(--navy);color:#fff;text-align:left;padding:12px 14px;font-family:"Chakra Petch";font-weight:600;font-size:12.5px;letter-spacing:.02em}
+  .rubric td{padding:11px 14px;border-bottom:1px solid var(--line-soft);color:var(--ink-soft);vertical-align:top}
+  .rubric tr:last-child td{border-bottom:none}
+  .rubric td b{color:var(--ink)}
+  .rubric .w{font-family:"IBM Plex Mono";font-weight:600;color:var(--cyan-deep);white-space:nowrap}
+  .levels{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
+  .lvl{border-radius:12px;padding:15px;color:#fff;position:relative;overflow:hidden}
+  .lvl .lr{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:.1em;opacity:.9}
+  .lvl h4{font-family:"Chakra Petch";font-size:18px;margin:4px 0 6px}
+  .lvl p{font-size:12px;margin:0;opacity:.95;line-height:1.4}
+  .lvl.l1{background:#8593A6} .lvl.l2{background:var(--cyan-deep)} .lvl.l3{background:#2a6fb0} .lvl.l4{background:var(--green)}
+
+  /* facilitator cues */
+  .cues{background:var(--navy-deep);border-radius:16px;padding:8px 6px;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.08)}
+  .cue{display:grid;grid-template-columns:78px 1fr;gap:14px;align-items:start;padding:11px 18px;border-bottom:1px solid rgba(255,255,255,.07)}
+  .cue:last-child{border-bottom:none}
+  .cue .t{font-family:"IBM Plex Mono";font-size:14px;font-weight:600;color:var(--amber)}
+  .cue .d{font-size:13.5px;color:#C8D6E6}
+  .cue .d b{color:#fff}
+  .cue.fire .t{color:#ff8a8a}
+  .cue.fire .d b{color:#ff8a8a}
+
+  /* start here / kickoff */
+  .kick{display:grid;grid-template-columns:1.32fr 1fr;gap:18px;align-items:start}
+  .steps{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+  .steps .sh{background:var(--amber);color:#fff;padding:13px 18px;display:flex;align-items:center;gap:10px}
+  .steps .sh svg{width:18px;height:18px}
+  .steps .sh b{font-family:"Chakra Petch";font-size:15px;letter-spacing:.01em}
+  .step{display:grid;grid-template-columns:42px 1fr;gap:14px;padding:15px 18px;border-bottom:1px solid var(--line-soft);align-items:start}
+  .step:last-child{border-bottom:none}
+  .step .sn{font-family:"Chakra Petch";font-weight:700;font-size:17px;color:#fff;background:var(--navy);width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+  .step h4{font-size:15px;margin-bottom:3px}
+  .step p{font-size:13.5px;color:var(--ink-soft);margin:0}
+  .step p b{color:var(--ink)}
+  .step .who{display:inline-block;font-family:"IBM Plex Mono";font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#fff;border-radius:5px;padding:2px 7px;margin-bottom:6px}
+  .who.con{background:var(--amber)} .who.all{background:var(--navy)}
+  .timehow{background:linear-gradient(165deg,var(--navy) 0%,var(--navy-deep) 100%);color:#E7EFF8;border-radius:16px;padding:20px;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.08)}
+  .timehow .eyebrow{color:#F6C476}
+  .timehow h3{font-size:18px;color:#fff;margin:7px 0 12px;display:flex;align-items:center;gap:9px}
+  .timehow h3 svg{width:20px;height:20px;color:var(--amber)}
+  .timehow ol{margin:0;padding-left:0;list-style:none;counter-reset:th}
+  .timehow li{counter-increment:th;position:relative;padding:8px 0 8px 30px;font-size:13px;color:#CBD9E8;border-bottom:1px dashed rgba(255,255,255,.1)}
+  .timehow li:last-child{border-bottom:none}
+  .timehow li::before{content:counter(th);position:absolute;left:0;top:8px;width:19px;height:19px;border-radius:50%;background:var(--amber);color:#3a2407;font-family:"IBM Plex Mono";font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center}
+  .timehow li b{color:#fff}
+  .pickbox{background:#F7F9FC;border:1px solid var(--line-soft);border-left:4px solid var(--cyan);border-radius:0 10px 10px 0;padding:12px 15px;margin-top:16px}
+  .pickbox b{font-family:"Chakra Petch";font-size:12px;letter-spacing:.03em;text-transform:uppercase;color:var(--cyan-deep);display:block;margin-bottom:5px}
+  .pickbox p{font-size:13px;color:var(--ink-soft);margin:0}
+
+  /* worked example */
+  .svgwrap{width:100%;overflow-x:auto;background:#fff}
+  .svgwrap svg{width:100%;min-width:720px;height:auto;display:block}
+  .excap{font-size:12.5px;color:var(--ink-soft);padding:12px 16px 2px;border-top:1px solid var(--line-soft)}
+  .excap b{color:var(--cyan-deep)}
+  .exgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+  .exf{border:1px solid var(--line-soft);border-radius:10px;padding:12px 14px;background:#fff}
+  .exf.full{grid-column:1 / -1}
+  .exf .k{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan-deep);margin-bottom:6px}
+  .exf .v{font-size:13px;color:var(--ink);margin:0}
+  .exf ul{margin:2px 0 0;padding-left:16px}
+  .exf li{font-size:12.5px;color:var(--ink);margin-bottom:5px}
+  .exf li b{color:var(--ink)}
+  .exf.inj .k{color:var(--red)}
+  .exf.refl{border-left:3px solid var(--cyan)}
+  .exf.refl .k{color:var(--cyan-deep)}
+  .lands{display:flex;gap:12px;align-items:center;background:var(--green-soft);border:1px solid #A9DEC9;border-radius:12px;padding:13px 16px;margin-top:14px}
+  .lands svg{width:20px;height:20px;color:#1f8a63;flex-shrink:0}
+  .lands p{margin:0;font-size:13px;color:#1f6e52}
+  .lands b{color:#155c43}
+
+  /* package / distribution */
+  .kit{list-style:none;margin:0;padding:0}
+  .kit li{display:flex;gap:11px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line-soft);font-size:13.5px;color:var(--ink-soft)}
+  .kit li:last-child{border-bottom:none}
+  .kit .qty{font-family:"IBM Plex Mono";font-size:10px;font-weight:600;color:#fff;background:var(--navy);border-radius:6px;padding:3px 7px;white-space:nowrap;margin-top:1px;min-width:54px;text-align:center}
+  .kit .qty.dig{background:var(--cyan-deep)}
+  .kit b{color:var(--ink)}
+  .kit small{display:block;font-size:12px;color:var(--ink-faint)}
+  .withhold{background:var(--red-soft);border:1px solid #F0C4C4;border-radius:11px;padding:13px 15px;margin-top:13px}
+  .withhold b{font-family:"Chakra Petch";font-size:12px;letter-spacing:.03em;text-transform:uppercase;color:var(--red);display:block;margin-bottom:4px}
+  .withhold p{font-size:13px;color:var(--ink-soft);margin:0}
+
+  /* player journey grid */
+  .jwrap{overflow-x:auto;border-radius:13px;box-shadow:var(--shadow)}
+  .jtable{width:100%;border-collapse:collapse;background:#fff;font-size:12px;min-width:780px}
+  .jtable th{padding:11px 11px;text-align:left;font-family:"Chakra Petch";font-weight:600;font-size:12px;color:#fff;vertical-align:middle}
+  .jtable th.ph{background:var(--navy-deep)}
+  .jtable th.hcon{background:var(--amber)} .jtable th.hthr{background:var(--red)} .jtable th.harc{background:var(--cyan)} .jtable th.hscr{background:var(--green)}
+  .jtable td{padding:9px 11px;border-bottom:1px solid var(--line-soft);border-right:1px solid var(--line-soft);vertical-align:top;color:var(--ink-soft);line-height:1.4}
+  .jtable td:last-child{border-right:none}
+  .jtable td.phc{background:#EEF3F9;font-weight:600;color:var(--ink);white-space:nowrap;font-size:11.5px}
+  .jtable td.phc small{display:block;font-family:"IBM Plex Mono";font-size:10px;color:var(--ink-faint);font-weight:400;margin-top:2px}
+  .jtable tr:last-child td{border-bottom:none}
+  .lead{display:inline-block;font-family:"IBM Plex Mono";font-size:8.5px;font-weight:700;letter-spacing:.07em;color:#fff;border-radius:4px;padding:1px 5px;margin-bottom:4px}
+  .lead.con{background:var(--amber)} .lead.thr{background:var(--red)} .lead.arc{background:var(--cyan)} .lead.scr{background:var(--green)}
+  .takeaways{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+  .ta{border-radius:11px;padding:13px 14px;border:1px solid var(--line);background:#fff;border-top:4px solid var(--tc)}
+  .ta h4{font-size:13.5px;margin-bottom:5px;color:var(--tc-ink)}
+  .ta p{font-size:12px;color:var(--ink-soft);margin:0}
+
+  /* table of contents nav */
+  .sec{scroll-margin-top:16px}
+  .toc{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:22px 0 2px;padding:13px 16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+  .toc-lbl{font-family:"IBM Plex Mono";font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin-right:4px}
+  .toc a{font-size:12.5px;color:var(--ink-soft);text-decoration:none;background:#EEF3F9;border:1px solid var(--line-soft);border-radius:20px;padding:5px 12px;transition:background .15s,color .15s}
+  .toc a:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+  /* design lifecycle hint */
+  .lifecycle{background:#EEF3F9;border:1px solid var(--line-soft);border-radius:10px;padding:11px 13px;margin-top:13px}
+  .lc-note{font-size:12.5px;color:var(--ink-soft);margin-bottom:9px}
+  .lc-note b{color:var(--ink)}
+  .lc-track{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+  .lc-step{font-family:"IBM Plex Mono";font-size:10.5px;font-weight:600;color:var(--ink-soft);background:#fff;border:1px solid var(--line);border-radius:7px;padding:5px 9px;display:inline-flex;flex-direction:column;line-height:1.25}
+  .lc-step small{font-family:"IBM Plex Sans";font-size:8.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--cyan-deep)}
+  .lc-step.now{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .lc-step.now small{color:#7FE2EF}
+  .lc-arr{color:var(--cyan);font-weight:700;font-size:13px}
+
+  /* footer */
+  .foot{margin:46px 0 30px;padding-top:22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;align-items:center}
+  .foot .eyebrow{color:var(--ink-faint)}
+  .foot .tag{font-family:"IBM Plex Mono";font-size:11px;color:var(--ink-faint)}
+
+  .anim{opacity:0;transform:translateY(10px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  @media (max-width:860px){
+    .hero-inner{grid-template-columns:1fr}.dial{justify-content:flex-start}
+    .win{grid-template-columns:1fr}.kick{grid-template-columns:1fr}.dossier-grid{grid-template-columns:1fr}.dossier-side{border-left:none;border-top:1px solid rgba(255,255,255,.1)}
+    .g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr}.flow{flex-direction:column}.farrow{transform:rotate(90deg);height:26px}.levels{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:560px){
+    .g4,.g2,.acts{grid-template-columns:1fr}.levels{grid-template-columns:1fr}.exgrid{grid-template-columns:1fr}.takeaways{grid-template-columns:1fr 1fr}
+    .phase-top{flex-direction:column}.phase-badge{min-width:0;flex-direction:row;gap:10px;align-items:center}.phase-badge .pmin{margin-top:0}
+  }
+  @media print{
+    body{background:#fff}
+    .hero{border-radius:0}
+    .anim{animation:none;opacity:1;transform:none}
+    *{box-shadow:none !important}
+    .toc{display:none}
+    .sec{padding:18px 0 4px}
+    .sec-head{break-inside:avoid;break-after:avoid}
+    h1,h2,h3,h4{break-after:avoid}
+    .sec-sub{break-after:avoid;break-inside:avoid}
+    .card,.panel,.phase,.inj,.tmpl,.fstep,.lvl,.cue,.step,.ta,.role,.deliver,.timehow,.dossier,.track-card,.steps,.flow{break-inside:avoid}
+    tr{break-inside:avoid}
+    .foot{break-before:avoid}
+  }
+  @media (prefers-reduced-motion:reduce){.anim{animation:none;opacity:1;transform:none}}
+
+  /* ====================================================================
+     INTERACTIVE LAYER — facilitator timer, sealed injections, toasts,
+     tickable checklists, fillable solution sheet
+     ==================================================================== */
+  body{padding-top:0}
+  body.has-bar{padding-top:62px}
+  .sec{scroll-margin-top:80px}
+
+  /* --- fixed facilitator control bar --- */
+  .facilbar{
+    position:fixed;top:0;left:0;right:0;z-index:200;
+    background:linear-gradient(180deg,#0c1d34,#0a1830);
+    border-bottom:2px solid var(--cyan);
+    color:#EAF1F8;display:flex;align-items:center;gap:14px;
+    padding:8px 18px;min-height:62px;
+    box-shadow:0 10px 30px -16px rgba(0,0,0,.7);
+    font-family:"IBM Plex Mono",monospace;
+  }
+  .facilbar .fb-clock{display:flex;align-items:baseline;gap:8px;flex-shrink:0}
+  .facilbar .fb-time{font-size:26px;font-weight:600;letter-spacing:.04em;color:#fff;font-variant-numeric:tabular-nums}
+  .facilbar .fb-total{font-size:12px;color:#7E93AE}
+  .facilbar .fb-phase{
+    display:flex;flex-direction:column;line-height:1.15;padding-left:14px;
+    border-left:1px solid rgba(255,255,255,.14);min-width:0;
+  }
+  .facilbar .fb-phase .fp-name{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:14px;color:var(--pc,#7FE2EF);white-space:nowrap}
+  .facilbar .fb-phase .fp-next{font-size:10.5px;color:#8FA8C4;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .facilbar .fb-spacer{flex:1}
+  .facilbar .fb-bar{flex:1;height:7px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden;min-width:60px;max-width:340px}
+  .facilbar .fb-bar i{display:block;height:100%;width:0;background:var(--pc,var(--cyan));transition:width .3s linear,background .3s}
+  .facilbar .fb-btns{display:flex;gap:7px;flex-shrink:0}
+  .fb-btn{
+    font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;letter-spacing:.05em;
+    color:#EAF1F8;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
+    border-radius:8px;padding:8px 13px;cursor:pointer;transition:background .15s,border-color .15s,transform .05s;
+    text-transform:uppercase;display:inline-flex;align-items:center;gap:6px;
+  }
+  .fb-btn:hover{background:rgba(255,255,255,.16)}
+  .fb-btn:active{transform:translateY(1px)}
+  .fb-btn.primary{background:var(--green);border-color:var(--green);color:#fff}
+  .fb-btn.primary:hover{background:#2cb583}
+  .fb-btn.warn{background:var(--amber);border-color:var(--amber);color:#fff}
+  .fb-btn.warn:hover{background:#ef9a3a}
+  .fb-btn.ghost{background:transparent}
+  .fb-btn svg{width:14px;height:14px;stroke-width:2.2}
+  .fb-btn.icon{padding:8px 10px}
+  .fb-btn[aria-pressed="false"]{opacity:.55}
+  @media (max-width:880px){
+    .facilbar{flex-wrap:wrap;min-height:0;padding:8px 12px;gap:9px}
+    body.has-bar{padding-top:104px}
+    .facilbar .fb-bar{order:5;flex-basis:100%;max-width:none}
+    .facilbar .fb-spacer{display:none}
+  }
+  @media (max-width:560px){
+    .facilbar .fb-phase{display:none}
+    body.has-bar{padding-top:96px}
+  }
+
+  /* --- toast / announcement region --- */
+  .toast-wrap{position:fixed;top:74px;right:18px;z-index:210;display:flex;flex-direction:column;gap:10px;max-width:min(380px,90vw)}
+  .toast{
+    background:var(--navy);color:#EAF1F8;border-radius:12px;padding:13px 16px;
+    border-left:4px solid var(--cyan);box-shadow:0 18px 40px -16px rgba(0,0,0,.6);
+    transform:translateX(120%);opacity:0;transition:transform .4s cubic-bezier(.2,.8,.3,1),opacity .4s;
+  }
+  .toast.show{transform:none;opacity:1}
+  .toast .tt{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px;margin-bottom:3px}
+  .toast .tt .tk{font-family:"IBM Plex Mono",monospace;font-size:11px;background:rgba(255,255,255,.14);padding:2px 7px;border-radius:5px}
+  .toast .tb{font-size:13px;color:#C8D6E6;line-height:1.4}
+  .toast.fire{border-left-color:var(--red);background:#2a1320}
+  .toast.fire .tt{color:#ff9a9a}
+  .toast.phase{border-left-color:var(--green)}
+
+  /* --- sealed injection cards --- */
+  .inj.sealable{position:relative}
+  .inj.sealed .inj-body{filter:blur(7px);user-select:none;pointer-events:none}
+  .inj.sealed .inj-head .when{background:rgba(255,255,255,.28)}
+  .inj-seal{
+    position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+    background:linear-gradient(160deg,rgba(20,42,71,.92),rgba(10,24,48,.95));color:#EAF1F8;
+    border-radius:14px;text-align:center;padding:18px;
+  }
+  .inj-seal svg{width:30px;height:30px;color:#7FE2EF}
+  .inj-seal .sl-t{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:15px}
+  .inj-seal .sl-w{font-family:"IBM Plex Mono",monospace;font-size:12px;color:#8FA8C4}
+  .inj-seal .sl-cd{font-family:"IBM Plex Mono",monospace;font-size:22px;font-weight:600;color:#fff;letter-spacing:.04em}
+  .inj-seal .fb-btn{font-size:11px}
+  .inj.revealing{animation:injflash 1.1s ease}
+  @keyframes injflash{0%{box-shadow:0 0 0 0 rgba(219,74,74,.0)}20%{box-shadow:0 0 0 5px rgba(219,74,74,.55)}100%{box-shadow:0 0 0 0 rgba(219,74,74,0)}}
+
+  /* --- active phase highlighting --- */
+  .stop.active .bar{opacity:1;box-shadow:0 0 0 2px #fff, 0 0 14px 1px var(--c)}
+  .stop.active .ph{text-shadow:0 0 12px rgba(255,255,255,.35)}
+  .stop.done .bar{opacity:.45}
+  .phase.active{outline:3px solid var(--pc);outline-offset:2px;box-shadow:0 1px 0 rgba(14,26,43,.04),0 22px 48px -26px rgba(14,26,43,.7)}
+  .phase .live-flag{display:none}
+  .phase.active .live-flag{
+    display:inline-flex;align-items:center;gap:6px;margin-left:auto;
+    font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.12em;
+    color:#fff;background:var(--pc);border-radius:20px;padding:3px 10px;text-transform:uppercase;
+  }
+  .phase.active .live-flag::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:pulse 1.2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+  /* --- tickable checklists --- */
+  .checklist li.ck{cursor:pointer;transition:color .15s}
+  .checklist li.ck:hover::before{border-color:var(--cyan-deep)}
+  .checklist li.ck.checked{color:var(--ink-faint)}
+  .checklist li.ck.checked::before{background:var(--cyan);border-color:var(--cyan)}
+  .checklist li.ck.checked::after{
+    content:"";position:absolute;left:4.5px;top:13px;width:6px;height:9px;
+    border:solid #fff;border-width:0 2px 2px 0;transform:rotate(40deg);
+  }
+  .ck-progress{
+    font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:600;letter-spacing:.08em;
+    color:var(--cyan-deep);background:#EAF7F9;border:1px solid #B6E4EB;border-radius:20px;
+    padding:2px 9px;margin-left:8px;white-space:nowrap;vertical-align:middle;
+  }
+
+  /* --- fillable solution sheet --- */
+  .sheet-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:12px;border-bottom:1px dashed var(--line-soft)}
+  .sheet-tools .st-note{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-faint);margin-right:auto}
+  .sheet-tools .st-note b{color:var(--green)}
+  .st-btn{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;letter-spacing:.04em;
+    color:var(--ink);background:#F4F7FB;border:1px solid var(--line);border-radius:8px;
+    padding:6px 11px;cursor:pointer;transition:background .15s,border-color .15s;display:inline-flex;align-items:center;gap:6px;
+  }
+  .st-btn:hover{background:#E8EEF6;border-color:var(--cyan)}
+  .st-btn svg{width:13px;height:13px;stroke-width:2}
+  .sheet-field textarea{
+    width:100%;border:none;background:transparent;resize:vertical;min-height:34px;
+    font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:13px;color:var(--ink);line-height:1.5;
+    padding:0;outline:none;
+  }
+  .sheet-field textarea::placeholder{color:var(--ink-faint);font-style:italic}
+  .sheet-field.filled{border-color:var(--cyan);background:#FAFEFF}
+  .sheet-field:focus-within{border-color:var(--cyan-deep);box-shadow:0 0 0 3px rgba(15,169,190,.12)}
+
+  @media print{
+    .facilbar,.toast-wrap,.inj-seal{display:none !important}
+    body.has-bar{padding-top:0}
+    .inj.sealed .inj-body{filter:none}
+    .sheet-tools{display:none}
+    .ck-progress{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ FACILITATOR CONTROL BAR (interactive) ============ -->
+<div class="facilbar" id="facilbar" role="region" aria-label="Session timer and controls">
+  <div class="fb-clock">
+    <span class="fb-time" id="barTime">00:00</span>
+    <span class="fb-total">/ 60:00</span>
+  </div>
+  <div class="fb-phase">
+    <span class="fp-name" id="barPhase">Press Start</span>
+    <span class="fp-next" id="barNext">Phase 0 · Brief-In begins on start</span>
+  </div>
+  <div class="fb-bar" aria-hidden="true"><i id="barFill"></i></div>
+  <div class="fb-spacer"></div>
+  <div class="fb-btns">
+    <button class="fb-btn primary" id="btnStart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 4l14 8-14 8z"/></svg><span id="btnStartLabel">Start</span></button>
+    <button class="fb-btn warn icon" id="btnSkip" title="Jump to next phase" aria-label="Jump to next phase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 4l10 8-10 8z"/><path d="M19 4v16"/></svg></button>
+    <button class="fb-btn ghost icon" id="btnSound" aria-pressed="true" title="Toggle chimes" aria-label="Toggle chimes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 010 6"/></svg></button>
+    <button class="fb-btn ghost icon" id="btnReset" title="Reset session" aria-label="Reset session"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4v6h6"/><path d="M4 10a8 8 0 113 8"/></svg></button>
+  </div>
+</div>
+<div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="anim">
+        <span class="eyebrow">Team Assessment · Solutions Engineering</span>
+        <h1>Zero Trust<br><span>Agentic</span> Design Sprint</h1>
+        <p class="lede">A timed, four-person tabletop exercise. Read the breach, design a Zero Trust architecture for autonomous AI agents, and ship one diagram and one solution sheet — before the clock hits zero.</p>
+        <div class="facts">
+          <div class="fact"><b>4</b><small>Roles</small></div>
+          <div class="fact"><b>60:00</b><small>On the clock</small></div>
+          <div class="fact"><b>2</b><small>Deliverables</small></div>
+          <div class="fact"><b>3</b><small>Injections</small></div>
+        </div>
+      </div>
+      <div class="dial anim" aria-hidden="true">
+        <svg viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="92" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="3"/>
+          <circle cx="100" cy="100" r="78" fill="#0A1830" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+          <!-- ticks -->
+          <g stroke="rgba(255,255,255,.35)" stroke-width="2">
+            <line x1="100" y1="14" x2="100" y2="26"/>
+            <line x1="186" y1="100" x2="174" y2="100"/>
+            <line x1="100" y1="186" x2="100" y2="174"/>
+            <line x1="14" y1="100" x2="26" y2="100"/>
+          </g>
+          <!-- amber arc countdown -->
+          <circle id="heroArc" cx="100" cy="100" r="92" fill="none" stroke="#E2891F" stroke-width="6" stroke-linecap="round"
+            stroke-dasharray="578" stroke-dashoffset="578" transform="rotate(-90 100 100)"/>
+          <text id="heroTime" x="100" y="96" text-anchor="middle" font-family="IBM Plex Mono" font-size="38" font-weight="600" fill="#fff">00:00</text>
+          <text id="heroLabel" x="100" y="120" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" letter-spacing="3" fill="#7FE2EF">MISSION TIME</text>
+          <!-- hand -->
+          <g id="heroHand">
+            <line x1="100" y1="100" x2="100" y2="38" stroke="#E2891F" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="100" cy="100" r="5" fill="#E2891F"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</header>
+
+  <div class="wrap">
+
+  <nav class="toc" aria-label="Contents">
+    <span class="toc-lbl">Jump to</span>
+    <a href="#goal">Goal</a><a href="#outcomes">Outcomes</a><a href="#components">Components</a>
+    <a href="#roles">Roles</a><a href="#package">Package</a><a href="#start">Start here</a>
+    <a href="#play">Play</a><a href="#journey">Journey</a><a href="#injections">Injections</a>
+    <a href="#scenario">Scenario</a><a href="#templates">Templates</a><a href="#example">Example</a>
+    <a href="#scoring">Scoring</a><a href="#rubric">Rubric</a><a href="#debrief">Debrief</a>
+    <a href="#cheatsheet">Cheat sheet</a><a href="#facilitator">Facilitator</a>
+  </nav>
+
+
+  <!-- ============ THE BOARD / TIMELINE ============ -->
+  <section class="sec" id="board">
+    <div class="sec-head">
+      <span class="sec-no">THE BOARD</span>
+      <h2>Your 60-minute mission track</h2>
+    </div>
+    <p class="sec-sub">Six phases, one hour. This track is the spine of the whole exercise — every phase below shows where you are on it. The Conductor moves the team from station to station and never lets a phase overrun. When the amber band fills, the round is locked.</p>
+    <div class="track-card">
+      <span class="eyebrow">Move left → right · Times are hard stops</span>
+      <div class="track-scroll">
+        <div class="track">
+          <div class="stop" style="--g:8;--c:#E2891F">
+            <div class="bar"></div>
+            <div class="ph"><i></i>P0 · Brief-In</div>
+            <div class="nm">Open the box, read the dossier, assign roles</div>
+            <div class="tc">00:00 → 08:00</div>
+          </div>
+          <div class="stop" style="--g:12;--c:#DB4A4A">
+            <div class="bar"></div>
+            <div class="ph"><i></i>P1 · Expose</div>
+            <div class="nm">Hunt the pain points &amp; threat surface</div>
+            <div class="tc">08:00 → 20:00</div>
+          </div>
+          <div class="stop" style="--g:13;--c:#0FA9BE">
+            <div class="bar"></div>
+            <div class="ph"><i></i>P2 · Decide</div>
+            <div class="nm">Choose the Zero Trust + agentic pattern</div>
+            <div class="tc">20:00 → 33:00</div>
+          </div>
+          <div class="stop" style="--g:15;--c:#2a6fb0">
+            <div class="bar"></div>
+            <div class="ph"><i></i>P3 · Design</div>
+            <div class="nm">Draw the topology on the canvas</div>
+            <div class="tc">33:00 → 48:00</div>
+          </div>
+          <div class="stop" style="--g:8;--c:#27A276">
+            <div class="bar"></div>
+            <div class="ph"><i></i>P4 · Document</div>
+            <div class="nm">Fill the one-page solution sheet</div>
+            <div class="tc">48:00 → 56:00</div>
+          </div>
+          <div class="stop" style="--g:4;--c:#AEC4DE">
+            <div class="bar"></div>
+            <div class="ph"><i></i>P5 · Submit</div>
+            <div class="nm">Photo, upload, lock in</div>
+            <div class="tc">56:00 → 60:00</div>
+          </div>
+        </div>
+      </div>
+      <div class="track-scale">
+        <span>00:00</span><span>10:00</span><span>20:00</span><span>30:00</span><span>40:00</span><span>50:00</span><span>60:00</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ OBJECTIVE / WIN ============ -->
+  <section class="sec" id="goal">
+    <div class="sec-head">
+      <span class="sec-no">GOAL</span>
+      <h2>How you complete it</h2>
+    </div>
+    <p class="sec-sub">This is a learning exercise, not a contest — teams aren't compared with each other. The aim is for every person to leave the hour better than they arrived.</p>
+    <div class="win">
+      <div class="panel accent-cyan">
+        <h3>
+          <span class="ic" style="background:var(--cyan-soft,#E4F5F8)"><svg viewBox="0 0 24 24" fill="none" stroke="#0A7C8C"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1" fill="#0A7C8C"/></svg></span>
+          The objective
+        </h3>
+        <p style="color:var(--ink-soft);font-size:14px;margin-bottom:12px">Take a fictional company drowning in over-privileged autonomous AI agents and redesign its architecture around Zero Trust. You've completed it when an evaluator can look at your topology and your one-pager and clearly see <b>identity, least privilege, continuous verification, and blast-radius control</b> applied to every agent.</p>
+        <ul class="checklist">
+          <li>Every pain point in the dossier is addressed by a control in your design.</li>
+          <li>Each AI agent has its own identity and only the access it needs, only when it needs it.</li>
+          <li>Every agent-to-resource call passes through a policy checkpoint and is logged.</li>
+          <li>All three injections are answered inside your design, not bolted on after.</li>
+        </ul>
+      </div>
+      <div class="panel accent-green">
+        <h3>
+          <span class="ic" style="background:var(--green-soft)"><svg viewBox="0 0 24 24" fill="none" stroke="#1f8a63"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/></svg></span>
+          What you hand in
+        </h3>
+        <div class="deliver"><div class="num">1</div><div><b>The Topology Diagram</b><p>A hand-drawn architecture on the canvas. Photographed to the clipboard and read by the AI proctor — so draw labelled boxes and clear arrows.</p></div></div>
+        <div class="deliver"><div class="num">2</div><div><b>The Solution Sheet</b><p>A single page: the problem, your approach, key decisions, how the design answers each injection — plus a one-line <b>individual reflection from each member</b>. Uploaded and scored against the rubric.</p></div></div>
+        <p style="font-size:12.5px;color:var(--ink-faint);margin-top:12px;margin-bottom:0">Both are graded together. A great diagram with a thin write-up — or vice versa — caps your score.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ OUTCOMES ============ -->
+  <section class="sec" id="outcomes">
+    <div class="sec-head">
+      <span class="sec-no">OUTCOMES</span>
+      <h2>What you'll take away</h2>
+    </div>
+    <p class="sec-sub">In one focused hour, you'll move from a messy real-world brief to a defensible design — and walk away with a mental model you can reuse in front of customers.</p>
+    <div class="grid g3">
+      <div class="card" style="border-top:4px solid var(--cyan)">
+        <div class="ic" style="background:var(--cyan)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></div>
+        <h3>Understand</h3>
+        <p>How Zero Trust applies to autonomous AI agents: per-agent identity, least privilege, a policy checkpoint on every call, blast-radius control, and audit by design.</p>
+      </div>
+      <div class="card" style="border-top:4px solid var(--amber)">
+        <div class="ic" style="background:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff"><path d="M14 4l6 6-9 9H5v-6z"/></svg></div>
+        <h3>Practise</h3>
+        <p>Reading an ambiguous brief, choosing an architecture as a team, deciding when the brief changes, and communicating the design clearly under time pressure.</p>
+      </div>
+      <div class="card" style="border-top:4px solid var(--green)">
+        <div class="ic" style="background:var(--green)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff"><path d="M5 3h14v18l-7-4-7 4z"/></svg></div>
+        <h3>Walk away with</h3>
+        <p>A reusable eight-control reference pattern for agentic security — and the habit of defending design trade-offs out loud, not just drawing them.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COMPONENTS ============ -->
+  <section class="sec" id="components">
+    <div class="sec-head">
+      <span class="sec-no">IN THE BOX</span>
+      <h2>Your components</h2>
+    </div>
+    <p class="sec-sub">Lay these out before the clock starts. Everything you need is on the table — nothing else is allowed unless your facilitator says so.</p>
+    <div class="grid g4">
+      <div class="card">
+        <div class="ic" style="background:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="#7FE2EF"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div>
+        <h3>Scenario Dossier</h3>
+        <p>One page describing the company, its agents, and its current security posture.</p>
+      </div>
+      <div class="card">
+        <div class="ic" style="background:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h4"/></svg></div>
+        <h3>Instruction Card</h3>
+        <p>This playbook — phases, roles, times, and the rubric you're judged on.</p>
+      </div>
+      <div class="card">
+        <div class="ic" style="background:var(--red)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg></div>
+        <h3>Injection Cards ×3</h3>
+        <p>Sealed twists. The Conductor reveals them at set times — they force live decisions.</p>
+      </div>
+      <div class="card">
+        <div class="ic" style="background:var(--cyan)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M3 12l5-3 4 3 3-2 6 4"/></svg></div>
+        <h3>Canvas + Sheet</h3>
+        <p>A blank diagram canvas and the single-page solution sheet template.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ROLES ============ -->
+  <section class="sec" id="roles">
+    <div class="sec-head">
+      <span class="sec-no">ROLES</span>
+      <h2>Four roles, no passengers</h2>
+    </div>
+    <p class="sec-sub">Everyone leads one phase and carries one standing job for the whole hour. Pick roles in the first two minutes. If you're a team of three, the Conductor also runs the Scribe's standing job; with five, add a second Critic. The Critic's job is to challenge decisions and spark dialogue — not to block — modelled on the "scientific critic" role used in multi-agent research.</p>
+    <div class="grid g4">
+      <div class="card role" style="--rc:var(--amber);--rc-ink:#a3640f">
+        <span class="rtag">Owns the clock</span>
+        <h3>The Conductor</h3>
+        <div class="owns">LEADS · P0 Brief-In &amp; P5 Submit</div>
+        <ul>
+          <li>Reads instructions aloud, keeps the team on the track.</li>
+          <li>Calls every time check and reveals injection cards on cue.</li>
+          <li>Confirms each phase's exit before moving on.</li>
+        </ul>
+        <div class="always"><b>Always:</b> watches the timer and says the time out loud at each checkpoint.</div>
+      </div>
+      <div class="card role" style="--rc:var(--red);--rc-ink:#b53636">
+        <span class="rtag">Owns the challenge</span>
+        <h3>The Critic</h3>
+        <div class="owns">LEADS · P1 Expose</div>
+        <ul>
+          <li>Challenges each decision — "what would make this fail?" — to spark dialogue, not to block.</li>
+          <li>Surfaces the threat surface and how an attacker could abuse an agent.</li>
+          <li>Makes the team justify choices and weigh trade-offs out loud.</li>
+        </ul>
+        <div class="always"><b>Always:</b> asks "what are we assuming, and what could break it?" at every step.</div>
+      </div>
+      <div class="card role" style="--rc:var(--cyan);--rc-ink:#0a7c8c">
+        <span class="rtag">Owns the design</span>
+        <h3>The Architect</h3>
+        <div class="owns">LEADS · P3 Design</div>
+        <ul>
+          <li>Holds the pen, draws the topology, keeps it legible.</li>
+          <li>Ensures every control has a home on the diagram.</li>
+          <li>Decides component placement and trust boundaries.</li>
+        </ul>
+        <div class="always"><b>Always:</b> sketches the current idea so the team argues over a picture, not words.</div>
+      </div>
+      <div class="card role" style="--rc:var(--green);--rc-ink:#1f8a63">
+        <span class="rtag">Owns the write-up</span>
+        <h3>The Scribe</h3>
+        <div class="owns">LEADS · P4 Document</div>
+        <ul>
+          <li>Captures every key decision the moment it's made.</li>
+          <li>Writes and owns the one-page solution sheet.</li>
+          <li>Runs the upload and final submission with the Conductor.</li>
+        </ul>
+        <div class="always"><b>Always:</b> records the "why" behind each choice — that's what the rubric rewards.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ THE PACKAGE ============ -->
+  <section class="sec" id="package">
+    <div class="sec-head">
+      <span class="sec-no">PACKAGE</span>
+      <h2>What the group receives — and who holds what</h2>
+    </div>
+    <p class="sec-sub">Each team gets one shared kit plus a per-person role card. Most information is shared with everyone; two things are deliberately restricted — the injections (held by the Conductor, revealed on a timer) and the reference answer (held by the facilitator until the debrief). That restriction is what makes the decisions real.</p>
+    <div class="win">
+      <div class="panel accent-cyan">
+        <h3 style="display:flex;align-items:center;gap:9px"><span class="ic" style="background:var(--cyan-soft,#E4F5F8);margin:0"><svg viewBox="0 0 24 24" fill="none" stroke="#0A7C8C" stroke-width="1.8"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg></span>What's in the kit</h3>
+        <ul class="kit">
+          <li><span class="qty">×1</span><div><b>Scenario Dossier</b><small>The company, its agents, and its current posture — shared with everyone.</small></div></li>
+          <li><span class="qty">×1</span><div><b>This Playbook / Instruction Card</b><small>Phases, roles, rubric, time cues — visible to the whole table.</small></div></li>
+          <li><span class="qty">×3</span><div><b>Injection Cards (sealed)</b><small>Held face-down by the Conductor; opened only at their cue time.</small></div></li>
+          <li><span class="qty">×4</span><div><b>Role Cards</b><small>One per person — Conductor, Critic, Architect, Scribe.</small></div></li>
+          <li><span class="qty">×1</span><div><b>Diagram Canvas + markers</b><small>One large sheet the Architect draws on; everyone contributes.</small></div></li>
+          <li><span class="qty">×1</span><div><b>Solution Sheet template</b><small>The single page the Scribe completes for the team.</small></div></li>
+        </ul>
+      </div>
+      <div>
+        <div class="panel">
+          <h3 style="display:flex;align-items:center;gap:9px"><span class="ic" style="background:var(--cyan-soft,#E4F5F8);margin:0"><svg viewBox="0 0 24 24" fill="none" stroke="#0A7C8C" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg></span>Digital &amp; access</h3>
+          <ul class="kit">
+            <li><span class="qty dig">LINK</span><div><b>Proctor upload (QR or URL)</b><small>Where the diagram photo and solution sheet are submitted.</small></div></li>
+            <li><span class="qty dig">SHOWN</span><div><b>Rubric</b><small>Open to the team during play — scoring is transparent, not a surprise.</small></div></li>
+            <li><span class="qty dig">TIMER</span><div><b>One shared timer</b><small>A phone or screen counting up from 00:00, run by the Conductor.</small></div></li>
+          </ul>
+          <div class="withhold">
+            <b>Held back until the debrief</b>
+            <p>The reference design / answer key is <b>not</b> in the team's kit. The facilitator or SME holds it and reveals it only after submission — so teams reason their way to a solution instead of matching one.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:18px">
+      <table class="rubric">
+        <thead><tr><th>Information / material</th><th>Held by</th><th>Who sees it</th><th>When</th></tr></thead>
+        <tbody>
+          <tr><td><b>Scenario dossier</b></td><td>Conductor reads it</td><td>Everyone</td><td class="w">From 00:00</td></tr>
+          <tr><td><b>Playbook &amp; rubric</b></td><td>On the table</td><td>Everyone</td><td class="w">Throughout</td></tr>
+          <tr><td><b>Role cards</b></td><td>Each person</td><td>That person</td><td class="w">Before 00:00</td></tr>
+          <tr><td><b>Injection 01 / 02 / 03</b></td><td>Conductor (sealed)</td><td>Everyone, on reveal</td><td class="w">24:00 / 38:00 / 50:00</td></tr>
+          <tr><td><b>Diagram canvas</b></td><td>Architect holds the pen</td><td>Everyone contributes</td><td class="w">From 33:00</td></tr>
+          <tr><td><b>Solution sheet</b></td><td>Scribe writes it</td><td>Everyone contributes</td><td class="w">Throughout, finalised 48:00–56:00</td></tr>
+          <tr><td><b>Reference design / answer key</b></td><td>Facilitator / SME</td><td>The team</td><td class="w">Debrief only (after 60:00)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ START HERE ============ -->
+  <section class="sec" id="start">
+    <div class="sec-head">
+      <span class="sec-no">START HERE</span>
+      <h2>Before the clock starts</h2>
+    </div>
+    <p class="sec-sub">Do these five things first — they take about two minutes and the timer is <b>not</b> running yet. Once step 5 happens, you're in Phase 0 and the 60 minutes begin.</p>
+    <div class="kick">
+      <div class="steps">
+        <div class="sh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg><b>The first two minutes (clock off)</b></div>
+        <div class="step">
+          <div class="sn">1</div>
+          <div><span class="who all">Everyone</span><h4>Lay out the components</h4><p>Put the four pieces on the table where all can see them: the <b>Scenario Dossier</b>, this <b>Instruction Card</b>, the three sealed <b>Injection Cards</b>, and the <b>Canvas + Solution Sheet</b>. Keep one device free for the timer.</p></div>
+        </div>
+        <div class="step">
+          <div class="sn">2</div>
+          <div><span class="who all">Everyone</span><h4>Choose your Conductor</h4><p>One person volunteers to run the session — usually whoever organized it or is keenest. <b>No volunteer?</b> The person whose birthday is next becomes the Conductor. This takes ten seconds, not a discussion.</p></div>
+        </div>
+        <div class="step">
+          <div class="sn">3</div>
+          <div><span class="who con">Conductor reads aloud</span><h4>Read the key instructions to the team</h4><p>The Conductor reads three things out loud so everyone hears the same thing: the <b>"how you complete it"</b> goal, the <b>two deliverables</b>, and the <b>six phases on the board</b>. No need to read the whole card — just enough that everyone knows the shape of the hour.</p></div>
+        </div>
+        <div class="step">
+          <div class="sn">4</div>
+          <div><span class="who con">Conductor reads aloud</span><h4>Read the four roles and claim them</h4><p>The Conductor reads each role card aloud — Conductor, Critic, Architect, Scribe — and the team claims them as they're read. <b>Whoever is keenest on a role takes it.</b> The Conductor keeps their own role. See the box on the right if two people want the same one.</p></div>
+        </div>
+        <div class="step">
+          <div class="sn">5</div>
+          <div><span class="who con">Conductor</span><h4>Start the timer — you're now in Phase 0</h4><p>The Conductor starts a timer counting <b>up from 00:00 to 60:00</b> and says <b>"We have 60 minutes — Phase 0 starts now."</b> From here, follow the phase cards below in order.</p></div>
+        </div>
+      </div>
+      <div>
+        <div class="timehow">
+          <span class="eyebrow">The one rule that keeps you on track</span>
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>How time-checking works</h3>
+          <ol>
+            <li>Use <b>one timer everyone can see</b> — a phone or laptop counting up from <b>00:00</b>. Every time in this playbook is "minutes elapsed."</li>
+            <li>The <b>Conductor owns the clock</b> and is the only person watching it closely, so the others can focus on the work.</li>
+            <li>At each checkpoint, the Conductor <b>says the time out loud</b> — e.g. <b>"We're at 20:00, moving to Decide."</b> So the whole team always knows where the clock is.</li>
+            <li>The full list of what to say and when is on the <b>Conductor's time-cue cheat sheet</b> at the end of this card. Red lines on it are injection reveals.</li>
+            <li>When a phase's hard-stop time hits, <b>stop and move on</b> — even if you're not finished. An unfinished phase beats an unsubmitted exercise.</li>
+          </ol>
+        </div>
+        <div class="pickbox">
+          <b>If two people want the same role</b>
+          <p>Rock-paper-scissors, or the person who has done it <em>least</em> before takes it — this is practice, so stretch into the unfamiliar. Every role carries equal weight.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PHASES ============ -->
+  <section class="sec" id="play">
+    <div class="sec-head">
+      <span class="sec-no">PLAY</span>
+      <h2>Phase by phase</h2>
+    </div>
+    <p class="sec-sub">Each card shows your position on the board, who leads, what every role does, and the time you must respect. Read the <b>Exit</b> line before you move on — if you can't tick it, you're not done.</p>
+
+    <!-- P0 -->
+    <div class="phase">
+      <div class="phase-top">
+        <div class="phase-badge" style="--pc:var(--amber)">
+          <span class="pno">PHASE 0</span><span class="pnm">BRIEF-IN</span><span class="pmin">8 min · 00:00–08:00</span>
+        </div>
+        <div class="phase-meta">
+          <div class="goal">Get aligned fast: absorb the scenario together and agree on what "good" looks like. (Roles were already claimed in Start Here.)</div>
+          <div class="progress" style="--pc:var(--amber)">
+            <div class="progress-head"><span class="pl">Progress</span><span class="pr">Step 1 of 6 · 0&ndash;8 min</span></div>
+            <div class="ptrack">
+              <span class="pseg now" style="--g:8"><b>P0</b></span><span class="pseg" style="--g:12"><b>P1</b></span><span class="pseg" style="--g:13"><b>P2</b></span><span class="pseg" style="--g:15"><b>P3</b></span><span class="pseg" style="--g:8"><b>P4</b></span><span class="pseg" style="--g:4"><b>P5</b></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <div class="lbl">What each role does</div>
+        <div class="acts">
+          <div class="act"><span class="chip con">Conductor</span> Start the timer at 00:00, then read the scenario dossier out loud so everyone hears the same story.</div>
+          <div class="act"><span class="chip all">Everyone</span> Confirm the roles you claimed in Start Here — don't re-debate them.</div>
+          <div class="act"><span class="chip thr">Critic</span> Say out loud the one risk that worries you most — you'll lead the hunt for more next.</div>
+          <div class="act"><span class="chip scr">Scribe</span> Write the team's mission in one sentence at the top of the solution sheet.</div>
+        </div>
+        <div class="timecheck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><p><b>@ 06:00</b> — everyone can restate the mission in one sentence. <b>@ 08:00</b> Conductor says "moving to Expose" and the team starts Phase 1.</p></div>
+        <div class="exit"><b>Exit criteria</b>Scenario understood · everyone can state the company's problem in one sentence · the one-line mission is written on the sheet.</div>
+      </div>
+    </div>
+
+    <!-- P1 -->
+    <div class="phase">
+      <div class="phase-top">
+        <div class="phase-badge" style="--pc:var(--red)">
+          <span class="pno">PHASE 1</span><span class="pnm">EXPOSE</span><span class="pmin">12 min · 08:00–20:00</span>
+        </div>
+        <div class="phase-meta">
+          <div class="goal">Find the pain. List every place the current setup violates Zero Trust or lets an agent do damage.</div>
+          <div class="progress" style="--pc:var(--red)">
+            <div class="progress-head"><span class="pl">Progress</span><span class="pr">Step 2 of 6 · 8&ndash;20 min</span></div>
+            <div class="ptrack">
+              <span class="pseg done" style="--g:8"><b>P0</b></span><span class="pseg now" style="--g:12"><b>P1</b></span><span class="pseg" style="--g:13"><b>P2</b></span><span class="pseg" style="--g:15"><b>P3</b></span><span class="pseg" style="--g:8"><b>P4</b></span><span class="pseg" style="--g:4"><b>P5</b></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <div class="lbl">What each role does</div>
+        <div class="acts">
+          <div class="act"><span class="chip thr">Critic</span> Go around the table — each person names one weakness in the current setup, with no repeats.</div>
+          <div class="act"><span class="chip arc">Architect</span> Sort the weaknesses as they're called into three buckets: identity, network, and audit.</div>
+          <div class="act"><span class="chip scr">Scribe</span> Write the 5–7 strongest pain points on the sheet as the team names them.</div>
+          <div class="act"><span class="chip con">Conductor</span> At 14:00, stop the listing and have everyone agree on the worst 2–3.</div>
+        </div>
+        <div class="timecheck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><p><b>@ 14:00</b> — stop listing, start ranking. <b>@ 20:00</b> hard stop: the top risks are circled and you move to Decide.</p></div>
+        <div class="exit"><b>Exit criteria</b>A ranked list of pain points · agreement on the 2–3 that matter most · captured on the sheet.</div>
+      </div>
+    </div>
+
+    <!-- P2 -->
+    <div class="phase">
+      <div class="phase-top">
+        <div class="phase-badge" style="--pc:var(--cyan)">
+          <span class="pno">PHASE 2</span><span class="pnm">DECIDE</span><span class="pmin">13 min · 20:00–33:00</span>
+        </div>
+        <div class="phase-meta">
+          <div class="goal">Choose the security pattern. Agree on the Zero Trust + agentic controls that solve your ranked pain points.</div>
+          <div class="progress" style="--pc:var(--cyan)">
+            <div class="progress-head"><span class="pl">Progress</span><span class="pr">Step 3 of 6 · 20&ndash;33 min</span></div>
+            <div class="ptrack">
+              <span class="pseg done" style="--g:8"><b>P0</b></span><span class="pseg done" style="--g:12"><b>P1</b></span><span class="pseg now" style="--g:13"><b>P2</b></span><span class="pseg" style="--g:15"><b>P3</b></span><span class="pseg" style="--g:8"><b>P4</b></span><span class="pseg" style="--g:4"><b>P5</b></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <div class="lbl">What each role does</div>
+        <div class="acts">
+          <div class="act"><span class="chip all">Everyone</span> For each top pain point, agree on one specific control that fixes it.</div>
+          <div class="act"><span class="chip arc">Architect</span> Say the core building blocks out loud: agent identity, a policy checkpoint, network segmentation.</div>
+          <div class="act"><span class="chip thr">Critic</span> Challenge each control — ask "does this actually shrink the damage if an agent is hacked?"</div>
+          <div class="act"><span class="chip scr">Scribe</span> Write each decision down with a one-line reason next to it.</div>
+        </div>
+        <div class="inj-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 16H3z"/><path d="M12 10v4"/></svg> INJECTION 01 revealed at 24:00 — decide together, then continue</div>
+        <div class="timecheck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><p><b>@ 24:00</b> Conductor reveals Injection 01 (≈3 min to resolve). <b>@ 30:00</b> controls locked. <b>@ 33:00</b> hand the pen to the Architect.</p></div>
+        <div class="exit"><b>Exit criteria</b>A chosen set of controls, one per top pain point · Injection 01 answered · reasons written down.</div>
+      </div>
+    </div>
+
+    <!-- P3 -->
+    <div class="phase">
+      <div class="phase-top">
+        <div class="phase-badge" style="--pc:#2a6fb0">
+          <span class="pno">PHASE 3</span><span class="pnm">DESIGN</span><span class="pmin">15 min · 33:00–48:00</span>
+        </div>
+        <div class="phase-meta">
+          <div class="goal">Draw the topology. Turn the agreed controls into a clear, labelled architecture the proctor can read.</div>
+          <div class="progress" style="--pc:#2a6fb0">
+            <div class="progress-head"><span class="pl">Progress</span><span class="pr">Step 4 of 6 · 33&ndash;48 min</span></div>
+            <div class="ptrack">
+              <span class="pseg done" style="--g:8"><b>P0</b></span><span class="pseg done" style="--g:12"><b>P1</b></span><span class="pseg done" style="--g:13"><b>P2</b></span><span class="pseg now" style="--g:15"><b>P3</b></span><span class="pseg" style="--g:8"><b>P4</b></span><span class="pseg" style="--g:4"><b>P5</b></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <div class="lbl">What each role does</div>
+        <div class="acts">
+          <div class="act"><span class="chip arc">Architect</span> Draw a labelled box for every component and an arrow for every request between them.</div>
+          <div class="act"><span class="chip thr">Critic</span> Trace one agent's request through the drawing and point out any gap you find.</div>
+          <div class="act"><span class="chip scr">Scribe</span> Keep a legend — make sure every box on the diagram has a clear name.</div>
+          <div class="act"><span class="chip con">Conductor</span> Call the time at 43:00 and 45:00 so the drawing finishes before 48:00.</div>
+        </div>
+        <div class="lifecycle">
+          <div class="lc-note">What you produce here is the <b>logical design</b> — the conceptual first step. In a real engagement it then advances through:</div>
+          <div class="lc-track">
+            <span class="lc-step now">Logical design<small>you are here</small></span>
+            <span class="lc-arr">&rarr;</span><span class="lc-step">Network design</span>
+            <span class="lc-arr">&rarr;</span><span class="lc-step">Detailed design</span>
+            <span class="lc-arr">&rarr;</span><span class="lc-step">BOM</span>
+            <span class="lc-arr">&rarr;</span><span class="lc-step">POC</span>
+            <span class="lc-arr">&rarr;</span><span class="lc-step">Production network</span>
+          </div>
+        </div>
+        <div class="inj-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 16H3z"/><path d="M12 10v4"/></svg> INJECTION 02 revealed at 38:00 — adapt the diagram, don't restart it</div>
+        <div class="timecheck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><p><b>@ 38:00</b> Injection 02 lands — show how the design contains it. <b>@ 45:00</b> stop adding, start labelling. <b>@ 48:00</b> pens down, diagram is final.</p></div>
+        <div class="exit"><b>Exit criteria</b>Labelled topology with clear data/trust flows · Injection 02 visible on the diagram · legible enough to photograph.</div>
+      </div>
+    </div>
+
+    <!-- P4 -->
+    <div class="phase">
+      <div class="phase-top">
+        <div class="phase-badge" style="--pc:var(--green)">
+          <span class="pno">PHASE 4</span><span class="pnm">DOCUMENT</span><span class="pmin">8 min · 48:00–56:00</span>
+        </div>
+        <div class="phase-meta">
+          <div class="goal">Write the one-pager. Explain the problem, your approach, and the decisions that won the design.</div>
+          <div class="progress" style="--pc:var(--green)">
+            <div class="progress-head"><span class="pl">Progress</span><span class="pr">Step 5 of 6 · 48&ndash;56 min</span></div>
+            <div class="ptrack">
+              <span class="pseg done" style="--g:8"><b>P0</b></span><span class="pseg done" style="--g:12"><b>P1</b></span><span class="pseg done" style="--g:13"><b>P2</b></span><span class="pseg done" style="--g:15"><b>P3</b></span><span class="pseg now" style="--g:8"><b>P4</b></span><span class="pseg" style="--g:4"><b>P5</b></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <div class="lbl">What each role does</div>
+        <div class="acts">
+          <div class="act"><span class="chip scr">Scribe</span> Fill in every field on the solution sheet — start with the approach and key decisions.</div>
+          <div class="act"><span class="chip arc">Architect</span> Add the diagram's legend and point to it from the write-up so the two match.</div>
+          <div class="act"><span class="chip thr">Critic</span> Write one line for each injection: the threat, then your answer.</div>
+          <div class="act"><span class="chip all">Everyone</span> Add your own one-line reflection with initials — the decision you drove or would change (60 seconds each).</div>
+          <div class="act"><span class="chip con">Conductor</span> Read the finished sheet back aloud — fix anything a stranger wouldn't understand.</div>
+        </div>
+        <div class="inj-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 16H3z"/><path d="M12 10v4"/></svg> INJECTION 03 revealed at 50:00 — answer it in writing on the sheet</div>
+        <div class="timecheck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><p><b>@ 50:00</b> Injection 03 lands — capture your answer on the page. <b>@ 56:00</b> sheet is done. Move straight to Submit.</p></div>
+        <div class="exit"><b>Exit criteria</b>Every field complete · all three injections addressed · one reflection per member with initials · sheet readable by an outsider.</div>
+      </div>
+    </div>
+
+    <!-- P5 -->
+    <div class="phase">
+      <div class="phase-top">
+        <div class="phase-badge" style="--pc:var(--navy)">
+          <span class="pno">PHASE 5</span><span class="pnm">SUBMIT</span><span class="pmin">4 min · 56:00–60:00</span>
+        </div>
+        <div class="phase-meta">
+          <div class="goal">Lock it in. Photograph the diagram, upload the sheet, confirm both landed before zero.</div>
+          <div class="progress" style="--pc:var(--navy)">
+            <div class="progress-head"><span class="pl">Progress</span><span class="pr">Step 6 of 6 · 56&ndash;60 min</span></div>
+            <div class="ptrack">
+              <span class="pseg done" style="--g:8"><b>P0</b></span><span class="pseg done" style="--g:12"><b>P1</b></span><span class="pseg done" style="--g:13"><b>P2</b></span><span class="pseg done" style="--g:15"><b>P3</b></span><span class="pseg done" style="--g:8"><b>P4</b></span><span class="pseg now" style="--g:4"><b>P5</b></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <div class="lbl">What each role does</div>
+        <div class="acts">
+          <div class="act"><span class="chip con">Conductor</span> Count down the last 4 minutes out loud: "3 minutes", "2 minutes", "1 minute".</div>
+          <div class="act"><span class="chip arc">Architect</span> Take a clear, flat, well-lit photo of the diagram and copy it to the clipboard.</div>
+          <div class="act"><span class="chip scr">Scribe</span> Upload the solution sheet and confirm the proctor shows it as received.</div>
+          <div class="act"><span class="chip thr">Critic</span> Do a final check that the diagram and the sheet tell the same story.</div>
+        </div>
+        <div class="timecheck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><p><b>@ 58:00</b> photo taken and on the clipboard. <b>@ 60:00</b> both artifacts submitted. Anything not submitted is not scored.</p></div>
+        <div class="exit"><b>Exit criteria</b>Diagram image captured to clipboard · solution sheet uploaded · both confirmed received.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PLAYER JOURNEY ============ -->
+  <section class="sec" id="journey">
+    <div class="sec-head">
+      <span class="sec-no">JOURNEY</span>
+      <h2>What each person experiences, minute by minute</h2>
+    </div>
+    <p class="sec-sub">The same hour from four seats. Read down your column to see your whole game; the <b>LEAD</b> tag marks the phase you own. Notice the rhythm — everyone leads once and supports the rest, so the spotlight moves around the table.</p>
+    <div class="jwrap">
+      <table class="jtable">
+        <thead>
+          <tr>
+            <th class="ph">Phase</th>
+            <th class="hcon">Conductor</th>
+            <th class="hthr">The Critic</th>
+            <th class="harc">Architect</th>
+            <th class="hscr">Scribe</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="phc">P0 · Brief-In<small>00:00–08:00</small></td>
+            <td><span class="lead con">Lead</span>Start the timer, read the dossier aloud, run the role pick.</td>
+            <td>Listen in; note the first decision you'll want to challenge.</td>
+            <td>Listen in; start picturing the current architecture.</td>
+            <td>Write the team's one-line mission on the sheet.</td>
+          </tr>
+          <tr>
+            <td class="phc">P1 · Expose<small>08:00–20:00</small></td>
+            <td>Keep pace; cut listing for ranking at 14:00.</td>
+            <td><span class="lead thr">Lead</span>Run the round-robin pain-point hunt; rank the worst.</td>
+            <td>Cluster weaknesses into identity, network, audit.</td>
+            <td>Capture the top 5–7 pain points as they're called.</td>
+          </tr>
+          <tr>
+            <td class="phc">P2 · Decide<small>20:00–33:00</small></td>
+            <td>Reveal Injection 01 at 24:00; protect the clock.</td>
+            <td>Challenge each control — does it shrink the damage?</td>
+            <td>Name the building blocks: identity, gateway, segments.</td>
+            <td>Record each decision with a one-line reason.</td>
+          </tr>
+          <tr>
+            <td class="phc">P3 · Design<small>33:00–48:00</small></td>
+            <td>Reveal Injection 02 at 38:00; call 43:00 &amp; 45:00.</td>
+            <td>Trace an agent's request through the drawing; find gaps.</td>
+            <td><span class="lead arc">Lead</span>Draw the labelled topology, boxes and arrows.</td>
+            <td>Keep the legend; make sure every box is named.</td>
+          </tr>
+          <tr>
+            <td class="phc">P4 · Document<small>48:00–56:00</small></td>
+            <td>Reveal Injection 03 at 50:00; read the sheet back aloud.</td>
+            <td>Write the one-line answer to each injection.</td>
+            <td>Add the legend; tie the diagram to the write-up.</td>
+            <td><span class="lead scr">Lead</span>Fill every field; collect each member's reflection.</td>
+          </tr>
+          <tr>
+            <td class="phc">P5 · Submit<small>56:00–60:00</small></td>
+            <td>Count down the final 4 minutes out loud.</td>
+            <td>Final check: diagram and sheet tell one story.</td>
+            <td>Photograph the diagram to the clipboard.</td>
+            <td>Upload the sheet; confirm the proctor received it.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="takeaways">
+      <div class="ta" style="--tc:var(--amber);--tc-ink:#a3640f"><h4>Conductor practises</h4><p>Facilitation under time pressure, scope control, and keeping a team to an outcome.</p></div>
+      <div class="ta" style="--tc:var(--red);--tc-ink:#b53636"><h4>The Critic practises</h4><p>Constructive challenge, threat-spotting, and driving team dialogue toward a stronger design.</p></div>
+      <div class="ta" style="--tc:var(--cyan);--tc-ink:#0a7c8c"><h4>Architect practises</h4><p>Translating requirements into a clear topology and defending placement choices.</p></div>
+      <div class="ta" style="--tc:var(--green);--tc-ink:#1f8a63"><h4>Scribe practises</h4><p>Crisp technical writing and turning a messy discussion into a decision record.</p></div>
+    </div>
+  </section>
+
+  <!-- ============ INJECTIONS ============ -->
+  <section class="sec" id="injections">
+    <div class="sec-head">
+      <span class="sec-no">TWISTS</span>
+      <h2>The injections</h2>
+    </div>
+    <p class="sec-sub">Sealed until their moment. Each one is a real decision under pressure — the Conductor reads it aloud, the team has roughly three minutes to decide, and the answer must show up in your design or your sheet. They exist to see how you think when the brief changes. <b>All three are always used</b>, so every team is scored on the same twists.</p>
+    <div class="grid g3">
+      <div class="inj">
+        <div class="inj-head"><div class="l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.4"/></svg><span class="tt">01 · Autonomous Expansion</span></div><span class="when">@ 24:00</span></div>
+        <div class="inj-body">
+          <p class="scn">A new reconciliation agent must read and write the <b>production customer ledger</b> with no human in the loop. Leadership wants it live this week.</p>
+          <div class="dec">Decide together</div>
+          <div class="tests">How do you grant this access under Zero Trust <b>without</b> standing, broad privilege? Look for: per-agent identity, just-in-time scoped tokens, policy-gated writes, and human approval reserved for the riskiest actions.</div>
+        </div>
+      </div>
+      <div class="inj">
+        <div class="inj-head"><div class="l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.4"/></svg><span class="tt">02 · Token in the Wild</span></div><span class="when">@ 38:00</span></div>
+        <div class="inj-body">
+          <p class="scn">Monitoring fires: one agent's credential is calling APIs from an <b>unexpected region at 20× normal volume</b>. It may be compromised right now.</p>
+          <div class="dec">Decide together</div>
+          <div class="tests">How does your design contain the blast radius in real time? Look for: short token lifetimes, instant revocation, continuous verification, segmentation that stops lateral movement, and behavioural anomaly response.</div>
+        </div>
+      </div>
+      <div class="inj">
+        <div class="inj-head"><div class="l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.4"/></svg><span class="tt">03 · Prove It</span></div><span class="when">@ 50:00</span></div>
+        <div class="inj-body">
+          <p class="scn">An auditor demands a <b>complete, tamper-evident trail of every agent-to-resource action</b> for the last 90 days — produced on demand.</p>
+          <div class="dec">Decide together</div>
+          <div class="tests">Does your design already produce this, and where? Look for: logging at the policy checkpoint, identity-bound records, immutable/append-only storage, and a single place to query it.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCENARIO ============ -->
+  <section class="sec" id="scenario">
+    <div class="sec-head">
+      <span class="sec-no">DOSSIER</span>
+      <h2>The scenario</h2>
+    </div>
+    <p class="sec-sub">This is a sample dossier — swap in your own company and agents to reuse the exercise. The pain points on the right are what a strong team is expected to surface in Phase 1.</p>
+    <div class="dossier">
+      <div class="dossier-top">
+        <span class="eyebrow">Confidential · Internal Architecture Review</span>
+        <span class="stamp">ZERO TRUST · TARGET STATE</span>
+      </div>
+      <div class="dossier-grid">
+        <div class="dossier-main">
+          <h3>Halcyon Pay</h3>
+          <p>Halcyon Pay is a mid-size fintech that recently deployed three autonomous AI agents into production: a <b>support-resolution agent</b> that reads customer records and issues refunds, a <b>reconciliation agent</b> that moves data between the ledger and partner banks, and a <b>fraud-triage agent</b> that queries transactions and freezes accounts.</p>
+          <p>Today, each agent authenticates once with a shared service account and is then trusted to act broadly across internal APIs, databases, and SaaS tools. The network is flat, credentials are long-lived, and there's no record of which agent did what. Leadership has mandated a move to Zero Trust before the next agent ships. <b>Your team designs the target-state architecture.</b></p>
+          <div class="state-row">
+            <div class="state"><b>3 agents</b><span>acting autonomously</span></div>
+            <div class="state"><b>Flat network</b><span>perimeter trust only</span></div>
+            <div class="state"><b>Shared creds</b><span>long-lived, broad</span></div>
+            <div class="state"><b>No audit</b><span>of agent actions</span></div>
+          </div>
+        </div>
+        <div class="dossier-side">
+          <h4>Pain points to surface</h4>
+          <ul class="painlist">
+            <li>Agents share one over-privileged service account — no per-agent identity.</li>
+            <li>Implicit trust after first login; no re-verification per request.</li>
+            <li>Flat network lets a compromised agent move laterally.</li>
+            <li>Static, long-lived credentials that are never rotated.</li>
+            <li>No policy checkpoint authorising individual agent actions.</li>
+            <li>No audit trail tying actions to a specific agent.</li>
+            <li>Tool and prompt-injection misuse with no runtime guardrails.</li>
+            <li>No human-in-the-loop on high-risk actions (refunds, freezes).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TEMPLATES ============ -->
+  <section class="sec" id="templates">
+    <div class="sec-head">
+      <span class="sec-no">TEMPLATES</span>
+      <h2>Diagram canvas &amp; solution sheet</h2>
+    </div>
+    <p class="sec-sub">Two artifacts, two formats. Draw the topology on the canvas; tell the story on the sheet. The proctor reads the picture, the rubric reads the page.</p>
+    <div class="grid g2">
+      <div class="tmpl">
+        <div class="tmpl-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M3 12l5-3 4 3 3-2 6 4"/></svg><h3>Topology Canvas</h3></div>
+        <div class="tmpl-b">
+          <div class="canvas">Draw labelled nodes + directional arrows here.<br>Agents · identities · policy checkpoint · resources · logging.</div>
+          <p style="font-size:12.5px;color:var(--ink-soft);margin:12px 0 6px"><b>Draw it so a machine can read it:</b></p>
+          <div class="legend">
+            <span>◻ box = component</span><span>→ arrow = request flow</span><span>⬚ dashed = trust boundary</span><span>★ = policy checkpoint</span><span>label everything</span>
+          </div>
+        </div>
+      </div>
+      <div class="tmpl">
+        <div class="tmpl-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h14v18H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><h3>Solution Sheet — one page</h3></div>
+        <div class="tmpl-b">
+          <div class="sheet-field"><div class="k">Problem in one sentence</div><div class="v">What Halcyon Pay risks today…</div></div>
+          <div class="sheet-field"><div class="k">Approach</div><div class="v">The Zero Trust pattern you applied to agents…</div></div>
+          <div class="sheet-field"><div class="k">Key decisions &amp; why</div><div class="v">Identity · least privilege · policy checkpoint · segmentation · audit…</div></div>
+          <div class="sheet-field"><div class="k">Injection responses 01 / 02 / 03</div><div class="v">One line each: threat → your answer…</div></div>
+          <div class="sheet-field"><div class="k">Diagram legend</div><div class="v">What each labelled box means…</div></div>
+          <div class="sheet-field" style="margin-bottom:0;border-left:3px solid var(--cyan)"><div class="k" style="color:var(--cyan-deep)">Individual reflection — one line each, with initials</div><div class="v">Each member: the decision I drove, or the one thing I'd change. (e.g. "AS — pushed for short-lived tokens over static keys.")</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WORKED EXAMPLE ============ -->
+  <section class="sec" id="example">
+    <div class="sec-head">
+      <span class="sec-no">EXAMPLE</span>
+      <h2>A worked solution, end to end</h2>
+    </div>
+    <p class="sec-sub">Here's what a strong team produces for the Halcyon Pay scenario — a labelled topology and a completed solution sheet. Use it to calibrate, not to copy: your scenario specifics will differ. The numbers ①–⑧ on the diagram map to the eight reference controls in the Debrief.</p>
+
+    <div class="tmpl" style="margin-bottom:18px">
+      <div class="tmpl-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M3 12l5-3 4 3 3-2 6 4"/></svg><h3>Sample topology — Halcyon Pay target state</h3></div>
+      <div class="svgwrap">
+        <svg viewBox="0 0 1000 600" style="font-family:'IBM Plex Sans',sans-serif" role="img" aria-label="Zero Trust agentic reference topology">
+          <defs>
+            <marker id="ah" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#46566E"/></marker>
+            <marker id="ahg" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#27A276"/></marker>
+            <marker id="ahr" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#DB4A4A"/></marker>
+          </defs>
+
+          <!-- control plane -->
+          <rect x="40" y="24" width="240" height="74" rx="9" fill="#fff" stroke="#0FA9BE" stroke-width="2"/>
+          <text x="70" y="56" font-size="15" font-weight="600" fill="#0A5560">Identity Provider</text>
+          <text x="70" y="76" font-size="11" fill="#5b6b82">per-agent workload identity</text>
+          <circle cx="56" cy="40" r="11" fill="#0FA9BE"/><text x="56" y="44.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">1</text>
+
+          <rect x="300" y="24" width="230" height="74" rx="9" fill="#fff" stroke="#0FA9BE" stroke-width="2"/>
+          <text x="330" y="52" font-size="15" font-weight="600" fill="#0A5560">Token Service</text>
+          <text x="330" y="72" font-size="11" fill="#5b6b82">JIT · scoped · short-lived</text>
+          <circle cx="316" cy="40" r="11" fill="#0FA9BE"/><text x="316" y="44.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">2</text>
+
+          <rect x="560" y="24" width="250" height="74" rx="9" fill="#fff" stroke="#0FA9BE" stroke-width="2"/>
+          <text x="590" y="52" font-size="15" font-weight="600" fill="#0A5560">Policy Decision Point</text>
+          <text x="590" y="72" font-size="11" fill="#5b6b82">deny by default · least privilege</text>
+
+          <!-- agents -->
+          <rect x="40" y="150" width="210" height="72" rx="9" fill="#122A47"/>
+          <text x="62" y="182" font-size="14" font-weight="600" fill="#fff">Support agent</text>
+          <text x="62" y="201" font-size="11" fill="#9FB6CE" font-family="IBM Plex Mono">id: agent-A</text>
+          <rect x="40" y="252" width="210" height="72" rx="9" fill="#122A47"/>
+          <text x="62" y="284" font-size="14" font-weight="600" fill="#fff">Reconciliation agent</text>
+          <text x="62" y="303" font-size="11" fill="#9FB6CE" font-family="IBM Plex Mono">id: agent-B</text>
+          <rect x="40" y="354" width="210" height="72" rx="9" fill="#122A47"/>
+          <text x="62" y="386" font-size="14" font-weight="600" fill="#fff">Fraud-triage agent</text>
+          <text x="62" y="405" font-size="11" fill="#9FB6CE" font-family="IBM Plex Mono">id: agent-C</text>
+          <text x="40" y="142" font-size="11" font-weight="600" fill="#46566E" font-family="IBM Plex Mono">AUTONOMOUS AGENTS</text>
+
+          <!-- gateway / PEP -->
+          <rect x="330" y="160" width="250" height="200" rx="12" fill="#122A47" stroke="#0FA9BE" stroke-width="2.5"/>
+          <text x="455" y="206" font-size="17" font-weight="700" fill="#fff" text-anchor="middle">Agent Gateway</text>
+          <text x="455" y="228" font-size="13" fill="#7FE2EF" text-anchor="middle">Policy Enforcement Point</text>
+          <text x="455" y="262" font-size="12" fill="#cdd9e8" text-anchor="middle">★ authorizes every call</text>
+          <text x="455" y="300" font-size="12" fill="#cdd9e8" text-anchor="middle">+ tool &amp; input guardrails</text>
+          <circle cx="348" cy="176" r="11" fill="#0FA9BE"/><text x="348" y="180.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">3</text>
+          <circle cx="348" cy="320" r="11" fill="#0FA9BE"/><text x="348" y="324.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">6</text>
+
+          <!-- monitor -->
+          <rect x="330" y="392" width="250" height="66" rx="9" fill="#FBE2E2" stroke="#DB4A4A" stroke-width="1.6"/>
+          <text x="358" y="420" font-size="13.5" font-weight="600" fill="#b53636">Continuous verification</text>
+          <text x="358" y="439" font-size="11" fill="#8a4a4a">anomaly detection · revoke on abuse</text>
+          <circle cx="346" cy="404" r="11" fill="#DB4A4A"/><text x="346" y="408.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">5</text>
+
+          <!-- resource zone -->
+          <rect x="612" y="150" width="338" height="188" rx="12" fill="none" stroke="#0FA9BE" stroke-width="1.6" stroke-dasharray="7 5"/>
+          <text x="636" y="144" font-size="10.5" font-weight="600" fill="#0A7C8C" font-family="IBM Plex Mono">MICROSEGMENTED · VERIFY EVERY CALL</text>
+          <circle cx="624" cy="150" r="11" fill="#0FA9BE"/><text x="624" y="154.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">4</text>
+          <rect x="632" y="166" width="300" height="44" rx="7" fill="#fff" stroke="#122A47" stroke-width="1.4"/>
+          <text x="650" y="193" font-size="13" font-weight="600" fill="#122A47">Customer records</text>
+          <rect x="632" y="220" width="300" height="44" rx="7" fill="#fff" stroke="#122A47" stroke-width="1.4"/>
+          <text x="650" y="247" font-size="13" font-weight="600" fill="#122A47">Production ledger DB</text>
+          <rect x="632" y="274" width="300" height="44" rx="7" fill="#fff" stroke="#122A47" stroke-width="1.4"/>
+          <text x="650" y="301" font-size="13" font-weight="600" fill="#122A47">Partner bank API</text>
+
+          <!-- human in the loop -->
+          <rect x="632" y="372" width="318" height="62" rx="9" fill="#FBEBD3" stroke="#E2891F" stroke-width="1.6"/>
+          <text x="662" y="398" font-size="13.5" font-weight="600" fill="#8a560f">Human-in-the-loop approval</text>
+          <text x="662" y="417" font-size="11" fill="#8a6a3a">refunds · account freezes · production writes</text>
+          <circle cx="648" cy="384" r="11" fill="#E2891F"/><text x="648" y="388.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">7</text>
+
+          <!-- audit log -->
+          <rect x="330" y="520" width="620" height="56" rx="9" fill="#D7F0E6" stroke="#27A276" stroke-width="1.6"/>
+          <text x="640" y="546" font-size="14" font-weight="600" fill="#1f8a63" text-anchor="middle">Immutable, identity-bound audit log</text>
+          <text x="640" y="565" font-size="11" fill="#2c7a5e" text-anchor="middle">every agent→resource call · queryable on demand</text>
+          <circle cx="346" cy="532" r="11" fill="#27A276"/><text x="346" y="536.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">8</text>
+
+          <!-- arrows -->
+          <line x1="160" y1="98" x2="150" y2="150" stroke="#46566E" stroke-width="1.6" marker-end="url(#ah)"/>
+          <text x="168" y="130" font-size="10.5" fill="#46566E">identity</text>
+          <line x1="250" y1="186" x2="330" y2="200" stroke="#46566E" stroke-width="1.6" marker-end="url(#ah)"/>
+          <line x1="250" y1="288" x2="330" y2="260" stroke="#46566E" stroke-width="1.6" marker-end="url(#ah)"/>
+          <line x1="250" y1="390" x2="330" y2="320" stroke="#46566E" stroke-width="1.6" marker-end="url(#ah)"/>
+          <text x="262" y="238" font-size="10.5" fill="#46566E">requests</text>
+          <line x1="415" y1="98" x2="440" y2="160" stroke="#46566E" stroke-width="1.6" marker-end="url(#ah)"/>
+          <text x="356" y="128" font-size="10.5" fill="#46566E">1 token / action</text>
+          <line x1="610" y1="98" x2="545" y2="160" stroke="#46566E" stroke-width="1.6" marker-end="url(#ah)"/>
+          <text x="566" y="128" font-size="10.5" fill="#46566E">consult</text>
+          <line x1="580" y1="200" x2="632" y2="190" stroke="#46566E" stroke-width="1.8" marker-end="url(#ah)"/>
+          <text x="586" y="178" font-size="10.5" fill="#0A7C8C">authorized scoped call</text>
+          <line x1="575" y1="332" x2="632" y2="394" stroke="#46566E" stroke-width="1.8" marker-end="url(#ah)"/>
+          <text x="556" y="360" font-size="10.5" fill="#8a560f">high-risk</text>
+          <line x1="781" y1="372" x2="781" y2="320" stroke="#46566E" stroke-width="1.6" marker-end="url(#ah)"/>
+          <text x="790" y="352" font-size="10.5" fill="#8a560f">approved write</text>
+          <line x1="455" y1="360" x2="455" y2="392" stroke="#DB4A4A" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ahr)"/>
+          <text x="464" y="382" font-size="10.5" fill="#b53636">observe</text>
+          <polyline points="330,425 18,425 18,61 300,61" fill="none" stroke="#DB4A4A" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ahr)"/>
+          <text x="26" y="250" font-size="10.5" fill="#b53636" transform="rotate(-90 26 250)">revoke compromised token</text>
+          <line x1="455" y1="458" x2="455" y2="520" stroke="#27A276" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ahg)"/>
+          <text x="464" y="495" font-size="10.5" fill="#1f8a63">log</text>
+          <line x1="900" y1="338" x2="900" y2="520" stroke="#27A276" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ahg)"/>
+          <text x="908" y="470" font-size="10.5" fill="#1f8a63">log</text>
+        </svg>
+      </div>
+      <p class="excap">Read it as a flow: agents authenticate with <b>their own identity</b>, the gateway issues a <b>scoped, short-lived token per action</b> after consulting a <b>deny-by-default policy</b>, calls reach <b>only their microsegment</b>, high-risk actions need a <b>human</b>, anomalies trigger <b>revocation</b>, and everything lands in an <b>immutable audit log</b>.</p>
+    </div>
+
+    <div class="panel" style="border-top:4px solid var(--green)">
+      <h3 style="font-size:17px;margin-bottom:12px;display:flex;align-items:center;gap:9px">
+        <span class="ic" style="background:var(--green-soft);margin:0"><svg viewBox="0 0 24 24" fill="none" stroke="#1f8a63" stroke-width="1.8"><path d="M5 3h14v18H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>
+        Sample solution sheet — completed
+      </h3>
+      <div class="exgrid">
+        <div class="exf full"><div class="k">Problem in one sentence</div><p class="v">Halcyon Pay's three autonomous agents share one over-privileged account on a flat network with no per-agent audit, so a single compromised agent could read, move, or alter customer funds undetected.</p></div>
+        <div class="exf full"><div class="k">Approach</div><p class="v">Re-architect around Zero Trust: give every agent its own identity, broker every action through a policy enforcement point that issues just-in-time least-privilege tokens, isolate resources into microsegments, gate irreversible actions behind a human, and log every call to an immutable, identity-bound trail.</p></div>
+        <div class="exf full"><div class="k">Key decisions &amp; why</div>
+          <ul>
+            <li><b>Per-agent workload identity</b> over a shared service account — every action is attributable and individually revocable.</li>
+            <li><b>JIT, scoped, short-lived tokens</b> over static keys — a leaked token expires fast and unlocks only one action.</li>
+            <li><b>One gateway/PEP + deny-by-default policy</b> — a single place to authorize, guardrail, and log every call.</li>
+            <li><b>Microsegmentation</b> between ledger, records, and partner API — contains blast radius, blocks lateral movement.</li>
+            <li><b>Human-in-the-loop</b> on refunds, freezes, and production writes — keep autonomy without ceding irreversible actions.</li>
+          </ul>
+        </div>
+        <div class="exf inj"><div class="k">Injection 01 · Autonomous expansion</div><p class="v">Give the reconciliation agent its own identity and a token scoped to "ledger read + one write," issued per task and expiring in minutes; production writes still route through human approval. No standing broad access.</p></div>
+        <div class="exf inj"><div class="k">Injection 02 · Token in the wild</div><p class="v">The monitor flags the abnormal region and volume, the gateway revokes that agent's token instantly, and short TTLs plus microsegmentation cap what the attacker reaches in the seconds before revocation.</p></div>
+        <div class="exf inj full"><div class="k">Injection 03 · Prove it</div><p class="v">Every agent→resource call is already logged at the gateway, identity-bound and append-only, so the 90-day trail is a single query — nothing to reconstruct.</p></div>
+        <div class="exf full"><div class="k">Diagram legend</div><p class="v">Navy = autonomous agents &amp; the gateway · cyan = identity/policy control plane &amp; trust boundary · white boxes in the dashed zone = microsegmented resources · amber = human approval · red = monitoring/revocation · green = audit log.</p></div>
+        <div class="exf refl full"><div class="k">Individual reflection — one line each</div>
+          <ul>
+            <li><b>AS</b> — drove per-agent identity over the shared account; it's the keystone everything else hangs on.</li>
+            <li><b>RK</b> — pushed JIT short-lived tokens; next time I'd add automated rotation.</li>
+            <li><b>ML</b> — designed the microsegmentation; I'd tighten the partner-API segment further.</li>
+            <li><b>JP</b> — placed the audit log at the gateway; would add hash-chaining for tamper-evidence.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="lands">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg>
+        <p><b>Where this lands:</b> all eight agentic controls present and placed, every injection answered inside the design, a clear write-up, and four distinct individual contributions → <b>Advanced–Expert</b> band.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EVALUATION FLOW ============ -->
+  <section class="sec" id="scoring">
+    <div class="sec-head">
+      <span class="sec-no">SCORING</span>
+      <h2>How it's evaluated</h2>
+    </div>
+    <p class="sec-sub">Your artifacts go through the <b>Circuit AI proctor</b> — which turns your photographed diagram into a structured topology and checks it against the reference pattern — or a subject-matter expert reviewing by hand. Either way, the rubric is the same.</p>
+    <div class="flow">
+      <div class="fstep">
+        <span class="fn">STEP 1</span>
+        <div class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="6" width="18" height="13" rx="2"/><circle cx="12" cy="12.5" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg></div>
+        <h4>Capture</h4>
+        <p>Photograph the diagram to the clipboard; upload the solution sheet.</p>
+      </div>
+      <div class="farrow">→</div>
+      <div class="fstep">
+        <span class="fn">STEP 2</span>
+        <div class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="6" cy="6" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M7.6 7.6l3 8M16.4 7.6l-3 8M8.4 6h7.2"/></svg></div>
+        <h4>Convert</h4>
+        <p>The proctor reads the image into a topology graph of nodes and flows.</p>
+      </div>
+      <div class="farrow">→</div>
+      <div class="fstep">
+        <span class="fn">STEP 3</span>
+        <div class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h16M4 12h16M4 17h10"/><path d="M19 15l2 2-2 2"/></svg></div>
+        <h4>Compare</h4>
+        <p>Topology + sheet checked against the reference Zero Trust pattern.</p>
+      </div>
+      <div class="farrow">→</div>
+      <div class="fstep">
+        <span class="fn">STEP 4</span>
+        <div class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3a9 9 0 109 9"/><path d="M12 12l5-5"/><path d="M21 3v5h-5"/></svg></div>
+        <h4>Score</h4>
+        <p>Each rubric dimension is rated and weighted into a total.</p>
+      </div>
+      <div class="farrow">→</div>
+      <div class="fstep">
+        <span class="fn">STEP 5</span>
+        <div class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 21V10M12 21V4M18 21v-7"/></svg></div>
+        <h4>Level</h4>
+        <p>The total maps to a proficiency level; an SME can review or override.</p>
+      </div>
+    </div>
+    <div class="proctor-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <p><b>Legibility helps the read, but never sinks the design.</b> Clear labels and a named box for every control make sure the proctor sees what you built — yet drawing quality is judged only under <em>Topology</em>. If the proctor's confidence in a converted topology is low, the diagram is routed to a human <b>SME, who re-reads it by hand</b> before any score is set. The machine speeds up scoring; it doesn't get the final word.</p>
+    </div>
+  </section>
+
+  <!-- ============ RUBRIC ============ -->
+  <section class="sec" id="rubric">
+    <div class="sec-head">
+      <span class="sec-no">RUBRIC</span>
+      <h2>What earns the points</h2>
+    </div>
+    <p class="sec-sub">Both artifacts are scored on these six dimensions. The two heaviest — Zero Trust principles and agentic-specific controls — are where strong SEs separate themselves.</p>
+    <table class="rubric">
+      <thead><tr><th>Dimension</th><th>Weight</th><th>What a top answer shows</th></tr></thead>
+      <tbody>
+        <tr><td><b>Pain-point identification</b></td><td class="w">10%</td><td>Surfaces the real risks — shared identity, implicit trust, flat network, no audit — and ranks them.</td></tr>
+        <tr><td><b>Zero Trust principles</b></td><td class="w">20%</td><td>Never trust / always verify, least privilege, assume breach, and microsegmentation applied throughout.</td></tr>
+        <tr><td><b>Agentic-specific controls</b></td><td class="w">25%</td><td>Per-agent identity, just-in-time scoped tokens, a policy checkpoint on every call, runtime guardrails, human-in-the-loop on high-risk actions.</td></tr>
+        <tr><td><b>Topology quality</b></td><td class="w">10%</td><td>Correct component placement and clear trust/data flows. <b>Legibility is judged here only</b> — a hard-to-read diagram never lowers the security scores above.</td></tr>
+        <tr><td><b>Decisions under injection</b></td><td class="w">15%</td><td>All three injections answered coherently and reflected in the design, not bolted on.</td></tr>
+        <tr><td><b>Solution-sheet communication</b></td><td class="w">10%</td><td>Approach and key decisions explained clearly, with the "why" behind each choice.</td></tr>
+        <tr><td><b>Individual contribution</b></td><td class="w">10%</td><td>Each member's reflection shows a distinct decision they drove — gives an individual signal inside a team result.</td></tr>
+      </tbody>
+    </table>
+    <div class="levels">
+      <div class="lvl l1"><span class="lr">0–49</span><h4>Foundational</h4><p>Names some risks; controls are partial or generic, not agent-aware.</p></div>
+      <div class="lvl l2"><span class="lr">50–69</span><h4>Proficient</h4><p>Solid Zero Trust design; most agentic controls present and placed correctly.</p></div>
+      <div class="lvl l3"><span class="lr">70–84</span><h4>Advanced</h4><p>Complete, well-reasoned design; injections handled with clear trade-offs.</p></div>
+      <div class="lvl l4"><span class="lr">85–100</span><h4>Expert</h4><p>Elegant, defensible architecture; every control justified and audit-ready.</p></div>
+    </div>
+    <p style="font-size:12.5px;color:var(--ink-faint);margin-top:14px">These bands map an <b>individual's growth path — not a ranking between teams.</b> Keep one sample diagram and sheet at each band as anchors so reviewers grade consistently, and treat the score cutoffs as provisional until calibrated against real cohorts.</p>
+  </section>
+
+  <!-- ============ DEBRIEF ============ -->
+  <section class="sec" id="debrief">
+    <div class="sec-head">
+      <span class="sec-no">DEBRIEF</span>
+      <h2>After the clock — where the learning happens</h2>
+    </div>
+    <p class="sec-sub">The score sorts; the debrief teaches. Run this 10-minute conversation right after submitting, while the design is fresh. Reveal the reference design, compare, and leave with one thing each person will do differently.</p>
+    <div class="win">
+      <div class="panel accent-cyan">
+        <h3>
+          <span class="ic" style="background:var(--cyan-soft,#E4F5F8)"><svg viewBox="0 0 24 24" fill="none" stroke="#0A7C8C" stroke-width="1.8"><path d="M8 12h8M8 8h8M8 16h5"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg></span>
+          Run the 10-minute debrief
+        </h3>
+        <ul class="checklist">
+          <li>Compare your diagram to the reference design on the right — what did you have, what did you miss?</li>
+          <li>Each member reads their reflection: the decision they drove, and one they'd change.</li>
+          <li>Name the injection that was hardest and why it stretched the design.</li>
+          <li>Agree on one team takeaway to carry into a real customer design.</li>
+          <li>If an SME is present, ask for the single highest-leverage improvement.</li>
+        </ul>
+      </div>
+      <div class="timehow">
+        <span class="eyebrow">Target state · the pattern you were aiming at</span>
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>Reference design at a glance</h3>
+        <ol>
+          <li><b>Per-agent identity</b> — each agent has its own verifiable identity; no shared service accounts.</li>
+          <li><b>Just-in-time, scoped, short-lived tokens</b> — least privilege per action, expiring fast.</li>
+          <li><b>Policy checkpoint on every call</b> — authorize each agent→resource request; deny by default.</li>
+          <li><b>Microsegmentation</b> — isolate agents so a compromise can't move laterally.</li>
+          <li><b>Continuous verification + anomaly monitoring</b> — re-check trust each request; revoke fast.</li>
+          <li><b>Runtime guardrails on agent tools</b> — constrain tools and inputs to blunt prompt-injection.</li>
+          <li><b>Human-in-the-loop</b> on high-risk actions — refunds, freezes, production writes.</li>
+          <li><b>Immutable, identity-bound audit log</b> at the checkpoint — queryable on demand.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FACILITATOR CUES ============ -->
+  <section class="sec" id="cheatsheet">
+    <div class="sec-head">
+      <span class="sec-no">CONDUCTOR</span>
+      <h2>Time-cue cheat sheet</h2>
+    </div>
+    <p class="sec-sub">The Conductor reads these out loud. Red lines are injection reveals. Say the time at every checkpoint — the whole team should always know where the clock is.</p>
+    <div class="cues">
+      <div class="cue"><span class="t">00:00</span><span class="d"><b>Start.</b> (Roles already claimed.) Timer on, counting up. Read the dossier aloud. "We have 60 minutes."</span></div>
+      <div class="cue"><span class="t">06:00</span><span class="d">Everyone can restate the mission in one sentence.</span></div>
+      <div class="cue"><span class="t">08:00</span><span class="d"><b>→ Expose.</b> "Pain-point hunt — one each, no repeats."</span></div>
+      <div class="cue"><span class="t">14:00</span><span class="d">"Stop listing, start ranking."</span></div>
+      <div class="cue"><span class="t">20:00</span><span class="d"><b>→ Decide.</b> Map each top pain point to a control.</span></div>
+      <div class="cue fire"><span class="t">24:00</span><span class="d"><b>INJECTION 01 — Autonomous Expansion.</b> Read it. ~3 min to decide.</span></div>
+      <div class="cue"><span class="t">30:00</span><span class="d">"Controls locked — half time gone."</span></div>
+      <div class="cue"><span class="t">33:00</span><span class="d"><b>→ Design.</b> Architect takes the pen.</span></div>
+      <div class="cue fire"><span class="t">38:00</span><span class="d"><b>INJECTION 02 — Token in the Wild.</b> Adapt the diagram.</span></div>
+      <div class="cue"><span class="t">45:00</span><span class="d">"Stop adding, start labelling."</span></div>
+      <div class="cue"><span class="t">48:00</span><span class="d"><b>→ Document.</b> "Pens down — diagram is final."</span></div>
+      <div class="cue fire"><span class="t">50:00</span><span class="d"><b>INJECTION 03 — Prove It.</b> Answer it on the sheet.</span></div>
+      <div class="cue"><span class="t">56:00</span><span class="d"><b>→ Submit.</b> Photograph, upload, confirm.</span></div>
+      <div class="cue"><span class="t">58:00</span><span class="d">Photo on clipboard. Sheet uploading.</span></div>
+      <div class="cue fire"><span class="t">60:00</span><span class="d"><b>Time. Hands off.</b> Anything not submitted isn't scored.</span></div>
+      <div class="cue"><span class="t">+10:00</span><span class="d"><b>Debrief.</b> Reveal the reference design, compare, each member shares one change.</span></div>
+    </div>
+  </section>
+
+  <!-- ============ FACILITATOR CHECKLIST ============ -->
+  <section class="sec" id="facilitator">
+    <div class="sec-head">
+      <span class="sec-no">FACILITATOR</span>
+      <h2>Setup checklist (one page)</h2>
+    </div>
+    <p class="sec-sub">For the person running the session — distinct from the in-game Conductor. Runs for any number of teams in parallel; one facilitator can comfortably cover three to four tables.</p>
+    <div class="grid g3">
+      <div class="panel" style="border-top:4px solid var(--cyan)">
+        <h3 style="display:flex;align-items:center;gap:9px"><span class="ic" style="background:var(--cyan-soft,#E4F5F8);margin:0"><svg viewBox="0 0 24 24" fill="none" stroke="#0A7C8C" stroke-width="1.8"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h9"/></svg></span>Before the session</h3>
+        <ul class="checklist">
+          <li>Print one kit per team: dossier, playbook, 3 injection cards, 4 role cards, canvas + markers, solution sheet.</li>
+          <li>Seal the three injection cards and hand them only to each team's Conductor.</li>
+          <li>Set up and test the proctor upload (QR or URL); confirm scoring is reachable.</li>
+          <li>Have the reference design / answer key ready but kept out of sight.</li>
+          <li>Give each table room to draw and one visible timer.</li>
+          <li>Aim for teams of four; adapt for three or five using the roles note.</li>
+        </ul>
+      </div>
+      <div class="panel" style="border-top:4px solid var(--amber)">
+        <h3 style="display:flex;align-items:center;gap:9px"><span class="ic" style="background:var(--amber-soft);margin:0"><svg viewBox="0 0 24 24" fill="none" stroke="#a3640f" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>During the hour</h3>
+        <ul class="checklist">
+          <li>Start every team's timer together; note the official start time.</li>
+          <li>Float between tables — don't answer design questions; redirect to the rubric.</li>
+          <li>If a team stalls, prompt with a question, never an answer.</li>
+          <li>Check injection reveals land near 24:00 / 38:00 / 50:00.</li>
+          <li>At 60:00, confirm both artifacts are submitted before scoring.</li>
+        </ul>
+      </div>
+      <div class="panel" style="border-top:4px solid var(--green)">
+        <h3 style="display:flex;align-items:center;gap:9px"><span class="ic" style="background:var(--green-soft);margin:0"><svg viewBox="0 0 24 24" fill="none" stroke="#1f8a63" stroke-width="1.8"><path d="M3 12h4l3 7 4-14 3 7h4"/></svg></span>After the clock</h3>
+        <ul class="checklist">
+          <li>Run the 10-minute debrief and reveal the reference design.</li>
+          <li>Score with the rubric; route low-confidence diagrams to an SME.</li>
+          <li>Capture one improvement per team; name common gaps across tables.</li>
+          <li>Keep strong sample diagrams and sheets as anchors for next time.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="foot">
+    <span class="eyebrow">Zero Trust Agentic Design Sprint · Team Playbook</span>
+    <span class="tag">4 roles · 60 minutes · 1 diagram + 1 sheet</span>
+  </div>
+
+</div>
+
+<!-- ============ INTERACTIVE ENGINE ============ -->
+<script>
+(function(){
+  "use strict";
+  var TOTAL = 60 * 60; // seconds
+  var PHASES = [
+    {no:"PHASE 0", name:"Brief-In", start:0,  end:8,  color:"#E2891F"},
+    {no:"PHASE 1", name:"Expose",   start:8,  end:20, color:"#DB4A4A"},
+    {no:"PHASE 2", name:"Decide",   start:20, end:33, color:"#0FA9BE"},
+    {no:"PHASE 3", name:"Design",   start:33, end:48, color:"#2a6fb0"},
+    {no:"PHASE 4", name:"Document", start:48, end:56, color:"#27A276"},
+    {no:"PHASE 5", name:"Submit",   start:56, end:60, color:"#122A47"}
+  ];
+  var $ = function(s,r){return (r||document).querySelector(s);};
+  var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+  function fmt(sec){ sec=Math.max(0,Math.round(sec)); var m=Math.floor(sec/60), s=sec%60; return (m<10?"0":"")+m+":"+(s<10?"0":"")+s; }
+  function parseClock(t){ // "24:00" -> 1440s ; "+10:00" -> 10 min after the 60:00 finish
+    t=t.trim(); var plus=/^\+/.test(t); t=t.replace(/^\+/,"");
+    var p=t.split(":"); var s=parseInt(p[0],10)*60 + parseInt(p[1]||"0",10);
+    return plus ? s+TOTAL : s;
+  }
+
+  document.body.classList.add("has-bar");
+
+  // ---------- gather cues (time-cue cheat sheet drives announcements) ----------
+  var CUES = $$(".cues .cue").map(function(cue){
+    var t = $(".t",cue).textContent;
+    return { sec: parseClock(t), label: t.trim(), text: $(".d",cue).textContent.replace(/\s+/g," ").trim(), fire: cue.classList.contains("fire") };
+  }).sort(function(a,b){return a.sec-b.sec;});
+
+  // ---------- prepare injection cards (sealed until their reveal time) ----------
+  var INJ = $$("#injections .inj").map(function(card,i){
+    card.classList.add("sealable");
+    var sec = parseClock($(".when",card).textContent.replace("@",""));
+    var title = $(".tt",card).textContent.trim();
+    var seal = document.createElement("div");
+    seal.className = "inj-seal";
+    seal.innerHTML =
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>'+
+      '<div class="sl-t">Sealed</div>'+
+      '<div class="sl-w">Unlocks at '+$(".when",card).textContent.replace("@","").trim()+'</div>'+
+      '<div class="sl-cd" data-cd>—</div>'+
+      '<button class="fb-btn ghost" data-reveal>Reveal now</button>';
+    card.appendChild(seal);
+    seal.querySelector("[data-reveal]").addEventListener("click", function(){ manualReveal(i); });
+    return { el:card, sec:sec, title:title, seal:seal, cd:seal.querySelector("[data-cd]"), manual:false };
+  });
+
+  // ---------- inject LIVE flag into each phase card ----------
+  var PHASE_CARDS = $$("#play .phase");
+  PHASE_CARDS.forEach(function(p,i){
+    var head = $(".progress-head",p);
+    if(head){ var f=document.createElement("span"); f.className="live-flag"; f.textContent="Live now"; head.appendChild(f); }
+  });
+  var STOPS = $$("#board .track .stop");
+
+  // ---------- timer state ----------
+  var elapsed = 0, running = false, lastTs = null, ticker = null, soundOn = true;
+  var fired = {};            // event-key -> true (suppresses re-toasting)
+  var audioCtx = null;
+
+  var STORE = "ztds.timer";
+  function save(){ try{ localStorage.setItem(STORE, JSON.stringify({elapsed:elapsed, running:running, savedAt:Date.now()})); }catch(e){} }
+  function load(){
+    try{
+      var s = JSON.parse(localStorage.getItem(STORE)||"null");
+      if(s){ elapsed = Math.min(TOTAL, s.elapsed||0);
+        if(s.running){ var dl=(Date.now()-(s.savedAt||Date.now()))/1000; elapsed=Math.min(TOTAL, elapsed+Math.max(0,dl)); running=true; }
+      }
+    }catch(e){}
+    primeFired(); // mark already-elapsed events as handled so we don't replay a burst on load
+  }
+  function primeFired(){
+    CUES.forEach(function(c,i){ if(elapsed>=c.sec) fired["cue"+i]=true; });
+    INJ.forEach(function(j,i){ if(elapsed>=j.sec) fired["inj"+i]=true; });
+  }
+
+  // ---------- audio chimes ----------
+  function initAudio(){
+    if(audioCtx) { if(audioCtx.state==="suspended") audioCtx.resume(); return; }
+    try{ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ audioCtx=null; }
+  }
+  function tone(freq,dur,when,gain){
+    if(!audioCtx) return;
+    var o=audioCtx.createOscillator(), g=audioCtx.createGain();
+    o.type="sine"; o.frequency.value=freq; o.connect(g); g.connect(audioCtx.destination);
+    var t=audioCtx.currentTime+when;
+    g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(gain,t+0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    o.start(t); o.stop(t+dur+0.03);
+  }
+  function chime(kind){
+    if(!soundOn||!audioCtx) return;
+    if(kind==="fire"){ tone(880,.18,0,.22); tone(1175,.18,.19,.22); tone(1568,.32,.38,.24); }
+    else if(kind==="phase"){ tone(660,.16,0,.2); tone(988,.24,.16,.2); }
+    else { tone(784,.18,0,.17); }
+  }
+
+  // ---------- toast announcements ----------
+  var toastWrap = $("#toastWrap");
+  function toast(title, body, kind, key){
+    var el=document.createElement("div");
+    el.className="toast"+(kind?(" "+kind):"");
+    el.innerHTML='<div class="tt">'+(key?'<span class="tk">'+key+'</span>':'')+title+'</div><div class="tb">'+body+'</div>';
+    toastWrap.appendChild(el);
+    requestAnimationFrame(function(){ el.classList.add("show"); });
+    var ttl = kind==="fire" ? 13000 : 9000;
+    setTimeout(function(){ el.classList.remove("show"); setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 450); }, ttl);
+    while(toastWrap.children.length>4){ toastWrap.removeChild(toastWrap.firstChild); }
+  }
+
+  // ---------- injection reveal ----------
+  function revealInjection(i){
+    var j=INJ[i]; if(!j.el.classList.contains("sealed")) return;
+    render();
+    j.el.classList.add("revealing");
+    setTimeout(function(){ j.el.classList.remove("revealing"); }, 1200);
+  }
+  function manualReveal(i){
+    INJ[i].manual=true; fired["inj"+i]=true;
+    var j=INJ[i];
+    j.el.classList.remove("sealed"); j.el.classList.add("revealing");
+    setTimeout(function(){ j.el.classList.remove("revealing"); }, 1200);
+    toast("Injection revealed", j.title.replace(/^\d+\s·\s/,""), "fire", "MANUAL");
+    chime("fire");
+    render();
+  }
+
+  // ---------- main render ----------
+  var bar = $("#facilbar");
+  function currentPhaseIndex(){
+    if(elapsed>=TOTAL) return PHASES.length; // done
+    for(var i=0;i<PHASES.length;i++){ if(elapsed < PHASES[i].end*60) return i; }
+    return PHASES.length-1;
+  }
+  function render(){
+    var started = running || elapsed>0;
+    var idx = currentPhaseIndex();
+    var ph = PHASES[Math.min(idx, PHASES.length-1)];
+    var frac = elapsed/TOTAL;
+
+    // clock + hero dial
+    $("#barTime").textContent = fmt(elapsed);
+    var ht=$("#heroTime"); if(ht) ht.textContent=fmt(elapsed);
+    $("#barFill").style.width = (frac*100)+"%";
+    var arc=$("#heroArc"); if(arc) arc.setAttribute("stroke-dashoffset", String(578*(1-frac)));
+    var hand=$("#heroHand"); if(hand) hand.setAttribute("transform","rotate("+(360*frac)+" 100 100)");
+    var hl=$("#heroLabel"); if(hl) hl.textContent = (elapsed>=TOTAL) ? "TIME — HANDS OFF" : (started ? (ph.no+" · "+ph.name).toUpperCase() : "MISSION TIME");
+
+    // colour theme of bar
+    var col = elapsed>=TOTAL ? "#122A47" : ph.color;
+    bar.style.setProperty("--pc", col);
+
+    // bar phase text
+    if(elapsed>=TOTAL){
+      $("#barPhase").textContent="Time — hands off";
+      $("#barNext").textContent="Anything not submitted isn't scored · run the debrief";
+    } else if(!started){
+      $("#barPhase").textContent="Press Start";
+      $("#barNext").textContent="Phase 0 · Brief-In begins on start";
+    } else {
+      $("#barPhase").textContent = ph.no+" · "+ph.name;
+      var leftInPhase = ph.end*60 - elapsed;
+      var nc=null; for(var k=0;k<CUES.length;k++){ if(CUES[k].sec>elapsed){ nc=CUES[k]; break; } }
+      var nextTxt = nc ? ("next cue "+nc.label+" in "+fmt(nc.sec-elapsed)) : "final stretch";
+      $("#barNext").textContent = fmt(leftInPhase)+" left in phase · "+nextTxt;
+    }
+
+    // start button label
+    $("#btnStartLabel").textContent = running ? "Pause" : (elapsed>0 && elapsed<TOTAL ? "Resume" : "Start");
+
+    // board stops
+    STOPS.forEach(function(s,i){
+      s.classList.toggle("active", started && elapsed<TOTAL && i===idx);
+      s.classList.toggle("done", elapsed>=TOTAL || i<idx);
+    });
+    // phase cards
+    PHASE_CARDS.forEach(function(p,i){ p.classList.toggle("active", started && elapsed<TOTAL && i===idx); });
+
+    // injection seal state (declarative from elapsed + manual override)
+    INJ.forEach(function(j,i){
+      var sealed = elapsed < j.sec && !j.manual;
+      j.el.classList.toggle("sealed", sealed);
+      j.seal.style.display = sealed ? "" : "none";
+      if(sealed) j.cd.textContent = "in "+fmt(j.sec-elapsed);
+    });
+  }
+
+  // ---------- event firing on time crossings ----------
+  function checkEvents(){
+    var started = running || elapsed>0;
+    CUES.forEach(function(c,i){
+      if(elapsed>=c.sec && !fired["cue"+i]){
+        fired["cue"+i]=true;
+        if(!started) return;
+        var kind = c.fire ? "fire" : (/^→/.test(c.text) ? "phase" : "");
+        toast(c.fire?"Injection / alert":(kind==="phase"?"Phase change":"Time check"), c.text, kind, c.label);
+        chime(c.fire?"fire":(kind==="phase"?"phase":"tick"));
+      }
+    });
+    INJ.forEach(function(j,i){
+      if(elapsed>=j.sec && !fired["inj"+i]){ fired["inj"+i]=true; revealInjection(i); }
+    });
+  }
+
+  // ---------- ticking ----------
+  function tick(){
+    var now=Date.now(); var dt=(now-lastTs)/1000; lastTs=now;
+    elapsed=Math.min(TOTAL, elapsed+dt);
+    render(); checkEvents();
+    if(elapsed>=TOTAL){ stop(); }
+    if((Math.round(elapsed)%2)===0) save();
+  }
+  function startTimer(){
+    if(running||elapsed>=TOTAL) return;
+    running=true; lastTs=Date.now();
+    ticker=setInterval(tick, 250);
+    $("#btnStartLabel").textContent="Pause";
+    save(); render();
+  }
+  function stop(){
+    running=false;
+    if(ticker){ clearInterval(ticker); ticker=null; }
+    $("#btnStartLabel").textContent = (elapsed>0 && elapsed<TOTAL ? "Resume":"Start");
+    save(); render();
+  }
+
+  // ---------- controls ----------
+  $("#btnStart").addEventListener("click", function(){
+    initAudio();
+    if(running){ stop(); }
+    else { if(elapsed===0) toast("Session started","60 minutes on the clock — Phase 0 · Brief-In begins now.","phase","00:00"); startTimer(); }
+  });
+  $("#btnSkip").addEventListener("click", function(){
+    var idx=currentPhaseIndex();
+    if(idx>=PHASES.length) return;
+    var nextStart = (idx+1<=PHASES.length-1) ? PHASES[idx+1].start*60 : TOTAL;
+    elapsed = Math.min(TOTAL, Math.max(elapsed+1, nextStart));
+    lastTs=Date.now();
+    render(); checkEvents(); save();
+  });
+  $("#btnReset").addEventListener("click", function(){
+    if(!confirm("Reset the session clock to 00:00 and re-seal all injections?\n\n(Your checklists and solution sheet are kept.)")) return;
+    stop(); elapsed=0; fired={};
+    INJ.forEach(function(j){ j.manual=false; });
+    toastWrap.innerHTML="";
+    render();
+  });
+  var btnSound=$("#btnSound");
+  btnSound.addEventListener("click", function(){
+    soundOn=!soundOn; btnSound.setAttribute("aria-pressed", soundOn?"true":"false");
+    if(soundOn){ initAudio(); chime("tick"); }
+  });
+
+  // ---------- tickable checklists ----------
+  $$(".checklist").forEach(function(ul, ui){
+    var items = $$("li", ul);
+    var badge=null;
+    var panel = ul.closest(".panel") || ul.parentNode;
+    var head = panel ? panel.querySelector("h3") : null;
+    if(head){ badge=document.createElement("span"); badge.className="ck-progress"; head.appendChild(badge); }
+    function refresh(){ if(badge){ var n=items.filter(function(li){return li.classList.contains("checked");}).length; badge.textContent=n+" / "+items.length; } }
+    items.forEach(function(li, li_i){
+      li.classList.add("ck");
+      li.setAttribute("role","checkbox");
+      li.setAttribute("tabindex","0");
+      var key="ztds.ck."+ui+"."+li_i;
+      var on = false; try{ on = localStorage.getItem(key)==="1"; }catch(e){}
+      li.classList.toggle("checked", on); li.setAttribute("aria-checked", on?"true":"false");
+      function toggle(){
+        var v=!li.classList.contains("checked");
+        li.classList.toggle("checked", v); li.setAttribute("aria-checked", v?"true":"false");
+        try{ localStorage.setItem(key, v?"1":"0"); }catch(e){}
+        refresh();
+      }
+      li.addEventListener("click", toggle);
+      li.addEventListener("keydown", function(e){ if(e.key===" "||e.key==="Enter"){ e.preventDefault(); toggle(); } });
+    });
+    refresh();
+  });
+
+  // ---------- fillable solution sheet (templates section only) ----------
+  var firstSheetField = $("#templates .sheet-field");
+  if(firstSheetField){
+    var body = firstSheetField.closest(".tmpl-b");
+    var fields = $$("#templates .sheet-field");
+    // tools bar
+    var tools=document.createElement("div");
+    tools.className="sheet-tools";
+    tools.innerHTML =
+      '<span class="st-note">Type directly into the sheet — <b>saved in this browser</b> automatically.</span>'+
+      '<button class="st-btn" data-copy><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h8"/></svg>Copy</button>'+
+      '<button class="st-btn" data-print><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9V3h12v6"/><rect x="4" y="9" width="16" height="8" rx="2"/><path d="M8 17h8v4H8z"/></svg>Print</button>'+
+      '<button class="st-btn" data-clear><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13"/></svg>Clear</button>';
+    body.insertBefore(tools, body.firstChild);
+
+    var inputs=[];
+    fields.forEach(function(f, fi){
+      var v=$(".v", f); if(!v) return;
+      var ph=v.textContent.trim();
+      var ta=document.createElement("textarea");
+      ta.placeholder=ph; ta.rows=1;
+      var key="ztds.sheet."+fi;
+      try{ ta.value=localStorage.getItem(key)||""; }catch(e){}
+      v.textContent=""; v.appendChild(ta);
+      function autosize(){ ta.style.height="auto"; ta.style.height=(ta.scrollHeight)+"px"; }
+      function onChange(){ try{ localStorage.setItem(key, ta.value); }catch(e){} f.classList.toggle("filled", ta.value.trim().length>0); autosize(); }
+      ta.addEventListener("input", onChange);
+      f.classList.toggle("filled", ta.value.trim().length>0);
+      inputs.push({field:f, ta:ta, key:key, label:$(".k",f)?$(".k",f).textContent.trim():"" });
+      setTimeout(autosize,0);
+    });
+
+    tools.querySelector("[data-copy]").addEventListener("click", function(){
+      var out = inputs.map(function(x){ return x.label.toUpperCase()+"\n"+(x.ta.value.trim()||"—"); }).join("\n\n");
+      out = "ZERO TRUST AGENTIC DESIGN SPRINT — SOLUTION SHEET\n\n"+out;
+      var done=function(){ toast("Copied","Solution sheet copied to your clipboard.","phase"); };
+      if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(out).then(done, function(){ fallbackCopy(out); done(); }); }
+      else { fallbackCopy(out); done(); }
+    });
+    tools.querySelector("[data-print]").addEventListener("click", function(){ window.print(); });
+    tools.querySelector("[data-clear]").addEventListener("click", function(){
+      if(!confirm("Clear every field on the solution sheet? This can't be undone.")) return;
+      inputs.forEach(function(x){ x.ta.value=""; try{ localStorage.removeItem(x.key); }catch(e){} x.field.classList.remove("filled"); x.ta.style.height="auto"; });
+    });
+    function fallbackCopy(text){
+      var t=document.createElement("textarea"); t.value=text; t.style.position="fixed"; t.style.opacity="0";
+      document.body.appendChild(t); t.select(); try{ document.execCommand("copy"); }catch(e){} document.body.removeChild(t);
+    }
+  }
+
+  // ---------- boot ----------
+  load();
+  render();
+  if(running){ lastTs=Date.now(); ticker=setInterval(tick,250); }
+})();
+</script>
+</body>
+</html>
