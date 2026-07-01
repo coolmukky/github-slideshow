@@ -29,6 +29,7 @@ the in-session phase/time cues live on the participant page itself.)
 
 ## Running the hour (60 min)
 
+- [ ] *(Optional)* Press **Focus** in the control bar to hide reference sections (rubric, journey, worked example, etc.) — this cuts the on-page reading ~in half so teams stay on task. Toggle **Show all** anytime.
 - [ ] On the participant page's **control bar**, press **Start** — the 60-minute clock drives everything.
 - [ ] The board and phase cards auto-highlight the current phase; **injections auto-reveal** at 24/38/50 min with a chime + toast.
 - [ ] The in-game **Conductor** on each team keeps their table on pace; you float between tables.
