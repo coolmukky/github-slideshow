@@ -19,6 +19,7 @@ Participants enter their **name, email, and team name** when they take a seat, a
 - Note: the roster stores participant **emails (PII)** — use the provided Firestore rules and clear the data after your session.
 
 📋 **Full step-by-step setup, verification, and privacy checklist: [`SETUP.md`](./SETUP.md)**
+🎤 **Running a session? Facilitator run-sheet: [`FACILITATOR.md`](./FACILITATOR.md)**
 
 ---
 
