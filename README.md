@@ -20,6 +20,7 @@ Participants enter their **name, email, and team name** when they take a seat, a
 
 📋 **Full step-by-step setup, verification, and privacy checklist: [`SETUP.md`](./SETUP.md)**
 🎤 **Running a session? Facilitator run-sheet: [`FACILITATOR.md`](./FACILITATOR.md)**
+📨 **Send participants ahead of time: [`PRE-READ.md`](./PRE-READ.md)** — a 2-minute primer so they arrive oriented.
 
 ---
 
