@@ -592,8 +592,17 @@
 
   @media (max-width:520px){ .pm-roles{grid-template-columns:1fr} }
 
+  /* --- focus / play view (hide reference sections during the hour) --- */
+  body.focus-mode .ref-sec{display:none}
+  body.focus-mode .toc a.ref-link{display:none}
+  #btnFocus[aria-pressed="false"]{opacity:1}
+  #btnFocus.on{background:var(--cyan);border-color:var(--cyan);color:#fff}
+  .toc .focus-note{display:none;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--cyan-deep);background:#EAF7F9;border:1px solid #B6E4EB;border-radius:20px;padding:4px 11px}
+  body.focus-mode .toc .focus-note{display:inline-flex;align-items:center;gap:6px}
+
   @media print{
     .facilbar,.toast-wrap,.inj-seal,.persona-modal{display:none !important}
+    body.focus-mode .ref-sec{display:block}
     body.has-bar{padding-top:0}
     .inj.sealed .inj-body{filter:none}
     .sheet-tools{display:none}
@@ -619,6 +628,7 @@
     <span class="dot"></span><span class="pl" id="personaLabel">Take your seat</span>
   </button>
   <div class="fb-btns">
+    <button class="fb-btn" id="btnFocus" aria-pressed="false" title="Focus view — hide reference sections so teams stay on task"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M3 12a9 9 0 0118 0 9 9 0 01-18 0z"/></svg><span id="btnFocusLabel">Focus</span></button>
     <button class="fb-btn primary" id="btnStart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 4l14 8-14 8z"/></svg><span id="btnStartLabel">Start</span></button>
     <button class="fb-btn warn icon" id="btnSkip" title="Jump to next phase" aria-label="Jump to next phase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 4l10 8-10 8z"/><path d="M19 4v16"/></svg></button>
     <button class="fb-btn ghost icon" id="btnSound" aria-pressed="true" title="Toggle chimes" aria-label="Toggle chimes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 010 6"/></svg></button>
@@ -701,6 +711,7 @@
     <a href="#scenario">Scenario</a><a href="#templates">Templates</a><a href="#example">Example</a>
     <a href="#scoring">Scoring</a><a href="#rubric">Rubric</a><a href="#debrief">Debrief</a>
     <a href="#cheatsheet">Cheat sheet</a><a href="#facilitator">Facilitator</a>
+    <span class="focus-note">Focus view · reference sections hidden</span>
   </nav>
 
 
@@ -2174,10 +2185,33 @@
   personaModal.addEventListener("click", function(e){ if(e.target===personaModal) closePersona(); });
   document.addEventListener("keydown", function(e){ if(e.key==="Escape" && !personaModal.hidden) closePersona(); });
 
+  // ---------- focus / play view (hide reference sections during the hour) ----------
+  // "live" sections stay; everything else is reference that teams don't need mid-hour.
+  var LIVE_SECTIONS = { board:1, goal:1, start:1, play:1, injections:1, scenario:1 };
+  $$(".sec").forEach(function(sec){ if(sec.id && !LIVE_SECTIONS[sec.id]) sec.classList.add("ref-sec"); });
+  $$(".toc a").forEach(function(a){ var id=(a.getAttribute("href")||"").replace("#",""); if(id && !LIVE_SECTIONS[id]) a.classList.add("ref-link"); });
+  var focusBtn=$("#btnFocus"), focusLabel=$("#btnFocusLabel"), focusOn=false;
+  try{ focusOn = localStorage.getItem("ztds.focus")==="1"; }catch(e){}
+  function applyFocus(){
+    document.body.classList.toggle("focus-mode", focusOn);
+    focusBtn.classList.toggle("on", focusOn);
+    focusBtn.setAttribute("aria-pressed", focusOn?"true":"false");
+    focusLabel.textContent = focusOn ? "Show all" : "Focus";
+    focusBtn.title = focusOn ? "Show all sections" : "Focus view — hide reference sections so teams stay on task";
+  }
+  focusBtn.addEventListener("click", function(){
+    focusOn=!focusOn; try{ localStorage.setItem("ztds.focus", focusOn?"1":"0"); }catch(e){}
+    applyFocus();
+    toast(focusOn?"Focus view on":"Full view",
+      focusOn ? "Reference sections hidden — showing only what teams need during the hour (board, goal, start, play, injections, scenario)."
+              : "All sections visible again.", "phase");
+  });
+
   // ---------- boot ----------
   load();
   render();
   applyPersona();
+  applyFocus();
   var seen=false; try{ seen=localStorage.getItem("ztds.personaSeen")==="1"; }catch(e){}
   if(!persona && !seen) openPersona();
   if(running){ lastTs=Date.now(); ticker=setInterval(tick,250); }
