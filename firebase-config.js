@@ -39,10 +39,10 @@
    hiding these values.
    ========================================================================== */
 window.FIREBASE_CONFIG = {
-  apiKey: "PASTE_API_KEY",
-  authDomain: "PASTE_PROJECT.firebaseapp.com",
-  projectId: "PASTE_PROJECT_ID",
-  storageBucket: "PASTE_PROJECT.appspot.com",
-  messagingSenderId: "PASTE_SENDER_ID",
-  appId: "PASTE_APP_ID"
+  apiKey: "AIzaSyBttVNwx0VOhTiMgMF6EAxn-f9X6au2CaA",
+  authDomain: "design-clinic-58ad0.firebaseapp.com",
+  projectId: "design-clinic-58ad0",
+  storageBucket: "design-clinic-58ad0.firebasestorage.app",
+  messagingSenderId: "278404586451",
+  appId: "1:278404586451:web:459afeba6085107d712d26"
 };
