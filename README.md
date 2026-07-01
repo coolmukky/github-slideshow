@@ -7,7 +7,7 @@ An interactive playbook for running the **Zero Trust Agentic Design Sprint** des
 **Pages**
 
 - ➡️ **[Participant page — `zero-trust-design-sprint.html`](./zero-trust-design-sprint.html)** — the playbook each participant opens (served at `/zero-trust-design-sprint.html`).
-- 👁️ **[Proctor roster — `proctor.html`](./proctor.html)** — live view of all teams and members as they join.
+- 👁️ **[Proctor roster — `proctor.html`](./proctor.html)** — live view of all teams and members as they join, with per-role counts, team-completeness flags, a search filter, **CSV export**, and a printable **participant report** (PDF-ready). Scales comfortably to ~300 participants.
 
 **Live cross-device roster (optional setup)**
 
