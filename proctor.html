@@ -50,6 +50,23 @@
   .notice{margin:12px 0 0;padding:11px 14px;border-radius:11px;font-size:13px;border:1px solid #F0CE97;background:#FBEBD3;color:#8a560f}
   .notice b{color:#6e440a}
 
+  .bar .filter{display:inline-flex;align-items:center;gap:6px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-soft)}
+  .bar .filter input{border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-family:"IBM Plex Sans",sans-serif;font-size:13px;width:190px;outline:none}
+  .bar .filter input:focus{border-color:var(--cyan-deep);box-shadow:0 0 0 3px rgba(15,169,190,.12)}
+
+  .summary{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0 0}
+  .summary .lbl{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-right:2px}
+  .summary .pill{font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:600;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:20px;padding:4px 11px;display:inline-flex;align-items:center;gap:6px}
+  .summary .pill .sw{width:9px;height:9px;border-radius:50%}
+  .summary .pill.ok{background:var(--green);border-color:var(--green);color:#fff}
+  .summary .pill.warn{background:#FBEBD3;border-color:#F0CE97;color:#8a560f}
+  .showing{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-faint);margin:12px 0 -6px}
+
+  .team.incomplete{border-top-color:var(--amber)}
+  .miss{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:#8a560f;background:#FBEBD3;border-top:1px dashed #F0CE97;padding:7px 16px}
+  .miss b{color:#6e440a}
+  .team-h .cnt.ok{background:var(--green)}
+
   .teams{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin:18px 0 40px}
   .team{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;border-top:4px solid var(--cyan)}
   .team-h{padding:14px 16px;border-bottom:1px solid var(--line-soft);display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -91,13 +108,17 @@
   <div class="bar">
     <span class="status" id="status"><span class="dot"></span><span id="statusText">Connecting…</span></span>
     <span class="room">room:&nbsp;<input id="roomInput" type="text" spellcheck="false"><button class="btn" id="roomGo">Switch</button></span>
+    <span class="filter">🔎&nbsp;<input id="filterInput" type="text" placeholder="Filter name / email / team / role" spellcheck="false"></span>
     <span class="spacer"></span>
     <button class="btn" id="btnRefresh" title="Reload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4v6h6"/><path d="M4 10a8 8 0 113 8"/></svg>Reload</button>
-    <button class="btn primary" id="btnCsv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M5 21h14"/></svg>Export CSV</button>
+    <button class="btn" id="btnCsv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M5 21h14"/></svg>Export CSV</button>
+    <button class="btn primary" id="btnReport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 3h9l5 5v13H6z"/><path d="M14 3v6h6"/><path d="M9 13h7M9 17h7"/></svg>Report</button>
   </div>
   <div class="notice" id="localNotice" hidden>
     <b>Single-device mode.</b> Firebase isn't configured, so this roster only shows people who joined <b>on this device/browser</b>. To see every participant's device live, fill in <code>firebase-config.js</code> (setup steps are in that file).
   </div>
+  <div class="summary" id="summary" hidden></div>
+  <div class="showing" id="showing" hidden></div>
 
   <div class="teams" id="teams"></div>
   <div class="empty" id="empty" hidden>
@@ -125,31 +146,63 @@
   function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
   function fmtTime(ms){ if(!ms) return ""; var d=new Date(ms); var h=d.getHours(), m=d.getMinutes(); return (h<10?"0":"")+h+":"+(m<10?"0":"")+m; }
 
-  function render(players){
-    latest = players || [];
-    // group by team name (case-insensitive), preserve first-seen display name
-    var groups = {}, order = [];
-    latest.forEach(function(p){
-      var tn = (p.teamName||"(no team)").trim() || "(no team)";
-      var key = tn.toLowerCase();
-      if(!groups[key]){ groups[key] = { name: tn, members: [] }; order.push(key); }
+  var CORE_ROLES = ["conductor","critic","architect","scribe"];
+  var ROLE_LABELS = { conductor:"Conductor", critic:"Critic", architect:"Architect", scribe:"Scribe", facilitator:"Facilitator" };
+  var filterText = "";
+
+  function groupBy(players){
+    var groups={}, order=[];
+    players.forEach(function(p){
+      var tn=(p.teamName||"(no team)").trim()||"(no team)";
+      var key=tn.toLowerCase();
+      if(!groups[key]){ groups[key]={name:tn,members:[]}; order.push(key); }
       groups[key].members.push(p);
     });
     order.sort(function(a,b){ return groups[a].name.localeCompare(groups[b].name); });
+    return { groups:groups, order:order };
+  }
+  function rolesPresent(members){ var s={}; members.forEach(function(m){ if(m.roleKey) s[m.roleKey]=true; }); return s; }
+  function isComplete(members){ var s=rolesPresent(members); return CORE_ROLES.every(function(r){ return s[r]; }); }
+  function sortMembers(members){ members.sort(function(a,b){ var oa=ROLE_ORDER[a.roleKey]!=null?ROLE_ORDER[a.roleKey]:9, ob=ROLE_ORDER[b.roleKey]!=null?ROLE_ORDER[b.roleKey]:9; return oa-ob || (a.joinedAt||0)-(b.joinedAt||0); }); return members; }
+  function matches(p,q){ if(!q) return true; return [p.name,p.email,p.teamName,p.role].some(function(v){ return String(v||"").toLowerCase().indexOf(q)>=0; }); }
 
-    $("#statTeams").textContent = order.length;
+  function render(players){
+    latest = players || [];
+    var all = groupBy(latest);
+    var completeCount = all.order.filter(function(k){ return isComplete(all.groups[k].members); }).length;
+    var roleCounts = {}; latest.forEach(function(p){ roleCounts[p.roleKey]=(roleCounts[p.roleKey]||0)+1; });
+
+    $("#statTeams").textContent = all.order.length;
     $("#statPlayers").textContent = latest.length;
 
+    var summary = $("#summary");
+    if(latest.length){
+      summary.hidden=false;
+      var pills = '<span class="lbl">By role</span>';
+      ["conductor","critic","architect","scribe","facilitator"].forEach(function(rk){
+        pills += '<span class="pill"><span class="sw" style="background:'+ROLE_COLORS[rk]+'"></span>'+ROLE_LABELS[rk]+' '+(roleCounts[rk]||0)+'</span>';
+      });
+      pills += '<span class="pill '+(completeCount===all.order.length&&all.order.length?'ok':'warn')+'">'+completeCount+' / '+all.order.length+' teams complete</span>';
+      summary.innerHTML = pills;
+    } else { summary.hidden=true; }
+
+    var q = filterText.trim().toLowerCase();
+    var shown = latest.filter(function(p){ return matches(p,q); });
+    var showingEl = $("#showing");
+    if(q){ showingEl.hidden=false; showingEl.textContent = "Showing "+shown.length+" of "+latest.length+" participants matching “"+filterText.trim()+"”"; }
+    else { showingEl.hidden=true; }
+
+    var disp = groupBy(shown);
     var teamsEl = $("#teams");
     if(!latest.length){ teamsEl.innerHTML=""; $("#empty").hidden=false; return; }
     $("#empty").hidden=true;
 
-    teamsEl.innerHTML = order.map(function(key){
-      var g = groups[key];
-      g.members.sort(function(a,b){
-        var oa = ROLE_ORDER[a.roleKey]!=null?ROLE_ORDER[a.roleKey]:9, ob = ROLE_ORDER[b.roleKey]!=null?ROLE_ORDER[b.roleKey]:9;
-        return oa-ob || (a.joinedAt||0)-(b.joinedAt||0);
-      });
+    teamsEl.innerHTML = disp.order.map(function(key){
+      var g = disp.groups[key];
+      sortMembers(g.members);
+      var teamComplete = isComplete(g.members);
+      var present = rolesPresent(g.members);
+      var missing = CORE_ROLES.filter(function(r){ return !present[r]; }).map(function(r){ return ROLE_LABELS[r]; });
       var rows = g.members.map(function(p){
         var col = ROLE_COLORS[p.roleKey] || "#7E8CA1";
         return '<div class="member">'+
@@ -158,7 +211,8 @@
           '<span class="jt">'+fmtTime(p.joinedAt)+'</span>'+
         '</div>';
       }).join("");
-      return '<div class="team"><div class="team-h"><h3>'+esc(g.name)+'</h3><span class="cnt">'+g.members.length+' member'+(g.members.length===1?"":"s")+'</span></div>'+rows+'</div>';
+      var missHtml = missing.length ? '<div class="miss">Missing: <b>'+missing.join(", ")+'</b></div>' : '';
+      return '<div class="team '+(teamComplete?"complete":"incomplete")+'"><div class="team-h"><h3>'+esc(g.name)+'</h3><span class="cnt'+(teamComplete?' ok':'')+'">'+g.members.length+' member'+(g.members.length===1?"":"s")+'</span></div>'+rows+missHtml+'</div>';
     }).join("");
   }
 
@@ -181,6 +235,64 @@
     location.search = "?room="+encodeURIComponent(v);
   });
   $("#roomInput").addEventListener("keydown", function(e){ if(e.key==="Enter") $("#roomGo").click(); });
+
+  // live filter
+  var fEl = $("#filterInput");
+  fEl.addEventListener("input", function(){ filterText = fEl.value||""; render(latest); });
+
+  // ---------- printable participant report ----------
+  function fmtDateTime(ms){ var d=new Date(ms); return d.toLocaleString(); }
+  function reportHtml(){
+    var all = groupBy(latest);
+    var roleCounts={}; latest.forEach(function(p){ roleCounts[p.roleKey]=(roleCounts[p.roleKey]||0)+1; });
+    var completeKeys = all.order.filter(function(k){ return isComplete(all.groups[k].members); });
+    var teamRows = all.order.map(function(key){
+      var g=all.groups[key]; sortMembers(g.members);
+      var present=rolesPresent(g.members);
+      var missing=CORE_ROLES.filter(function(r){ return !present[r]; }).map(function(r){ return ROLE_LABELS[r]; });
+      var mem = g.members.map(function(p){
+        return '<tr><td>'+esc(p.role||"—")+'</td><td>'+esc(p.name||"—")+'</td><td>'+esc(p.email||"")+'</td><td>'+fmtTime(p.joinedAt)+'</td></tr>';
+      }).join("");
+      return '<div class="rt"><h3>'+esc(g.name)+' <span class="'+(missing.length?"bad":"ok")+'">'+(missing.length?("incomplete — missing "+missing.join(", ")):"complete")+'</span></h3>'+
+        '<table class="mt"><thead><tr><th>Role</th><th>Name</th><th>Email</th><th>Joined</th></tr></thead><tbody>'+mem+'</tbody></table></div>';
+    }).join("");
+    var roleLine = ["conductor","critic","architect","scribe","facilitator"].map(function(rk){ return ROLE_LABELS[rk]+": <b>"+(roleCounts[rk]||0)+"</b>"; }).join(" &nbsp;·&nbsp; ");
+    return '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Participant Report — '+esc(ROOM)+'</title>'+
+      '<style>'+
+      'body{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#0E1A2B;margin:32px;line-height:1.5}'+
+      'h1{font-size:24px;margin:0 0 2px}h2{font-size:15px;margin:26px 0 10px;border-bottom:2px solid #0FA9BE;padding-bottom:5px}'+
+      '.meta{color:#46566E;font-size:13px;margin-bottom:18px}'+
+      '.cards{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 4px}'+
+      '.card{border:1px solid #CBD5E3;border-radius:10px;padding:10px 14px;min-width:90px}'+
+      '.card b{font-size:22px;display:block}.card small{color:#7E8CA1;font-size:11px;text-transform:uppercase;letter-spacing:.08em}'+
+      '.roles{font-size:13px;color:#46566E;margin:8px 0 4px}'+
+      '.rt{margin:14px 0;break-inside:avoid}.rt h3{font-size:15px;margin:0 0 6px}'+
+      '.rt h3 span{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;margin-left:8px}'+
+      '.ok{background:#D7F0E6;color:#1f8a63}.bad{background:#FBEBD3;color:#8a560f}'+
+      '.mt{border-collapse:collapse;width:100%;font-size:13px}'+
+      '.mt th{background:#122A47;color:#fff;text-align:left;padding:6px 9px;font-size:12px}'+
+      '.mt td{border-bottom:1px solid #E1E8F1;padding:6px 9px}'+
+      '.toolbar{margin-bottom:16px}.toolbar button{font-size:13px;padding:8px 14px;border:1px solid #122A47;background:#122A47;color:#fff;border-radius:8px;cursor:pointer}'+
+      '@media print{.toolbar{display:none}}'+
+      '</style></head><body>'+
+      '<div class="toolbar"><button onclick="window.print()">Print / Save as PDF</button></div>'+
+      '<h1>Zero Trust Agentic Design Sprint — Participant Report</h1>'+
+      '<div class="meta">Room: <b>'+esc(ROOM)+'</b> &nbsp;·&nbsp; Generated: '+esc(fmtDateTime(Date.now()))+'</div>'+
+      '<div class="cards">'+
+        '<div class="card"><b>'+latest.length+'</b><small>Participants</small></div>'+
+        '<div class="card"><b>'+all.order.length+'</b><small>Teams</small></div>'+
+        '<div class="card"><b>'+completeKeys.length+'</b><small>Complete teams</small></div>'+
+      '</div>'+
+      '<div class="roles">By role — '+roleLine+'</div>'+
+      '<h2>Teams &amp; members</h2>'+
+      (latest.length ? teamRows : '<p>No participants have joined yet.</p>')+
+      '</body></html>';
+  }
+  $("#btnReport").addEventListener("click", function(){
+    var w = window.open("", "_blank");
+    if(!w){ alert("Please allow pop-ups to open the participant report."); return; }
+    w.document.open(); w.document.write(reportHtml()); w.document.close();
+  });
 
   render([]);
   if(window.ZTDSRoster){
