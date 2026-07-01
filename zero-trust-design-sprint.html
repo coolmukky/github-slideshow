@@ -556,9 +556,20 @@
   .pm-card h2{font-size:26px;font-weight:700;margin:6px 0 8px}
   .pm-sub{font-size:13.5px;color:var(--ink-soft);margin-bottom:16px}
   .pm-sub b{color:var(--ink)}
-  .pm-name{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-family:"IBM Plex Sans",sans-serif;font-size:14px;color:var(--ink);margin-bottom:14px;outline:none}
-  .pm-name:focus{border-color:var(--cyan-deep);box-shadow:0 0 0 3px rgba(15,169,190,.12)}
+  .pm-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+  .pm-field{display:flex;flex-direction:column;gap:4px}
+  .pm-field.pm-wide{grid-column:1 / -1}
+  .pm-field span{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
+  .pm-field input{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-family:"IBM Plex Sans",sans-serif;font-size:14px;color:var(--ink);outline:none}
+  .pm-field input:focus{border-color:var(--cyan-deep);box-shadow:0 0 0 3px rgba(15,169,190,.12)}
+  .pm-field input.bad{border-color:var(--red);box-shadow:0 0 0 3px rgba(219,74,74,.12)}
+  .pm-error{font-size:12.5px;color:var(--red);background:var(--red-soft);border:1px solid #F0C4C4;border-radius:9px;padding:8px 11px;margin:4px 0 2px}
+  .pm-error[hidden]{display:none}
+  .pm-rolelbl{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:14px 0 8px}
   .pm-roles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .pm-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:14px}
+  .pm-proctor{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--cyan-deep);text-decoration:none;white-space:nowrap}
+  .pm-proctor:hover{text-decoration:underline}
   .pm-role{
     text-align:left;border:1.5px solid var(--line);border-radius:12px;padding:13px 14px;cursor:pointer;
     background:#fff;transition:border-color .15s,box-shadow .15s,transform .05s;border-top:4px solid var(--rc,var(--line));
@@ -568,7 +579,7 @@
   .pm-role.facil{grid-column:1 / -1}
   .pm-role b{font-family:"Chakra Petch",sans-serif;font-size:16px;display:block;color:var(--ink)}
   .pm-role span{font-size:12px;color:var(--ink-soft)}
-  .pm-skip{display:block;width:100%;margin-top:14px;border:none;background:transparent;color:var(--ink-faint);font-family:"IBM Plex Mono",monospace;font-size:12px;cursor:pointer;padding:6px}
+  .pm-skip{border:none;background:transparent;color:var(--ink-faint);font-family:"IBM Plex Mono",monospace;font-size:12px;cursor:pointer;padding:6px 0}
   .pm-skip:hover{color:var(--ink-soft);text-decoration:underline}
 
   /* persona highlights across the page */
@@ -622,10 +633,19 @@
     <button class="pm-close" id="pmClose" aria-label="Close">&times;</button>
     <div class="pm-eyebrow">Join the sprint</div>
     <h2 id="pmTitle">Take your seat</h2>
-    <p class="pm-sub">Open this on your own device and pick the role you're playing. Your view then highlights what <b>you</b> do in every phase, on the board, and in the journey grid. Switch any time from the bar at the top.</p>
-    <input class="pm-name" id="pmName" type="text" placeholder="Your name or initials (optional)" maxlength="40" autocomplete="off">
+    <p class="pm-sub">Enter your details, your <b>team name</b>, and the role you're playing. Your view highlights what <b>you</b> do in every phase — and your team appears live on the proctor's roster. Switch any time from the bar at the top.</p>
+    <div class="pm-fields">
+      <label class="pm-field"><span>Your name</span><input id="pmName" type="text" placeholder="e.g. Sam Rivera" maxlength="60" autocomplete="name"></label>
+      <label class="pm-field"><span>Email</span><input id="pmEmail" type="email" placeholder="you@company.com" maxlength="120" autocomplete="email"></label>
+      <label class="pm-field pm-wide"><span>Team name</span><input id="pmTeam" type="text" placeholder="e.g. Blue Team" maxlength="60" autocomplete="off"></label>
+    </div>
+    <div class="pm-error" id="pmError" hidden></div>
+    <div class="pm-rolelbl">Pick your role</div>
     <div class="pm-roles" id="pmRoles"></div>
-    <button class="pm-skip" id="pmSkip">I'm just watching — skip for now</button>
+    <div class="pm-foot">
+      <button class="pm-skip" id="pmSkip">I'm just watching — skip for now</button>
+      <a class="pm-proctor" id="pmProctorLink" href="proctor.html">Proctor? Open the live roster &rarr;</a>
+    </div>
   </div>
 </div>
 
@@ -1704,6 +1724,8 @@
 </div>
 
 <!-- ============ INTERACTIVE ENGINE ============ -->
+<script src="firebase-config.js"></script>
+<script src="roster.js"></script>
 <script>
 (function(){
   "use strict";
@@ -2042,9 +2064,25 @@
     scribe:{label:"The Scribe", short:"Scribe", color:"#27A276", chip:"scr", col:4, card:"The Scribe", tag:"Owns the write-up · leads Document"},
     facilitator:{label:"Facilitator / Observer", short:"Facilitator", color:"#7E8CA1", chip:null, col:0, card:null, tag:"Runs the session — not an in-game seat"}
   };
-  var personaModal=$("#personaModal"), personaLabel=$("#personaLabel"), pmRoles=$("#pmRoles"), pmName=$("#pmName");
+  var personaModal=$("#personaModal"), personaLabel=$("#personaLabel"), pmRoles=$("#pmRoles");
+  var pmName=$("#pmName"), pmEmail=$("#pmEmail"), pmTeam=$("#pmTeam"), pmError=$("#pmError");
   var persona=null;
   try{ persona=JSON.parse(localStorage.getItem("ztds.persona")||"null"); }catch(e){}
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+
+  // shared cross-device roster (Firebase if configured, else single-device fallback)
+  var ROOM=(new URLSearchParams(location.search)).get("room") || "default";
+  var roster=null, playerId=null;
+  try{ playerId=localStorage.getItem("ztds.playerId"); }catch(e){}
+  if(!playerId){ playerId="p-"+Math.random().toString(36).slice(2,10)+Date.now().toString(36); try{ localStorage.setItem("ztds.playerId",playerId); }catch(e){} }
+  function rosterRecord(p){ var r=ROLES[p.role]||{}; return { id:playerId, room:ROOM, name:p.name||"", email:p.email||"", role:r.short||"", roleKey:p.role, teamName:p.team||"", joinedAt:p.joinedAt||Date.now() }; }
+  if(window.ZTDSRoster){
+    window.ZTDSRoster.init(ROOM).then(function(a){
+      roster=a;
+      if(persona && persona.role && persona.role!=="facilitator" && persona.email && persona.team){ try{ roster.join(rosterRecord(persona)); }catch(e){} }
+    });
+  }
+  var pl=$("#pmProctorLink"); if(pl) pl.href="proctor.html"+(ROOM!=="default"?("?room="+encodeURIComponent(ROOM)):"");
 
   // build role buttons
   Object.keys(ROLES).forEach(function(key){
@@ -2101,14 +2139,34 @@
       $("#btnPersona").querySelector(".dot").style.background="#7E8CA1";
     }
   }
-  function openPersona(){ pmName.value = persona && persona.name ? persona.name : ""; personaModal.hidden=false; setTimeout(function(){ pmName.focus(); },50); }
+  function showPmError(m){ pmError.textContent=m; pmError.hidden=false; }
+  function hidePmError(){ pmError.hidden=true; }
+  function openPersona(){
+    pmName.value = persona&&persona.name ? persona.name : "";
+    pmEmail.value = persona&&persona.email ? persona.email : "";
+    pmTeam.value = persona&&persona.team ? persona.team : "";
+    hidePmError();
+    [pmName,pmEmail,pmTeam].forEach(function(el){ el.classList.remove("bad"); });
+    personaModal.hidden=false; setTimeout(function(){ pmName.focus(); },50);
+  }
   function closePersona(){ personaModal.hidden=true; try{ localStorage.setItem("ztds.personaSeen","1"); }catch(e){} }
   function choosePersona(key){
-    persona={ role:key, name:(pmName.value||"").trim() };
+    var name=(pmName.value||"").trim(), email=(pmEmail.value||"").trim(), team=(pmTeam.value||"").trim();
+    var r=ROLES[key];
+    [pmName,pmEmail,pmTeam].forEach(function(el){ el.classList.remove("bad"); });
+    if(key!=="facilitator"){
+      var missing=[];
+      if(!name){ pmName.classList.add("bad"); missing.push("your name"); }
+      if(!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ pmEmail.classList.add("bad"); missing.push("a valid email"); }
+      if(!team){ pmTeam.classList.add("bad"); missing.push("a team name"); }
+      if(missing.length){ showPmError("Please enter "+missing.join(", ")+" to join a team — or choose Facilitator / Observer to skip."); return; }
+    }
+    hidePmError();
+    persona={ role:key, name:name, email:email, team:team, joinedAt:Date.now() };
     try{ localStorage.setItem("ztds.persona", JSON.stringify(persona)); }catch(e){}
     applyPersona(); closePersona();
-    var r=ROLES[key];
-    toast("Seat taken", (persona.name?persona.name+", you":"You")+" are <b>"+r.label+"</b> — "+r.tag+".", "phase");
+    if(roster && key!=="facilitator"){ try{ roster.join(rosterRecord(persona)); }catch(e){} }
+    toast("Seat taken", (name?esc(name)+", you":"You")+" are <b>"+r.label+"</b>"+(team?" on <b>"+esc(team)+"</b>":"")+".", "phase");
   }
   $("#btnPersona").addEventListener("click", openPersona);
   $("#pmClose").addEventListener("click", closePersona);

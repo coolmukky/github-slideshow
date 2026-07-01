@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proctor · Live Roster — Zero Trust Agentic Design Sprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E9EEF5;--surface:#FFFFFF;--ink:#0E1A2B;--ink-soft:#46566E;--ink-faint:#7E8CA1;
+    --line:#CBD5E3;--line-soft:#E1E8F1;--navy:#122A47;--navy-deep:#0A1830;
+    --cyan:#0FA9BE;--cyan-deep:#0A7C8C;--amber:#E2891F;--red:#DB4A4A;--green:#27A276;
+    --shadow:0 1px 0 rgba(14,26,43,.04), 0 18px 40px -28px rgba(14,26,43,.55);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"IBM Plex Sans",system-ui,sans-serif;color:var(--ink);background:#F3F6FA;line-height:1.55;-webkit-font-smoothing:antialiased}
+  h1,h2,h3,h4{font-family:"Chakra Petch",sans-serif;margin:0;line-height:1.1}
+  .mono{font-family:"IBM Plex Mono",monospace}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+
+  .top{background:radial-gradient(120% 160% at 88% -20%,#1c3a5e 0%,var(--navy) 45%,var(--navy-deep) 100%);color:#EAF1F8;border-bottom:3px solid var(--cyan)}
+  .top-in{padding:26px 0 24px;display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:#7FE2EF}
+  .top h1{font-size:clamp(24px,4vw,38px);font-weight:700;color:#fff;margin:.28em 0 .1em}
+  .top .sub{color:#AEC4DC;font-size:14px}
+  .top .spacer{flex:1}
+  .stats{display:flex;gap:10px}
+  .stat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:11px;padding:8px 14px;min-width:78px;text-align:center}
+  .stat b{font-family:"Chakra Petch";font-size:24px;display:block;color:#fff;line-height:1}
+  .stat small{font-family:"IBM Plex Mono";font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#8FA8C4}
+
+  .bar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:18px 0 4px;padding:13px 16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+  .bar .status{display:inline-flex;align-items:center;gap:8px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-soft)}
+  .bar .status .dot{width:9px;height:9px;border-radius:50%;background:var(--ink-faint)}
+  .bar .status.live .dot{background:var(--green);box-shadow:0 0 0 3px rgba(39,162,118,.18);animation:pulse 1.4s infinite}
+  .bar .status.local .dot{background:var(--amber)}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .bar .room{display:inline-flex;align-items:center;gap:6px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-soft)}
+  .bar .room input{border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-family:"IBM Plex Mono",monospace;font-size:12px;width:130px;outline:none}
+  .bar .room input:focus{border-color:var(--cyan-deep);box-shadow:0 0 0 3px rgba(15,169,190,.12)}
+  .bar .spacer{flex:1}
+  .btn{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--ink);background:#F4F7FB;border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:background .15s,border-color .15s}
+  .btn:hover{background:#E8EEF6;border-color:var(--cyan)}
+  .btn.primary{background:var(--navy);border-color:var(--navy);color:#fff}
+  .btn.primary:hover{background:#1b3a5f}
+  .btn svg{width:14px;height:14px;stroke-width:2}
+
+  .notice{margin:12px 0 0;padding:11px 14px;border-radius:11px;font-size:13px;border:1px solid #F0CE97;background:#FBEBD3;color:#8a560f}
+  .notice b{color:#6e440a}
+
+  .teams{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin:18px 0 40px}
+  .team{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;border-top:4px solid var(--cyan)}
+  .team-h{padding:14px 16px;border-bottom:1px solid var(--line-soft);display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .team-h h3{font-size:17px}
+  .team-h .cnt{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;color:#fff;background:var(--navy);border-radius:20px;padding:3px 10px}
+  .member{display:flex;align-items:center;gap:11px;padding:11px 16px;border-bottom:1px dashed var(--line-soft)}
+  .member:last-child{border-bottom:none}
+  .member .rc{font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;border-radius:5px;padding:3px 7px;white-space:nowrap;min-width:74px;text-align:center}
+  .member .who{min-width:0;flex:1;display:flex;flex-direction:column;line-height:1.3}
+  .member .who .nm{font-size:14px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .member .who .em{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .member .jt{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-faint);white-space:nowrap}
+
+  .empty{margin:40px auto;max-width:520px;text-align:center;color:var(--ink-soft)}
+  .empty svg{width:46px;height:46px;color:var(--ink-faint);margin-bottom:12px}
+  .empty h3{font-size:18px;margin-bottom:6px;color:var(--ink)}
+  .empty code{font-family:"IBM Plex Mono",monospace;background:#EEF3F9;border:1px solid var(--line-soft);border-radius:6px;padding:2px 7px;font-size:12.5px}
+  .foot{margin:30px 0;color:var(--ink-faint);font-family:"IBM Plex Mono",monospace;font-size:11px;text-align:center}
+  .foot a{color:var(--cyan-deep)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-in">
+    <div>
+      <span class="eyebrow">Zero Trust Agentic Design Sprint · Facilitator</span>
+      <h1>Live Team Roster</h1>
+      <div class="sub">Everyone who has taken a seat, grouped by team — updates in real time.</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="stats">
+      <div class="stat"><b id="statTeams">0</b><small>Teams</small></div>
+      <div class="stat"><b id="statPlayers">0</b><small>Players</small></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="bar">
+    <span class="status" id="status"><span class="dot"></span><span id="statusText">Connecting…</span></span>
+    <span class="room">room:&nbsp;<input id="roomInput" type="text" spellcheck="false"><button class="btn" id="roomGo">Switch</button></span>
+    <span class="spacer"></span>
+    <button class="btn" id="btnRefresh" title="Reload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4v6h6"/><path d="M4 10a8 8 0 113 8"/></svg>Reload</button>
+    <button class="btn primary" id="btnCsv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M5 21h14"/></svg>Export CSV</button>
+  </div>
+  <div class="notice" id="localNotice" hidden>
+    <b>Single-device mode.</b> Firebase isn't configured, so this roster only shows people who joined <b>on this device/browser</b>. To see every participant's device live, fill in <code>firebase-config.js</code> (setup steps are in that file).
+  </div>
+
+  <div class="teams" id="teams"></div>
+  <div class="empty" id="empty" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/></svg>
+    <h3>No one has joined yet</h3>
+    <p>Share the participant page and ask each person to <b>Take your seat</b> (name, email, team). They'll appear here automatically.</p>
+  </div>
+
+  <div class="foot">Roster room: <b id="footRoom">default</b> · <a href="zero-trust-design-sprint.html">← Back to the participant page</a></div>
+</div>
+
+<script src="firebase-config.js"></script>
+<script src="roster.js"></script>
+<script>
+(function(){
+  "use strict";
+  var $ = function(s){ return document.querySelector(s); };
+  var ROLE_COLORS = { conductor:"#E2891F", critic:"#DB4A4A", architect:"#0FA9BE", scribe:"#27A276", facilitator:"#7E8CA1" };
+  var ROLE_ORDER = { conductor:0, critic:1, architect:2, scribe:3, facilitator:4 };
+  var ROOM = (new URLSearchParams(location.search)).get("room") || "default";
+  $("#roomInput").value = ROOM;
+  $("#footRoom").textContent = ROOM;
+  var latest = [];
+
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+  function fmtTime(ms){ if(!ms) return ""; var d=new Date(ms); var h=d.getHours(), m=d.getMinutes(); return (h<10?"0":"")+h+":"+(m<10?"0":"")+m; }
+
+  function render(players){
+    latest = players || [];
+    // group by team name (case-insensitive), preserve first-seen display name
+    var groups = {}, order = [];
+    latest.forEach(function(p){
+      var tn = (p.teamName||"(no team)").trim() || "(no team)";
+      var key = tn.toLowerCase();
+      if(!groups[key]){ groups[key] = { name: tn, members: [] }; order.push(key); }
+      groups[key].members.push(p);
+    });
+    order.sort(function(a,b){ return groups[a].name.localeCompare(groups[b].name); });
+
+    $("#statTeams").textContent = order.length;
+    $("#statPlayers").textContent = latest.length;
+
+    var teamsEl = $("#teams");
+    if(!latest.length){ teamsEl.innerHTML=""; $("#empty").hidden=false; return; }
+    $("#empty").hidden=true;
+
+    teamsEl.innerHTML = order.map(function(key){
+      var g = groups[key];
+      g.members.sort(function(a,b){
+        var oa = ROLE_ORDER[a.roleKey]!=null?ROLE_ORDER[a.roleKey]:9, ob = ROLE_ORDER[b.roleKey]!=null?ROLE_ORDER[b.roleKey]:9;
+        return oa-ob || (a.joinedAt||0)-(b.joinedAt||0);
+      });
+      var rows = g.members.map(function(p){
+        var col = ROLE_COLORS[p.roleKey] || "#7E8CA1";
+        return '<div class="member">'+
+          '<span class="rc" style="background:'+col+'">'+esc(p.role||"—")+'</span>'+
+          '<span class="who"><span class="nm">'+esc(p.name||"—")+'</span><span class="em">'+esc(p.email||"")+'</span></span>'+
+          '<span class="jt">'+fmtTime(p.joinedAt)+'</span>'+
+        '</div>';
+      }).join("");
+      return '<div class="team"><div class="team-h"><h3>'+esc(g.name)+'</h3><span class="cnt">'+g.members.length+' member'+(g.members.length===1?"":"s")+'</span></div>'+rows+'</div>';
+    }).join("");
+  }
+
+  function toCsv(){
+    var rows = [["Team","Name","Email","Role","Joined"]];
+    latest.slice().sort(function(a,b){ return (a.teamName||"").localeCompare(b.teamName||""); }).forEach(function(p){
+      rows.push([p.teamName||"", p.name||"", p.email||"", p.role||"", p.joinedAt?new Date(p.joinedAt).toISOString():""]);
+    });
+    return rows.map(function(r){ return r.map(function(c){ return '"'+String(c).replace(/"/g,'""')+'"'; }).join(","); }).join("\r\n");
+  }
+  $("#btnCsv").addEventListener("click", function(){
+    var blob = new Blob([toCsv()], {type:"text/csv"});
+    var a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+    a.download = "roster-"+ROOM+".csv"; document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); document.body.removeChild(a); }, 100);
+  });
+  $("#btnRefresh").addEventListener("click", function(){ location.reload(); });
+  $("#roomGo").addEventListener("click", function(){
+    var v = ($("#roomInput").value||"").trim() || "default";
+    location.search = "?room="+encodeURIComponent(v);
+  });
+  $("#roomInput").addEventListener("keydown", function(e){ if(e.key==="Enter") $("#roomGo").click(); });
+
+  render([]);
+  if(window.ZTDSRoster){
+    window.ZTDSRoster.init(ROOM).then(function(adapter){
+      var live = adapter.mode==="firebase";
+      $("#status").className = "status "+(live?"live":"local");
+      $("#statusText").textContent = live ? "Live · Firebase" : "Single-device (local)";
+      $("#localNotice").hidden = live;
+      adapter.subscribe(render);
+    });
+  } else {
+    $("#statusText").textContent = "Roster unavailable";
+  }
+})();
+</script>
+</body>
+</html>
