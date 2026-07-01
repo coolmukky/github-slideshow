@@ -18,6 +18,8 @@ Participants enter their **name, email, and team name** when they take a seat, a
 - Optional `?room=CODE` on both pages scopes a roster to one session (handy when running several clinics).
 - Note: the roster stores participant **emails (PII)** — use the provided Firestore rules and clear the data after your session.
 
+📋 **Full step-by-step setup, verification, and privacy checklist: [`SETUP.md`](./SETUP.md)**
+
 ---
 
 Welcome to **your** repository for your GitHub Learning Lab course. This repository will be used during the different activities that I will be guiding you through. See a word you don't understand? We've included an emoji 📖 next to some key terms. Click on it to see its definition.
