@@ -114,12 +114,12 @@ Troubleshooting:
 
 - **Multiple rooms/cohorts:** add `?room=CODE` to *both* page URLs to scope a roster to one
   session, e.g. `…/proctor.html?room=june-cohort` and `…/zero-trust-design-sprint.html?room=june-cohort`.
-- **Opening the event:** on `proctor.html`, press **Open event**. Until then, participants see a
-  "Waiting for the proctor…" screen. Once open, each team's own 60-minute clock starts when that
-  team takes their seats — so teams can begin at their own pace, and each team's phases and
-  injection reveals run off their own clock. The proctor roster shows every team's time remaining.
-  Press **Close event** to stop new teams from starting. *(If no proctor opens an event, a
-  participant page falls back to a local self-run timer.)*
+- **Two-phase start:** on `proctor.html`, press **Open for login** — participants (who until then
+  see a "Waiting for the proctor…" screen) can now take their seats and sit in a **lobby** at
+  00:00. The proctor shows a readiness readout ("N logged in · T teams · K/T complete"). When
+  everyone's in, press **Start clock** to begin the **single 60-minute clock for all teams at
+  once**. **Pause/Resume** holds the room; **Reset** returns everyone to the lobby. *(If no proctor
+  opens an event, a participant page falls back to a local self-run timer.)*
 - **Reports:** on `proctor.html`, use **Export CSV** for raw data or **Report** for a printable
   (PDF-ready) participant summary with per-team completeness. Scales to ~300 participants.
 - **Scoring & leaderboard:** teams click **Submit for scoring** on the participant page (after

@@ -20,20 +20,19 @@ the in-session phase/time cues live on the participant page itself.)
 - [ ] Share the **participant** link / QR with the room.
 - [ ] Decide team names in advance (or let each table choose one) so people group correctly.
 
-## As people arrive (5 min)
+## Logging everyone in (5 min)
 
-- [ ] Participants who open the link **before you open the event** see a **"Waiting for the proctor…"** screen — that's expected.
-- [ ] When ready, on **`proctor.html`** press **Open event**. Everyone's waiting screen clears and they're prompted to take their seat.
-- [ ] Each person clicks **Take your seat**: name, email, **team name**, role. **The team's own 60-minute clock starts the moment the first teammate registers** — so a team begins when *they* are ready; teammates who join after start on the same running clock.
-- [ ] Watch teams appear on your **proctor** screen, grouped by team, each showing a live **⏱ time-left** clock. Use the **summary** to spot gaps (each team should show **4/4 roles**).
+- [ ] Participants who open the link **before you open registration** see a **"Waiting for the proctor…"** screen — that's expected.
+- [ ] On **`proctor.html`** press **Open for login**. Everyone's waiting screen clears and they're prompted to take their seat.
+- [ ] Each person clicks **Take your seat**: name, email, **team name**, role — then they sit in a **lobby** (clock at 00:00) until you start it.
+- [ ] Watch the proctor **Event control** readout fill in: **"N logged in · T teams · K/T complete (4 roles)."** Nudge teams to fill missing roles.
 
-## Running the hour (per-team 60 min)
+## Starting the clock
 
-- [ ] *(Optional)* Ask teams to press **Focus** in their control bar to hide reference sections — cuts on-page reading ~in half. Toggle **Show all** anytime.
-- [ ] Each team's board, phases, and **injection reveals (24/38/50 min)** run off **their own** clock — teams that started later reach each phase later. The proctor roster shows every team's remaining time.
-- [ ] The in-game **Conductor** on each team keeps their table on pace; you float between tables.
-- [ ] Participants' local Start/Pause is **locked** while the event is open — the clock is automatic per team.
-- [ ] Press **Close event** when you want to stop new teams from starting (teams already running keep their clocks). Keep the **proctor** tab open to watch the roster and clocks throughout.
+- [ ] When everyone's in, press **Start clock** on the proctor. This starts the **single 60-minute clock for all teams at once**; every participant's board begins Phase 0 together.
+- [ ] *(Optional)* Ask teams to press **Focus** to hide reference sections — cuts on-page reading ~in half.
+- [ ] Boards, phases, and **injection reveals (24/38/50 min)** run off the shared clock; participants get **5-min and 1-min** warnings automatically. Participants' local Start/Pause is **locked**.
+- [ ] Use **Pause / Resume** on the proctor to hold the whole room; **Reset** sends everyone back to the lobby at 00:00. Keep the proctor tab open to watch the roster throughout.
 
 ## After the clock (10 min)
 
