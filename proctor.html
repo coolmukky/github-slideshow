@@ -188,9 +188,10 @@
 
   <div class="control" id="control">
     <div class="ctl-clock"><span class="ctl-time" id="ctlTime">CLOSED</span></div>
-    <div class="ctl-phase"><span class="ctl-pname" id="ctlPhase">Event not started</span><span class="ctl-status" id="ctlStatus">Press “Open event” — each team then starts their own 60 minutes when they take their seats</span></div>
+    <div class="ctl-phase"><span class="ctl-pname" id="ctlPhase">Event not started</span><span class="ctl-status" id="ctlStatus">Press “Open for login” — players register, then you start the clock for everyone</span></div>
     <div class="ctl-btns">
-      <button class="btn primary" id="ctlStart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12l5 5L20 7"/></svg><span id="ctlStartLabel">Open event</span></button>
+      <button class="btn primary" id="ctlStart"><span id="ctlStartLabel">Open for login</span></button>
+      <button class="btn" id="ctlReset" hidden>Reset</button>
     </div>
   </div>
 
@@ -350,10 +351,9 @@
       } else {
         footer = '<div class="score-row muted">No solution submitted yet</div>';
       }
-      var clockLine = '<div class="clock-row"><span class="tclock idle" data-teamclock="'+esc(tk)+'">clock not started</span></div>';
-      return '<div class="team '+(teamComplete?"complete":"incomplete")+'"><div class="team-h"><h3>'+esc(g.name)+'</h3><span class="cnt'+(teamComplete?' ok':'')+'">'+g.members.length+' member'+(g.members.length===1?"":"s")+'</span></div>'+clockLine+rows+missHtml+footer+'</div>';
+      return '<div class="team '+(teamComplete?"complete":"incomplete")+'"><div class="team-h"><h3>'+esc(g.name)+'</h3><span class="cnt'+(teamComplete?' ok':'')+'">'+g.members.length+' member'+(g.members.length===1?"":"s")+'</span></div>'+rows+missHtml+footer+'</div>';
     }).join("");
-    renderControl(); // refresh per-team clock spans right after rebuild
+    renderControl(); // refresh lobby readiness counts after roster rebuild
   }
 
   function toCsv(){
@@ -494,38 +494,46 @@
     if(btn) openEval(btn.getAttribute("data-eval"));
   });
 
-  // ---------- event control: proctor opens the event; each team runs its own clock ----------
-  var TOTAL=3600, eventDoc=null, teamClocks={}, controlEl=$("#control"), armedOnce=false;
+  // ---------- event control: open for login, then one global clock for everyone ----------
+  var TOTAL=3600, eventDoc=null, controlEl=$("#control"), armedOnce=false;
+  var PHASES=[{no:"PHASE 0",name:"Brief-In",end:8,color:"#E2891F"},{no:"PHASE 1",name:"Expose",end:20,color:"#DB4A4A"},{no:"PHASE 2",name:"Decide",end:33,color:"#0FA9BE"},{no:"PHASE 3",name:"Design",end:48,color:"#2a6fb0"},{no:"PHASE 4",name:"Document",end:56,color:"#27A276"},{no:"PHASE 5",name:"Submit",end:60,color:"#122A47"}];
   function fmtClock(s){ s=Math.max(0,Math.round(s)); var m=Math.floor(s/60),ss=s%60; return (m<10?"0":"")+m+":"+(ss<10?"0":"")+ss; }
-  function isOpen(){ return !!(eventDoc && eventDoc.status==="open"); }
-  function teamRemaining(tk){ var t=teamClocks[tk]; if(!t||!t.startedAt) return null; return Math.max(0, TOTAL-(Date.now()-t.startedAt)/1000); }
+  function evStat(){ return eventDoc ? (eventDoc.status||"closed") : "closed"; }
+  function evElapsed(){ var s=evStat(); if(s==="running") return Math.min(TOTAL,(eventDoc.baseElapsedSec||0)+(Date.now()-(eventDoc.startedAtMs||Date.now()))/1000); if(s==="paused") return Math.min(TOTAL,eventDoc.baseElapsedSec||0); return 0; }
+  function phaseAt(e){ if(e>=TOTAL) return null; for(var i=0;i<PHASES.length;i++){ if(e<PHASES[i].end*60) return PHASES[i]; } return PHASES[PHASES.length-1]; }
+  function readiness(){ var g=groupBy(latest); var complete=g.order.filter(function(k){ return isComplete(g.groups[k].members); }).length; return { players:latest.length, teams:g.order.length, complete:complete }; }
   function renderControl(){
-    var open=isOpen(), started=Object.keys(teamClocks).length;
-    controlEl.classList.toggle("open", open);
-    $("#ctlTime").textContent = open ? "OPEN" : "CLOSED";
-    $("#ctlStartLabel").textContent = open ? "Close event" : "Open event";
-    $("#ctlStart").className = open ? "btn warn" : "btn primary";
-    $("#ctlPhase").textContent = open ? "Event is open" : "Event not started";
-    $("#ctlStatus").textContent = open
-      ? ("Opened "+fmtTime(eventDoc.openedAt)+" · "+started+" team"+(started===1?"":"s")+" started their clock")
-      : "Press “Open event” — each team then starts their own 60 minutes when they take their seats";
-    // per-team clocks on roster cards
-    var spans=document.querySelectorAll("[data-teamclock]");
-    for(var i=0;i<spans.length;i++){
-      var el=spans[i], tk=el.getAttribute("data-teamclock"), rem=teamRemaining(tk);
-      if(rem==null){ el.textContent="clock not started"; el.className="tclock idle"; }
-      else if(rem<=0){ el.textContent="⏱ time up"; el.className="tclock up"; }
-      else { el.textContent="⏱ "+fmtClock(rem)+" left"; el.className="tclock"+(rem<300?" low":""); }
+    var s=evStat(), e=evElapsed(), ph=phaseAt(e), running=(s==="running"||s==="paused");
+    controlEl.classList.toggle("open", s!=="closed");
+    controlEl.style.setProperty("--pc", running?(e>=TOTAL?"#122A47":(ph?ph.color:"#0FA9BE")):"#0FA9BE");
+    var lbl=$("#ctlStartLabel"), sb=$("#ctlStart"), rb=$("#ctlReset");
+    if(s==="closed"){ $("#ctlTime").textContent="CLOSED"; lbl.textContent="Open for login"; sb.className="btn primary"; rb.hidden=true;
+      $("#ctlPhase").textContent="Event not started"; $("#ctlStatus").textContent="Press “Open for login” — players register, then you start the clock for everyone"; }
+    else if(s==="login"){ var r=readiness(); $("#ctlTime").textContent="LOBBY"; lbl.textContent="Start clock"; sb.className="btn primary"; rb.hidden=false; rb.textContent="Close";
+      $("#ctlPhase").textContent="Registration open — lobby"; $("#ctlStatus").textContent=r.players+" logged in · "+r.teams+" teams · "+r.complete+"/"+r.teams+" complete (4 roles) — press “Start clock” when ready"; }
+    else { // running or paused
+      $("#ctlTime").textContent=fmtClock(e); lbl.textContent = s==="running"?"Pause":"Resume"; sb.className = s==="running"?"btn warn":"btn primary"; rb.hidden=false; rb.textContent="Reset";
+      if(e>=TOTAL){ $("#ctlPhase").textContent="Time — hands off"; $("#ctlStatus").textContent="60 minutes elapsed"; }
+      else { $("#ctlPhase").textContent=ph.no+" · "+ph.name; $("#ctlStatus").textContent=(s==="paused"?"Paused · ":"Running · ")+fmtClock(ph.end*60-e)+" left in phase"; }
     }
   }
-  function writeEvent(status){
+  function writeEvent(patch){
     if(!adapterRef){ alert("Not connected yet — try again in a moment."); return; }
-    var doc={ id:ROOM, room:ROOM, kind:"event", status:status, openedAt: status==="open" ? Date.now() : ((eventDoc&&eventDoc.openedAt)||Date.now()), updatedAt:Date.now() };
+    var base=eventDoc||{ id:ROOM, room:ROOM };
+    var doc=Object.assign({}, base, patch, { id:ROOM, room:ROOM, kind:"event", updatedAt:Date.now() });
     eventDoc=doc; try{ adapterRef.write("control", doc); }catch(e){} renderControl();
   }
   $("#ctlStart").addEventListener("click", function(){
-    if(!isOpen()){ if(!confirm("Open the event now?\n\nTeams will be able to take their seats, and each team's own 60-minute clock starts when they register.")) return; writeEvent("open"); }
-    else { if(!confirm("Close the event?\n\nTeams that haven't started yet won't be able to begin. Teams already running keep their clocks.")) return; writeEvent("closed"); }
+    var s=evStat(), now=Date.now();
+    if(s==="closed"){ if(!confirm("Open registration now? Players can take their seats; the clock stays at 00:00 until you start it.")) return; writeEvent({status:"login", openedAt:now}); }
+    else if(s==="login"){ var r=readiness(); if(!confirm("Start the 60-minute clock now for ALL "+r.players+" players / "+r.teams+" teams?\n\n"+r.complete+" of "+r.teams+" teams have all 4 roles.")) return; writeEvent({status:"running", runId:now, startedAtMs:now, baseElapsedSec:0}); }
+    else if(s==="running"){ var base=(eventDoc.baseElapsedSec||0)+(now-(eventDoc.startedAtMs||now))/1000; writeEvent({status:"paused", baseElapsedSec:base}); }
+    else { writeEvent({status:"running", startedAtMs:now}); }
+  });
+  $("#ctlReset").addEventListener("click", function(){
+    var s=evStat();
+    if(s==="login"){ if(!confirm("Close the event back to the waiting screen? Players will wait again.")) return; writeEvent({status:"closed"}); }
+    else { if(!confirm("Reset the clock to 00:00 and send everyone back to the lobby?")) return; writeEvent({status:"login", runId:0, startedAtMs:0, baseElapsedSec:0}); }
   });
   setInterval(renderControl,250); renderControl();
 
@@ -542,8 +550,7 @@
       adapter.watch("scores", ROOM, function(d){ scores={}; (d||[]).forEach(function(s){ scores[tkey(s.teamName)]=s; }); render(); });
       adapter.watch("control", ROOM, function(d){
         var docs=d||[]; eventDoc=docs.filter(function(x){ return x.id===ROOM; })[0]||null;
-        teamClocks={}; docs.forEach(function(x){ if(x.kind==="team" || (x.id&&x.id!==ROOM&&x.id.indexOf("__")>=0)) teamClocks[tkey(x.teamName)]=x; });
-        if(!eventDoc && !armedOnce){ armedOnce=true; writeEvent("closed"); } // arm the room so participants wait for "Open event"
+        if(!eventDoc && !armedOnce){ armedOnce=true; writeEvent({status:"closed"}); } // arm the room so participants wait
         renderControl();
       });
     });

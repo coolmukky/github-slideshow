@@ -661,7 +661,7 @@
     <div class="wo-spin" aria-hidden="true"></div>
     <div class="pm-eyebrow">Event not started</div>
     <h2>Waiting for the proctor…</h2>
-    <p>The proctor hasn't opened the event yet. When they do, you'll see an <b>“Event opened”</b> message and be prompted to enter your team details — your team's 60 minutes begin the moment you take your seat.</p>
+    <p>The proctor hasn't opened registration yet. When they do, you'll be prompted to <b>take your seat</b> (name, email, team, role). Everyone logs in first — then the proctor starts the clock and all teams' 60 minutes begin together.</p>
   </div>
 </div>
 
@@ -1842,68 +1842,64 @@
     if(elapsed>=TOTAL-300) fired["nudge5"]=true; if(elapsed>=TOTAL-60) fired["nudge1"]=true;
   }
   function primeFiredUpTo(e){ fired={}; CUES.forEach(function(c,i){ if(e>=c.sec) fired["cue"+i]=true; }); INJ.forEach(function(j,i){ if(e>=j.sec) fired["inj"+i]=true; }); if(e>=TOTAL-300) fired["nudge5"]=true; if(e>=TOTAL-60) fired["nudge1"]=true; }
-  // uncapped overtime (seconds past 60:00) for the team's running clock
-  function overtimeSec(){ if(managed && teamStartedAt){ return Math.max(0, Math.round((Date.now()-teamStartedAt)/1000 - TOTAL)); } return 0; }
-
-  // ---------- proctor-opened event + per-team clock ----------
-  // The proctor "opens" the event (control doc id=ROOM, status "open"). Each team's own
-  // 60 minutes starts when that team registers (control doc id=ROOM__<teamKey>, startedAt).
+  // ---------- proctor-run event: login phase, then one global clock ----------
+  // Control doc (id=ROOM) status: "closed" (armed, waiting) -> "login" (registration open,
+  // no clock yet) -> "running" (global 60-min clock from startedAtMs) -> "paused".
   // While an event exists (managed), the participant's local timer buttons are locked.
-  var managed=false, eventOpen=false, prevEventOpen=false, teamStartedAt=null, evTicker=null, lastControlDocs=[];
-  function myTeamKey(){ return persona && persona.team ? persona.team.trim().toLowerCase() : null; }
-  function computeManagedElapsed(){
-    if(!managed || !eventOpen || !teamStartedAt) return 0;
-    return Math.min(TOTAL, (Date.now()-teamStartedAt)/1000);
+  var managed=false, evStatus="closed", startedAtMs=0, baseElapsedSec=0, primedForRun=null, evTicker=null, lastControlDocs=[], eventDoc=null;
+  function evElapsed(){
+    if(evStatus==="running") return Math.min(TOTAL, (baseElapsedSec||0)+(Date.now()-(startedAtMs||Date.now()))/1000);
+    if(evStatus==="paused") return Math.min(TOTAL, baseElapsedSec||0);
+    return 0; // closed / login
+  }
+  function overtimeSec(){
+    if(managed && (evStatus==="running"||evStatus==="paused")){
+      var t=(evStatus==="running") ? (baseElapsedSec+(Date.now()-startedAtMs)/1000) : baseElapsedSec;
+      return Math.max(0, Math.round(t-TOTAL));
+    }
+    return 0;
   }
   function updateManagedUI(){
     var b=$("#btnStart"), lbl=$("#btnStartLabel"), sk=$("#btnSkip"), rs=$("#btnReset"), ov=$("#waitOverlay");
     if(managed){
       b.disabled=true; sk.disabled=true; rs.disabled=true;
-      b.title=sk.title=rs.title="The proctor runs this event; your team clock starts when you take your seat";
-      lbl.textContent = !eventOpen ? "Waiting" : (teamStartedAt ? (computeManagedElapsed()<TOTAL?"Live":"Done") : "Take seat");
-      if(ov) ov.hidden = eventOpen;      // waiting overlay only while the event is closed
+      b.title=sk.title=rs.title="The proctor runs the clock for this event";
+      lbl.textContent = evStatus==="running"?"Live":(evStatus==="paused"?"Paused":(evStatus==="login"?"Lobby":"Waiting"));
+      if(ov) ov.hidden = (evStatus!=="closed");   // full waiting overlay only before registration opens
     } else {
       b.disabled=false; sk.disabled=false; rs.disabled=false;
       if(ov) ov.hidden = true;
     }
   }
   function managedTick(){
-    elapsed=computeManagedElapsed(); running=(managed && eventOpen && !!teamStartedAt && elapsed<TOTAL);
+    elapsed=evElapsed(); running=(evStatus==="running" && elapsed<TOTAL);
     render(); checkEvents(); updateManagedUI();
   }
   function applyControlDocs(docs){
     lastControlDocs = docs || [];
-    var ev = lastControlDocs.filter(function(x){ return x.id===ROOM; })[0] || null;
-    managed = !!ev; eventOpen = !!(ev && ev.status==="open");
-    var tk = myTeamKey();
-    var team = tk ? (lastControlDocs.filter(function(x){ return x.id===ROOM+"__"+tk; })[0] || null) : null;
-    var started = team ? team.startedAt : null;
-    if(started && started!==teamStartedAt){         // our team clock discovered / (re)started
-      teamStartedAt = started;
-      var e = Math.min(TOTAL,(Date.now()-teamStartedAt)/1000);
-      primeFiredUpTo(e); INJ.forEach(function(j){ j.manual=false; });
-      if(e<3){ toastWrap.innerHTML=""; toast("Your team clock started","60 minutes begin now — Phase 0 · Brief-In.","phase","00:00"); }
-    } else if(!started){ teamStartedAt=null; }
+    eventDoc = lastControlDocs.filter(function(x){ return x.id===ROOM; })[0] || null;
+    managed = !!eventDoc;
+    var prev = evStatus;
+    evStatus = eventDoc ? (eventDoc.status||"closed") : "closed";
+    startedAtMs = eventDoc ? (eventDoc.startedAtMs||0) : 0;
+    baseElapsedSec = eventDoc ? (eventDoc.baseElapsedSec||0) : 0;
     if(managed){
       if(ticker){ clearInterval(ticker); ticker=null; } // local timer yields to the event
       if(!evTicker) evTicker=setInterval(managedTick, 250);
-      if(eventOpen && !prevEventOpen){ toast("Event opened","The proctor opened the event — enter your team details to start your 60 minutes.","phase"); }
-      if(eventOpen && (!persona || !persona.role)) openPersona();
+      if(evStatus==="login" && prev==="closed"){ toast("Registration open","The proctor opened the event — take your seat. The clock starts once everyone's in.","phase"); }
+      if(evStatus==="login" && (!persona || !persona.role)) openPersona();
+      if(evStatus==="running"){
+        if(primedForRun !== eventDoc.runId){
+          var e=evElapsed(); primeFiredUpTo(e); INJ.forEach(function(j){ j.manual=false; });
+          if(e<3){ toastWrap.innerHTML=""; toast("Clock started","The proctor started the 60 minutes — Phase 0 · Brief-In begins now.","phase","00:00"); }
+          primedForRun = eventDoc.runId;
+        }
+      } else if((evStatus==="login"||evStatus==="closed") && (prev==="running"||prev==="paused")){
+        fired={}; INJ.forEach(function(j){ j.manual=false; }); toastWrap.innerHTML=""; primedForRun=null; // clock reset back to lobby
+      }
     }
-    prevEventOpen = eventOpen;
-    elapsed=computeManagedElapsed(); running=(managed && eventOpen && !!teamStartedAt && elapsed<TOTAL);
+    elapsed=evElapsed(); running=(evStatus==="running" && elapsed<TOTAL);
     updateManagedUI(); render(); checkEvents();
-  }
-  // start the team's clock (once) when a member takes their seat and the event is open
-  function ensureTeamClock(){
-    if(!roster || !managed || !eventOpen) return;
-    var tk = myTeamKey(); if(!tk) return;
-    if(lastControlDocs.some(function(x){ return x.id===ROOM+"__"+tk; })){ applyControlDocs(lastControlDocs); return; }
-    var doc={ id:ROOM+"__"+tk, room:ROOM, kind:"team", teamName:persona.team, startedAt:Date.now() };
-    try{ roster.write("control", doc); }catch(e){}
-    lastControlDocs.push(doc); teamStartedAt=doc.startedAt;
-    toastWrap.innerHTML=""; toast("Your team clock started","60 minutes begin now — Phase 0 · Brief-In.","phase","00:00");
-    updateManagedUI(); render();
   }
 
   // ---------- audio chimes ----------
@@ -1983,7 +1979,10 @@
     bar.style.setProperty("--pc", col);
 
     // bar phase text
-    if(elapsed>=TOTAL){
+    if(managed && (evStatus==="login"||evStatus==="closed")){
+      $("#barPhase").textContent = evStatus==="login" ? "Lobby" : "Waiting";
+      $("#barNext").textContent = evStatus==="login" ? "Logged in — waiting for the proctor to start the clock" : "Waiting for the proctor to open registration";
+    } else if(elapsed>=TOTAL){
       var ot=overtimeSec();
       $("#barPhase").textContent = ot>0 ? "Overtime" : "Time — hands off";
       $("#barNext").textContent = ot>0 ? ("+"+fmt(ot)+" over 60:00 · you can still submit (marked late)") : "Submit if you haven't · run the debrief";
@@ -2228,9 +2227,11 @@
       }
       if(!roster){ toast("Not connected yet","The scoring sync isn't ready — wait a moment and try again.","fire"); return; }
       var tk=teamKey(persona.team), when=Date.now();
-      // timing: total time on the team clock (uncapped), overtime past 60:00, late flag
-      var total = (managed && teamStartedAt) ? Math.round((when-teamStartedAt)/1000) : Math.round(elapsed);
-      total=Math.max(0,total); var over=Math.max(0,total-TOTAL), late=total>TOTAL;
+      // timing: total time on the clock (uncapped), overtime past 60:00, late flag
+      var total;
+      if(managed && (evStatus==="running"||evStatus==="paused")){ total = (baseElapsedSec||0) + (evStatus==="running" ? (when-startedAtMs)/1000 : 0); }
+      else { total = elapsed; }
+      total=Math.max(0,Math.round(total)); var over=Math.max(0,total-TOTAL), late=total>TOTAL;
       var doc={ id:ROOM+"__"+tk, room:ROOM, teamName:persona.team, submittedByName:persona.name||"", submittedAt:when,
                 totalTimeSec:total, overtimeSec:over, late:late, diagram: diagramDataUrl||"",
                 fields: inputs.map(function(x){ return { label:x.label, value:x.ta.value.trim() }; }) };
@@ -2349,14 +2350,15 @@
       if(!team){ pmTeam.classList.add("bad"); missing.push("a team name"); }
       if(missing.length){ showPmError("Please enter "+missing.join(", ")+" to join a team — or choose Facilitator / Observer to skip."); return; }
     }
-    if(managed && !eventOpen && key!=="facilitator"){ showPmError("The proctor hasn't opened the event yet — please wait for the “Event opened” message, then take your seat."); return; }
+    if(managed && evStatus==="closed" && key!=="facilitator"){ showPmError("The proctor hasn't opened registration yet — please wait for the “Registration open” message, then take your seat."); return; }
     hidePmError();
     persona={ role:key, name:name, email:email, team:team, joinedAt:Date.now() };
     try{ localStorage.setItem("ztds.persona", JSON.stringify(persona)); }catch(e){}
     applyPersona(); closePersona();
     if(roster && key!=="facilitator"){ try{ roster.write("players", rosterRecord(persona)); }catch(e){} }
-    if(key!=="facilitator") ensureTeamClock();   // start (or join) this team's 60-minute clock
-    toast("Seat taken", (name?esc(name)+", you":"You")+" are <b>"+r.label+"</b>"+(team?" on <b>"+esc(team)+"</b>":"")+".", "phase");
+    updateManagedUI();
+    if(managed && key!=="facilitator") toast("You're in the lobby", "Logged in as <b>"+r.label+"</b>"+(team?" on <b>"+esc(team)+"</b>":"")+". The clock starts when the proctor starts it.", "phase");
+    else toast("Seat taken", (name?esc(name)+", you":"You")+" are <b>"+r.label+"</b>"+(team?" on <b>"+esc(team)+"</b>":"")+".", "phase");
   }
   $("#btnPersona").addEventListener("click", openPersona);
   $("#pmClose").addEventListener("click", closePersona);
