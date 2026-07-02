@@ -69,15 +69,21 @@ service cloud.firestore {
         request.resource.data.total is number;
       allow delete: if false;
     }
+    match /control/{id} {
+      allow read: if true;
+      allow create, update: if request.resource.data.room is string;
+      allow delete: if false;
+    }
   }
 }
 ```
 
-Covers three collections: `players` (roster), `solutions` (submitted design sheets), and
-`scores` (proctor evaluations). Allows registering/submitting/scoring and reading; blocks
-client-side deletes. **Do not leave Firestore in open "test mode"** — that exposes participant
-emails. **If you published an earlier players-only version of these rules, re-publish this one**
-or solution submissions and scores will be rejected.
+Covers four collections: `players` (roster), `solutions` (submitted design sheets), `scores`
+(proctor evaluations), and `control` (the proctor's start/pause/reset of the shared clock).
+Allows registering/submitting/scoring/controlling and reading; blocks client-side deletes.
+**Do not leave Firestore in open "test mode"** — that exposes participant emails. **Whenever you
+add features you must re-publish this full block** — if an older version is live, submissions,
+scores, or the shared "Start event" clock will be rejected.
 
 ### 2d. (Optional) Restrict the API key — defense-in-depth  ⬜
 Google Cloud Console → **APIs & Services → Credentials** → project `design-clinic-58ad0` →

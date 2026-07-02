@@ -44,6 +44,11 @@
                 request.resource.data.total is number;
               allow delete: if false;
             }
+            match /control/{id} {
+              allow read: if true;
+              allow create, update: if request.resource.data.room is string;
+              allow delete: if false;
+            }
           }
         }
 

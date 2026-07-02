@@ -50,6 +50,24 @@
   .notice{margin:12px 0 0;padding:11px 14px;border-radius:11px;font-size:13px;border:1px solid #F0CE97;background:#FBEBD3;color:#8a560f}
   .notice b{color:#6e440a}
 
+  /* session control (start the event for everyone) */
+  .control{display:flex;align-items:center;gap:16px;margin:14px 0 0;padding:14px 18px;background:linear-gradient(180deg,#0c1d34,#0a1830);border:1px solid rgba(255,255,255,.08);border-left:4px solid var(--cyan);border-radius:14px;color:#EAF1F8;box-shadow:var(--shadow);flex-wrap:wrap}
+  .ctl-clock{display:flex;align-items:baseline;gap:7px;font-family:"IBM Plex Mono",monospace}
+  .ctl-time{font-size:26px;font-weight:600;color:#fff;font-variant-numeric:tabular-nums}
+  .ctl-total{font-size:12px;color:#7E93AE}
+  .ctl-phase{display:flex;flex-direction:column;line-height:1.2;min-width:0;padding-left:14px;border-left:1px solid rgba(255,255,255,.14)}
+  .ctl-pname{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:15px;color:var(--pc,#7FE2EF)}
+  .ctl-status{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:#8FA8C4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46vw}
+  .ctl-bar{flex:1;min-width:80px;max-width:340px;height:7px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden}
+  .ctl-bar i{display:block;height:100%;width:0;background:var(--pc,var(--cyan));transition:width .3s linear,background .3s}
+  .ctl-btns{display:flex;gap:8px;margin-left:auto}
+  .control .btn{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18);color:#EAF1F8}
+  .control .btn:hover{background:rgba(255,255,255,.16)}
+  .control .btn.primary{background:var(--green);border-color:var(--green);color:#fff}
+  .control .btn.primary:hover{background:#2cb583}
+  .control .btn.warn{background:var(--amber);border-color:var(--amber);color:#fff}
+  @media (max-width:700px){ .control .ctl-bar{order:5;flex-basis:100%;max-width:none} .ctl-status{max-width:70vw} }
+
   .bar .filter{display:inline-flex;align-items:center;gap:6px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-soft)}
   .bar .filter input{border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-family:"IBM Plex Sans",sans-serif;font-size:13px;width:190px;outline:none}
   .bar .filter input:focus{border-color:var(--cyan-deep);box-shadow:0 0 0 3px rgba(15,169,190,.12)}
@@ -155,6 +173,17 @@
   <div class="notice" id="localNotice" hidden>
     <b>Single-device mode.</b> Firebase isn't configured, so this roster only shows people who joined <b>on this device/browser</b>. To see every participant's device live, fill in <code>firebase-config.js</code> (setup steps are in that file).
   </div>
+
+  <div class="control" id="control">
+    <div class="ctl-clock"><span class="ctl-time" id="ctlTime">00:00</span><span class="ctl-total">/ 60:00</span></div>
+    <div class="ctl-phase"><span class="ctl-pname" id="ctlPhase">Event not started</span><span class="ctl-status" id="ctlStatus">Press “Start event” to run the 60 minutes for everyone</span></div>
+    <div class="ctl-bar" aria-hidden="true"><i id="ctlFill"></i></div>
+    <div class="ctl-btns">
+      <button class="btn primary" id="ctlStart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 4l14 8-14 8z"/></svg><span id="ctlStartLabel">Start event</span></button>
+      <button class="btn" id="ctlReset" title="Reset the event clock for everyone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4v6h6"/><path d="M4 10a8 8 0 113 8"/></svg>Reset</button>
+    </div>
+  </div>
+
   <div class="summary" id="summary" hidden></div>
   <div class="showing" id="showing" hidden></div>
 
@@ -443,6 +472,39 @@
     if(btn) openEval(btn.getAttribute("data-eval"));
   });
 
+  // ---------- session control: start / pause / reset the event for everyone ----------
+  var PHASES=[{no:"PHASE 0",name:"Brief-In",start:0,end:8,color:"#E2891F"},{no:"PHASE 1",name:"Expose",start:8,end:20,color:"#DB4A4A"},{no:"PHASE 2",name:"Decide",start:20,end:33,color:"#0FA9BE"},{no:"PHASE 3",name:"Design",start:33,end:48,color:"#2a6fb0"},{no:"PHASE 4",name:"Document",start:48,end:56,color:"#27A276"},{no:"PHASE 5",name:"Submit",start:56,end:60,color:"#122A47"}];
+  var TOTAL=3600, ctl=null, controlEl=$("#control");
+  function ctlElapsed(){ if(!ctl||ctl.status==="idle") return 0; if(ctl.status==="running") return Math.min(TOTAL,(ctl.baseElapsedSec||0)+(Date.now()-(ctl.startedAtMs||Date.now()))/1000); return Math.min(TOTAL, ctl.baseElapsedSec||0); }
+  function fmtClock(s){ s=Math.max(0,Math.round(s)); var m=Math.floor(s/60),ss=s%60; return (m<10?"0":"")+m+":"+(ss<10?"0":"")+ss; }
+  function phaseAt(e){ if(e>=TOTAL) return null; for(var i=0;i<PHASES.length;i++){ if(e<PHASES[i].end*60) return PHASES[i]; } return PHASES[PHASES.length-1]; }
+  function renderControl(){
+    var e=ctlElapsed(), ph=phaseAt(e);
+    var status = (!ctl||ctl.status==="idle") ? "idle" : ctl.status;
+    $("#ctlTime").textContent=fmtClock(e);
+    $("#ctlFill").style.width=((e/TOTAL)*100)+"%";
+    controlEl.style.setProperty("--pc", e>=TOTAL?"#122A47":(ph?ph.color:"#0FA9BE"));
+    var lbl=$("#ctlStartLabel"), sb=$("#ctlStart");
+    if(status==="running"){ lbl.textContent="Pause"; sb.className="btn warn"; }
+    else if(status==="paused"){ lbl.textContent="Resume"; sb.className="btn primary"; }
+    else { lbl.textContent="Start event"; sb.className="btn primary"; }
+    if(e>=TOTAL){ $("#ctlPhase").textContent="Time — hands off"; $("#ctlStatus").textContent="60 minutes elapsed"; }
+    else if(status==="idle"){ $("#ctlPhase").textContent="Event not started"; $("#ctlStatus").textContent="Press “Start event” to run the 60 minutes for everyone"; }
+    else { $("#ctlPhase").textContent=ph.no+" · "+ph.name; $("#ctlStatus").textContent=(status==="paused"?"Paused · ":"Running · ")+fmtClock(ph.end*60-e)+" left in phase"; }
+  }
+  function writeCtl(doc){ if(!adapterRef){ alert("Not connected yet — try again in a moment."); return; } doc.id=ROOM; doc.room=ROOM; doc.updatedAt=Date.now(); ctl=doc; try{ adapterRef.write("control", doc); }catch(e){} renderControl(); }
+  $("#ctlStart").addEventListener("click", function(){
+    var status=(!ctl||ctl.status==="idle")?"idle":ctl.status, now=Date.now();
+    if(status==="idle"){ if(!confirm("Start the 60-minute clock now for ALL participants?")) return; writeCtl({status:"running",runId:now,startedAtMs:now,baseElapsedSec:0}); }
+    else if(status==="running"){ var base=(ctl.baseElapsedSec||0)+(now-(ctl.startedAtMs||now))/1000; writeCtl({status:"paused",runId:ctl.runId,startedAtMs:ctl.startedAtMs,baseElapsedSec:base}); }
+    else { writeCtl({status:"running",runId:ctl.runId,startedAtMs:now,baseElapsedSec:ctl.baseElapsedSec||0}); }
+  });
+  $("#ctlReset").addEventListener("click", function(){
+    if(!confirm("Reset the event clock to 00:00 for everyone? This re-seals the injections on all participant pages.")) return;
+    writeCtl({status:"idle",runId:0,startedAtMs:0,baseElapsedSec:0});
+  });
+  setInterval(renderControl,250); renderControl();
+
   render();
   if(window.ZTDSRoster){
     window.ZTDSRoster.init(ROOM).then(function(adapter){
@@ -454,6 +516,7 @@
       adapter.watch("players", ROOM, function(d){ latest=d||[]; render(); });
       adapter.watch("solutions", ROOM, function(d){ solutions={}; (d||[]).forEach(function(s){ solutions[tkey(s.teamName)]=s; }); render(); });
       adapter.watch("scores", ROOM, function(d){ scores={}; (d||[]).forEach(function(s){ scores[tkey(s.teamName)]=s; }); render(); });
+      adapter.watch("control", ROOM, function(d){ ctl=(d&&d.length)?d[0]:null; renderControl(); });
     });
   } else {
     $("#statusText").textContent = "Roster unavailable";

@@ -29,8 +29,8 @@ the in-session phase/time cues live on the participant page itself.)
 
 ## Running the hour (60 min)
 
-- [ ] *(Optional)* Press **Focus** in the control bar to hide reference sections (rubric, journey, worked example, etc.) — this cuts the on-page reading ~in half so teams stay on task. Toggle **Show all** anytime.
-- [ ] On the participant page's **control bar**, press **Start** — the 60-minute clock drives everything.
+- [ ] *(Optional)* Ask teams to press **Focus** in their control bar to hide reference sections (rubric, journey, worked example, etc.) — cuts on-page reading ~in half. Toggle **Show all** anytime.
+- [ ] On **`proctor.html`**, press **Start event** — this starts the single 60-minute clock **for all participants at once** (their local Start/Pause is locked while the event runs). Use **Pause/Resume** and **Reset** there to control the whole room. *(If you're not using the proctor page, each participant can still press Start on their own control bar.)*
 - [ ] The board and phase cards auto-highlight the current phase; **injections auto-reveal** at 24/38/50 min with a chime + toast.
 - [ ] The in-game **Conductor** on each team keeps their table on pace; you float between tables.
 - [ ] `Jump` advances a phase if needed; `Reset` restarts the clock (re-seals injections). Chimes toggle with the speaker button.
