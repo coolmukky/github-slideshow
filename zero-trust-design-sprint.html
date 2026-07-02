@@ -596,6 +596,18 @@
 
   @media (max-width:520px){ .pm-roles{grid-template-columns:1fr} }
 
+  /* waiting-for-proctor overlay */
+  .wait-overlay{position:fixed;inset:0;z-index:450;display:flex;align-items:center;justify-content:center;padding:22px;background:linear-gradient(160deg,rgba(18,42,71,.97),rgba(10,24,48,.98));color:#EAF1F8;text-align:center}
+  .wait-overlay[hidden]{display:none}
+  .wo-card{max-width:460px}
+  .wo-card h2{font-size:26px;color:#fff;margin:8px 0 10px}
+  .wo-card p{font-size:14px;color:#AEC4DC;line-height:1.55}
+  .wo-card .pm-eyebrow{color:#7FE2EF}
+  .wo-card b{color:#fff}
+  .wo-spin{width:42px;height:42px;border-radius:50%;border:4px solid rgba(255,255,255,.18);border-top-color:var(--cyan);margin:0 auto 14px;animation:wospin 1s linear infinite}
+  @keyframes wospin{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){.wo-spin{animation:none}}
+
   /* --- focus / play view (hide reference sections during the hour) --- */
   body.focus-mode .ref-sec{display:none}
   body.focus-mode .toc a.ref-link{display:none}
@@ -640,6 +652,16 @@
   </div>
 </div>
 <div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
+
+<!-- ============ WAITING-FOR-PROCTOR OVERLAY (interactive) ============ -->
+<div class="wait-overlay" id="waitOverlay" hidden>
+  <div class="wo-card">
+    <div class="wo-spin" aria-hidden="true"></div>
+    <div class="pm-eyebrow">Event not started</div>
+    <h2>Waiting for the proctor…</h2>
+    <p>The proctor hasn't opened the event yet. When they do, you'll see an <b>“Event opened”</b> message and be prompted to enter your team details — your team's 60 minutes begin the moment you take your seat.</p>
+  </div>
+</div>
 
 <!-- ============ PERSONA LOGIN (interactive) ============ -->
 <div class="persona-modal" id="personaModal" hidden role="dialog" aria-modal="true" aria-labelledby="pmTitle">
@@ -1818,44 +1840,65 @@
   }
   function primeFiredUpTo(e){ fired={}; CUES.forEach(function(c,i){ if(e>=c.sec) fired["cue"+i]=true; }); INJ.forEach(function(j,i){ if(e>=j.sec) fired["inj"+i]=true; }); }
 
-  // ---------- proctor-controlled clock (a proctor "starts the event for all") ----------
-  var proctorControlled=false, ctrl=null, primedForRun=null, ctrlTicker=null;
-  function elapsedFromCtrl(){
-    if(!ctrl || ctrl.status==="idle") return 0;
-    if(ctrl.status==="running") return Math.min(TOTAL, (ctrl.baseElapsedSec||0) + (Date.now()-(ctrl.startedAtMs||Date.now()))/1000);
-    return Math.min(TOTAL, ctrl.baseElapsedSec||0); // paused
+  // ---------- proctor-opened event + per-team clock ----------
+  // The proctor "opens" the event (control doc id=ROOM, status "open"). Each team's own
+  // 60 minutes starts when that team registers (control doc id=ROOM__<teamKey>, startedAt).
+  // While an event exists (managed), the participant's local timer buttons are locked.
+  var managed=false, eventOpen=false, prevEventOpen=false, teamStartedAt=null, evTicker=null, lastControlDocs=[];
+  function myTeamKey(){ return persona && persona.team ? persona.team.trim().toLowerCase() : null; }
+  function computeManagedElapsed(){
+    if(!managed || !eventOpen || !teamStartedAt) return 0;
+    return Math.min(TOTAL, (Date.now()-teamStartedAt)/1000);
   }
-  function updateControlUI(){
-    var b=$("#btnStart"), lbl=$("#btnStartLabel"), sk=$("#btnSkip"), rs=$("#btnReset");
-    if(proctorControlled){
+  function updateManagedUI(){
+    var b=$("#btnStart"), lbl=$("#btnStartLabel"), sk=$("#btnSkip"), rs=$("#btnReset"), ov=$("#waitOverlay");
+    if(managed){
       b.disabled=true; sk.disabled=true; rs.disabled=true;
-      b.title=sk.title=rs.title="The proctor controls the timer for everyone";
-      lbl.textContent = ctrl && ctrl.status==="running" ? "Live" : (ctrl && ctrl.status==="paused" ? "Paused" : "Waiting");
+      b.title=sk.title=rs.title="The proctor runs this event; your team clock starts when you take your seat";
+      lbl.textContent = !eventOpen ? "Waiting" : (teamStartedAt ? (computeManagedElapsed()<TOTAL?"Live":"Done") : "Take seat");
+      if(ov) ov.hidden = eventOpen;      // waiting overlay only while the event is closed
     } else {
       b.disabled=false; sk.disabled=false; rs.disabled=false;
+      if(ov) ov.hidden = true;
     }
   }
-  function controlledTick(){
-    elapsed=elapsedFromCtrl(); running=(ctrl && ctrl.status==="running");
-    render(); checkEvents(); updateControlUI();
+  function managedTick(){
+    elapsed=computeManagedElapsed(); running=(managed && eventOpen && !!teamStartedAt && elapsed<TOTAL);
+    render(); checkEvents(); updateManagedUI();
   }
-  function applyControl(doc){
-    if(!doc) return; // no central session -> stay in local mode
-    proctorControlled=true; ctrl=doc;
-    if(ticker){ clearInterval(ticker); ticker=null; } // local timer yields to the proctor
-    if(doc.status==="idle"){
-      if(primedForRun!=="idle"){ fired={}; INJ.forEach(function(j){ j.manual=false; }); toastWrap.innerHTML=""; primedForRun="idle"; }
-      elapsed=0;
-    } else if(primedForRun !== doc.runId){ // a new run started (or we just joined mid-run)
-      elapsed=elapsedFromCtrl();
-      primeFiredUpTo(elapsed);                 // don't replay past cues; future crossings still fire
-      INJ.forEach(function(j){ j.manual=false; });
-      if(elapsed<2){ toastWrap.innerHTML=""; toast("Session started","The proctor started the 60 minutes — Phase 0 · Brief-In begins now.","phase","00:00"); }
-      primedForRun=doc.runId;
+  function applyControlDocs(docs){
+    lastControlDocs = docs || [];
+    var ev = lastControlDocs.filter(function(x){ return x.id===ROOM; })[0] || null;
+    managed = !!ev; eventOpen = !!(ev && ev.status==="open");
+    var tk = myTeamKey();
+    var team = tk ? (lastControlDocs.filter(function(x){ return x.id===ROOM+"__"+tk; })[0] || null) : null;
+    var started = team ? team.startedAt : null;
+    if(started && started!==teamStartedAt){         // our team clock discovered / (re)started
+      teamStartedAt = started;
+      var e = Math.min(TOTAL,(Date.now()-teamStartedAt)/1000);
+      primeFiredUpTo(e); INJ.forEach(function(j){ j.manual=false; });
+      if(e<3){ toastWrap.innerHTML=""; toast("Your team clock started","60 minutes begin now — Phase 0 · Brief-In.","phase","00:00"); }
+    } else if(!started){ teamStartedAt=null; }
+    if(managed){
+      if(ticker){ clearInterval(ticker); ticker=null; } // local timer yields to the event
+      if(!evTicker) evTicker=setInterval(managedTick, 250);
+      if(eventOpen && !prevEventOpen){ toast("Event opened","The proctor opened the event — enter your team details to start your 60 minutes.","phase"); }
+      if(eventOpen && (!persona || !persona.role)) openPersona();
     }
-    elapsed=elapsedFromCtrl(); running=(doc.status==="running");
-    if(!ctrlTicker) ctrlTicker=setInterval(controlledTick, 250);
-    updateControlUI(); render(); checkEvents();
+    prevEventOpen = eventOpen;
+    elapsed=computeManagedElapsed(); running=(managed && eventOpen && !!teamStartedAt && elapsed<TOTAL);
+    updateManagedUI(); render(); checkEvents();
+  }
+  // start the team's clock (once) when a member takes their seat and the event is open
+  function ensureTeamClock(){
+    if(!roster || !managed || !eventOpen) return;
+    var tk = myTeamKey(); if(!tk) return;
+    if(lastControlDocs.some(function(x){ return x.id===ROOM+"__"+tk; })){ applyControlDocs(lastControlDocs); return; }
+    var doc={ id:ROOM+"__"+tk, room:ROOM, kind:"team", teamName:persona.team, startedAt:Date.now() };
+    try{ roster.write("control", doc); }catch(e){}
+    lastControlDocs.push(doc); teamStartedAt=doc.startedAt;
+    toastWrap.innerHTML=""; toast("Your team clock started","60 minutes begin now — Phase 0 · Brief-In.","phase","00:00");
+    updateManagedUI(); render();
   }
 
   // ---------- audio chimes ----------
@@ -1949,8 +1992,8 @@
       $("#barNext").textContent = fmt(leftInPhase)+" left in phase · "+nextTxt;
     }
 
-    // start button label (skipped while proctor-controlled — updateControlUI owns it)
-    if(!proctorControlled) $("#btnStartLabel").textContent = running ? "Pause" : (elapsed>0 && elapsed<TOTAL ? "Resume" : "Start");
+    // start button label (skipped while proctor-managed — updateManagedUI owns it)
+    if(!managed) $("#btnStartLabel").textContent = running ? "Pause" : (elapsed>0 && elapsed<TOTAL ? "Resume" : "Start");
 
     // board stops
     STOPS.forEach(function(s,i){
@@ -2010,13 +2053,13 @@
 
   // ---------- controls ----------
   $("#btnStart").addEventListener("click", function(){
-    if(proctorControlled) return;
+    if(managed) return;
     initAudio();
     if(running){ stop(); }
     else { if(elapsed===0) toast("Session started","60 minutes on the clock — Phase 0 · Brief-In begins now.","phase","00:00"); startTimer(); }
   });
   $("#btnSkip").addEventListener("click", function(){
-    if(proctorControlled) return;
+    if(managed) return;
     var idx=currentPhaseIndex();
     if(idx>=PHASES.length) return;
     var nextStart = (idx+1<=PHASES.length-1) ? PHASES[idx+1].start*60 : TOTAL;
@@ -2025,7 +2068,7 @@
     render(); checkEvents(); save();
   });
   $("#btnReset").addEventListener("click", function(){
-    if(proctorControlled) return;
+    if(managed) return;
     if(!confirm("Reset the session clock to 00:00 and re-seal all injections?\n\n(Your checklists and solution sheet are kept.)")) return;
     stop(); elapsed=0; fired={};
     INJ.forEach(function(j){ j.manual=false; });
@@ -2166,7 +2209,7 @@
     window.ZTDSRoster.init(ROOM).then(function(a){
       roster=a;
       if(persona && persona.role && persona.role!=="facilitator" && persona.email && persona.team){ try{ roster.write("players", rosterRecord(persona)); }catch(e){} }
-      try{ roster.watch("control", ROOM, function(d){ var doc=(d&&d[0])||null; applyControl(doc); }); }catch(e){}
+      try{ roster.watch("control", ROOM, function(d){ applyControlDocs(d||[]); }); }catch(e){}
     });
   }
   var pl=$("#pmProctorLink"); if(pl) pl.href="proctor.html"+(ROOM!=="default"?("?room="+encodeURIComponent(ROOM)):"");
@@ -2248,11 +2291,13 @@
       if(!team){ pmTeam.classList.add("bad"); missing.push("a team name"); }
       if(missing.length){ showPmError("Please enter "+missing.join(", ")+" to join a team — or choose Facilitator / Observer to skip."); return; }
     }
+    if(managed && !eventOpen && key!=="facilitator"){ showPmError("The proctor hasn't opened the event yet — please wait for the “Event opened” message, then take your seat."); return; }
     hidePmError();
     persona={ role:key, name:name, email:email, team:team, joinedAt:Date.now() };
     try{ localStorage.setItem("ztds.persona", JSON.stringify(persona)); }catch(e){}
     applyPersona(); closePersona();
     if(roster && key!=="facilitator"){ try{ roster.write("players", rosterRecord(persona)); }catch(e){} }
+    if(key!=="facilitator") ensureTeamClock();   // start (or join) this team's 60-minute clock
     toast("Seat taken", (name?esc(name)+", you":"You")+" are <b>"+r.label+"</b>"+(team?" on <b>"+esc(team)+"</b>":"")+".", "phase");
   }
   $("#btnPersona").addEventListener("click", openPersona);
