@@ -61,6 +61,7 @@
 window.FIREBASE_CONFIG = {
   apiKey: "AIzaSyBttVNwx0VOhTiMgMF6EAxn-f9X6au2CaA",
   authDomain: "design-clinic-58ad0.firebaseapp.com",
+  databaseURL: "https://design-clinic-58ad0-default-rtdb.firebaseio.com",
   projectId: "design-clinic-58ad0",
   storageBucket: "design-clinic-58ad0.firebasestorage.app",
   messagingSenderId: "278404586451",
