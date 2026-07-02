@@ -516,6 +516,9 @@
   .sheet-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:12px;border-bottom:1px dashed var(--line-soft)}
   .sheet-tools .st-note{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-faint);margin-right:auto}
   .sheet-tools .st-note b{color:var(--green)}
+  .st-btn.go{background:var(--green);border-color:var(--green);color:#fff}
+  .st-btn.go:hover{background:#2cb583;border-color:#2cb583}
+  .st-status{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--green);white-space:nowrap}
   .st-btn{
     font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;letter-spacing:.04em;
     color:var(--ink);background:#F4F7FB;border:1px solid var(--line);border-radius:8px;
@@ -2029,7 +2032,9 @@
       '<span class="st-note">Type directly into the sheet — <b>saved in this browser</b> automatically.</span>'+
       '<button class="st-btn" data-copy><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h8"/></svg>Copy</button>'+
       '<button class="st-btn" data-print><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9V3h12v6"/><rect x="4" y="9" width="16" height="8" rx="2"/><path d="M8 17h8v4H8z"/></svg>Print</button>'+
-      '<button class="st-btn" data-clear><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13"/></svg>Clear</button>';
+      '<button class="st-btn" data-clear><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13"/></svg>Clear</button>'+
+      '<span class="st-status" data-substatus></span>'+
+      '<button class="st-btn go" data-submit><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg>Submit for scoring</button>';
     body.insertBefore(tools, body.firstChild);
 
     var inputs=[];
@@ -2065,6 +2070,31 @@
       var t=document.createElement("textarea"); t.value=text; t.style.position="fixed"; t.style.opacity="0";
       document.body.appendChild(t); t.select(); try{ document.execCommand("copy"); }catch(e){} document.body.removeChild(t);
     }
+
+    // --- submit for scoring (sends the solution to the proctor via the shared store) ---
+    var statusEl = tools.querySelector("[data-substatus]");
+    var subBtn = tools.querySelector("[data-submit]");
+    function teamKey(t){ return (t||"").trim().toLowerCase(); }
+    function refreshSubmitStatus(){
+      if(!persona || !persona.team){ statusEl.textContent=""; subBtn.lastChild.textContent="Submit for scoring"; return; }
+      var t=null; try{ t=localStorage.getItem("ztds.submittedAt."+teamKey(persona.team)); }catch(e){}
+      if(t){ statusEl.textContent="Submitted "+new Date(+t).toLocaleTimeString(); subBtn.lastChild.textContent="Re-submit for scoring"; }
+      else { statusEl.textContent=""; subBtn.lastChild.textContent="Submit for scoring"; }
+    }
+    subBtn.addEventListener("click", function(){
+      if(!persona || persona.role==="facilitator" || !persona.team){
+        toast("Take your seat first","Click “Take your seat” (top bar) and enter your team name before submitting for scoring.","fire"); return;
+      }
+      if(!roster){ toast("Not connected yet","The scoring sync isn't ready — wait a moment and try again.","fire"); return; }
+      var tk=teamKey(persona.team), when=Date.now();
+      var doc={ id:ROOM+"__"+tk, room:ROOM, teamName:persona.team, submittedByName:persona.name||"", submittedAt:when,
+                fields: inputs.map(function(x){ return { label:x.label, value:x.ta.value.trim() }; }) };
+      try{ roster.write("solutions", doc); }catch(e){}
+      try{ localStorage.setItem("ztds.submittedAt."+tk, String(when)); }catch(e){}
+      refreshSubmitStatus();
+      toast("Submitted for scoring","Your team’s solution was sent to the proctor. You can edit and re-submit until it’s scored.","phase");
+    });
+    setTimeout(refreshSubmitStatus, 0);
   }
 
   // ---------- persona "take your seat" login ----------
@@ -2090,7 +2120,7 @@
   if(window.ZTDSRoster){
     window.ZTDSRoster.init(ROOM).then(function(a){
       roster=a;
-      if(persona && persona.role && persona.role!=="facilitator" && persona.email && persona.team){ try{ roster.join(rosterRecord(persona)); }catch(e){} }
+      if(persona && persona.role && persona.role!=="facilitator" && persona.email && persona.team){ try{ roster.write("players", rosterRecord(persona)); }catch(e){} }
     });
   }
   var pl=$("#pmProctorLink"); if(pl) pl.href="proctor.html"+(ROOM!=="default"?("?room="+encodeURIComponent(ROOM)):"");
@@ -2176,7 +2206,7 @@
     persona={ role:key, name:name, email:email, team:team, joinedAt:Date.now() };
     try{ localStorage.setItem("ztds.persona", JSON.stringify(persona)); }catch(e){}
     applyPersona(); closePersona();
-    if(roster && key!=="facilitator"){ try{ roster.join(rosterRecord(persona)); }catch(e){} }
+    if(roster && key!=="facilitator"){ try{ roster.write("players", rosterRecord(persona)); }catch(e){} }
     toast("Seat taken", (name?esc(name)+", you":"You")+" are <b>"+r.label+"</b>"+(team?" on <b>"+esc(team)+"</b>":"")+".", "phase");
   }
   $("#btnPersona").addEventListener("click", openPersona);

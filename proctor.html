@@ -86,6 +86,43 @@
   .empty code{font-family:"IBM Plex Mono",monospace;background:#EEF3F9;border:1px solid var(--line-soft);border-radius:6px;padding:2px 7px;font-size:12.5px}
   .foot{margin:30px 0;color:var(--ink-faint);font-family:"IBM Plex Mono",monospace;font-size:11px;text-align:center}
   .foot a{color:var(--cyan-deep)}
+
+  /* score footer on team cards */
+  .score-row{display:flex;align-items:center;gap:9px;padding:10px 16px;border-top:1px solid var(--line-soft);background:#FAFCFF;flex-wrap:wrap}
+  .score-row.muted{color:var(--ink-faint);font-family:"IBM Plex Mono",monospace;font-size:12px}
+  .sub-badge{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:#1f6e52;background:var(--green-soft,#D7F0E6);border:1px solid #A9DEC9;border-radius:20px;padding:3px 9px}
+  .score-big{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:16px;color:var(--ink)}
+  .score-big small{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:11px;color:var(--ink-faint)}
+  .rank-badge{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:700;color:#fff;background:var(--navy);border-radius:20px;padding:3px 9px}
+  .mini-btn{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;color:#fff;background:var(--cyan-deep);border:none;border-radius:8px;padding:6px 12px;cursor:pointer}
+  .mini-btn:hover{background:#0a6c7a}
+  .mini-btn.re{background:#fff;color:var(--cyan-deep);border:1px solid var(--cyan)}
+
+  /* evaluate modal */
+  .eval-modal{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(8,18,34,.72)}
+  .eval-modal[hidden]{display:none}
+  .em-card{position:relative;width:min(920px,100%);max-height:92vh;overflow:auto;background:var(--surface);border-radius:16px;padding:22px 24px;box-shadow:0 30px 70px -20px rgba(0,0,0,.6);border-top:4px solid var(--cyan)}
+  .em-close{position:absolute;top:12px;right:15px;border:none;background:transparent;font-size:24px;color:var(--ink-faint);cursor:pointer}
+  .em-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan-deep)}
+  .em-card h2{font-size:22px;margin:4px 0 2px}
+  .em-meta{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-faint);margin-bottom:14px}
+  .em-cols{display:grid;grid-template-columns:1.2fr .9fr;gap:18px}
+  .em-field{border:1px solid var(--line-soft);border-radius:10px;padding:10px 12px;margin-bottom:9px}
+  .em-field .k{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan-deep);margin-bottom:4px}
+  .em-field .v{font-size:13px;color:var(--ink);white-space:pre-wrap;word-break:break-word}
+  .em-field .v.empty{color:var(--ink-faint);font-style:italic}
+  .em-score{background:#F7F9FC;border:1px solid var(--line-soft);border-radius:12px;padding:14px}
+  .em-score h3{font-size:14px;margin:0 0 10px}
+  .em-score label{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;color:var(--ink-soft);margin-bottom:9px}
+  .em-score input[type=number]{width:70px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-family:"IBM Plex Mono",monospace;font-size:13px;text-align:right;outline:none}
+  .em-score input:focus{border-color:var(--cyan-deep);box-shadow:0 0 0 3px rgba(15,169,190,.12)}
+  .em-sol{flex-direction:column;align-items:stretch !important}
+  .em-sol .r{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:5px}
+  .em-total{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:18px;margin:6px 0 12px;padding-top:10px;border-top:1px dashed var(--line)}
+  .em-notes{flex-direction:column;align-items:stretch !important}
+  .em-notes textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px;font-family:"IBM Plex Sans",sans-serif;font-size:13px;min-height:56px;resize:vertical;outline:none;margin-top:5px}
+  .em-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+  @media (max-width:720px){ .em-cols{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
@@ -112,7 +149,8 @@
     <span class="spacer"></span>
     <button class="btn" id="btnRefresh" title="Reload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4v6h6"/><path d="M4 10a8 8 0 113 8"/></svg>Reload</button>
     <button class="btn" id="btnCsv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M5 21h14"/></svg>Export CSV</button>
-    <button class="btn primary" id="btnReport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 3h9l5 5v13H6z"/><path d="M14 3v6h6"/><path d="M9 13h7M9 17h7"/></svg>Report</button>
+    <button class="btn" id="btnReport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 3h9l5 5v13H6z"/><path d="M14 3v6h6"/><path d="M9 13h7M9 17h7"/></svg>Report</button>
+    <a class="btn primary" id="btnLeaderboard" href="leaderboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 21V10M12 21V4M18 21v-7"/></svg>Leaderboard</a>
   </div>
   <div class="notice" id="localNotice" hidden>
     <b>Single-device mode.</b> Firebase isn't configured, so this roster only shows people who joined <b>on this device/browser</b>. To see every participant's device live, fill in <code>firebase-config.js</code> (setup steps are in that file).
@@ -130,6 +168,34 @@
   <div class="foot">Roster room: <b id="footRoom">default</b> · <a href="zero-trust-design-sprint.html">← Back to the participant page</a></div>
 </div>
 
+<!-- evaluate modal -->
+<div class="eval-modal" id="evalModal" hidden role="dialog" aria-modal="true" aria-labelledby="emTeam">
+  <div class="em-card">
+    <button class="em-close" id="emClose" aria-label="Close">&times;</button>
+    <div class="em-eyebrow">Evaluate solution</div>
+    <h2 id="emTeam">Team</h2>
+    <div class="em-meta" id="emMeta"></div>
+    <div class="em-cols">
+      <div id="emSolution"></div>
+      <div class="em-score">
+        <h3>Score</h3>
+        <label>Injection 01 — Autonomous Expansion <input type="number" min="0" max="10" step="1" id="emI1"> <span>/ 10</span></label>
+        <label>Injection 02 — Token in the Wild <input type="number" min="0" max="10" step="1" id="emI2"> <span>/ 10</span></label>
+        <label>Injection 03 — Prove It <input type="number" min="0" max="10" step="1" id="emI3"> <span>/ 10</span></label>
+        <label class="em-sol">Final solution — completion &amp; best-practice controls (8 reference controls, coherence)
+          <span class="r"><input type="number" min="0" max="70" step="1" id="emSol"> <span>/ 70</span></span>
+        </label>
+        <div class="em-total">Total: <span id="emTotal">0</span> / 100</div>
+        <label class="em-notes">Notes (optional)<textarea id="emNotes" placeholder="What was strong / missing…"></textarea></label>
+        <div class="em-actions">
+          <button class="btn" id="emCancel">Cancel</button>
+          <button class="btn primary" id="emSave">Save score</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="firebase-config.js"></script>
 <script src="roster.js"></script>
 <script>
@@ -141,7 +207,20 @@
   var ROOM = (new URLSearchParams(location.search)).get("room") || "default";
   $("#roomInput").value = ROOM;
   $("#footRoom").textContent = ROOM;
+  $("#btnLeaderboard").href = "leaderboard.html" + (ROOM!=="default" ? ("?room="+encodeURIComponent(ROOM)) : "");
   var latest = [];
+  var solutions = {};   // teamKey -> solution doc
+  var scores = {};      // teamKey -> score doc
+  var ranks = {};       // teamKey -> rank (1-based, scored teams only)
+  var MAX_INJ = 10, MAX_SOL = 70;
+  function tkey(t){ return (t==null?"":String(t)).trim().toLowerCase(); }
+  function clampNum(v, max){ v = parseInt(v,10); if(isNaN(v)||v<0) v=0; if(v>max) v=max; return v; }
+  function computeRanks(){
+    ranks = {};
+    var scored = Object.keys(scores).map(function(k){ return { k:k, total:scores[k].total||0 }; });
+    scored.sort(function(a,b){ return b.total-a.total; });
+    scored.forEach(function(s,i){ ranks[s.k] = i+1; });
+  }
 
   function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
   function fmtTime(ms){ if(!ms) return ""; var d=new Date(ms); var h=d.getHours(), m=d.getMinutes(); return (h<10?"0":"")+h+":"+(m<10?"0":"")+m; }
@@ -166,11 +245,12 @@
   function sortMembers(members){ members.sort(function(a,b){ var oa=ROLE_ORDER[a.roleKey]!=null?ROLE_ORDER[a.roleKey]:9, ob=ROLE_ORDER[b.roleKey]!=null?ROLE_ORDER[b.roleKey]:9; return oa-ob || (a.joinedAt||0)-(b.joinedAt||0); }); return members; }
   function matches(p,q){ if(!q) return true; return [p.name,p.email,p.teamName,p.role].some(function(v){ return String(v||"").toLowerCase().indexOf(q)>=0; }); }
 
-  function render(players){
-    latest = players || [];
+  function render(){
+    computeRanks();
     var all = groupBy(latest);
     var completeCount = all.order.filter(function(k){ return isComplete(all.groups[k].members); }).length;
     var roleCounts = {}; latest.forEach(function(p){ roleCounts[p.roleKey]=(roleCounts[p.roleKey]||0)+1; });
+    var submittedCount = Object.keys(solutions).length, scoredCount = Object.keys(scores).length;
 
     $("#statTeams").textContent = all.order.length;
     $("#statPlayers").textContent = latest.length;
@@ -183,6 +263,7 @@
         pills += '<span class="pill"><span class="sw" style="background:'+ROLE_COLORS[rk]+'"></span>'+ROLE_LABELS[rk]+' '+(roleCounts[rk]||0)+'</span>';
       });
       pills += '<span class="pill '+(completeCount===all.order.length&&all.order.length?'ok':'warn')+'">'+completeCount+' / '+all.order.length+' teams complete</span>';
+      pills += '<span class="pill">Submitted '+submittedCount+'</span><span class="pill '+(scoredCount?'ok':'')+'">Scored '+scoredCount+'</span>';
       summary.innerHTML = pills;
     } else { summary.hidden=true; }
 
@@ -212,7 +293,23 @@
         '</div>';
       }).join("");
       var missHtml = missing.length ? '<div class="miss">Missing: <b>'+missing.join(", ")+'</b></div>' : '';
-      return '<div class="team '+(teamComplete?"complete":"incomplete")+'"><div class="team-h"><h3>'+esc(g.name)+'</h3><span class="cnt'+(teamComplete?' ok':'')+'">'+g.members.length+' member'+(g.members.length===1?"":"s")+'</span></div>'+rows+missHtml+'</div>';
+      // score / evaluate footer
+      var tk = key; // group key is the lowercased team name
+      var sol = solutions[tk], sc = scores[tk];
+      var footer;
+      if(sc){
+        footer = '<div class="score-row">'+
+          (ranks[tk] ? '<span class="rank-badge">#'+ranks[tk]+'</span>' : '')+
+          '<span class="score-big">'+sc.total+'<small> / 100</small></span>'+
+          '<span class="sub-badge">i '+(sc.i1||0)+'/'+(sc.i2||0)+'/'+(sc.i3||0)+' · sol '+(sc.solution||0)+'</span>'+
+          '<button class="mini-btn re" data-eval="'+esc(tk)+'">Re-evaluate</button></div>';
+      } else if(sol){
+        footer = '<div class="score-row"><span class="sub-badge">Submitted '+fmtTime(sol.submittedAt)+'</span>'+
+          '<button class="mini-btn" data-eval="'+esc(tk)+'">Evaluate</button></div>';
+      } else {
+        footer = '<div class="score-row muted">No solution submitted yet</div>';
+      }
+      return '<div class="team '+(teamComplete?"complete":"incomplete")+'"><div class="team-h"><h3>'+esc(g.name)+'</h3><span class="cnt'+(teamComplete?' ok':'')+'">'+g.members.length+' member'+(g.members.length===1?"":"s")+'</span></div>'+rows+missHtml+footer+'</div>';
     }).join("");
   }
 
@@ -238,7 +335,7 @@
 
   // live filter
   var fEl = $("#filterInput");
-  fEl.addEventListener("input", function(){ filterText = fEl.value||""; render(latest); });
+  fEl.addEventListener("input", function(){ filterText = fEl.value||""; render(); });
 
   // ---------- printable participant report ----------
   function fmtDateTime(ms){ var d=new Date(ms); return d.toLocaleString(); }
@@ -253,7 +350,9 @@
       var mem = g.members.map(function(p){
         return '<tr><td>'+esc(p.role||"—")+'</td><td>'+esc(p.name||"—")+'</td><td>'+esc(p.email||"")+'</td><td>'+fmtTime(p.joinedAt)+'</td></tr>';
       }).join("");
-      return '<div class="rt"><h3>'+esc(g.name)+' <span class="'+(missing.length?"bad":"ok")+'">'+(missing.length?("incomplete — missing "+missing.join(", ")):"complete")+'</span></h3>'+
+      var sc=scores[key];
+      var scoreSpan = sc ? ' <span class="score">'+sc.total+'/100'+(ranks[key]?' · #'+ranks[key]:'')+'</span>' : '';
+      return '<div class="rt"><h3>'+esc(g.name)+' <span class="'+(missing.length?"bad":"ok")+'">'+(missing.length?("incomplete — missing "+missing.join(", ")):"complete")+'</span>'+scoreSpan+'</h3>'+
         '<table class="mt"><thead><tr><th>Role</th><th>Name</th><th>Email</th><th>Joined</th></tr></thead><tbody>'+mem+'</tbody></table></div>';
     }).join("");
     var roleLine = ["conductor","critic","architect","scribe","facilitator"].map(function(rk){ return ROLE_LABELS[rk]+": <b>"+(roleCounts[rk]||0)+"</b>"; }).join(" &nbsp;·&nbsp; ");
@@ -269,6 +368,7 @@
       '.rt{margin:14px 0;break-inside:avoid}.rt h3{font-size:15px;margin:0 0 6px}'+
       '.rt h3 span{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;margin-left:8px}'+
       '.ok{background:#D7F0E6;color:#1f8a63}.bad{background:#FBEBD3;color:#8a560f}'+
+      '.score{background:#122A47;color:#fff;font-family:monospace}'+
       '.mt{border-collapse:collapse;width:100%;font-size:13px}'+
       '.mt th{background:#122A47;color:#fff;text-align:left;padding:6px 9px;font-size:12px}'+
       '.mt td{border-bottom:1px solid #E1E8F1;padding:6px 9px}'+
@@ -294,14 +394,66 @@
     w.document.open(); w.document.write(reportHtml()); w.document.close();
   });
 
-  render([]);
+  // ---------- evaluate modal ----------
+  var adapterRef = null, evalKey = null;
+  var evalModal=$("#evalModal");
+  function emUpdateTotal(){
+    var t = clampNum($("#emI1").value,MAX_INJ)+clampNum($("#emI2").value,MAX_INJ)+clampNum($("#emI3").value,MAX_INJ)+clampNum($("#emSol").value,MAX_SOL);
+    $("#emTotal").textContent = t; return t;
+  }
+  ["emI1","emI2","emI3","emSol"].forEach(function(id){ $("#"+id).addEventListener("input", emUpdateTotal); });
+  function openEval(tk){
+    var sol=solutions[tk], sc=scores[tk];
+    var teamName = (sol&&sol.teamName) || (scores[tk]&&scores[tk].teamName) || tk;
+    evalKey = tk;
+    $("#emTeam").textContent = teamName;
+    $("#emMeta").textContent = sol ? ("Submitted "+fmtTime(sol.submittedAt)+(sol.submittedByName?(" · by "+sol.submittedByName):"")) : "No submission on record";
+    var solEl=$("#emSolution");
+    if(sol && sol.fields && sol.fields.length){
+      solEl.innerHTML = sol.fields.map(function(f){
+        var v=(f.value||"").trim();
+        return '<div class="em-field"><div class="k">'+esc(f.label)+'</div><div class="v'+(v?'':' empty')+'">'+(v?esc(v):"— left blank —")+'</div></div>';
+      }).join("");
+    } else {
+      solEl.innerHTML = '<div class="em-field"><div class="v empty">This team hasn\'t submitted a solution sheet. You can still score from their diagram / discussion.</div></div>';
+    }
+    $("#emI1").value = sc?sc.i1:""; $("#emI2").value = sc?sc.i2:""; $("#emI3").value = sc?sc.i3:"";
+    $("#emSol").value = sc?sc.solution:""; $("#emNotes").value = sc?(sc.notes||""):"";
+    emUpdateTotal();
+    evalModal.hidden=false;
+  }
+  function closeEval(){ evalModal.hidden=true; evalKey=null; }
+  $("#emClose").addEventListener("click", closeEval);
+  $("#emCancel").addEventListener("click", closeEval);
+  evalModal.addEventListener("click", function(e){ if(e.target===evalModal) closeEval(); });
+  document.addEventListener("keydown", function(e){ if(e.key==="Escape" && !evalModal.hidden) closeEval(); });
+  $("#emSave").addEventListener("click", function(){
+    if(!evalKey || !adapterRef) return;
+    var i1=clampNum($("#emI1").value,MAX_INJ), i2=clampNum($("#emI2").value,MAX_INJ), i3=clampNum($("#emI3").value,MAX_INJ), sv=clampNum($("#emSol").value,MAX_SOL);
+    var sol=solutions[evalKey];
+    var teamName=(sol&&sol.teamName) || (scores[evalKey]&&scores[evalKey].teamName) || evalKey;
+    var doc={ id:ROOM+"__"+evalKey, room:ROOM, teamName:teamName, i1:i1,i2:i2,i3:i3, solution:sv, total:i1+i2+i3+sv, notes:($("#emNotes").value||"").trim(), evaluatedAt:Date.now() };
+    try{ adapterRef.write("scores", doc); }catch(e){}
+    scores[evalKey]=doc; // optimistic
+    closeEval(); render();
+  });
+  // delegate Evaluate buttons
+  $("#teams").addEventListener("click", function(e){
+    var btn=e.target.closest ? e.target.closest("[data-eval]") : null;
+    if(btn) openEval(btn.getAttribute("data-eval"));
+  });
+
+  render();
   if(window.ZTDSRoster){
     window.ZTDSRoster.init(ROOM).then(function(adapter){
+      adapterRef = adapter;
       var live = adapter.mode==="firebase";
       $("#status").className = "status "+(live?"live":"local");
       $("#statusText").textContent = live ? "Live · Firebase" : "Single-device (local)";
       $("#localNotice").hidden = live;
-      adapter.subscribe(render);
+      adapter.watch("players", ROOM, function(d){ latest=d||[]; render(); });
+      adapter.watch("solutions", ROOM, function(d){ solutions={}; (d||[]).forEach(function(s){ solutions[tkey(s.teamName)]=s; }); render(); });
+      adapter.watch("scores", ROOM, function(d){ scores={}; (d||[]).forEach(function(s){ scores[tkey(s.teamName)]=s; }); render(); });
     });
   } else {
     $("#statusText").textContent = "Roster unavailable";
