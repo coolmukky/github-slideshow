@@ -41,6 +41,7 @@
   .medal{font-size:24px;min-width:44px;text-align:center}
   .team{flex:1;min-width:0}
   .team .nm{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:19px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .team .nm .late{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:600;color:#fff;background:var(--red);border-radius:20px;padding:2px 8px;vertical-align:middle}
   .team .bd{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-faint);margin-top:2px}
   .bars{display:flex;gap:3px;margin-top:7px;max-width:320px}
   .bars i{height:6px;border-radius:3px;background:var(--line-soft)}
@@ -91,6 +92,7 @@
   var scores={}, solutions={};
   function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
   function tkey(t){ return (t==null?"":String(t)).trim().toLowerCase(); }
+  function fmtClock(s){ s=Math.max(0,Math.round(s)); var m=Math.floor(s/60),ss=s%60; return (m<10?"0":"")+m+":"+(ss<10?"0":"")+ss; }
   var MEDALS={1:"🥇",2:"🥈",3:"🥉"};
 
   function bars(n,max){ var out=""; for(var i=0;i<max;i++){ out+='<i class="'+(i<n?'f':'')+'" style="flex:1"></i>'; } return out; }
@@ -104,9 +106,12 @@
     board.innerHTML=list.map(function(s,i){
       var rank=i+1;
       var head = MEDALS[rank] ? ('<div class="medal">'+MEDALS[rank]+'</div>') : ('<div class="rank">'+rank+'</div>');
+      var sol = solutions[tkey(s.teamName)];
+      var lateTag = (sol && sol.late) ? ' <span class="late">LATE +'+fmtClock(sol.overtimeSec||0)+'</span>' : '';
+      var timeTag = (sol && sol.totalTimeSec!=null) ? '  ·  ⏱ '+fmtClock(sol.totalTimeSec) : '';
       return '<div class="row r'+rank+'">'+head+
-        '<div class="team"><div class="nm">'+esc(s.teamName||"—")+'</div>'+
-          '<div class="bd">Injections '+(s.i1||0)+' / '+(s.i2||0)+' / '+(s.i3||0)+'  ·  Solution '+(s.solution||0)+' / 70</div>'+
+        '<div class="team"><div class="nm">'+esc(s.teamName||"—")+lateTag+'</div>'+
+          '<div class="bd">Injections '+(s.i1||0)+' / '+(s.i2||0)+' / '+(s.i3||0)+'  ·  Solution '+(s.solution||0)+' / 70'+timeTag+'</div>'+
           '<div class="bars">'+bars((s.i1||0)+(s.i2||0)+(s.i3||0),30)+'</div>'+
         '</div>'+
         '<div class="total">'+(s.total||0)+'<small> / 100</small></div>'+

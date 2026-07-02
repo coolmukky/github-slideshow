@@ -118,6 +118,9 @@
   .score-row{display:flex;align-items:center;gap:9px;padding:10px 16px;border-top:1px solid var(--line-soft);background:#FAFCFF;flex-wrap:wrap}
   .score-row.muted{color:var(--ink-faint);font-family:"IBM Plex Mono",monospace;font-size:12px}
   .sub-badge{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:#1f6e52;background:var(--green-soft,#D7F0E6);border:1px solid #A9DEC9;border-radius:20px;padding:3px 9px}
+  .time-badge{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-soft);background:#EEF3F9;border:1px solid var(--line-soft);border-radius:20px;padding:3px 9px}
+  .late-badge{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:600;color:#fff;background:var(--red);border-radius:20px;padding:3px 9px}
+  .em-diag{max-width:100%;max-height:300px;border-radius:10px;border:1px solid var(--line);display:block}
   .score-big{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:16px;color:var(--ink)}
   .score-big small{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:11px;color:var(--ink-faint)}
   .rank-badge{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:700;color:#fff;background:var(--navy);border-radius:20px;padding:3px 9px}
@@ -341,6 +344,8 @@
           '<button class="mini-btn re" data-eval="'+esc(tk)+'">Re-evaluate</button></div>';
       } else if(sol){
         footer = '<div class="score-row"><span class="sub-badge">Submitted '+fmtTime(sol.submittedAt)+'</span>'+
+          (sol.totalTimeSec!=null?'<span class="time-badge">took '+fmtClock(sol.totalTimeSec)+'</span>':'')+
+          (sol.late?'<span class="late-badge">LATE +'+fmtClock(sol.overtimeSec||0)+'</span>':'')+
           '<button class="mini-btn" data-eval="'+esc(tk)+'">Evaluate</button></div>';
       } else {
         footer = '<div class="score-row muted">No solution submitted yet</div>';
@@ -388,9 +393,10 @@
       var mem = g.members.map(function(p){
         return '<tr><td>'+esc(p.role||"—")+'</td><td>'+esc(p.name||"—")+'</td><td>'+esc(p.email||"")+'</td><td>'+fmtTime(p.joinedAt)+'</td></tr>';
       }).join("");
-      var sc=scores[key];
+      var sc=scores[key], sol=solutions[key];
       var scoreSpan = sc ? ' <span class="score">'+sc.total+'/100'+(ranks[key]?' · #'+ranks[key]:'')+'</span>' : '';
-      return '<div class="rt"><h3>'+esc(g.name)+' <span class="'+(missing.length?"bad":"ok")+'">'+(missing.length?("incomplete — missing "+missing.join(", ")):"complete")+'</span>'+scoreSpan+'</h3>'+
+      var timeSpan = (sol&&sol.totalTimeSec!=null) ? ' <span class="'+(sol.late?'bad':'ok')+'">took '+fmtClock(sol.totalTimeSec)+(sol.late?(' · LATE +'+fmtClock(sol.overtimeSec||0)):'')+'</span>' : '';
+      return '<div class="rt"><h3>'+esc(g.name)+' <span class="'+(missing.length?"bad":"ok")+'">'+(missing.length?("incomplete — missing "+missing.join(", ")):"complete")+'</span>'+scoreSpan+timeSpan+'</h3>'+
         '<table class="mt"><thead><tr><th>Role</th><th>Name</th><th>Email</th><th>Joined</th></tr></thead><tbody>'+mem+'</tbody></table></div>';
     }).join("");
     var roleLine = ["conductor","critic","architect","scribe","facilitator"].map(function(rk){ return ROLE_LABELS[rk]+": <b>"+(roleCounts[rk]||0)+"</b>"; }).join(" &nbsp;·&nbsp; ");
@@ -445,16 +451,23 @@
     var teamName = (sol&&sol.teamName) || (scores[tk]&&scores[tk].teamName) || tk;
     evalKey = tk;
     $("#emTeam").textContent = teamName;
-    $("#emMeta").textContent = sol ? ("Submitted "+fmtTime(sol.submittedAt)+(sol.submittedByName?(" · by "+sol.submittedByName):"")) : "No submission on record";
+    var meta = sol ? ("Submitted "+fmtTime(sol.submittedAt)+(sol.submittedByName?(" · by "+sol.submittedByName):"")+(sol.totalTimeSec!=null?(" · took "+fmtClock(sol.totalTimeSec)):"")+(sol.late?("  ⚠ LATE +"+fmtClock(sol.overtimeSec||0)):"")) : "No submission on record";
+    $("#emMeta").textContent = meta;
+    $("#emMeta").style.color = (sol&&sol.late) ? "var(--red)" : "";
     var solEl=$("#emSolution");
+    var parts=[];
+    if(sol && typeof sol.diagram==="string" && sol.diagram.indexOf("data:image")===0){
+      parts.push('<div class="em-field"><div class="k">Diagram</div><img class="em-diag" src="'+sol.diagram+'" alt="team diagram"></div>');
+    }
     if(sol && sol.fields && sol.fields.length){
-      solEl.innerHTML = sol.fields.map(function(f){
+      parts.push(sol.fields.map(function(f){
         var v=(f.value||"").trim();
         return '<div class="em-field"><div class="k">'+esc(f.label)+'</div><div class="v'+(v?'':' empty')+'">'+(v?esc(v):"— left blank —")+'</div></div>';
-      }).join("");
-    } else {
-      solEl.innerHTML = '<div class="em-field"><div class="v empty">This team hasn\'t submitted a solution sheet. You can still score from their diagram / discussion.</div></div>';
+      }).join(""));
+    } else if(!parts.length){
+      parts.push('<div class="em-field"><div class="v empty">This team hasn\'t submitted a solution sheet. You can still score from their diagram / discussion.</div></div>');
     }
+    solEl.innerHTML = parts.join("");
     $("#emI1").value = sc?sc.i1:""; $("#emI2").value = sc?sc.i2:""; $("#emI3").value = sc?sc.i3:"";
     $("#emSol").value = sc?sc.solution:""; $("#emNotes").value = sc?(sc.notes||""):"";
     emUpdateTotal();

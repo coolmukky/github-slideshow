@@ -37,8 +37,9 @@ the in-session phase/time cues live on the participant page itself.)
 
 ## After the clock (10 min)
 
-- [ ] Teams fill the solution sheet and click **Submit for scoring** (each team submits once; the last submit wins).
-- [ ] On **proctor**, each submitted team shows an **Evaluate** button → open it to read their solution and score **3 injections (10 each) + final solution (70) = 100**. Scores appear live on **`leaderboard.html`** (project it).
+- [ ] Teams fill the solution sheet, optionally **Attach diagram** (a photo of their topology), and click **Submit for scoring** (last submit wins). Participants get **5-min and 1-min** warnings automatically.
+- [ ] **Late is allowed:** teams can still submit after 60:00 — the submission records **total time taken** and is flagged **LATE +overtime** (not auto-penalized; you decide how to weigh it).
+- [ ] On **proctor**, each submitted team shows an **Evaluate** button → open it to see their **diagram + solution + time taken** and score **3 injections (10 each) + final solution (70) = 100**. Scores appear live on **`leaderboard.html`** (project it).
 - [ ] On **proctor**, click **Report** → **Print / Save as PDF** for a per-team record (now includes scores), or **Export CSV** for raw data.
 - [ ] Run the 10-minute debrief (reference design is in the participant page's Debrief section).
 
