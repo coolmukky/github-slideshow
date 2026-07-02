@@ -440,6 +440,7 @@
   .fb-btn svg{width:14px;height:14px;stroke-width:2.2}
   .fb-btn.icon{padding:8px 10px}
   .fb-btn[aria-pressed="false"]{opacity:.55}
+  .fb-btn:disabled{opacity:.5;cursor:not-allowed}
   @media (max-width:880px){
     .facilbar{flex-wrap:wrap;min-height:0;padding:8px 12px;gap:9px}
     body.has-bar{padding-top:104px}
@@ -1815,6 +1816,47 @@
     CUES.forEach(function(c,i){ if(elapsed>=c.sec) fired["cue"+i]=true; });
     INJ.forEach(function(j,i){ if(elapsed>=j.sec) fired["inj"+i]=true; });
   }
+  function primeFiredUpTo(e){ fired={}; CUES.forEach(function(c,i){ if(e>=c.sec) fired["cue"+i]=true; }); INJ.forEach(function(j,i){ if(e>=j.sec) fired["inj"+i]=true; }); }
+
+  // ---------- proctor-controlled clock (a proctor "starts the event for all") ----------
+  var proctorControlled=false, ctrl=null, primedForRun=null, ctrlTicker=null;
+  function elapsedFromCtrl(){
+    if(!ctrl || ctrl.status==="idle") return 0;
+    if(ctrl.status==="running") return Math.min(TOTAL, (ctrl.baseElapsedSec||0) + (Date.now()-(ctrl.startedAtMs||Date.now()))/1000);
+    return Math.min(TOTAL, ctrl.baseElapsedSec||0); // paused
+  }
+  function updateControlUI(){
+    var b=$("#btnStart"), lbl=$("#btnStartLabel"), sk=$("#btnSkip"), rs=$("#btnReset");
+    if(proctorControlled){
+      b.disabled=true; sk.disabled=true; rs.disabled=true;
+      b.title=sk.title=rs.title="The proctor controls the timer for everyone";
+      lbl.textContent = ctrl && ctrl.status==="running" ? "Live" : (ctrl && ctrl.status==="paused" ? "Paused" : "Waiting");
+    } else {
+      b.disabled=false; sk.disabled=false; rs.disabled=false;
+    }
+  }
+  function controlledTick(){
+    elapsed=elapsedFromCtrl(); running=(ctrl && ctrl.status==="running");
+    render(); checkEvents(); updateControlUI();
+  }
+  function applyControl(doc){
+    if(!doc) return; // no central session -> stay in local mode
+    proctorControlled=true; ctrl=doc;
+    if(ticker){ clearInterval(ticker); ticker=null; } // local timer yields to the proctor
+    if(doc.status==="idle"){
+      if(primedForRun!=="idle"){ fired={}; INJ.forEach(function(j){ j.manual=false; }); toastWrap.innerHTML=""; primedForRun="idle"; }
+      elapsed=0;
+    } else if(primedForRun !== doc.runId){ // a new run started (or we just joined mid-run)
+      elapsed=elapsedFromCtrl();
+      primeFiredUpTo(elapsed);                 // don't replay past cues; future crossings still fire
+      INJ.forEach(function(j){ j.manual=false; });
+      if(elapsed<2){ toastWrap.innerHTML=""; toast("Session started","The proctor started the 60 minutes — Phase 0 · Brief-In begins now.","phase","00:00"); }
+      primedForRun=doc.runId;
+    }
+    elapsed=elapsedFromCtrl(); running=(doc.status==="running");
+    if(!ctrlTicker) ctrlTicker=setInterval(controlledTick, 250);
+    updateControlUI(); render(); checkEvents();
+  }
 
   // ---------- audio chimes ----------
   function initAudio(){
@@ -1907,8 +1949,8 @@
       $("#barNext").textContent = fmt(leftInPhase)+" left in phase · "+nextTxt;
     }
 
-    // start button label
-    $("#btnStartLabel").textContent = running ? "Pause" : (elapsed>0 && elapsed<TOTAL ? "Resume" : "Start");
+    // start button label (skipped while proctor-controlled — updateControlUI owns it)
+    if(!proctorControlled) $("#btnStartLabel").textContent = running ? "Pause" : (elapsed>0 && elapsed<TOTAL ? "Resume" : "Start");
 
     // board stops
     STOPS.forEach(function(s,i){
@@ -1968,11 +2010,13 @@
 
   // ---------- controls ----------
   $("#btnStart").addEventListener("click", function(){
+    if(proctorControlled) return;
     initAudio();
     if(running){ stop(); }
     else { if(elapsed===0) toast("Session started","60 minutes on the clock — Phase 0 · Brief-In begins now.","phase","00:00"); startTimer(); }
   });
   $("#btnSkip").addEventListener("click", function(){
+    if(proctorControlled) return;
     var idx=currentPhaseIndex();
     if(idx>=PHASES.length) return;
     var nextStart = (idx+1<=PHASES.length-1) ? PHASES[idx+1].start*60 : TOTAL;
@@ -1981,6 +2025,7 @@
     render(); checkEvents(); save();
   });
   $("#btnReset").addEventListener("click", function(){
+    if(proctorControlled) return;
     if(!confirm("Reset the session clock to 00:00 and re-seal all injections?\n\n(Your checklists and solution sheet are kept.)")) return;
     stop(); elapsed=0; fired={};
     INJ.forEach(function(j){ j.manual=false; });
@@ -2121,6 +2166,7 @@
     window.ZTDSRoster.init(ROOM).then(function(a){
       roster=a;
       if(persona && persona.role && persona.role!=="facilitator" && persona.email && persona.team){ try{ roster.write("players", rosterRecord(persona)); }catch(e){} }
+      try{ roster.watch("control", ROOM, function(d){ var doc=(d&&d[0])||null; applyControl(doc); }); }catch(e){}
     });
   }
   var pl=$("#pmProctorLink"); if(pl) pl.href="proctor.html"+(ROOM!=="default"?("?room="+encodeURIComponent(ROOM)):"");
