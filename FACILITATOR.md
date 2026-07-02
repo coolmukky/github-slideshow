@@ -38,8 +38,9 @@ the in-session phase/time cues live on the participant page itself.)
 
 ## After the clock (10 min)
 
-- [ ] Teams submit their diagram + solution sheet per the activity.
-- [ ] On **proctor**, click **Report** → **Print / Save as PDF** for a per-team participant record, or **Export CSV** for raw data.
+- [ ] Teams fill the solution sheet and click **Submit for scoring** (each team submits once; the last submit wins).
+- [ ] On **proctor**, each submitted team shows an **Evaluate** button → open it to read their solution and score **3 injections (10 each) + final solution (70) = 100**. Scores appear live on **`leaderboard.html`** (project it).
+- [ ] On **proctor**, click **Report** → **Print / Save as PDF** for a per-team record (now includes scores), or **Export CSV** for raw data.
 - [ ] Run the 10-minute debrief (reference design is in the participant page's Debrief section).
 
 ## Cleanup (privacy)

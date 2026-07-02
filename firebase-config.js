@@ -18,6 +18,7 @@
       records contain participant emails (PII).
 
         rules_version = '2';
+        rules_version = '2';
         service cloud.firestore {
           match /databases/{database}/documents {
             match /players/{id} {
@@ -27,6 +28,20 @@
                 request.resource.data.name.size() < 120 &&
                 request.resource.data.email.size() < 200 &&
                 request.resource.data.teamName.size() < 120;
+              allow delete: if false;
+            }
+            match /solutions/{id} {
+              allow read: if true;
+              allow create, update: if
+                request.resource.data.teamName is string &&
+                request.resource.data.teamName.size() < 120;
+              allow delete: if false;
+            }
+            match /scores/{id} {
+              allow read: if true;
+              allow create, update: if
+                request.resource.data.teamName is string &&
+                request.resource.data.total is number;
               allow delete: if false;
             }
           }

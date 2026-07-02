@@ -5,7 +5,8 @@ roster, and confirm it works. The activity **works without Firebase** (single-de
 mode); Firebase only adds the shared, cross-device proctor roster.
 
 - **Participant page:** `zero-trust-design-sprint.html`
-- **Proctor roster:** `proctor.html`
+- **Proctor roster & evaluation:** `proctor.html`
+- **Leaderboard:** `leaderboard.html`
 - **Config file:** `firebase-config.js`
 
 ---
@@ -54,12 +55,29 @@ service cloud.firestore {
         request.resource.data.teamName.size() < 120;
       allow delete: if false;
     }
+    match /solutions/{id} {
+      allow read: if true;
+      allow create, update: if
+        request.resource.data.teamName is string &&
+        request.resource.data.teamName.size() < 120;
+      allow delete: if false;
+    }
+    match /scores/{id} {
+      allow read: if true;
+      allow create, update: if
+        request.resource.data.teamName is string &&
+        request.resource.data.total is number;
+      allow delete: if false;
+    }
   }
 }
 ```
 
-Allows participants to register and the proctor to read; blocks client-side deletes; caps
-field sizes. **Do not leave Firestore in open "test mode"** — that exposes participant emails.
+Covers three collections: `players` (roster), `solutions` (submitted design sheets), and
+`scores` (proctor evaluations). Allows registering/submitting/scoring and reading; blocks
+client-side deletes. **Do not leave Firestore in open "test mode"** — that exposes participant
+emails. **If you published an earlier players-only version of these rules, re-publish this one**
+or solution submissions and scores will be rejected.
 
 ### 2d. (Optional) Restrict the API key — defense-in-depth  ⬜
 Google Cloud Console → **APIs & Services → Credentials** → project `design-clinic-58ad0` →
@@ -94,6 +112,11 @@ Troubleshooting:
   timed injection reveals; the proctor page is a separate live roster.
 - **Reports:** on `proctor.html`, use **Export CSV** for raw data or **Report** for a printable
   (PDF-ready) participant summary with per-team completeness. Scales to ~300 participants.
+- **Scoring & leaderboard:** teams click **Submit for scoring** on the participant page (after
+  taking a seat with a team). On `proctor.html`, each submitted team shows an **Evaluate** button —
+  open it to read their solution and score 3 injections (10 each) + final solution (70) = 100.
+  Scores rank teams live on **`leaderboard.html`** (project it on the shared screen). Evaluation is
+  manual by the proctor. *(AI-agent evaluation is not enabled in this version.)*
 
 ## 5. Privacy / after the session
 

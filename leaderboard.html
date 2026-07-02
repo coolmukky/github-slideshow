@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leaderboard — Zero Trust Agentic Design Sprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --surface:#FFFFFF;--ink:#0E1A2B;--ink-soft:#46566E;--ink-faint:#7E8CA1;
+    --line:#CBD5E3;--line-soft:#E1E8F1;--navy:#122A47;--navy-deep:#0A1830;
+    --cyan:#0FA9BE;--cyan-deep:#0A7C8C;--amber:#E2891F;--red:#DB4A4A;--green:#27A276;
+    --gold:#E9B949;--silver:#AEB6C2;--bronze:#C88A5B;
+    --shadow:0 1px 0 rgba(14,26,43,.04), 0 18px 40px -28px rgba(14,26,43,.55);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"IBM Plex Sans",system-ui,sans-serif;color:var(--ink);background:#F3F6FA;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:"Chakra Petch",sans-serif;margin:0;line-height:1.1}
+  .wrap{max-width:900px;margin:0 auto;padding:0 22px}
+  .top{background:radial-gradient(120% 160% at 88% -20%,#1c3a5e 0%,var(--navy) 45%,var(--navy-deep) 100%);color:#EAF1F8;border-bottom:3px solid var(--cyan)}
+  .top-in{padding:26px 0 24px;display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:#7FE2EF}
+  .top h1{font-size:clamp(26px,4.5vw,42px);font-weight:700;color:#fff;margin:.25em 0 .1em}
+  .top .sub{color:#AEC4DC;font-size:14px}
+  .top .spacer{flex:1}
+  .status{display:inline-flex;align-items:center;gap:8px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:#AEC4DC}
+  .status .dot{width:9px;height:9px;border-radius:50%;background:#7E8CA1}
+  .status.live .dot{background:var(--green);box-shadow:0 0 0 3px rgba(39,162,118,.25);animation:pulse 1.4s infinite}
+  .status.local .dot{background:var(--amber)}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+  .board{margin:22px 0 40px;display:flex;flex-direction:column;gap:10px}
+  .row{display:flex;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 18px;box-shadow:var(--shadow);border-left:6px solid var(--line)}
+  .row.r1{border-left-color:var(--gold)}
+  .row.r2{border-left-color:var(--silver)}
+  .row.r3{border-left-color:var(--bronze)}
+  .rank{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:26px;color:var(--ink-faint);min-width:44px;text-align:center}
+  .row.r1 .rank,.row.r2 .rank,.row.r3 .rank{color:var(--ink)}
+  .medal{font-size:24px;min-width:44px;text-align:center}
+  .team{flex:1;min-width:0}
+  .team .nm{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:19px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .team .bd{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-faint);margin-top:2px}
+  .bars{display:flex;gap:3px;margin-top:7px;max-width:320px}
+  .bars i{height:6px;border-radius:3px;background:var(--line-soft)}
+  .bars i.f{background:var(--cyan)}
+  .total{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:30px;color:var(--ink);white-space:nowrap}
+  .total small{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;color:var(--ink-faint)}
+
+  .empty{margin:56px auto;max-width:520px;text-align:center;color:var(--ink-soft)}
+  .empty svg{width:46px;height:46px;color:var(--ink-faint);margin-bottom:12px}
+  .empty h3{font-size:18px;margin-bottom:6px;color:var(--ink)}
+  .note{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-faint);text-align:center;margin-top:6px}
+  .foot{margin:26px 0;text-align:center;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-faint)}
+  .foot a{color:var(--cyan-deep)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-in">
+    <div>
+      <span class="eyebrow">Zero Trust Agentic Design Sprint</span>
+      <h1>🏆 Leaderboard</h1>
+      <div class="sub">Team scores — 3 injections (10 each) + final solution (70) = 100. Updates live.</div>
+    </div>
+    <div class="spacer"></div>
+    <span class="status" id="status"><span class="dot"></span><span id="statusText">Connecting…</span></span>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="board" id="board"></div>
+  <div class="empty" id="empty" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 21V10M12 21V4M18 21v-7"/></svg>
+    <h3>No scores yet</h3>
+    <p>Teams appear here as the proctor evaluates them. Scores update automatically.</p>
+  </div>
+  <div class="note" id="pending" hidden></div>
+  <div class="foot">Room: <b id="footRoom">default</b> · <a href="proctor.html">Proctor view →</a></div>
+</div>
+
+<script src="firebase-config.js"></script>
+<script src="roster.js"></script>
+<script>
+(function(){
+  "use strict";
+  var $=function(s){return document.querySelector(s);};
+  var ROOM=(new URLSearchParams(location.search)).get("room")||"default";
+  $("#footRoom").textContent=ROOM;
+  var scores={}, solutions={};
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+  function tkey(t){ return (t==null?"":String(t)).trim().toLowerCase(); }
+  var MEDALS={1:"🥇",2:"🥈",3:"🥉"};
+
+  function bars(n,max){ var out=""; for(var i=0;i<max;i++){ out+='<i class="'+(i<n?'f':'')+'" style="flex:1"></i>'; } return out; }
+
+  function render(){
+    var list=Object.keys(scores).map(function(k){ return scores[k]; });
+    list.sort(function(a,b){ return (b.total||0)-(a.total||0) || String(a.teamName||"").localeCompare(String(b.teamName||"")); });
+    var board=$("#board");
+    if(!list.length){ board.innerHTML=""; $("#empty").hidden=false; $("#pending").hidden=true; return; }
+    $("#empty").hidden=true;
+    board.innerHTML=list.map(function(s,i){
+      var rank=i+1;
+      var head = MEDALS[rank] ? ('<div class="medal">'+MEDALS[rank]+'</div>') : ('<div class="rank">'+rank+'</div>');
+      return '<div class="row r'+rank+'">'+head+
+        '<div class="team"><div class="nm">'+esc(s.teamName||"—")+'</div>'+
+          '<div class="bd">Injections '+(s.i1||0)+' / '+(s.i2||0)+' / '+(s.i3||0)+'  ·  Solution '+(s.solution||0)+' / 70</div>'+
+          '<div class="bars">'+bars((s.i1||0)+(s.i2||0)+(s.i3||0),30)+'</div>'+
+        '</div>'+
+        '<div class="total">'+(s.total||0)+'<small> / 100</small></div>'+
+      '</div>';
+    }).join("");
+    // pending (submitted but not scored)
+    var pend=0; Object.keys(solutions).forEach(function(k){ if(!scores[k]) pend++; });
+    if(pend){ $("#pending").hidden=false; $("#pending").textContent=pend+" team"+(pend===1?"":"s")+" submitted and awaiting scoring."; }
+    else { $("#pending").hidden=true; }
+  }
+
+  render();
+  if(window.ZTDSRoster){
+    window.ZTDSRoster.init(ROOM).then(function(adapter){
+      var live=adapter.mode==="firebase";
+      $("#status").className="status "+(live?"live":"local");
+      $("#statusText").textContent=live?"Live · Firebase":"Single-device (local)";
+      adapter.watch("scores", ROOM, function(d){ scores={}; (d||[]).forEach(function(s){ scores[tkey(s.teamName)]=s; }); render(); });
+      adapter.watch("solutions", ROOM, function(d){ solutions={}; (d||[]).forEach(function(s){ solutions[tkey(s.teamName)]=s; }); render(); });
+    });
+  } else { $("#statusText").textContent="Leaderboard unavailable"; }
+})();
+</script>
+</body>
+</html>
