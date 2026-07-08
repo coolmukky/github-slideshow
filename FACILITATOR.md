@@ -3,36 +3,35 @@
 A one-page guide to **running the digital activity**. (First-time setup is in [`SETUP.md`](./SETUP.md);
 the in-session phase/time cues live on the participant page itself.)
 
-**Links** — replace `ROOM` with a code for this cohort (e.g. `june-am`):
+**Pages:**
 
-- Participant: `https://coolmukky.github.io/github-slideshow/zero-trust-design-sprint.html?room=ROOM`
-- Proctor:     `https://coolmukky.github.io/github-slideshow/proctor.html?room=ROOM`
-
-> Tip: generate a QR code for the participant link so people can join from their phones.
+- Proctor console: `https://coolmukky.github.io/github-slideshow/proctor.html`
+- Participant page: `https://coolmukky.github.io/github-slideshow/zero-trust-design-sprint.html`
+- Leaderboard: `https://coolmukky.github.io/github-slideshow/leaderboard.html`
 
 ---
 
-## Before the session (5 min)
+## Before the session — create the event (2 min)
 
-- [ ] Pages published and Firebase live (see `SETUP.md`; proctor should read **"Live · Firebase"**).
-- [ ] Pick a **room code** and build both links above with `?room=ROOM`.
-- [ ] Open the **proctor** link on your screen; confirm status is **"Live · Firebase"**.
-- [ ] Share the **participant** link / QR with the room.
-- [ ] Decide team names in advance (or let each table choose one) so people group correctly.
+- [ ] Open **`proctor.html`**; confirm status reads **"Live · Firebase"**.
+- [ ] Fill in the **event name**, an optional **scheduled date/time**, and note the auto-generated **event code** (↻ to regenerate). Click **Create event**.
+- [ ] Share the **event code** (and/or the **join link** shown on the console) with participants — a QR of the join link works well on phones.
 
-## Logging everyone in (5 min)
+## Opening for teams to join
 
-- [ ] Participants who open the link **before you open registration** see a **"Waiting for the proctor…"** screen — that's expected.
-- [ ] On **`proctor.html`** press **Open for login**. Everyone's waiting screen clears and they're prompted to take their seat.
-- [ ] Each person clicks **Take your seat**: name, email, **team name**, role — then they sit in a **lobby** (clock at 00:00) until you start it.
-- [ ] Watch the proctor **Event control** readout fill in: **"N logged in · T teams · K/T complete (4 roles)."** Nudge teams to fill missing roles.
+- [ ] Participants who open the page early see a **"Waiting for the proctor…"** screen (or a countdown if you scheduled a time).
+- [ ] When ready, press **Start event** on the proctor. Participants can now take their seat.
+- [ ] Each participant enters the **event code**, then their **name, email, role**, and either:
+  - **Creates a team** (first person): names it and gets a **team code** to share, or
+  - **Joins a team**: enters the **team code** their first teammate shared.
+- [ ] A team is **4 people, one per role** (Conductor, Critic, Architect, Scribe). **Each team's own 60-minute clock starts automatically once all 4 roles are filled.**
+- [ ] Watch the console: **"N joined · T teams · K/T full (4 roles) · R running."** Team cards show each team's code and a live **⏱ time-left**.
 
-## Starting the clock
+## During the hour
 
-- [ ] When everyone's in, press **Start clock** on the proctor. This starts the **single 60-minute clock for all teams at once**; every participant's board begins Phase 0 together.
+- [ ] Each team runs on **its own clock**; boards, phases, and **injection reveals (24/38/50 min)** follow it, with automatic **5-min / 1-min** warnings. Participants' local Start/Pause is locked.
 - [ ] *(Optional)* Ask teams to press **Focus** to hide reference sections — cuts on-page reading ~in half.
-- [ ] Boards, phases, and **injection reveals (24/38/50 min)** run off the shared clock; participants get **5-min and 1-min** warnings automatically. Participants' local Start/Pause is **locked**.
-- [ ] Use **Pause / Resume** on the proctor to hold the whole room; **Reset** sends everyone back to the lobby at 00:00. Keep the proctor tab open to watch the roster throughout.
+- [ ] Need to give a team a fresh 60? On its card press **Reset clock**. Press **Reset** (event) to close the event; **Start event** to reopen.
 
 ## After the clock (10 min)
 

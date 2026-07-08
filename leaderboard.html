@@ -87,7 +87,7 @@
 (function(){
   "use strict";
   var $=function(s){return document.querySelector(s);};
-  var ROOM=(new URLSearchParams(location.search)).get("room")||"default";
+  var ROOM=(new URLSearchParams(location.search)).get("room"); ROOM = ROOM ? ROOM.trim().toUpperCase() : "DEFAULT";
   $("#footRoom").textContent=ROOM;
   var scores={}, solutions={};
   function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
@@ -106,7 +106,7 @@
     board.innerHTML=list.map(function(s,i){
       var rank=i+1;
       var head = MEDALS[rank] ? ('<div class="medal">'+MEDALS[rank]+'</div>') : ('<div class="rank">'+rank+'</div>');
-      var sol = solutions[tkey(s.teamName)];
+      var sol = solutions[s.teamCode||tkey(s.teamName)];
       var lateTag = (sol && sol.late) ? ' <span class="late">LATE +'+fmtClock(sol.overtimeSec||0)+'</span>' : '';
       var timeTag = (sol && sol.totalTimeSec!=null) ? '  ·  ⏱ '+fmtClock(sol.totalTimeSec) : '';
       return '<div class="row r'+rank+'">'+head+
@@ -129,8 +129,8 @@
       var live=adapter.mode==="firebase";
       $("#status").className="status "+(live?"live":"local");
       $("#statusText").textContent=live?"Live · Firebase":"Single-device (local)";
-      adapter.watch("scores", ROOM, function(d){ scores={}; (d||[]).forEach(function(s){ scores[tkey(s.teamName)]=s; }); render(); });
-      adapter.watch("solutions", ROOM, function(d){ solutions={}; (d||[]).forEach(function(s){ solutions[tkey(s.teamName)]=s; }); render(); });
+      adapter.watch("scores", ROOM, function(d){ scores={}; (d||[]).forEach(function(s){ scores[s.teamCode||tkey(s.teamName)]=s; }); render(); });
+      adapter.watch("solutions", ROOM, function(d){ solutions={}; (d||[]).forEach(function(s){ solutions[s.teamCode||tkey(s.teamName)]=s; }); render(); });
     });
   } else { $("#statusText").textContent="Leaderboard unavailable"; }
 })();

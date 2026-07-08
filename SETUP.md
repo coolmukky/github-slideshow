@@ -112,14 +112,16 @@ Troubleshooting:
 
 ## 4. Running a session
 
-- **Multiple rooms/cohorts:** add `?room=CODE` to *both* page URLs to scope a roster to one
-  session, e.g. `…/proctor.html?room=june-cohort` and `…/zero-trust-design-sprint.html?room=june-cohort`.
-- **Two-phase start:** on `proctor.html`, press **Open for login** — participants (who until then
-  see a "Waiting for the proctor…" screen) can now take their seats and sit in a **lobby** at
-  00:00. The proctor shows a readiness readout ("N logged in · T teams · K/T complete"). When
-  everyone's in, press **Start clock** to begin the **single 60-minute clock for all teams at
-  once**. **Pause/Resume** holds the room; **Reset** returns everyone to the lobby. *(If no proctor
-  opens an event, a participant page falls back to a local self-run timer.)*
+- **Create an event:** on `proctor.html`, enter an **event name**, an optional **scheduled start**,
+  and note the generated **event code**; click **Create event**. Share the code (or the join link
+  the console shows). The event code scopes everything (roster, teams, scores) — it's the `?room=`
+  value in the URLs.
+- **Start / join:** press **Start event** to open joining. Participants enter the **event code**,
+  then their details and role, and either **create a team** (get a **team code** to share) or
+  **join a team** (enter that team code). A team is **4 fixed roles** (Conductor, Critic, Architect,
+  Scribe); its own **60-minute clock starts automatically once all 4 roles are filled**.
+- **Proctor controls:** the console shows each team's live **time-left**; **Reset clock** on a team
+  card gives that team a fresh 60:00; **Reset** (event) closes it and **Start event** reopens.
 - **Reports:** on `proctor.html`, use **Export CSV** for raw data or **Report** for a printable
   (PDF-ready) participant summary with per-team completeness. Scales to ~300 participants.
 - **Scoring & leaderboard:** teams click **Submit for scoring** on the participant page (after
