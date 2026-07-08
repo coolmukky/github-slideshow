@@ -38,8 +38,10 @@ So the topic isn't cold, these are the Zero Trust controls a strong design appli
 Don't worry about mastering these — the exercise is about applying and defending them as a team.
 
 ## To join (takes 30 seconds)
-1. Open the participant link your facilitator shares.
-2. Click **Take your seat** → enter your **name, email, team name**, and pick your **role**.
-3. That's it — the facilitator starts the clock.
+1. Open the participant link and enter the **event code** your facilitator shares.
+2. Enter your **name, email**, and pick your **role**, then:
+   - **First on your team?** Choose **Create a team**, name it, and you'll get a **team code** — share it with your 3 teammates.
+   - **Joining teammates?** Choose **Join a team** and enter that **team code**.
+3. Your team is **4 people, one per role**. Your **60-minute clock starts automatically once all four of you have joined** — no need to press anything.
 
 See you there. 🚀
