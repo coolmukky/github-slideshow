@@ -14,10 +14,10 @@ Take a company drowning in over-privileged AI agents and redesign it so every ag
 own identity, only the access it needs, a checkpoint on every action, and a full audit trail.
 
 ## Pick a role (you'll choose at the start)
-- **Conductor** — owns the clock; keeps the team on pace.
-- **Critic** — challenges decisions: "what would make this fail?"
-- **Architect** — draws the topology diagram.
-- **Scribe** — writes the one-page solution sheet.
+- **IT Director** — owns the clock; keeps the team on pace.
+- **Digital Resiliency Officer** — challenges decisions: "what would make this fail?"
+- **Network Architect** — draws the topology diagram.
+- **Network Security** — writes the one-page solution sheet.
 
 *(Teams of 3 or 5 adapt — the facilitator will say how.)*
 
