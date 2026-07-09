@@ -680,6 +680,7 @@
       <input id="woCode" type="text" placeholder="EVENT CODE" maxlength="8" autocomplete="off">
       <button type="submit" class="fb-btn primary">Join event</button>
     </form>
+    <button class="fb-btn ghost" id="woChange" hidden style="margin-top:14px">Change code</button>
   </div>
 </div>
 
@@ -1878,6 +1879,7 @@
   // Team control doc (id=ROOM__<teamCode>): {teamCode, teamName, size, startedAt}. The first
   // member creates it (and shares the code); teammates join with the code; the team's 60-min
   // clock auto-starts once `size` members have joined. Proctor can restart a team's clock.
+  var gotControl=false;
   var managed=false, eventOpen=false, eventName="", scheduledAt=0, teamStartedAt=null,
       evTicker=null, lastControlDocs=[], eventDoc=null, allPlayers=[];
   var CORE_ROLES=["conductor","critic","architect","scribe"];
@@ -1915,6 +1917,7 @@
   }
   function managedTick(){ reconcileTeamStart(); elapsed=evElapsed(); running=(managed&&eventOpen&&!!teamStartedAt&&elapsed<TOTAL); render(); checkEvents(); updateManagedUI(); renderWait(); }
   function applyControlDocs(docs){
+    gotControl = true;
     lastControlDocs = docs || [];
     eventDoc = lastControlDocs.filter(function(x){ return x.id===ROOM; })[0] || null;
     managed = !!eventDoc; var prevOpen=eventOpen;
@@ -2315,22 +2318,28 @@
   function fmtCountdown(ms){ ms=Math.max(0,ms); var s=Math.round(ms/1000), h=Math.floor(s/3600), m=Math.floor((s%3600)/60), ss=s%60; function p(n){return (n<10?"0":"")+n;} return (h>0?(h+":"):"")+p(m)+":"+p(ss); }
   function renderWait(){
     var ov=$("#waitOverlay"); if(!ov) return;
-    var form=$("#woCodeForm"), cd=$("#woCountdown"), spin=$("#woSpin");
+    var form=$("#woCodeForm"), cd=$("#woCountdown"), spin=$("#woSpin"), chg=$("#woChange");
     if(!ROOM){
-      ov.hidden=false; form.hidden=false; cd.hidden=true; spin.style.display="none";
+      ov.hidden=false; form.hidden=false; cd.hidden=true; chg.hidden=true; spin.style.display="none";
       $("#woEyebrow").textContent="Join an event"; $("#woTitle").textContent="Enter your event code";
       $("#woMsg").textContent="Your proctor shared an event code — type it in to join.";
       return;
     }
-    form.hidden=true; spin.style.display="";
+    form.hidden=true; cd.hidden=true; chg.hidden=false;   // "Change code" available whenever we're on a code but not in
     if(!eventOpen){
       ov.hidden=false; $("#woEyebrow").textContent=eventName||("Event "+ROOM);
-      if(scheduledAt && Date.now()<scheduledAt){
-        $("#woTitle").textContent="Starting soon"; cd.hidden=false; cd.textContent=fmtCountdown(scheduledAt-Date.now());
+      if(!gotControl){                                    // still connecting
+        spin.style.display=""; $("#woTitle").textContent="Connecting…"; $("#woMsg").textContent="Joining event "+ROOM+"…"; chg.hidden=true;
+      } else if(!managed){                                // connected, but no such event -> wrong code
+        spin.style.display="none"; $("#woEyebrow").textContent="Check the code";
+        $("#woTitle").textContent="No event found for “"+ROOM+"”";
+        $("#woMsg").textContent="That code doesn't match an event. Double-check it with your proctor (codes are letters and numbers), then try again.";
+      } else if(scheduledAt && Date.now()<scheduledAt){   // exists, scheduled
+        spin.style.display=""; $("#woTitle").textContent="Starting soon"; cd.hidden=false; cd.textContent=fmtCountdown(scheduledAt-Date.now());
         $("#woMsg").textContent="“"+(eventName||"The event")+"” is scheduled for "+new Date(scheduledAt).toLocaleString()+". The proctor opens it then.";
-      } else {
-        $("#woTitle").textContent="Waiting for the proctor…"; cd.hidden=true;
-        $("#woMsg").textContent = managed ? ("“"+(eventName||"The event")+"” — the proctor will open registration shortly. Then take your seat.") : ("Joined event "+ROOM+". Waiting for the proctor to create/open it…");
+      } else {                                            // exists, closed
+        spin.style.display=""; $("#woTitle").textContent="Waiting for the proctor…";
+        $("#woMsg").textContent="“"+(eventName||"The event")+"” — the proctor will open registration shortly. Then take your seat.";
       }
       return;
     }
@@ -2340,6 +2349,7 @@
     e.preventDefault(); var v=($("#woCode").value||"").trim().toUpperCase();
     if(v) location.search="?room="+encodeURIComponent(v);
   });
+  $("#woChange").addEventListener("click", function(){ location.search=""; });  // back to the code-entry screen
 
   // build role buttons
   Object.keys(ROLES).forEach(function(key){
