@@ -170,7 +170,7 @@
   .phase-body > .lbl{font-family:"IBM Plex Mono";font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin:2px 0 9px}
   .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin-bottom:6px}
   .act{display:flex;gap:9px;font-size:13.5px;color:var(--ink-soft);padding:5px 0}
-  .act .chip{font-family:"IBM Plex Mono";font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#fff;border-radius:5px;padding:3px 6px;height:fit-content;white-space:nowrap;margin-top:1px}
+  .act .chip{font-family:"IBM Plex Mono";font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#fff;border-radius:5px;padding:3px 6px;height:fit-content;white-space:normal;overflow-wrap:break-word;flex:0 0 auto;max-width:42%;margin-top:1px}
   .chip.con{background:var(--amber)} .chip.thr{background:var(--red)} .chip.arc{background:var(--cyan)} .chip.scr{background:var(--green)} .chip.all{background:var(--navy)}
   .timecheck{display:flex;align-items:center;gap:11px;background:var(--amber-soft);border:1px solid #F0CE97;border-radius:10px;padding:10px 14px;margin-top:13px}
   .timecheck svg{width:18px;height:18px;color:var(--amber);flex-shrink:0}
@@ -700,7 +700,7 @@
       <button type="button" class="pm-tab" id="pmTabJoin">🔑 Join a team</button>
     </div>
     <div class="pm-teamsec" id="pmCreateSec">
-      <p class="pm-hint">You're the <b>first on your team</b>. Name it — you'll get a <b>team code</b> to share with your 3 teammates. A team is <b>4 people, one per role</b> (IT Director, Digital Resiliency Officer, Network Architect, Network Security); your clock starts once all 4 roles are filled.</p>
+      <p class="pm-hint">You're the <b>first on your team</b>. Name it — you'll get a <b>team code</b> to share with your 3 teammates. A team is <b>4 people, one per role</b> (IT Director, Digital Resiliency Officer, Network Architect, Network Security Engineer); your clock starts once all 4 roles are filled.</p>
       <div class="pm-fields">
         <label class="pm-field pm-wide"><span>Team name</span><input id="pmTeam" type="text" placeholder="e.g. Blue Team" maxlength="60" autocomplete="off"></label>
       </div>
@@ -926,11 +926,11 @@
       <span class="sec-no">ROLES</span>
       <h2>Four roles, no passengers</h2>
     </div>
-    <p class="sec-sub">Everyone leads one phase and carries one standing job for the whole hour. Pick roles in the first two minutes. If you're a team of three, the IT Director also runs the Network Security's standing job; with five, add a second Digital Resiliency Officer. The Digital Resiliency Officer's job is to challenge decisions and spark dialogue — not to block — modelled on the "scientific critic" role used in multi-agent research.</p>
+    <p class="sec-sub">Everyone leads one phase and carries one standing job for the whole hour. Pick roles in the first two minutes. If you're a team of three, the IT Director also runs the Network Security Engineer's standing job; with five, add a second Digital Resiliency Officer. The Digital Resiliency Officer's job is to challenge decisions and spark dialogue — not to block — modelled on the "scientific critic" role used in multi-agent research.</p>
     <div class="grid g4">
       <div class="card role" style="--rc:var(--amber);--rc-ink:#a3640f">
         <span class="rtag">Owns the clock</span>
-        <h3>The IT Director</h3>
+        <h3>IT Director</h3>
         <div class="owns">LEADS · P0 Brief-In &amp; P5 Submit</div>
         <ul>
           <li>Reads instructions aloud, keeps the team on the track.</li>
@@ -941,7 +941,7 @@
       </div>
       <div class="card role" style="--rc:var(--red);--rc-ink:#b53636">
         <span class="rtag">Owns the challenge</span>
-        <h3>The Digital Resiliency Officer</h3>
+        <h3>Digital Resiliency Officer</h3>
         <div class="owns">LEADS · P1 Expose</div>
         <ul>
           <li>Challenges each decision — "what would make this fail?" — to spark dialogue, not to block.</li>
@@ -952,7 +952,7 @@
       </div>
       <div class="card role" style="--rc:var(--cyan);--rc-ink:#0a7c8c">
         <span class="rtag">Owns the design</span>
-        <h3>The Network Architect</h3>
+        <h3>Network Architect</h3>
         <div class="owns">LEADS · P3 Design</div>
         <ul>
           <li>Holds the pen, draws the topology, keeps it legible.</li>
@@ -963,7 +963,7 @@
       </div>
       <div class="card role" style="--rc:var(--green);--rc-ink:#1f8a63">
         <span class="rtag">Owns the write-up</span>
-        <h3>The Network Security</h3>
+        <h3>Network Security Engineer</h3>
         <div class="owns">LEADS · P4 Document</div>
         <ul>
           <li>Captures every key decision the moment it's made.</li>
@@ -989,9 +989,9 @@
           <li><span class="qty">×1</span><div><b>Scenario Dossier</b><small>The company, its agents, and its current posture — shared with everyone.</small></div></li>
           <li><span class="qty">×1</span><div><b>This Playbook / Instruction Card</b><small>Phases, roles, rubric, time cues — visible to the whole table.</small></div></li>
           <li><span class="qty">×3</span><div><b>Injection Cards (sealed)</b><small>Held face-down by the IT Director; opened only at their cue time.</small></div></li>
-          <li><span class="qty">×4</span><div><b>Role Cards</b><small>One per person — IT Director, Digital Resiliency Officer, Network Architect, Network Security.</small></div></li>
+          <li><span class="qty">×4</span><div><b>Role Cards</b><small>One per person — IT Director, Digital Resiliency Officer, Network Architect, Network Security Engineer.</small></div></li>
           <li><span class="qty">×1</span><div><b>Diagram Canvas + markers</b><small>One large sheet the Network Architect draws on; everyone contributes.</small></div></li>
-          <li><span class="qty">×1</span><div><b>Solution Sheet template</b><small>The single page the Network Security completes for the team.</small></div></li>
+          <li><span class="qty">×1</span><div><b>Solution Sheet template</b><small>The single page the Network Security Engineer completes for the team.</small></div></li>
         </ul>
       </div>
       <div>
@@ -1018,7 +1018,7 @@
           <tr><td><b>Role cards</b></td><td>Each person</td><td>That person</td><td class="w">Before 00:00</td></tr>
           <tr><td><b>Injection 01 / 02 / 03</b></td><td>IT Director (sealed)</td><td>Everyone, on reveal</td><td class="w">24:00 / 38:00 / 50:00</td></tr>
           <tr><td><b>Diagram canvas</b></td><td>Network Architect holds the pen</td><td>Everyone contributes</td><td class="w">From 33:00</td></tr>
-          <tr><td><b>Solution sheet</b></td><td>Network Security writes it</td><td>Everyone contributes</td><td class="w">Throughout, finalised 48:00–56:00</td></tr>
+          <tr><td><b>Solution sheet</b></td><td>Network Security Engineer writes it</td><td>Everyone contributes</td><td class="w">Throughout, finalised 48:00–56:00</td></tr>
           <tr><td><b>Reference design / answer key</b></td><td>Facilitator / SME</td><td>The team</td><td class="w">Debrief only (after 60:00)</td></tr>
         </tbody>
       </table>
@@ -1049,7 +1049,7 @@
         </div>
         <div class="step">
           <div class="sn">4</div>
-          <div><span class="who con">IT Director reads aloud</span><h4>Read the four roles and claim them</h4><p>The IT Director reads each role card aloud — IT Director, Digital Resiliency Officer, Network Architect, Network Security — and the team claims them as they're read. <b>Whoever is keenest on a role takes it.</b> The IT Director keeps their own role. See the box on the right if two people want the same one.</p></div>
+          <div><span class="who con">IT Director reads aloud</span><h4>Read the four roles and claim them</h4><p>The IT Director reads each role card aloud — IT Director, Digital Resiliency Officer, Network Architect, Network Security Engineer — and the team claims them as they're read. <b>Whoever is keenest on a role takes it.</b> The IT Director keeps their own role. See the box on the right if two people want the same one.</p></div>
         </div>
         <div class="step">
           <div class="sn">5</div>
@@ -1106,7 +1106,7 @@
           <div class="act"><span class="chip con">IT Director</span> Start the timer at 00:00, then read the scenario dossier out loud so everyone hears the same story.</div>
           <div class="act"><span class="chip all">Everyone</span> Confirm the roles you claimed in Start Here — don't re-debate them.</div>
           <div class="act"><span class="chip thr">Digital Resiliency Officer</span> Say out loud the one risk that worries you most — you'll lead the hunt for more next.</div>
-          <div class="act"><span class="chip scr">Network Security</span> Write the team's mission in one sentence at the top of the solution sheet.</div>
+          <div class="act"><span class="chip scr">Network Security Engineer</span> Write the team's mission in one sentence at the top of the solution sheet.</div>
         </div>
         <div class="timecheck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><p><b>@ 06:00</b> — everyone can restate the mission in one sentence. <b>@ 08:00</b> IT Director says "moving to Expose" and the team starts Phase 1.</p></div>
         <div class="exit"><b>Exit criteria</b>Scenario understood · everyone can state the company's problem in one sentence · the one-line mission is written on the sheet.</div>
@@ -1134,7 +1134,7 @@
         <div class="acts">
           <div class="act"><span class="chip thr">Digital Resiliency Officer</span> Go around the table — each person names one weakness in the current setup, with no repeats.</div>
           <div class="act"><span class="chip arc">Network Architect</span> Sort the weaknesses as they're called into three buckets: identity, network, and audit.</div>
-          <div class="act"><span class="chip scr">Network Security</span> Write the 5–7 strongest pain points on the sheet as the team names them.</div>
+          <div class="act"><span class="chip scr">Network Security Engineer</span> Write the 5–7 strongest pain points on the sheet as the team names them.</div>
           <div class="act"><span class="chip con">IT Director</span> At 14:00, stop the listing and have everyone agree on the worst 2–3.</div>
         </div>
         <div class="timecheck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><p><b>@ 14:00</b> — stop listing, start ranking. <b>@ 20:00</b> hard stop: the top risks are circled and you move to Decide.</p></div>
@@ -1164,7 +1164,7 @@
           <div class="act"><span class="chip all">Everyone</span> For each top pain point, agree on one specific control that fixes it.</div>
           <div class="act"><span class="chip arc">Network Architect</span> Say the core building blocks out loud: agent identity, a policy checkpoint, network segmentation.</div>
           <div class="act"><span class="chip thr">Digital Resiliency Officer</span> Challenge each control — ask "does this actually shrink the damage if an agent is hacked?"</div>
-          <div class="act"><span class="chip scr">Network Security</span> Write each decision down with a one-line reason next to it.</div>
+          <div class="act"><span class="chip scr">Network Security Engineer</span> Write each decision down with a one-line reason next to it.</div>
         </div>
         <div class="inj-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 16H3z"/><path d="M12 10v4"/></svg> INJECTION 01 revealed at 24:00 — decide together, then continue</div>
         <div class="timecheck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><p><b>@ 24:00</b> IT Director reveals Injection 01 (≈3 min to resolve). <b>@ 30:00</b> controls locked. <b>@ 33:00</b> hand the pen to the Network Architect.</p></div>
@@ -1193,7 +1193,7 @@
         <div class="acts">
           <div class="act"><span class="chip arc">Network Architect</span> Draw a labelled box for every component and an arrow for every request between them.</div>
           <div class="act"><span class="chip thr">Digital Resiliency Officer</span> Trace one agent's request through the drawing and point out any gap you find.</div>
-          <div class="act"><span class="chip scr">Network Security</span> Keep a legend — make sure every box on the diagram has a clear name.</div>
+          <div class="act"><span class="chip scr">Network Security Engineer</span> Keep a legend — make sure every box on the diagram has a clear name.</div>
           <div class="act"><span class="chip con">IT Director</span> Call the time at 43:00 and 45:00 so the drawing finishes before 48:00.</div>
         </div>
         <div class="lifecycle">
@@ -1232,7 +1232,7 @@
       <div class="phase-body">
         <div class="lbl">What each role does</div>
         <div class="acts">
-          <div class="act"><span class="chip scr">Network Security</span> Fill in every field on the solution sheet — start with the approach and key decisions.</div>
+          <div class="act"><span class="chip scr">Network Security Engineer</span> Fill in every field on the solution sheet — start with the approach and key decisions.</div>
           <div class="act"><span class="chip arc">Network Architect</span> Add the diagram's legend and point to it from the write-up so the two match.</div>
           <div class="act"><span class="chip thr">Digital Resiliency Officer</span> Write one line for each injection: the threat, then your answer.</div>
           <div class="act"><span class="chip all">Everyone</span> Add your own one-line reflection with initials — the decision you drove or would change (60 seconds each).</div>
@@ -1265,7 +1265,7 @@
         <div class="acts">
           <div class="act"><span class="chip con">IT Director</span> Count down the last 4 minutes out loud: "3 minutes", "2 minutes", "1 minute".</div>
           <div class="act"><span class="chip arc">Network Architect</span> Take a clear, flat, well-lit photo of the diagram and copy it to the clipboard.</div>
-          <div class="act"><span class="chip scr">Network Security</span> Upload the solution sheet and confirm the proctor shows it as received.</div>
+          <div class="act"><span class="chip scr">Network Security Engineer</span> Upload the solution sheet and confirm the proctor shows it as received.</div>
           <div class="act"><span class="chip thr">Digital Resiliency Officer</span> Do a final check that the diagram and the sheet tell the same story.</div>
         </div>
         <div class="timecheck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><p><b>@ 58:00</b> photo taken and on the clipboard. <b>@ 60:00</b> both artifacts submitted. Anything not submitted is not scored.</p></div>
@@ -1287,9 +1287,9 @@
           <tr>
             <th class="ph">Phase</th>
             <th class="hcon">IT Director</th>
-            <th class="hthr">The Digital Resiliency Officer</th>
+            <th class="hthr">Digital Resiliency Officer</th>
             <th class="harc">Network Architect</th>
-            <th class="hscr">Network Security</th>
+            <th class="hscr">Network Security Engineer</th>
           </tr>
         </thead>
         <tbody>
@@ -1340,9 +1340,9 @@
     </div>
     <div class="takeaways">
       <div class="ta" style="--tc:var(--amber);--tc-ink:#a3640f"><h4>IT Director practises</h4><p>Facilitation under time pressure, scope control, and keeping a team to an outcome.</p></div>
-      <div class="ta" style="--tc:var(--red);--tc-ink:#b53636"><h4>The Digital Resiliency Officer practises</h4><p>Constructive challenge, threat-spotting, and driving team dialogue toward a stronger design.</p></div>
+      <div class="ta" style="--tc:var(--red);--tc-ink:#b53636"><h4>Digital Resiliency Officer practises</h4><p>Constructive challenge, threat-spotting, and driving team dialogue toward a stronger design.</p></div>
       <div class="ta" style="--tc:var(--cyan);--tc-ink:#0a7c8c"><h4>Network Architect practises</h4><p>Translating requirements into a clear topology and defending placement choices.</p></div>
-      <div class="ta" style="--tc:var(--green);--tc-ink:#1f8a63"><h4>Network Security practises</h4><p>Crisp technical writing and turning a messy discussion into a decision record.</p></div>
+      <div class="ta" style="--tc:var(--green);--tc-ink:#1f8a63"><h4>Network Security Engineer practises</h4><p>Crisp technical writing and turning a messy discussion into a decision record.</p></div>
     </div>
   </section>
 
@@ -2280,10 +2280,10 @@
 
   // ---------- persona "take your seat" login ----------
   var ROLES = {
-    conductor:{label:"The IT Director", short:"IT Director", color:"#E2891F", chip:"con", col:1, card:"The IT Director", tag:"Owns the clock · leads Brief-In & Submit"},
-    critic:{label:"The Digital Resiliency Officer", short:"Digital Resiliency Officer", color:"#DB4A4A", chip:"thr", col:2, card:"The Digital Resiliency Officer", tag:"Owns the challenge · leads Expose"},
-    architect:{label:"The Network Architect", short:"Network Architect", color:"#0FA9BE", chip:"arc", col:3, card:"The Network Architect", tag:"Owns the design · leads Design"},
-    scribe:{label:"The Network Security", short:"Network Security", color:"#27A276", chip:"scr", col:4, card:"The Network Security", tag:"Owns the write-up · leads Document"},
+    conductor:{label:"IT Director", short:"IT Director", color:"#E2891F", chip:"con", col:1, card:"IT Director", tag:"Owns the clock · leads Brief-In & Submit"},
+    critic:{label:"Digital Resiliency Officer", short:"Digital Resiliency Officer", color:"#DB4A4A", chip:"thr", col:2, card:"Digital Resiliency Officer", tag:"Owns the challenge · leads Expose"},
+    architect:{label:"Network Architect", short:"Network Architect", color:"#0FA9BE", chip:"arc", col:3, card:"Network Architect", tag:"Owns the design · leads Design"},
+    scribe:{label:"Network Security Engineer", short:"Network Security Engineer", color:"#27A276", chip:"scr", col:4, card:"Network Security Engineer", tag:"Owns the write-up · leads Document"},
     facilitator:{label:"Facilitator / Observer", short:"Facilitator", color:"#7E8CA1", chip:null, col:0, card:null, tag:"Runs the session — not an in-game seat"}
   };
   var personaModal=$("#personaModal"), personaLabel=$("#personaLabel"), pmRoles=$("#pmRoles");

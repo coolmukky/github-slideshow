@@ -24,7 +24,7 @@ the in-session phase/time cues live on the participant page itself.)
 - [ ] Each participant enters the **event code**, then their **name, email, role**, and either:
   - **Creates a team** (first person): names it and gets a **team code** to share, or
   - **Joins a team**: enters the **team code** their first teammate shared.
-- [ ] A team is **4 people, one per role** (IT Director, Digital Resiliency Officer, Network Architect, Network Security). **Each team's own 60-minute clock starts automatically once all 4 roles are filled.**
+- [ ] A team is **4 people, one per role** (IT Director, Digital Resiliency Officer, Network Architect, Network Security Engineer). **Each team's own 60-minute clock starts automatically once all 4 roles are filled.**
 - [ ] Watch the console: **"N joined · T teams · K/T full (4 roles) · R running."** Team cards show each team's code and a live **⏱ time-left**.
 
 ## During the hour

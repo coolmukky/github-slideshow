@@ -119,7 +119,7 @@ Troubleshooting:
 - **Start / join:** press **Start event** to open joining. Participants enter the **event code**,
   then their details and role, and either **create a team** (get a **team code** to share) or
   **join a team** (enter that team code). A team is **4 fixed roles** (IT Director, Digital Resiliency Officer, Network Architect,
-  Network Security); its own **60-minute clock starts automatically once all 4 roles are filled**.
+  Network Security Engineer); its own **60-minute clock starts automatically once all 4 roles are filled**.
 - **Proctor controls:** the console shows each team's live **time-left**; **Reset clock** on a team
   card gives that team a fresh 60:00; **Reset** (event) closes it and **Start event** reopens.
 - **Reports:** on `proctor.html`, use **Export CSV** for raw data or **Report** for a printable
