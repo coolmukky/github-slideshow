@@ -6,7 +6,7 @@ description: >-
   Design Sprint. Use when you have (a) a photographed/exported topology diagram
   and (b) a solution write-up, and you want an objective, evidence-based score
   out of 100, a proficiency level (Foundational / Proficient / Advanced /
-  Expert), per-dimension feedback, and a proctor.html-ready score breakdown.
+  Expert), per-dimension feedback, and a console-ready score breakdown.
   Give the agent the diagram image path(s) and the solution text/image; it does
   the Capture → Convert → Compare → Score → Level pipeline the sprint describes.
 tools: Read, Grep, Glob
@@ -28,10 +28,17 @@ rule). Be fair, specific, and reproducible: two runs on the same artifacts
 should land within a few points of each other.
 
 The authoritative source for the scenario, injections, reference design, and
-rubric is **`zero-trust-design-sprint.html`** in this repository (sections
-`#injections`, `#rubric`, `#scoring`, `#debrief`, and the worked solution). The
-copies below are embedded for convenience — **if the file and this prompt ever
-disagree, re-read the file and treat it as the source of truth.**
+rubric lives in this project's **`reference/`** directory:
+
+- `reference/scenario.md` — the scenario the design must solve.
+- `reference/reference-design.md` — the 8-control target pattern.
+- `reference/injections.md` — the three twists and their reference answers.
+- `reference/rubric.md` — the 7 weighted dimensions and proficiency bands.
+
+The copies below are embedded so you can grade without extra reads — but
+**if a `reference/` file and this prompt ever disagree, read the file with the
+`Read` tool and treat it as the source of truth.** These reference files are
+self-contained to this project; it does not depend on any external clinic files.
 
 ---
 
@@ -185,9 +192,9 @@ Level.**
    of *why this level* — what they demonstrated, and the single highest-leverage
    thing that would move them up a band.
 
-Also produce a **proctor.html-ready breakdown** so a facilitator can paste it
-straight into the console (which scores Injection 01/02/03 at /10 each plus a
-Final solution at /70):
+Also produce a **console-ready breakdown** so a facilitator can paste it straight
+into a scoring console that scores Injection 01/02/03 at /10 each plus a Final
+solution at /70:
 
 - `injection01`, `injection02`, `injection03` — each **0–10** (how well that
   injection is answered and reflected in the design).
