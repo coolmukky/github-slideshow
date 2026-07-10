@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team Submission — Design Proctor</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="inner">
+      <h1>Design Proctor — Team Submission</h1>
+      <p>Submit your team's topology diagram and solution document to be evaluated against the rubric.</p>
+      <nav>
+        <a href="index.html" class="active">Submit</a>
+        <a href="proctor.html" id="navProctor">Proctor console</a>
+        <span id="connBadge" class="muted" style="font-size:12px;margin-left:6px"></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- SUBMIT -->
+    <section class="card" id="submitCard">
+      <h2>Submit your work</h2>
+      <p class="hint">Fill in your team, attach your diagram and one-page solution, then submit.</p>
+
+      <label class="field">Team name
+        <input type="text" id="team" placeholder="e.g. Team Atlas" autocomplete="off">
+      </label>
+      <label class="field">Team members <span class="muted">(optional, comma-separated)</span>
+        <input type="text" id="members" placeholder="Alex, Priya, Sam, Jordan" autocomplete="off">
+      </label>
+
+      <div class="row">
+        <label class="field">Topology diagram <span class="muted">(image: png / jpg)</span>
+          <input type="file" id="diagram" accept="image/*">
+        </label>
+        <label class="field">Solution document <span class="muted">(PDF, or .txt / .md)</span>
+          <input type="file" id="doc" accept=".pdf,.txt,.md,.markdown,text/plain,application/pdf">
+        </label>
+      </div>
+      <img id="diagramPreview" class="thumb" alt="" style="display:none">
+
+      <div class="actions">
+        <button class="btn primary" id="submitBtn">Submit for evaluation</button>
+      </div>
+      <div class="status" id="submitStatus"></div>
+      <p class="note" id="refNote" style="display:none">Note: the proctor hasn't published the reference material yet — you can still submit; your work will be scored once they do.</p>
+    </section>
+
+    <!-- RESULT LOOKUP -->
+    <section class="card">
+      <h2>Your result</h2>
+      <p class="hint">After the proctor scores your submission, check your score and feedback here.</p>
+      <label class="field">Team name
+        <input type="text" id="lookupTeam" placeholder="e.g. Team Atlas" autocomplete="off">
+      </label>
+      <div class="actions">
+        <button class="btn" id="lookupBtn">Check my result</button>
+      </div>
+      <div class="status" id="lookupStatus"></div>
+      <div id="resultArea"></div>
+    </section>
+
+  </main>
+
+  <script src="firebase-config.js"></script>
+  <script src="store.js"></script>
+  <script src="app.js"></script>
+  <script>
+    var A = window.ProctorApp;
+    var $ = function (id) { return document.getElementById(id); };
+    var pendingDiagram = null, pendingDoc = null, viewingTeam = "";
+
+    A.initStore().then(function () {
+      var live = A.storeMode() === "firebase";
+      $("connBadge").textContent = (live ? "● Live · Firebase" : "● Single-device (local)") + (A.room() !== "default" ? " · room " + A.room() : "");
+      var suffix = A.room() !== "default" ? ("?room=" + encodeURIComponent(A.room())) : "";
+      $("navProctor").href = "proctor.html" + suffix;
+
+      A.onReference(function (ref) {
+        $("refNote").style.display = (!ref.brief && !ref.diagramDataUrl) ? "block" : "none";
+      });
+      // keep any open result live (auto-updates when the proctor scores)
+      A.onSubmissions(function () { if (viewingTeam) doLookup(viewingTeam, true); });
+    });
+
+    $("diagram").addEventListener("change", function (e) {
+      var f = e.target.files[0];
+      if (!f) { pendingDiagram = null; $("diagramPreview").style.display = "none"; return; }
+      $("submitStatus").textContent = "Processing image…";
+      A.imageToDataURL(f, 1400).then(function (url) {
+        pendingDiagram = url; $("diagramPreview").src = url; $("diagramPreview").style.display = "block";
+        $("submitStatus").textContent = "";
+      });
+    });
+
+    $("doc").addEventListener("change", function (e) {
+      var f = e.target.files[0];
+      if (!f) { pendingDoc = null; return; }
+      $("submitStatus").textContent = "Reading document…";
+      A.readDocument(f).then(function (d) { pendingDoc = d; $("submitStatus").textContent = "Attached: " + d.name; })
+        .catch(function () { $("submitStatus").textContent = "Could not read that file. Use PDF, .txt or .md."; });
+    });
+
+    $("submitBtn").addEventListener("click", function () {
+      var team = $("team").value.trim();
+      if (!team) { setStatus("submitStatus", "Please enter a team name.", "err"); return; }
+      if (!pendingDiagram && !pendingDoc) { setStatus("submitStatus", "Attach at least a diagram or a document.", "err"); return; }
+      var btn = $("submitBtn"); btn.disabled = true;
+      var sub = {
+        id: A.uid(), team: team, members: $("members").value.trim(), ts: Date.now(),
+        diagramDataUrl: pendingDiagram || "", doc: pendingDoc || { name: "", kind: "text", text: "" },
+        status: "pending", result: null,
+      };
+      A.saveSubmission(sub).then(function () {
+        setStatus("submitStatus", "Submitted! The proctor will score it shortly. Check your result below using your team name.", "ok");
+        $("team").value = ""; $("members").value = ""; $("diagram").value = ""; $("doc").value = "";
+        $("diagramPreview").style.display = "none"; pendingDiagram = null; pendingDoc = null;
+        $("lookupTeam").value = team;
+      }).catch(function (err) {
+        setStatus("submitStatus", "Could not submit: " + err.message, "err");
+      }).then(function () { btn.disabled = false; });
+    });
+
+    $("lookupBtn").addEventListener("click", function () { doLookup($("lookupTeam").value.trim(), false); });
+
+    function doLookup(team, quiet) {
+      if (!team) { if (!quiet) setStatus("lookupStatus", "Enter your team name.", "err"); return; }
+      viewingTeam = team;
+      var sub = A.latestForTeam(team);
+      if (!sub) { $("resultArea").innerHTML = ""; if (!quiet) setStatus("lookupStatus", "No submission found for “" + team + "”.", "err"); return; }
+      if (sub.status !== "scored" || !sub.result) {
+        $("resultArea").innerHTML = ""; setStatus("lookupStatus", "Your submission is in — but hasn't been scored yet. Check back soon.", ""); return;
+      }
+      setStatus("lookupStatus", "Scored · submitted " + A.fmtTime(sub.ts) + ".", "ok");
+      $("resultArea").innerHTML = A.renderResult(sub.result);
+    }
+
+    function setStatus(id, msg, cls) { var el = $(id); el.textContent = msg; el.className = "status" + (cls ? " " + cls : ""); }
+  </script>
+</body>
+</html>
