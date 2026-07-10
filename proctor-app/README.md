@@ -15,10 +15,12 @@ Plus a diagram score, a document score, an overall score/100, and strengths/gaps
 
 ```
 proctor-app/
-├── index.html     ← participant page: submit + view your result
-├── proctor.html   ← proctor console: reference material, scoring, records
-├── app.js         ← shared logic (storage, file handling, Claude call, rendering)
-├── styles.css     ← styles
+├── index.html          ← participant page: submit + view your result
+├── proctor.html        ← proctor console: reference material, scoring, records
+├── app.js              ← shared logic (store, file handling, Claude call, rendering)
+├── store.js            ← data adapter: Firestore, or localStorage fallback
+├── firebase-config.js  ← OPTIONAL cross-device sync config (unset = local mode)
+├── styles.css          ← styles
 └── README.md
 ```
 
@@ -53,18 +55,37 @@ once on the proctor page and stored in that browser's `localStorage` — it is
 model on the same page: **Opus 4.8** (best judgment), **Sonnet 5** (faster/cheaper),
 or **Haiku 4.5** (cheapest). Rough cost is a few cents per team.
 
-## Scope & limits (this "simple for now" version)
+## Cross-device sync (optional Firebase)
 
-- **Single machine.** Data lives in the browser's `localStorage`, so the proctor
-  and participants share data only on the **same browser/computer** — ideal for a
-  kiosk or for building/testing. For a real multi-device event (participants on
-  their own phones/laptops), add a shared backend (e.g. Firebase Firestore) so
-  submissions sync across devices. The storage layer in `app.js` is isolated to
-  make that swap straightforward.
+Out of the box the app runs in **single-device mode** — data lives in the
+browser's `localStorage`, so the proctor and participants share data only on the
+**same browser/computer** (ideal for a kiosk or for building/testing).
+
+To let participants submit from **their own phones/laptops** while the proctor
+sees everyone live, fill in **`firebase-config.js`** (a free Firebase/Firestore
+project — step-by-step setup and the security rules are in that file). Nothing
+else changes: `store.js` uses Firestore when configured and falls back to
+localStorage otherwise. A small badge in the header shows which mode is active
+(**Live · Firebase** or **Single-device**).
+
+- **Rooms:** add `?room=CODE` to both page URLs to scope a session, so separate
+  clinics don't mix (default room is `default`). Share
+  `…/proctor-app/index.html?room=CODE` with participants.
+- **Live updates:** in Firebase mode, new submissions appear on the proctor
+  console automatically, and a team's **result page updates itself** the moment
+  the proctor scores it.
+
+### Limits
+
 - **Documents:** PDF is read natively by Claude; `.txt`/`.md` are read as text.
   For `.docx`, export to PDF first.
-- **Images** are downscaled to ~1400px before storing, to keep `localStorage`
+- **Images** are downscaled to ~1400px (JPEG) before storing, to keep storage
   small and token costs low.
+- **Firestore doc size** is ~1 MB per submission; diagrams are downscaled to fit,
+  but a very large image-heavy PDF is rejected with a clear message — use a
+  smaller PDF or paste the solution as text.
+- **Clearing data:** local mode → clear the browser's storage; Firebase mode →
+  the rules block client deletes, so remove data from the Firebase console.
 
 ## Customising the rubric
 

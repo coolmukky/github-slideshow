@@ -12,8 +12,9 @@
       <h1>Design Proctor — Proctor Console</h1>
       <p>Set the reference material, then score team submissions against the rubric.</p>
       <nav>
-        <a href="index.html">Submit</a>
+        <a href="index.html" id="navSubmit">Submit</a>
         <a href="proctor.html" class="active">Proctor console</a>
+        <span id="connBadge" class="muted" style="font-size:12px;margin-left:6px"></span>
       </nav>
     </div>
   </header>
@@ -23,7 +24,7 @@
     <!-- SETTINGS -->
     <section class="card">
       <h2>1 · Scoring engine</h2>
-      <p class="hint">Your Claude API key is stored only in this browser (localStorage) and sent straight to Anthropic when you score. It is never committed or shared.</p>
+      <p class="hint">Your Claude API key is stored only in this browser (localStorage) and sent straight to Anthropic when you score. It is never committed, synced, or shared.</p>
       <div class="row">
         <label class="field">Claude API key
           <input type="password" id="apiKey" placeholder="sk-ant-…" autocomplete="off">
@@ -75,9 +76,7 @@
       <p class="hint">Each team's entry is recorded here. Score pending ones; scores are saved back so teams can see their feedback.</p>
       <div class="actions" style="margin-top:0">
         <button class="btn primary" id="scoreAll">Score all pending</button>
-        <button class="btn" id="refresh">Refresh</button>
         <button class="btn" id="exportCsv">Export CSV</button>
-        <button class="btn" id="clearAll">Clear all</button>
       </div>
       <div class="status" id="subsStatus"></div>
       <div style="overflow-x:auto">
@@ -99,28 +98,37 @@
 
   </main>
 
+  <script src="firebase-config.js"></script>
+  <script src="store.js"></script>
   <script src="app.js"></script>
   <script>
     var A = window.ProctorApp;
     var $ = function (id) { return document.getElementById(id); };
     var refDiagramData = "";
 
-    // ---- init from storage ----
-    (function init() {
-      $("apiKey").value = A.getApiKey();
-      $("model").value = A.getModel();
-      var ref = A.getReference();
-      $("brief").value = ref.brief || "";
-      $("rubric").value = ref.rubric || A.DEFAULT_RUBRIC;
-      refDiagramData = ref.diagramDataUrl || "";
-      if (refDiagramData) { $("refDiagramPreview").src = refDiagramData; $("refDiagramPreview").style.display = "block"; }
-      renderTable();
-    })();
+    // config (local only) is available immediately
+    $("apiKey").value = A.getApiKey();
+    $("model").value = A.getModel();
+    $("rubric").value = A.DEFAULT_RUBRIC;
+
+    A.initStore().then(function () {
+      var live = A.storeMode() === "firebase";
+      $("connBadge").textContent = (live ? "● Live · Firebase" : "● Single-device (local)") + (A.room() !== "default" ? " · room " + A.room() : "");
+      var suffix = A.room() !== "default" ? ("?room=" + encodeURIComponent(A.room())) : "";
+      $("navSubmit").href = "index.html" + suffix;
+
+      A.onReference(function (ref) {
+        $("brief").value = ref.brief || "";
+        $("rubric").value = ref.rubric || A.DEFAULT_RUBRIC;
+        refDiagramData = ref.diagramDataUrl || "";
+        if (refDiagramData) { $("refDiagramPreview").src = refDiagramData; $("refDiagramPreview").style.display = "block"; }
+      });
+      A.onSubmissions(function (list) { renderTable(list); });
+    });
 
     // ---- settings ----
     $("saveKey").addEventListener("click", function () {
-      A.setApiKey($("apiKey").value.trim());
-      A.setModel($("model").value);
+      A.setApiKey($("apiKey").value.trim()); A.setModel($("model").value);
       setStatus("keyStatus", "Saved to this browser.", "ok");
     });
 
@@ -128,8 +136,7 @@
     $("refDiagram").addEventListener("change", function (e) {
       var f = e.target.files[0]; if (!f) return;
       A.imageToDataURL(f, 1400).then(function (url) {
-        refDiagramData = url;
-        $("refDiagramPreview").src = url; $("refDiagramPreview").style.display = "block";
+        refDiagramData = url; $("refDiagramPreview").src = url; $("refDiagramPreview").style.display = "block";
       });
     });
     $("briefFile").addEventListener("change", function (e) {
@@ -137,8 +144,9 @@
       A.readAsText(f).then(function (t) { $("brief").value = t; });
     });
     $("saveRef").addEventListener("click", function () {
-      A.setReference({ brief: $("brief").value, rubric: $("rubric").value, diagramDataUrl: refDiagramData });
-      setStatus("refStatus", "Reference saved.", "ok");
+      A.saveReference({ brief: $("brief").value, rubric: $("rubric").value, diagramDataUrl: refDiagramData })
+        .then(function () { setStatus("refStatus", "Reference saved.", "ok"); })
+        .catch(function (e) { setStatus("refStatus", "Could not save: " + e.message, "err"); });
     });
     $("resetRubric").addEventListener("click", function () {
       $("rubric").value = A.DEFAULT_RUBRIC;
@@ -146,8 +154,8 @@
     });
 
     // ---- submissions table ----
-    function renderTable() {
-      var subs = A.getSubmissions().slice().sort(function (a, b) { return b.ts - a.ts; });
+    function renderTable(subs) {
+      subs = (subs || A.submissionsCache()).slice().sort(function (a, b) { return b.ts - a.ts; });
       var body = $("subsBody");
       if (!subs.length) { body.innerHTML = '<tr><td colspan="6" class="muted">No submissions yet.</td></tr>'; return; }
       body.innerHTML = subs.map(function (s) {
@@ -164,7 +172,6 @@
               : '<button class="btn small primary score" data-id="' + s.id + '">Score</button>') +
           "</td></tr>";
       }).join("");
-
       Array.prototype.forEach.call(body.querySelectorAll(".score,.rescore"), function (b) {
         b.addEventListener("click", function () { scoreOne(b.getAttribute("data-id")); });
       });
@@ -173,70 +180,57 @@
       });
     }
 
-    function findSub(id) { return A.getSubmissions().filter(function (s) { return s.id === id; })[0]; }
+    function findSub(id) { return A.submissionsCache().filter(function (s) { return s.id === id; })[0]; }
 
     function scoreOne(id) {
       var sub = findSub(id); if (!sub) return;
       var key = A.getApiKey();
       if (!key) { setStatus("subsStatus", "Add your Claude API key in section 1 first.", "err"); return; }
       setStatus("subsStatus", "Scoring “" + sub.team + "”…", "");
-      return A.evaluateSubmission({
-        apiKey: key, model: A.getModel(), reference: A.getReference(), submission: sub,
-      }).then(function (result) {
-        A.updateSubmission(id, { status: "scored", result: result });
-        setStatus("subsStatus", "Scored “" + sub.team + "”.", "ok");
-        renderTable(); viewOne(id);
-      }).catch(function (err) {
-        setStatus("subsStatus", "Error scoring “" + sub.team + "”: " + err.message, "err");
-      });
+      return A.evaluateSubmission({ apiKey: key, model: A.getModel(), reference: A.referenceCache(), submission: sub })
+        .then(function (result) {
+          return A.patchSubmission(id, { status: "scored", result: result }).then(function () {
+            setStatus("subsStatus", "Scored “" + sub.team + "”.", "ok"); viewResult(sub.team, result);
+          });
+        })
+        .catch(function (err) { setStatus("subsStatus", "Error scoring “" + sub.team + "”: " + err.message, "err"); });
     }
 
-    function viewOne(id) {
-      var sub = findSub(id); if (!sub || !sub.result) return;
+    function viewOne(id) { var sub = findSub(id); if (sub && sub.result) viewResult(sub.team, sub.result); }
+    function viewResult(team, result) {
       $("detailCard").style.display = "block";
-      $("detailTitle").textContent = "Evaluation — " + sub.team;
-      $("detailBody").innerHTML = A.renderResult(sub.result);
-      $("detailRaw").textContent = JSON.stringify(sub.result, null, 2);
+      $("detailTitle").textContent = "Evaluation — " + team;
+      $("detailBody").innerHTML = A.renderResult(result);
+      $("detailRaw").textContent = JSON.stringify(result, null, 2);
       $("detailCard").scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     $("scoreAll").addEventListener("click", function () {
       var key = A.getApiKey();
       if (!key) { setStatus("subsStatus", "Add your Claude API key in section 1 first.", "err"); return; }
-      var pending = A.getSubmissions().filter(function (s) { return s.status !== "scored"; });
+      var pending = A.submissionsCache().filter(function (s) { return s.status !== "scored"; });
       if (!pending.length) { setStatus("subsStatus", "Nothing pending.", ""); return; }
       setStatus("subsStatus", "Scoring " + pending.length + " submission(s)…", "");
-      // sequential to stay well under rate limits
-      var i = 0;
+      var i = 0, ref = A.referenceCache();
       (function next() {
-        if (i >= pending.length) { setStatus("subsStatus", "Done — scored " + pending.length + ".", "ok"); renderTable(); return; }
+        if (i >= pending.length) { setStatus("subsStatus", "Done — scored " + pending.length + ".", "ok"); return; }
         var s = pending[i++];
-        A.evaluateSubmission({ apiKey: key, model: A.getModel(), reference: A.getReference(), submission: s })
-          .then(function (r) { A.updateSubmission(s.id, { status: "scored", result: r }); })
+        A.evaluateSubmission({ apiKey: key, model: A.getModel(), reference: ref, submission: s })
+          .then(function (r) { return A.patchSubmission(s.id, { status: "scored", result: r }); })
           .catch(function () { /* leave pending; continue */ })
-          .then(function () { renderTable(); next(); });
+          .then(next);
       })();
     });
 
-    $("refresh").addEventListener("click", renderTable);
-
-    $("clearAll").addEventListener("click", function () {
-      if (!confirm("Delete ALL submissions and scores from this browser?")) return;
-      A.setSubmissions([]); renderTable();
-      setStatus("subsStatus", "Cleared.", "");
-    });
-
     $("exportCsv").addEventListener("click", function () {
-      var subs = A.getSubmissions();
+      var subs = A.submissionsCache();
       var rows = [["team", "members", "submitted", "status", "overall", "level", "diagram", "document", "summary"]];
       subs.forEach(function (s) {
         var r = s.result || {};
-        rows.push([
-          s.team, s.members || "", A.fmtTime(s.ts), s.status,
+        rows.push([s.team, s.members || "", A.fmtTime(s.ts), s.status,
           r.overallScore != null ? r.overallScore : "", r.proficiency || "",
           r.diagramScore != null ? r.diagramScore : "", r.documentScore != null ? r.documentScore : "",
-          (r.summary || "").replace(/\s+/g, " "),
-        ]);
+          (r.summary || "").replace(/\s+/g, " ")]);
       });
       var csv = rows.map(function (row) {
         return row.map(function (c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(",");
@@ -247,9 +241,7 @@
       URL.revokeObjectURL(a.href);
     });
 
-    function setStatus(id, msg, cls) {
-      var el = $(id); el.textContent = msg; el.className = "status" + (cls ? " " + cls : "");
-    }
+    function setStatus(id, msg, cls) { var el = $(id); el.textContent = msg; el.className = "status" + (cls ? " " + cls : ""); }
   </script>
 </body>
 </html>

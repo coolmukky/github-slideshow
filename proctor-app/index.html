@@ -13,7 +13,8 @@
       <p>Submit your team's topology diagram and solution document to be evaluated against the rubric.</p>
       <nav>
         <a href="index.html" class="active">Submit</a>
-        <a href="proctor.html">Proctor console</a>
+        <a href="proctor.html" id="navProctor">Proctor console</a>
+        <span id="connBadge" class="muted" style="font-size:12px;margin-left:6px"></span>
       </nav>
     </div>
   </header>
@@ -65,87 +66,80 @@
 
   </main>
 
+  <script src="firebase-config.js"></script>
+  <script src="store.js"></script>
   <script src="app.js"></script>
   <script>
     var A = window.ProctorApp;
     var $ = function (id) { return document.getElementById(id); };
-    var pendingDiagram = null; // data URL
-    var pendingDoc = null;     // { name, kind, ... }
+    var pendingDiagram = null, pendingDoc = null, viewingTeam = "";
 
-    // preview + capture diagram
+    A.initStore().then(function () {
+      var live = A.storeMode() === "firebase";
+      $("connBadge").textContent = (live ? "● Live · Firebase" : "● Single-device (local)") + (A.room() !== "default" ? " · room " + A.room() : "");
+      var suffix = A.room() !== "default" ? ("?room=" + encodeURIComponent(A.room())) : "";
+      $("navProctor").href = "proctor.html" + suffix;
+
+      A.onReference(function (ref) {
+        $("refNote").style.display = (!ref.brief && !ref.diagramDataUrl) ? "block" : "none";
+      });
+      // keep any open result live (auto-updates when the proctor scores)
+      A.onSubmissions(function () { if (viewingTeam) doLookup(viewingTeam, true); });
+    });
+
     $("diagram").addEventListener("change", function (e) {
       var f = e.target.files[0];
       if (!f) { pendingDiagram = null; $("diagramPreview").style.display = "none"; return; }
       $("submitStatus").textContent = "Processing image…";
       A.imageToDataURL(f, 1400).then(function (url) {
-        pendingDiagram = url;
-        $("diagramPreview").src = url;
-        $("diagramPreview").style.display = "block";
+        pendingDiagram = url; $("diagramPreview").src = url; $("diagramPreview").style.display = "block";
         $("submitStatus").textContent = "";
       });
     });
 
-    // capture document
     $("doc").addEventListener("change", function (e) {
       var f = e.target.files[0];
       if (!f) { pendingDoc = null; return; }
       $("submitStatus").textContent = "Reading document…";
-      A.readDocument(f).then(function (d) {
-        pendingDoc = d;
-        $("submitStatus").textContent = "Attached: " + d.name;
-      }).catch(function () {
-        $("submitStatus").textContent = "Could not read that file. Use PDF, .txt or .md.";
-      });
+      A.readDocument(f).then(function (d) { pendingDoc = d; $("submitStatus").textContent = "Attached: " + d.name; })
+        .catch(function () { $("submitStatus").textContent = "Could not read that file. Use PDF, .txt or .md."; });
     });
-
-    // show reference note if proctor hasn't set anything up
-    (function () {
-      var ref = A.getReference();
-      if (!ref.brief && !ref.diagramDataUrl) $("refNote").style.display = "block";
-    })();
 
     $("submitBtn").addEventListener("click", function () {
       var team = $("team").value.trim();
       if (!team) { setStatus("submitStatus", "Please enter a team name.", "err"); return; }
-      if (!pendingDiagram && !pendingDoc) {
-        setStatus("submitStatus", "Attach at least a diagram or a document.", "err"); return;
-      }
+      if (!pendingDiagram && !pendingDoc) { setStatus("submitStatus", "Attach at least a diagram or a document.", "err"); return; }
+      var btn = $("submitBtn"); btn.disabled = true;
       var sub = {
-        id: A.uid(),
-        team: team,
-        members: $("members").value.trim(),
-        ts: Date.now(),
-        diagramDataUrl: pendingDiagram || "",
-        doc: pendingDoc || { name: "", kind: "text", text: "" },
-        status: "pending",
-        result: null,
+        id: A.uid(), team: team, members: $("members").value.trim(), ts: Date.now(),
+        diagramDataUrl: pendingDiagram || "", doc: pendingDoc || { name: "", kind: "text", text: "" },
+        status: "pending", result: null,
       };
-      A.addSubmission(sub);
-      setStatus("submitStatus", "Submitted! The proctor will score it shortly. Check your result below using your team name.", "ok");
-      // reset light state
-      $("team").value = ""; $("members").value = "";
-      $("diagram").value = ""; $("doc").value = "";
-      $("diagramPreview").style.display = "none";
-      pendingDiagram = null; pendingDoc = null;
-      $("lookupTeam").value = team;
+      A.saveSubmission(sub).then(function () {
+        setStatus("submitStatus", "Submitted! The proctor will score it shortly. Check your result below using your team name.", "ok");
+        $("team").value = ""; $("members").value = ""; $("diagram").value = ""; $("doc").value = "";
+        $("diagramPreview").style.display = "none"; pendingDiagram = null; pendingDoc = null;
+        $("lookupTeam").value = team;
+      }).catch(function (err) {
+        setStatus("submitStatus", "Could not submit: " + err.message, "err");
+      }).then(function () { btn.disabled = false; });
     });
 
-    $("lookupBtn").addEventListener("click", function () {
-      var team = $("lookupTeam").value.trim();
-      $("resultArea").innerHTML = "";
-      if (!team) { setStatus("lookupStatus", "Enter your team name.", "err"); return; }
+    $("lookupBtn").addEventListener("click", function () { doLookup($("lookupTeam").value.trim(), false); });
+
+    function doLookup(team, quiet) {
+      if (!team) { if (!quiet) setStatus("lookupStatus", "Enter your team name.", "err"); return; }
+      viewingTeam = team;
       var sub = A.latestForTeam(team);
-      if (!sub) { setStatus("lookupStatus", "No submission found for “" + team + "”.", "err"); return; }
+      if (!sub) { $("resultArea").innerHTML = ""; if (!quiet) setStatus("lookupStatus", "No submission found for “" + team + "”.", "err"); return; }
       if (sub.status !== "scored" || !sub.result) {
-        setStatus("lookupStatus", "Your submission is in — but hasn't been scored yet. Check back soon.", ""); return;
+        $("resultArea").innerHTML = ""; setStatus("lookupStatus", "Your submission is in — but hasn't been scored yet. Check back soon.", ""); return;
       }
       setStatus("lookupStatus", "Scored · submitted " + A.fmtTime(sub.ts) + ".", "ok");
       $("resultArea").innerHTML = A.renderResult(sub.result);
-    });
-
-    function setStatus(id, msg, cls) {
-      var el = $(id); el.textContent = msg; el.className = "status" + (cls ? " " + cls : "");
     }
+
+    function setStatus(id, msg, cls) { var el = $(id); el.textContent = msg; el.className = "status" + (cls ? " " + cls : ""); }
   </script>
 </body>
 </html>
