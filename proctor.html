@@ -49,6 +49,9 @@
 
   .notice{margin:12px 0 0;padding:11px 14px;border-radius:11px;font-size:13px;border:1px solid #F0CE97;background:#FBEBD3;color:#8a560f}
   .notice b{color:#6e440a}
+  .notice.err{border-color:#E7A6A6;background:#FBE3E3;color:#9a2a2a}
+  .notice.err b{color:#7d1f1f}
+  .notice.err code{background:rgba(154,42,42,.12);padding:1px 5px;border-radius:5px;font-size:12px}
 
   /* session control (start the event for everyone) */
   .control{display:flex;align-items:center;gap:16px;margin:14px 0 0;padding:14px 18px;background:linear-gradient(180deg,#0c1d34,#0a1830);border:1px solid rgba(255,255,255,.08);border-left:4px solid var(--cyan);border-radius:14px;color:#EAF1F8;box-shadow:var(--shadow);flex-wrap:wrap}
@@ -210,6 +213,12 @@
   </div>
   <div class="notice" id="localNotice" hidden>
     <b>Single-device mode.</b> Firebase isn't configured, so this roster only shows people who joined <b>on this device/browser</b>. To see every participant's device live, fill in <code>firebase-config.js</code> (setup steps are in that file).
+  </div>
+  <div class="notice err" id="ruleNotice" hidden>
+    <b>Firestore rejected the write (<code id="ruleCode">permission-denied</code>).</b>
+    Your security rules are missing (or out of date for) the <code>control</code> collection, so the event never reaches
+    participants — they'll stay on the waiting screen. Open <b>Firestore → Rules</b> and re-publish the <b>full</b> rules block
+    from <code>SETUP.md</code> §2c (it must include the <code>match /control/{id}</code> section), then click <b>Start event</b> again.
   </div>
 
   <!-- event setup (shown until an event exists) -->
@@ -582,11 +591,23 @@
     for(var i=0;i<spans.length;i++){ var el=spans[i], c=el.getAttribute("data-teamclock"), t=teamClocks[c];
       if(t&&t.startedAt){ var rem=Math.max(0,TOTAL-(Date.now()-t.startedAt)/1000); el.textContent="⏱ "+fmtClock(rem)+" left"; el.className="tclock"+(rem<300&&rem>0?" low":"")+(rem<=0?" up":""); } }
   }
+  function showRuleError(err){
+    var n=$("#ruleNotice"); if(!n) return;
+    var code=(err&&(err.code||err.message))||"permission-denied";
+    var cEl=$("#ruleCode"); if(cEl) cEl.textContent=String(code);
+    n.hidden=false; try{ n.scrollIntoView({behavior:"smooth",block:"center"}); }catch(e){}
+  }
+  function controlWrite(doc){
+    try{
+      var w=adapterRef.write("control", doc);
+      if(w && typeof w.then==="function"){ w.then(function(){ $("#ruleNotice").hidden=true; }).catch(showRuleError); }
+    }catch(e){ showRuleError(e); }
+  }
   function writeEvent(patch){
     if(!adapterRef){ alert("Not connected yet — try again in a moment."); return; }
     var base=eventDoc||{ id:ROOM, room:ROOM };
     var doc=Object.assign({}, base, patch, { id:ROOM, room:ROOM, kind:"event", updatedAt:Date.now() });
-    eventDoc=doc; try{ adapterRef.write("control", doc); }catch(e){} renderControl();
+    eventDoc=doc; controlWrite(doc); renderControl();
   }
   $("#ctlStart").addEventListener("click", function(){
     if(!evOpen()){ if(!confirm("Start (open) the event now?\n\nPlayers can join with the code and form teams; each team's clock starts when its 4 roles are filled.")) return; writeEvent({status:"open", openedAt:Date.now()}); }
@@ -617,7 +638,7 @@
     var c=t.getAttribute("data-treset"), td=teamClocks[c]; if(!td) return;
     if(!confirm("Restart the 60-minute clock for this team?")) return;
     var doc=Object.assign({},td,{startedAt:Date.now()}); teamClocks[c]=doc;
-    try{ if(adapterRef) adapterRef.write("control",doc); }catch(e2){} render();
+    if(adapterRef) controlWrite(doc); render();
   });
   setInterval(renderControl,250);
 
