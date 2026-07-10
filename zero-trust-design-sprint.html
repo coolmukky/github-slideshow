@@ -583,8 +583,6 @@
   .pm-rolelbl{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:14px 0 8px}
   .pm-roles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .pm-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:14px}
-  .pm-proctor{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--cyan-deep);text-decoration:none;white-space:nowrap}
-  .pm-proctor:hover{text-decoration:underline}
   .pm-role{
     text-align:left;border:1.5px solid var(--line);border-radius:12px;padding:13px 14px;cursor:pointer;
     background:#fff;transition:border-color .15s,box-shadow .15s,transform .05s;border-top:4px solid var(--rc,var(--line));
@@ -714,7 +712,6 @@
     <div class="pm-roles" id="pmRoles"></div>
     <div class="pm-foot">
       <button class="pm-skip" id="pmSkip">I'm just watching — skip for now</button>
-      <a class="pm-proctor" id="pmProctorLink" href="proctor.html">Proctor? Open the console &rarr;</a>
     </div>
   </div>
 </div>
@@ -2312,7 +2309,6 @@
       try{ roster.watch("players", ROOM, function(d){ onPlayers(d||[]); }); }catch(e){}
     });
   }
-  var pl=$("#pmProctorLink"); if(pl) pl.href="proctor.html"+(ROOM?("?room="+encodeURIComponent(ROOM)):"");
 
   // ---------- waiting / event-code / countdown overlay ----------
   function fmtCountdown(ms){ ms=Math.max(0,ms); var s=Math.round(ms/1000), h=Math.floor(s/3600), m=Math.floor((s%3600)/60), ss=s%60; function p(n){return (n<10?"0":"")+n;} return (h>0?(h+":"):"")+p(m)+":"+p(ss); }
