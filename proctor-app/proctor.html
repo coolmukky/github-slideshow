@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proctor Console — Design Proctor</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="inner">
+      <h1>Design Proctor — Proctor Console</h1>
+      <p>Set the reference material, then score team submissions against the rubric.</p>
+      <nav>
+        <a href="index.html">Submit</a>
+        <a href="proctor.html" class="active">Proctor console</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- SETTINGS -->
+    <section class="card">
+      <h2>1 · Scoring engine</h2>
+      <p class="hint">Your Claude API key is stored only in this browser (localStorage) and sent straight to Anthropic when you score. It is never committed or shared.</p>
+      <div class="row">
+        <label class="field">Claude API key
+          <input type="password" id="apiKey" placeholder="sk-ant-…" autocomplete="off">
+        </label>
+        <label class="field">Model
+          <select id="model">
+            <option value="claude-opus-4-8">Claude Opus 4.8 (best judgment)</option>
+            <option value="claude-sonnet-5">Claude Sonnet 5 (faster / cheaper)</option>
+            <option value="claude-haiku-4-5">Claude Haiku 4.5 (cheapest)</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="saveKey">Save</button>
+      </div>
+      <div class="status" id="keyStatus"></div>
+    </section>
+
+    <!-- REFERENCE -->
+    <section class="card">
+      <h2>2 · Reference material</h2>
+      <p class="hint">Upload the model answer the teams are graded against. All three feed the evaluation.</p>
+
+      <label class="field">Reference solution diagram <span class="muted">(image, optional)</span>
+        <input type="file" id="refDiagram" accept="image/*">
+      </label>
+      <img id="refDiagramPreview" class="thumb" alt="" style="display:none">
+
+      <label class="field">Brief / expected solution
+        <span class="muted">(paste, or load a .txt / .md file)</span>
+        <input type="file" id="briefFile" accept=".txt,.md,.markdown,text/plain" style="margin-bottom:6px">
+        <textarea id="brief" placeholder="Describe the scenario and what a strong solution should contain…"></textarea>
+      </label>
+
+      <label class="field">Rubric
+        <textarea id="rubric" class="mono"></textarea>
+      </label>
+
+      <div class="actions">
+        <button class="btn primary" id="saveRef">Save reference</button>
+        <button class="btn" id="resetRubric">Reset rubric to default</button>
+      </div>
+      <div class="status" id="refStatus"></div>
+    </section>
+
+    <!-- SUBMISSIONS -->
+    <section class="card">
+      <h2>3 · Submissions &amp; scores</h2>
+      <p class="hint">Each team's entry is recorded here. Score pending ones; scores are saved back so teams can see their feedback.</p>
+      <div class="actions" style="margin-top:0">
+        <button class="btn primary" id="scoreAll">Score all pending</button>
+        <button class="btn" id="refresh">Refresh</button>
+        <button class="btn" id="exportCsv">Export CSV</button>
+        <button class="btn" id="clearAll">Clear all</button>
+      </div>
+      <div class="status" id="subsStatus"></div>
+      <div style="overflow-x:auto">
+        <table class="subs" id="subsTable">
+          <thead><tr>
+            <th>Team</th><th>Submitted</th><th>Status</th><th>Score</th><th>Level</th><th></th>
+          </tr></thead>
+          <tbody id="subsBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- DETAIL -->
+    <section class="card" id="detailCard" style="display:none">
+      <h2 id="detailTitle">Evaluation</h2>
+      <div id="detailBody"></div>
+      <details class="raw"><summary>Raw result JSON</summary><pre id="detailRaw"></pre></details>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    var A = window.ProctorApp;
+    var $ = function (id) { return document.getElementById(id); };
+    var refDiagramData = "";
+
+    // ---- init from storage ----
+    (function init() {
+      $("apiKey").value = A.getApiKey();
+      $("model").value = A.getModel();
+      var ref = A.getReference();
+      $("brief").value = ref.brief || "";
+      $("rubric").value = ref.rubric || A.DEFAULT_RUBRIC;
+      refDiagramData = ref.diagramDataUrl || "";
+      if (refDiagramData) { $("refDiagramPreview").src = refDiagramData; $("refDiagramPreview").style.display = "block"; }
+      renderTable();
+    })();
+
+    // ---- settings ----
+    $("saveKey").addEventListener("click", function () {
+      A.setApiKey($("apiKey").value.trim());
+      A.setModel($("model").value);
+      setStatus("keyStatus", "Saved to this browser.", "ok");
+    });
+
+    // ---- reference ----
+    $("refDiagram").addEventListener("change", function (e) {
+      var f = e.target.files[0]; if (!f) return;
+      A.imageToDataURL(f, 1400).then(function (url) {
+        refDiagramData = url;
+        $("refDiagramPreview").src = url; $("refDiagramPreview").style.display = "block";
+      });
+    });
+    $("briefFile").addEventListener("change", function (e) {
+      var f = e.target.files[0]; if (!f) return;
+      A.readAsText(f).then(function (t) { $("brief").value = t; });
+    });
+    $("saveRef").addEventListener("click", function () {
+      A.setReference({ brief: $("brief").value, rubric: $("rubric").value, diagramDataUrl: refDiagramData });
+      setStatus("refStatus", "Reference saved.", "ok");
+    });
+    $("resetRubric").addEventListener("click", function () {
+      $("rubric").value = A.DEFAULT_RUBRIC;
+      setStatus("refStatus", "Rubric reset (remember to Save reference).", "");
+    });
+
+    // ---- submissions table ----
+    function renderTable() {
+      var subs = A.getSubmissions().slice().sort(function (a, b) { return b.ts - a.ts; });
+      var body = $("subsBody");
+      if (!subs.length) { body.innerHTML = '<tr><td colspan="6" class="muted">No submissions yet.</td></tr>'; return; }
+      body.innerHTML = subs.map(function (s) {
+        var scored = s.status === "scored" && s.result;
+        return "<tr>" +
+          "<td><b>" + A.esc(s.team) + "</b>" + (s.members ? '<br><span class="muted" style="font-size:12px">' + A.esc(s.members) + "</span>" : "") + "</td>" +
+          "<td>" + A.esc(A.fmtTime(s.ts)) + "</td>" +
+          '<td><span class="pill ' + (scored ? "scored" : "pending") + '">' + (scored ? "scored" : "pending") + "</span></td>" +
+          "<td>" + (scored ? "<b>" + A.esc(s.result.overallScore) + "</b>/100" : "—") + "</td>" +
+          "<td>" + (scored ? A.esc(s.result.proficiency || "") : "—") + "</td>" +
+          '<td style="white-space:nowrap">' +
+            (scored
+              ? '<button class="btn small view" data-id="' + s.id + '">View</button> <button class="btn small rescore" data-id="' + s.id + '">Re-score</button>'
+              : '<button class="btn small primary score" data-id="' + s.id + '">Score</button>') +
+          "</td></tr>";
+      }).join("");
+
+      Array.prototype.forEach.call(body.querySelectorAll(".score,.rescore"), function (b) {
+        b.addEventListener("click", function () { scoreOne(b.getAttribute("data-id")); });
+      });
+      Array.prototype.forEach.call(body.querySelectorAll(".view"), function (b) {
+        b.addEventListener("click", function () { viewOne(b.getAttribute("data-id")); });
+      });
+    }
+
+    function findSub(id) { return A.getSubmissions().filter(function (s) { return s.id === id; })[0]; }
+
+    function scoreOne(id) {
+      var sub = findSub(id); if (!sub) return;
+      var key = A.getApiKey();
+      if (!key) { setStatus("subsStatus", "Add your Claude API key in section 1 first.", "err"); return; }
+      setStatus("subsStatus", "Scoring “" + sub.team + "”…", "");
+      return A.evaluateSubmission({
+        apiKey: key, model: A.getModel(), reference: A.getReference(), submission: sub,
+      }).then(function (result) {
+        A.updateSubmission(id, { status: "scored", result: result });
+        setStatus("subsStatus", "Scored “" + sub.team + "”.", "ok");
+        renderTable(); viewOne(id);
+      }).catch(function (err) {
+        setStatus("subsStatus", "Error scoring “" + sub.team + "”: " + err.message, "err");
+      });
+    }
+
+    function viewOne(id) {
+      var sub = findSub(id); if (!sub || !sub.result) return;
+      $("detailCard").style.display = "block";
+      $("detailTitle").textContent = "Evaluation — " + sub.team;
+      $("detailBody").innerHTML = A.renderResult(sub.result);
+      $("detailRaw").textContent = JSON.stringify(sub.result, null, 2);
+      $("detailCard").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    $("scoreAll").addEventListener("click", function () {
+      var key = A.getApiKey();
+      if (!key) { setStatus("subsStatus", "Add your Claude API key in section 1 first.", "err"); return; }
+      var pending = A.getSubmissions().filter(function (s) { return s.status !== "scored"; });
+      if (!pending.length) { setStatus("subsStatus", "Nothing pending.", ""); return; }
+      setStatus("subsStatus", "Scoring " + pending.length + " submission(s)…", "");
+      // sequential to stay well under rate limits
+      var i = 0;
+      (function next() {
+        if (i >= pending.length) { setStatus("subsStatus", "Done — scored " + pending.length + ".", "ok"); renderTable(); return; }
+        var s = pending[i++];
+        A.evaluateSubmission({ apiKey: key, model: A.getModel(), reference: A.getReference(), submission: s })
+          .then(function (r) { A.updateSubmission(s.id, { status: "scored", result: r }); })
+          .catch(function () { /* leave pending; continue */ })
+          .then(function () { renderTable(); next(); });
+      })();
+    });
+
+    $("refresh").addEventListener("click", renderTable);
+
+    $("clearAll").addEventListener("click", function () {
+      if (!confirm("Delete ALL submissions and scores from this browser?")) return;
+      A.setSubmissions([]); renderTable();
+      setStatus("subsStatus", "Cleared.", "");
+    });
+
+    $("exportCsv").addEventListener("click", function () {
+      var subs = A.getSubmissions();
+      var rows = [["team", "members", "submitted", "status", "overall", "level", "diagram", "document", "summary"]];
+      subs.forEach(function (s) {
+        var r = s.result || {};
+        rows.push([
+          s.team, s.members || "", A.fmtTime(s.ts), s.status,
+          r.overallScore != null ? r.overallScore : "", r.proficiency || "",
+          r.diagramScore != null ? r.diagramScore : "", r.documentScore != null ? r.documentScore : "",
+          (r.summary || "").replace(/\s+/g, " "),
+        ]);
+      });
+      var csv = rows.map(function (row) {
+        return row.map(function (c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(",");
+      }).join("\n");
+      var blob = new Blob([csv], { type: "text/csv" });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = "proctor-scores.csv"; a.click();
+      URL.revokeObjectURL(a.href);
+    });
+
+    function setStatus(id, msg, cls) {
+      var el = $(id); el.textContent = msg; el.className = "status" + (cls ? " " + cls : "");
+    }
+  </script>
+</body>
+</html>
