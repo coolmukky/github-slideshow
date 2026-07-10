@@ -116,6 +116,10 @@ Troubleshooting:
   and note the generated **event code**; click **Create event**. Share the code (or the join link
   the console shows). The event code scopes everything (roster, teams, scores) — it's the `?room=`
   value in the URLs.
+- **Resume an event:** events you create are remembered on that browser. Reopen `proctor.html` and
+  pick it from the **"Resume an event you created"** list, or type its code in the **room** box and
+  press **Switch**. **New event** (on the control panel) starts another without discarding the current
+  one. The event itself lives in Firestore, so it survives refreshes and is shared across devices.
 - **Start / join:** press **Start event** to open joining. Participants enter the **event code**,
   then their details and role, and either **create a team** (get a **team code** to share) or
   **join a team** (enter that team code). A team is **4 fixed roles** (IT Director, Digital Resiliency Officer, Network Architect,

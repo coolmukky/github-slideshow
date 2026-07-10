@@ -91,6 +91,14 @@
   #evCode{font-family:"IBM Plex Mono",monospace;font-weight:700;letter-spacing:.16em;text-transform:uppercase;text-align:center}
   .evcode-row{display:flex;gap:6px}.evcode-row input{flex:1}
   @media (max-width:700px){ .setup-fields{grid-template-columns:1fr} }
+  .setup-resume{margin-bottom:16px;padding-bottom:14px;border-bottom:1px dashed var(--line)}
+  .setup-resume[hidden]{display:none}
+  .setup-resume .rh{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:9px}
+  .setup-resume .rlist{display:flex;flex-wrap:wrap;gap:8px}
+  .revent{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:7px 11px;background:#fff;cursor:pointer;font-size:13px;color:var(--ink);text-align:left}
+  .revent:hover{border-color:var(--cyan-deep);box-shadow:0 0 0 3px rgba(15,169,190,.1)}
+  .revent .rc{font-family:"IBM Plex Mono",monospace;font-weight:700;letter-spacing:.12em;color:var(--cyan-deep)}
+  .revent .rn{color:var(--ink-soft);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .ctl-join{font-family:"IBM Plex Mono",monospace;font-size:12px;color:#AEC4DC;padding-left:14px;border-left:1px solid rgba(255,255,255,.14)}
   .ctl-join b{color:#fff;letter-spacing:.14em}
   .ctl-join a{color:#7FE2EF}
@@ -223,6 +231,10 @@
 
   <!-- event setup (shown until an event exists) -->
   <div class="setup" id="evSetup" hidden>
+    <div class="setup-resume" id="evRecent" hidden>
+      <div class="rh">Resume an event you created</div>
+      <div class="rlist" id="evRecentList"></div>
+    </div>
     <div class="setup-h">Create your event</div>
     <div class="setup-fields">
       <label><span>Event name</span><input id="evName" type="text" placeholder="e.g. SE Design Clinic — July" maxlength="80"></label>
@@ -240,6 +252,7 @@
     <div class="ctl-btns">
       <button class="btn primary" id="ctlStart"><span id="ctlStartLabel">Start event</span></button>
       <button class="btn" id="ctlReset" hidden>Reset</button>
+      <button class="btn" id="ctlNew" title="Create a different event">New event</button>
     </div>
   </div>
 
@@ -642,6 +655,35 @@
   });
   setInterval(renderControl,250);
 
+  // ---------- remember events this browser created, so they can be resumed ----------
+  var PKEY_LIST="ztds.proctor.events";
+  function loadEvents(){ try{ return JSON.parse(localStorage.getItem(PKEY_LIST)||"[]"); }catch(e){ return []; } }
+  function rememberEvent(code, name){
+    if(!code) return;
+    var list=loadEvents().filter(function(x){ return x.code!==code; });
+    list.unshift({ code:code, name:name||"", at:Date.now() });
+    if(list.length>8) list=list.slice(0,8);
+    try{ localStorage.setItem(PKEY_LIST, JSON.stringify(list)); }catch(e){}
+    renderRecent();
+  }
+  function renderRecent(){
+    var box=$("#evRecent"), list=$("#evRecentList"); if(!box||!list) return;
+    var evs=loadEvents().filter(function(x){ return x.code && x.code!==ROOM; });
+    if(!evs.length){ box.hidden=true; list.innerHTML=""; return; }
+    box.hidden=false;
+    list.innerHTML = evs.map(function(x){
+      return '<button type="button" class="revent" data-resume="'+esc(x.code)+'"><span class="rc">'+esc(x.code)+'</span>'+(x.name?'<span class="rn">'+esc(x.name)+'</span>':'')+'</button>';
+    }).join("");
+  }
+  $("#evRecentList").addEventListener("click", function(e){
+    var t=e.target.closest ? e.target.closest("[data-resume]") : null; if(!t) return;
+    location.search="?room="+encodeURIComponent(t.getAttribute("data-resume"));
+  });
+  $("#ctlNew").addEventListener("click", function(){
+    // keep the current event saved; reload into the create screen (recent list lets you resume it)
+    window.location.href = location.pathname;
+  });
+
   // ---------- event setup (create) ----------
   $("#evCode").value = ROOM || randCode(5);
   $("#evRegen").addEventListener("click", function(){ $("#evCode").value=randCode(5); });
@@ -649,7 +691,7 @@
     var name=($("#evName").value||"").trim(); if(!name){ $("#evName").focus(); alert("Give your event a name."); return; }
     var code=($("#evCode").value||"").trim().toUpperCase(); if(!code){ code=randCode(5); }
     var whenVal=$("#evWhen").value, sched=0; if(whenVal){ var d=new Date(whenVal); if(!isNaN(d.getTime())) sched=d.getTime(); }
-    ROOM=code; updateRoomLabels();
+    ROOM=code; updateRoomLabels(); rememberEvent(code, name);
     try{ history.replaceState(null,"","?room="+encodeURIComponent(ROOM)); }catch(e){}
     startRoster(function(){ writeEvent({ name:name, scheduledAt:sched, status:"closed" }); });
   });
@@ -670,13 +712,14 @@
       adapter.watch("control", ROOM, function(d){
         var docs=d||[]; eventDoc=docs.filter(function(x){ return x.id===ROOM; })[0]||null;
         teamClocks={}; docs.forEach(function(x){ if(x.kind==="team" && x.teamCode) teamClocks[x.teamCode]=x; });
+        if(eventDoc) rememberEvent(ROOM, eventDoc.name);
         renderControl(); render();
       });
       if(after) after();
     });
   }
 
-  render(); renderControl();
+  render(); renderControl(); renderRecent();
   if(ROOM){ startRoster(); } else { setupEl.hidden=false; controlEl.hidden=true; }
 })();
 </script>
