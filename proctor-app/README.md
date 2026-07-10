@@ -39,10 +39,23 @@ proctor-app/
 This keeps the API key on the **proctor's** machine only — participants never
 need one. (A sensible default rubric is built in; the proctor can edit it.)
 
+## Quick demo (single machine)
+
+```
+cd proctor-app
+./run.sh            # serves on http://localhost:8000  (run.sh [port] to change)
+```
+
+Open **both** URLs it prints in the **same browser**:
+`…/proctor.html` (paste your Claude API key + reference material, then Score) and
+`…/index.html` (submit a team, then check its result). Same origin = they share
+data. That's the whole loop — no Firebase, no accounts.
+
 ## Run it
 
-**Locally:** just open `index.html` / `proctor.html` in a browser, or serve the
-folder (`python3 -m http.server` from inside `proctor-app/`).
+**Locally:** run `./run.sh` (above), or serve the folder yourself
+(`python3 -m http.server` from inside `proctor-app/`). Serving over `http://`
+rather than opening `file://` avoids browser CORS issues with the API call.
 
 **GitHub Pages:** commit this folder and enable Pages for the repo. The pages are
 served at `…/proctor-app/index.html` and `…/proctor-app/proctor.html`.
