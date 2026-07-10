@@ -16,6 +16,7 @@ the in-session phase/time cues live on the participant page itself.)
 - [ ] Open **`proctor.html`**; confirm status reads **"Live · Firebase"**.
 - [ ] Fill in the **event name**, an optional **scheduled date/time**, and note the auto-generated **event code** (↻ to regenerate). Click **Create event**.
 - [ ] Share the **event code** with participants, or click **QR** on the console to show a scannable **join QR** (opens the participant page with the code pre-filled) — great for phones. The **join link** is there too.
+- [ ] **Reopening the console later?** Your events are remembered on that browser — open `proctor.html` and pick the event from the **"Resume an event you created"** list (or type its code in the **room** box and press **Switch**). Use **New event** on the control panel to create another without losing the current one.
 
 ## Opening for teams to join
 
