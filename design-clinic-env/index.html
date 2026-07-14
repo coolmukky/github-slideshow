@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Halcyon Pay — Enterprise Environment Map · Design Clinic</title>
+<meta name="description" content="Simulated current-state enterprise environment for the Zero Trust Design Sprint. One page showing every server, application, and how they connect.">
+<link rel="stylesheet" href="assets/env.css">
+<style>
+  /* ---- page-specific ---- */
+  .hero{background:linear-gradient(160deg,var(--navy-deep),var(--navy));color:#fff;padding:26px 20px 22px}
+  .hero .inner{max-width:1180px;margin:0 auto}
+  .hero .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7FE1EC;font-weight:800}
+  .hero h1{margin:6px 0 8px;font-size:28px;letter-spacing:-.01em}
+  .hero p{margin:0;color:#C4D2E4;max-width:78ch;font-size:14.5px}
+  .hero .co{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px;margin-bottom:2px}
+  .hero .co .mark{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--cyan),#7FE1EC);display:grid;place-items:center;color:var(--navy-deep);font-weight:900}
+
+  .kpis{max-width:1180px;margin:-16px auto 0;padding:0 20px;position:relative;z-index:2}
+  .kpis .grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+
+  .diagram-wrap{max-width:1180px;margin:26px auto 0;padding:0 20px}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin:0 0 12px;font-size:12.5px;color:var(--ink-soft)}
+  .legend .item{display:inline-flex;align-items:center;gap:7px}
+  .legend .swatch{width:26px;height:0;border-top:3px solid var(--ink-faint)}
+  .legend .swatch.trust{border-top:3px dashed var(--red)}
+  .legend .chip{width:12px;height:12px;border-radius:4px;border:1px solid var(--line)}
+
+  .canvas-scroll{overflow-x:auto;background:
+      radial-gradient(circle at 1px 1px, rgba(18,42,71,.06) 1px, transparent 0) 0 0/22px 22px,
+      var(--surface);
+    border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:8px}
+  .canvas{position:relative;width:1140px;height:660px;margin:0 auto}
+  svg.edges{position:absolute;inset:0;width:1140px;height:660px;pointer-events:none;overflow:visible}
+  svg.edges path{fill:none;stroke:var(--line);stroke-width:2;transition:stroke .15s,opacity .15s,stroke-width .15s}
+  svg.edges path.trust{stroke:var(--red);stroke-dasharray:6 5;stroke-width:2}
+  svg.edges.dim path{opacity:.14}
+  svg.edges path.hl{opacity:1;stroke-width:3.2}
+
+  .node{position:absolute;width:150px;background:var(--surface);border:1.5px solid var(--line);
+    border-radius:12px;padding:10px 12px;cursor:pointer;box-shadow:0 1px 0 rgba(14,26,43,.04),0 10px 22px -18px rgba(14,26,43,.5);
+    transition:transform .12s,box-shadow .12s,border-color .12s;z-index:2}
+  .node:hover{transform:translateY(-2px);border-color:var(--cyan);box-shadow:0 1px 0 rgba(14,26,43,.04),0 16px 30px -18px rgba(14,26,43,.55)}
+  .node.sel{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(15,169,190,.22)}
+  .node .t{font-weight:800;font-size:13px;letter-spacing:-.01em;display:flex;align-items:center;gap:6px}
+  .node .t .ic{font-size:14px}
+  .node .h{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .node .st{margin-top:7px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .node.tall{min-height:120px;display:flex;flex-direction:column;justify-content:center}
+  .node .mini{font-size:10.5px;color:var(--red);font-weight:700;margin-top:5px}
+  /* node type accents */
+  .node[data-type="server"]{border-left:4px solid var(--navy)}
+  .node[data-type="app"]{border-left:4px solid var(--cyan)}
+  .node[data-type="agent"]{border-left:4px solid var(--amber)}
+  .node[data-type="account"]{border-left:4px solid var(--red);background:linear-gradient(180deg,#fff,var(--red-soft))}
+  .node[data-type="ext"]{border-left:4px solid var(--ink-faint);background:#F5F8FC}
+  .node[data-type="edge"]{border-left:4px solid var(--green)}
+
+  /* zone labels */
+  .zone-label{position:absolute;top:-2px;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
+
+  /* ---- detail drawer ---- */
+  .drawer-back{position:fixed;inset:0;background:rgba(10,24,48,.35);opacity:0;visibility:hidden;transition:.18s;z-index:40}
+  .drawer-back.open{opacity:1;visibility:visible}
+  .drawer{position:fixed;top:0;right:0;height:100%;width:min(420px,92vw);background:var(--surface);
+    box-shadow:-24px 0 60px -30px rgba(14,26,43,.6);transform:translateX(102%);transition:transform .22s cubic-bezier(.4,0,.2,1);
+    z-index:41;display:flex;flex-direction:column}
+  .drawer.open{transform:translateX(0)}
+  .drawer .dh{padding:18px 20px;border-bottom:1px solid var(--line-soft);display:flex;align-items:flex-start;gap:10px}
+  .drawer .dh h3{margin:0;font-size:18px}
+  .drawer .dh .sub{font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-top:3px}
+  .drawer .close{margin-left:auto;background:none;border:0;font-size:22px;line-height:1;color:var(--ink-faint);cursor:pointer;padding:0 4px}
+  .drawer .db{padding:18px 20px;overflow-y:auto;flex:1}
+  .drawer .row{margin:0 0 14px}
+  .drawer .row .k{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);font-weight:800;margin-bottom:3px}
+  .drawer .row .v{font-size:13.5px;color:var(--ink)}
+  .drawer .risks{list-style:none;padding:0;margin:0}
+  .drawer .risks li{position:relative;padding:6px 0 6px 22px;font-size:13px;border-top:1px solid var(--line-soft)}
+  .drawer .risks li:before{content:"▲";position:absolute;left:0;top:6px;color:var(--red);font-size:11px}
+  .drawer .open-app{display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:#fff;border:0;
+    padding:10px 16px;border-radius:10px;font-weight:700;font-size:13.5px;cursor:pointer;text-decoration:none}
+  .drawer .open-app:hover{background:var(--navy-deep);text-decoration:none}
+  .drawer .conns{font-size:12.5px;color:var(--ink-soft)}
+  .drawer .conns code{font-family:var(--mono);font-size:11.5px}
+
+  .content{max-width:1180px;margin:0 auto;padding:6px 20px 70px}
+
+  @media (max-width:640px){
+    .hero h1{font-size:23px}
+    .drawer{width:100vw}
+  }
+</style>
+</head>
+<body>
+
+<div class="sim-banner">
+  🧪 <b>Simulated environment</b> — Halcyon Pay is a fictional company for the Zero Trust Design Sprint. Every server, app, and record here is fake. &nbsp;·&nbsp;
+  <a href="../zero-trust-design-sprint.html">Back to the sprint playbook →</a>
+</div>
+
+<header class="hero">
+  <div class="inner">
+    <div class="co"><span class="mark">H</span> Halcyon Pay</div>
+    <div class="eyebrow">Confidential · Current-State Architecture Review</div>
+    <h1>Enterprise Environment Map</h1>
+    <p>One page showing every server and application running in Halcyon Pay's estate — and how they connect today.
+       This is the <b>as-is</b> your design-clinic team is asked to redesign around Zero Trust. Click any node to
+       inspect it and open its live application. Watch the <span style="color:#FF9C9C;font-weight:700">red dashed lines</span> — that's the trust that needs to disappear.</p>
+  </div>
+</header>
+
+<div class="kpis">
+  <div class="grid">
+    <div class="card kpi"><div class="n">5</div><div class="l">Servers</div></div>
+    <div class="card kpi"><div class="n">6</div><div class="l">Applications</div></div>
+    <div class="card kpi"><div class="n">3</div><div class="l">AI agents</div></div>
+    <div class="card kpi"><div class="n" style="color:var(--red)">1</div><div class="l">Shared identity</div></div>
+    <div class="card kpi"><div class="n" style="color:var(--red)">None</div><div class="l">Segmentation</div></div>
+  </div>
+</div>
+
+<div class="diagram-wrap">
+  <div class="legend">
+    <span class="item"><span class="swatch"></span> Normal call / HTTPS</span>
+    <span class="item"><span class="swatch trust"></span> Over-privileged trust (shared account)</span>
+    <span class="item"><span class="chip" style="border-left:4px solid var(--green)"></span> Edge</span>
+    <span class="item"><span class="chip" style="border-left:4px solid var(--cyan)"></span> Application</span>
+    <span class="item"><span class="chip" style="border-left:4px solid var(--amber)"></span> AI agent</span>
+    <span class="item"><span class="chip" style="border-left:4px solid var(--navy)"></span> Server / data</span>
+    <span class="item"><span class="chip" style="border-left:4px solid var(--red)"></span> Shared account</span>
+  </div>
+
+  <div class="canvas-scroll">
+    <div class="canvas" id="canvas">
+      <svg class="edges" id="edges" viewBox="0 0 1140 660" preserveAspectRatio="none"></svg>
+      <!-- zone labels -->
+      <div class="zone-label" style="left:8px">Public</div>
+      <div class="zone-label" style="left:190px">Edge</div>
+      <div class="zone-label" style="left:360px">Web / app tier · flat VLAN</div>
+      <div class="zone-label" style="left:560px">Autonomous agents</div>
+      <div class="zone-label" style="left:960px">Data · comms · external</div>
+      <!-- nodes injected by JS -->
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <h2 class="section-title" style="margin-top:30px">Server &amp; application inventory</h2>
+  <div class="card" style="padding:4px 6px">
+    <table class="data" id="inv">
+      <thead><tr><th>Node</th><th>Kind</th><th>Host : port</th><th>Software</th><th>Runs as</th><th>Status</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Why this is the "before" picture</h2>
+  <div class="grid cols-2">
+    <div class="card">
+      <div class="notice bad"><b>One shared identity for three agents.</b> The support, reconciliation, and
+        fraud-triage agents all authenticate as <code class="inline">svc-halcyon</code> and are then trusted to act
+        broadly. There is no way to tell which agent did what.</div>
+      <p style="font-size:13.5px;color:var(--ink-soft);margin:12px 0 0">Follow the red lines: every agent collapses
+        into one account, and that account has standing access to the ledger database, the mail server, partner-bank
+        APIs, and SaaS tooling.</p>
+    </div>
+    <div class="card">
+      <div class="notice bad"><b>Flat network, long-lived credentials, no per-call check.</b> Everything sits on one
+        VLAN. Tokens don't expire. No policy checkpoint authorizes an agent→resource call, and nothing writes an
+        identity-bound audit record.</div>
+      <p style="font-size:13.5px;color:var(--ink-soft);margin:12px 0 0">A single compromised agent could read, move,
+        or alter customer funds undetected. That's the blast radius your target-state design has to shrink.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">How to use this in the clinic</h2>
+  <div class="card">
+    <ol style="margin:0;padding-left:20px;font-size:13.5px;color:var(--ink-soft);line-height:1.7">
+      <li><b>Walk the estate.</b> Click each node, open its application, and note the identity it runs as and what it can reach.</li>
+      <li><b>Mark the trust.</b> Every red dashed line is standing, over-broad access. List the ones that must become per-agent, just-in-time, and checkpoint-verified.</li>
+      <li><b>Redesign.</b> On your canvas, give each agent its own identity, put a policy checkpoint on every agent→resource call, segment the network, and add an identity-bound audit log.</li>
+      <li><b>Defend it.</b> Re-run the walk against your target state — can you now answer "which agent did what," and can one compromised agent still roam?</li>
+    </ol>
+    <p style="font-size:12.5px;color:var(--ink-faint);margin:14px 0 0">Applications:
+      <a href="apps/support-portal.html">Support Portal</a> ·
+      <a href="apps/ledger-console.html">Ledger &amp; Reconciliation</a> ·
+      <a href="apps/fraud-triage.html">Fraud Triage</a> ·
+      <a href="apps/db-admin.html">DB Admin</a> ·
+      <a href="apps/webmail.html">Webmail</a> ·
+      <a href="apps/ops-console.html">Ops Console</a>
+    </p>
+  </div>
+
+  <div class="foot-note">
+    Halcyon Pay is a fictional company created for the Zero Trust Agentic Design Sprint. No real systems, customers,
+    or credentials are represented. &nbsp;·&nbsp; <a href="../README.md">About this clinic</a>
+  </div>
+</div>
+
+<!-- detail drawer -->
+<div class="drawer-back" id="drawerBack"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="dh">
+    <div>
+      <h3 id="dTitle">—</h3>
+      <div class="sub" id="dSub">—</div>
+    </div>
+    <button class="close" id="dClose" aria-label="Close">×</button>
+  </div>
+  <div class="db">
+    <div class="row"><div class="k">Role</div><div class="v" id="dRole">—</div></div>
+    <div class="row"><div class="k">Software</div><div class="v mono" id="dSoft" style="font-family:var(--mono);font-size:12.5px">—</div></div>
+    <div class="row"><div class="k">Runs as / identity</div><div class="v" id="dIdent">—</div></div>
+    <div class="row"><div class="k">Connects to</div><div class="v conns" id="dConns">—</div></div>
+    <div class="row"><div class="k">Current-state risks</div><ul class="risks" id="dRisks"></ul></div>
+    <div id="dOpenWrap"><a class="open-app" id="dOpen" target="_blank" rel="noopener">Open application ↗</a></div>
+  </div>
+</aside>
+
+<script>
+/* ---------- Environment model ---------- */
+const NODES = {
+  internet:{x:30,y:300,type:"edge",icon:"🌐",title:"Internet",host:"public",
+    role:"Customers, staff browsers, and inbound agent callers reach Halcyon Pay from the public internet.",
+    soft:"—",ident:"anonymous / customer sessions",status:["info","Public"],
+    connects:["edge"]},
+  edge:{x:190,y:300,type:"edge",icon:"🛡️",title:"edge-lb-01",host:"lb.halcyonpay.io:443",
+    role:"TLS-terminating load balancer and reverse proxy. Fronts every web application on one public certificate.",
+    soft:"HAProxy 2.6",ident:"n/a",status:["ok","Running"],
+    risk:["No web application firewall in front of the apps.","Routes to a single flat VLAN behind it — no per-app segmentation."],
+    connects:["support","ledger","fraud","ops"]},
+
+  support:{x:360,y:40,type:"app",icon:"🎧",title:"Support Portal",host:"web-01:443",href:"apps/support-portal.html",
+    role:"Customer support console. Agents (human + AI) look up customers and issue refunds here.",
+    soft:"web-01 · nginx 1.24 · Node 20",ident:"svc-halcyon (shared)",status:["ok","Running"],
+    risk:["Refund action has no human-in-the-loop approval.","Runs under the shared service account with full DB write."],
+    connects:["agentSupport"]},
+  ledger:{x:360,y:180,type:"app",icon:"📒",title:"Ledger & Reconciliation",host:"web-01:8443",href:"apps/ledger-console.html",
+    role:"Moves data between the internal ledger and partner banks. Home of the reconciliation agent.",
+    soft:"web-01 · nginx 1.24 · Java 17",ident:"svc-halcyon (shared)",status:["ok","Running"],
+    risk:["Standing outbound access to every partner-bank API.","No approval on ledger adjustments."],
+    connects:["agentRecon"]},
+  fraud:{x:360,y:320,type:"app",icon:"🚨",title:"Fraud Triage",host:"web-01:9443",href:"apps/fraud-triage.html",
+    role:"Queries transactions and freezes accounts. Home of the fraud-triage agent.",
+    soft:"web-01 · nginx 1.24 · Python 3.12",ident:"svc-halcyon (shared)",status:["ok","Running"],
+    risk:["Account-freeze is a high-impact action with no second approval.","Broad read across all customer transactions."],
+    connects:["agentFraud"]},
+  ops:{x:360,y:520,type:"app",icon:"🛠️",title:"Ops Console",host:"app-01:8081",href:"apps/ops-console.html",
+    role:"Internal admin console: restart services, rotate (rarely) credentials, read logs.",
+    soft:"app-01 · Grafana-style admin",ident:"svc-halcyon (shared)",status:["warn","Running · exposed"],
+    risk:["Reachable from the same edge as customer apps.","Uses the shared account, so admin == agent identity."],
+    connects:["svc"]},
+
+  agentSupport:{x:560,y:40,type:"agent",icon:"🤖",title:"support-resolution agent",host:"app-01 · worker",
+    role:"Autonomous agent that reads customer records and issues refunds on the customer's behalf.",
+    soft:"LLM agent · long-lived token",ident:"svc-halcyon (shared)",status:["warn","Autonomous"],
+    risk:["Shares one identity with two other agents.","Standing refund + customer-read privileges."],
+    connects:["svc"]},
+  agentRecon:{x:560,y:180,type:"agent",icon:"🤖",title:"reconciliation agent",host:"app-01 · worker",
+    role:"Autonomous agent that moves data between the ledger and partner banks.",
+    soft:"LLM agent · long-lived token",ident:"svc-halcyon (shared)",status:["warn","Autonomous"],
+    risk:["Can write to the ledger and call partner APIs with no per-call check.","Shared identity — actions aren't attributable."],
+    connects:["svc"]},
+  agentFraud:{x:560,y:320,type:"agent",icon:"🤖",title:"fraud-triage agent",host:"app-01 · worker",
+    role:"Autonomous agent that queries transactions and freezes accounts.",
+    soft:"LLM agent · long-lived token",ident:"svc-halcyon (shared)",status:["warn","Autonomous"],
+    risk:["Freeze action can be triggered with no human approval.","Shared identity across all agents."],
+    connects:["svc"]},
+
+  svc:{x:755,y:250,type:"account",icon:"🔑",title:"svc-halcyon",host:"shared service account",tall:true,
+    role:"The single service account every agent and app authenticates as. Once authenticated, it is trusted to act broadly across the estate.",
+    soft:"static API key + long-lived OAuth token",ident:"one account, all workloads",status:["bad","Over-privileged"],
+    risk:["No per-agent identity — you can't tell which agent acted.","Long-lived credentials that are almost never rotated.","Standing read/write to DB, mail, partners, and SaaS."],
+    connects:["db","partners","saas","mail"]},
+
+  db:{x:960,y:30,type:"server",icon:"🗄️",title:"Ledger DB (db-01)",host:"db-01:5432",href:"apps/db-admin.html",
+    role:"PostgreSQL holding customer records, the ledger, and transaction history. Also exposes a DB admin web UI.",
+    soft:"db-01 · PostgreSQL 15 · Adminer UI :8080",ident:"accepts svc-halcyon",status:["ok","Running"],
+    risk:["Single database, no row-level scoping per agent.","Admin UI reachable on the flat network."],
+    connects:[]},
+  partners:{x:960,y:210,type:"ext",icon:"🏦",title:"Partner Bank APIs",host:"api.partners:443",
+    role:"External settlement and transfer APIs at partner banks.",
+    soft:"3rd-party REST",ident:"accepts svc-halcyon key",status:["info","External"],
+    risk:["One shared key authorizes all outbound money movement.","No scoping to a single agent or transaction."],
+    connects:[]},
+  saas:{x:960,y:380,type:"ext",icon:"☁️",title:"SaaS tools",host:"*.saas:443",
+    role:"CRM, ticketing, and analytics SaaS the agents read and write.",
+    soft:"3rd-party SaaS",ident:"accepts svc-halcyon token",status:["info","External"],
+    risk:["Broad OAuth scopes granted to the shared account.","No just-in-time access."],
+    connects:[]},
+  mail:{x:960,y:560,type:"server",icon:"✉️",title:"Mail server (mail-01)",host:"mail-01:993",href:"apps/webmail.html",
+    role:"Internal mail + customer notifications. Webmail UI for staff.",
+    soft:"mail-01 · Postfix + Dovecot · Webmail :443",ident:"accepts svc-halcyon",status:["ok","Running"],
+    risk:["Agents can send mail as the company with no restriction.","Webmail on the same flat network as prod data."],
+    connects:[]},
+};
+
+/* edges get their type from the SOURCE: agents & svc & ops emit over-privileged 'trust' edges */
+const TRUST_SOURCES = new Set(["agentSupport","agentRecon","agentFraud","svc","ops"]);
+
+/* ---------- Render nodes ---------- */
+const canvas = document.getElementById("canvas");
+const NW = 150, NH = 62, NH_TALL = 120;
+function nodeH(k){ return NODES[k].tall ? NH_TALL : NH; }
+
+Object.entries(NODES).forEach(([key,n])=>{
+  const el = document.createElement("div");
+  el.className = "node" + (n.tall?" tall":"");
+  el.style.left = n.x+"px"; el.style.top = n.y+"px";
+  el.dataset.type = n.type; el.dataset.key = key;
+  const st = n.status;
+  el.innerHTML = `
+    <div class="t"><span class="ic">${n.icon}</span>${n.title}</div>
+    <div class="h">${n.host}</div>
+    <div class="st"><span class="badge ${st[0]}"><span class="d"></span>${st[1]}</span></div>
+    ${n.ident && n.ident.includes("shared")||key==="svc" ? `<div class="mini">${key==="svc"?"1 identity · all workloads":"⚠ shared identity"}</div>`:""}
+  `;
+  el.addEventListener("click", ()=>openDrawer(key));
+  el.addEventListener("mouseenter", ()=>highlight(key));
+  el.addEventListener("mouseleave", clearHighlight);
+  canvas.appendChild(el);
+});
+
+/* ---------- Draw edges ---------- */
+const svg = document.getElementById("edges");
+const edgePaths = [];
+function anchorR(k){ const n=NODES[k]; return [n.x+NW, n.y+nodeH(k)/2]; }
+function anchorL(k){ const n=NODES[k]; return [n.x, n.y+nodeH(k)/2]; }
+
+Object.entries(NODES).forEach(([key,n])=>{
+  (n.connects||[]).forEach(t=>{
+    const [sx,sy]=anchorR(key), [tx,ty]=anchorL(t);
+    const dx=Math.max(40,(tx-sx));
+    const c1x=sx+dx*0.5, c2x=tx-dx*0.5;
+    const p=document.createElementNS("http://www.w3.org/2000/svg","path");
+    p.setAttribute("d",`M${sx},${sy} C${c1x},${sy} ${c2x},${ty} ${tx},${ty}`);
+    if(TRUST_SOURCES.has(key)) p.classList.add("trust");
+    p.dataset.a=key; p.dataset.b=t;
+    svg.appendChild(p); edgePaths.push(p);
+  });
+});
+
+/* ---------- Hover highlight ---------- */
+function highlight(key){
+  svg.classList.add("dim");
+  edgePaths.forEach(p=>{ if(p.dataset.a===key||p.dataset.b===key) p.classList.add("hl"); });
+}
+function clearHighlight(){
+  svg.classList.remove("dim");
+  edgePaths.forEach(p=>p.classList.remove("hl"));
+}
+
+/* ---------- Drawer ---------- */
+const drawer=document.getElementById("drawer"), back=document.getElementById("drawerBack");
+function openDrawer(key){
+  const n=NODES[key];
+  document.querySelectorAll(".node.sel").forEach(e=>e.classList.remove("sel"));
+  document.querySelector(`.node[data-key="${key}"]`)?.classList.add("sel");
+  document.getElementById("dTitle").textContent=`${n.icon} ${n.title}`;
+  document.getElementById("dSub").textContent=n.host;
+  document.getElementById("dRole").textContent=n.role;
+  document.getElementById("dSoft").textContent=n.soft;
+  const identEl=document.getElementById("dIdent");
+  identEl.innerHTML = /shared|over|one account/i.test(n.ident)
+    ? `<span class="badge bad" style="vertical-align:middle"><span class="d"></span>${n.ident}</span>`
+    : n.ident;
+  const conns=(n.connects||[]).map(t=>NODES[t].title);
+  document.getElementById("dConns").innerHTML = conns.length
+    ? conns.map(c=>`<code>${c}</code>`).join(" · ") : "<span style='color:var(--ink-faint)'>terminal (no outbound)</span>";
+  const rl=document.getElementById("dRisks"); rl.innerHTML="";
+  (n.risk||["No notable current-state risk recorded for this node."]).forEach(r=>{
+    const li=document.createElement("li"); li.textContent=r; rl.appendChild(li);
+  });
+  const openWrap=document.getElementById("dOpenWrap"), open=document.getElementById("dOpen");
+  if(n.href){ openWrap.style.display=""; open.href=n.href; }
+  else openWrap.style.display="none";
+  drawer.classList.add("open"); back.classList.add("open"); drawer.setAttribute("aria-hidden","false");
+}
+function closeDrawer(){
+  drawer.classList.remove("open"); back.classList.remove("open"); drawer.setAttribute("aria-hidden","true");
+  document.querySelectorAll(".node.sel").forEach(e=>e.classList.remove("sel"));
+}
+document.getElementById("dClose").addEventListener("click",closeDrawer);
+back.addEventListener("click",closeDrawer);
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeDrawer(); });
+
+/* ---------- Inventory table ---------- */
+const invBody=document.querySelector("#inv tbody");
+const kindLabel={server:"Server",app:"Application",agent:"AI agent",account:"Shared account",ext:"External",edge:"Edge"};
+Object.entries(NODES).forEach(([key,n])=>{
+  if(n.type==="edge"&&key==="internet") return;
+  const tr=document.createElement("tr");
+  const runsAs = /shared|one account/i.test(n.ident)
+    ? `<span class="badge bad"><span class="d"></span>svc-halcyon</span>` : n.ident;
+  tr.innerHTML=`
+    <td><b>${n.icon} ${n.title}</b></td>
+    <td>${kindLabel[n.type]||n.type}</td>
+    <td class="mono">${n.host}</td>
+    <td>${n.soft}</td>
+    <td>${runsAs}</td>
+    <td><span class="badge ${n.status[0]}"><span class="d"></span>${n.status[1]}</span></td>
+    <td>${n.href?`<a href="${n.href}">Open ↗</a>`:`<button class="linklike" data-k="${key}" style="background:none;border:0;color:var(--cyan-deep);cursor:pointer;font:inherit;padding:0">Inspect</button>`}</td>`;
+  invBody.appendChild(tr);
+});
+invBody.addEventListener("click",e=>{
+  const b=e.target.closest("button[data-k]"); if(b) openDrawer(b.dataset.k);
+});
+</script>
+</body>
+</html>

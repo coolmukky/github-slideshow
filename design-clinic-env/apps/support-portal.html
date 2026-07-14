@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Support Portal · Halcyon Pay (simulated)</title>
+<link rel="stylesheet" href="../assets/env.css">
+</head>
+<body>
+<div class="sim-banner">🧪 <b>Simulated app</b> — static demo data for the Zero Trust Design Sprint. Nothing here is real. &nbsp;·&nbsp; <a href="../index.html">← Environment map</a></div>
+
+<div class="app-bar">
+  <span class="logo"><span class="dot"></span> Halcyon Pay</span>
+  <span class="name">Support Portal</span>
+  <span class="spacer"></span>
+  <span class="host">web-01 : 443</span>
+  <span class="whoami">runs as: svc-halcyon</span>
+</div>
+
+<div class="wrap">
+  <a class="back-link" href="../index.html">← Environment map</a>
+  <div class="page-head">
+    <h1>🎧 Customer Support</h1>
+    <p>Look up a customer and resolve their issue. The <b>support-resolution agent</b> operates through this same
+       console — it reads customer records and issues refunds autonomously.</p>
+  </div>
+
+  <div class="notice bad" style="margin-bottom:18px">
+    <b>Design-clinic note:</b> refunds are issued instantly with <b>no human-in-the-loop approval</b>, and every
+    action here is attributed to the shared <code class="inline">svc-halcyon</code> account — not to the specific
+    agent or user that triggered it.
+  </div>
+
+  <div class="grid cols-3" style="margin-bottom:18px">
+    <div class="card kpi"><div class="n">1,284</div><div class="l">Open tickets</div></div>
+    <div class="card kpi"><div class="n">$47,920</div><div class="l">Refunds today</div></div>
+    <div class="card kpi"><div class="n" style="color:var(--red)">0</div><div class="l">Approvals required</div></div>
+  </div>
+
+  <div class="card">
+    <div class="section-title" style="margin-top:0">Customer record · CU-40318</div>
+    <table class="data">
+      <tr><th>Name</th><td>Dana Ableton</td><th>Tier</th><td>Plus</td></tr>
+      <tr><th>Email</th><td class="mono">dana.ableton@example.com</td><th>Since</th><td>2021-03</td></tr>
+      <tr><th>Balance</th><td class="mono">$2,140.55</td><th>Status</th><td><span class="badge ok"><span class="d"></span>Active</span></td></tr>
+    </table>
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="open-app" style="background:var(--navy);color:#fff;border:0;padding:10px 16px;border-radius:10px;font-weight:700;cursor:pointer" onclick="fakeRefund()">Issue refund</button>
+      <button style="background:var(--surface);border:1px solid var(--line);padding:10px 16px;border-radius:10px;font-weight:700;cursor:pointer;color:var(--ink)">Add note</button>
+      <span id="refundMsg" style="align-self:center;font-size:13px;color:var(--green);font-weight:700"></span>
+    </div>
+  </div>
+
+  <div class="section-title">Recent actions (audit trail)</div>
+  <div class="card" style="padding:4px 6px">
+    <table class="data">
+      <thead><tr><th>Time</th><th>Action</th><th>Customer</th><th>Amount</th><th>Actor</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">14:02:11</td><td>Refund issued</td><td>CU-40318</td><td class="mono">$59.00</td><td><span class="badge bad"><span class="d"></span>svc-halcyon</span></td></tr>
+        <tr><td class="mono">13:58:40</td><td>Refund issued</td><td>CU-39902</td><td class="mono">$120.00</td><td><span class="badge bad"><span class="d"></span>svc-halcyon</span></td></tr>
+        <tr><td class="mono">13:51:03</td><td>Record viewed</td><td>CU-40120</td><td class="mono">—</td><td><span class="badge bad"><span class="d"></span>svc-halcyon</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="notice" style="margin-top:12px">Notice the <b>Actor</b> column — you can't tell whether a human agent or the
+    support-resolution <b>AI</b> agent took each action. That's the attribution gap your Zero Trust design must close.</div>
+
+  <div class="foot-note">Simulated Support Portal · runs as <code class="inline">svc-halcyon</code> on <code class="inline">web-01:443</code> · reaches the Ledger DB and Mail server through the shared account.</div>
+</div>
+<script>
+function fakeRefund(){ document.getElementById("refundMsg").textContent="✓ Refund issued instantly — no approval requested (simulated)."; }
+</script>
+</body>
+</html>

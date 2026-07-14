@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ops Console · app-01 · Halcyon Pay (simulated)</title>
+<link rel="stylesheet" href="../assets/env.css">
+</head>
+<body>
+<div class="sim-banner">🧪 <b>Simulated app</b> — static demo data for the Zero Trust Design Sprint. Nothing here is real. &nbsp;·&nbsp; <a href="../index.html">← Environment map</a></div>
+
+<div class="app-bar">
+  <span class="logo"><span class="dot"></span> Halcyon Pay</span>
+  <span class="name">Ops Console · app-01</span>
+  <span class="spacer"></span>
+  <span class="host">app-01 : 8081</span>
+  <span class="whoami">runs as: svc-halcyon</span>
+</div>
+
+<div class="wrap">
+  <a class="back-link" href="../index.html">← Environment map</a>
+  <div class="page-head">
+    <h1>🛠️ Operations Console</h1>
+    <p>Internal admin panel: service health, restarts, credential state, and logs across the estate. Reachable from the
+       same edge as the customer apps, and it uses the same shared account — so admin power and agent identity are one.</p>
+  </div>
+
+  <div class="notice bad" style="margin-bottom:18px">
+    <b>Design-clinic note:</b> this admin surface sits on the flat network behind the shared edge and authenticates as
+    <code class="inline">svc-halcyon</code> — the <b>same</b> identity the agents use. Whoever holds that credential is
+    both an agent and an administrator.
+  </div>
+
+  <div class="grid cols-3" style="margin-bottom:18px">
+    <div class="card kpi"><div class="n" style="color:var(--green)">5/5</div><div class="l">Services up</div></div>
+    <div class="card kpi"><div class="n" style="color:var(--red)">214d</div><div class="l">Since key rotation</div></div>
+    <div class="card kpi"><div class="n" style="color:var(--red)">0</div><div class="l">Network segments</div></div>
+  </div>
+
+  <div class="section-title" style="margin-top:0">Services</div>
+  <div class="card" style="padding:4px 6px">
+    <table class="data">
+      <thead><tr><th>Service</th><th>Host</th><th>Identity</th><th>Uptime</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        <tr><td>support-portal</td><td class="mono">web-01:443</td><td><span class="badge bad"><span class="d"></span>svc-halcyon</span></td><td class="mono">18d</td><td><span class="badge ok"><span class="d"></span>Up</span></td><td><button class="linkbtn" onclick="restart(this)">Restart</button></td></tr>
+        <tr><td>ledger-recon</td><td class="mono">web-01:8443</td><td><span class="badge bad"><span class="d"></span>svc-halcyon</span></td><td class="mono">18d</td><td><span class="badge ok"><span class="d"></span>Up</span></td><td><button class="linkbtn" onclick="restart(this)">Restart</button></td></tr>
+        <tr><td>fraud-triage</td><td class="mono">web-01:9443</td><td><span class="badge bad"><span class="d"></span>svc-halcyon</span></td><td class="mono">11d</td><td><span class="badge ok"><span class="d"></span>Up</span></td><td><button class="linkbtn" onclick="restart(this)">Restart</button></td></tr>
+        <tr><td>agent-workers (×3)</td><td class="mono">app-01</td><td><span class="badge bad"><span class="d"></span>svc-halcyon</span></td><td class="mono">6d</td><td><span class="badge ok"><span class="d"></span>Up</span></td><td><button class="linkbtn" onclick="restart(this)">Restart</button></td></tr>
+        <tr><td>postgres</td><td class="mono">db-01:5432</td><td><span class="badge info"><span class="d"></span>db-owner</span></td><td class="mono">61d</td><td><span class="badge ok"><span class="d"></span>Up</span></td><td><button class="linkbtn" onclick="restart(this)">Restart</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">Credentials</div>
+  <div class="card" style="padding:4px 6px">
+    <table class="data">
+      <thead><tr><th>Credential</th><th>Type</th><th>Used by</th><th>Age</th><th>Expiry</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">svc-halcyon</td><td>OAuth + API key</td><td>all apps + 3 agents</td><td class="mono">214 days</td><td style="color:var(--red);font-weight:700">never</td></tr>
+        <tr><td class="mono">partner-keys</td><td>Static API keys</td><td>ledger-recon</td><td class="mono">400+ days</td><td style="color:var(--red);font-weight:700">never</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="notice" style="margin-top:12px">Long-lived, never-expiring credentials shared across every workload are the
+    opposite of just-in-time. Your target design should replace these with short-lived, per-agent tokens.</div>
+
+  <div class="foot-note">Simulated Ops Console · <code class="inline">app-01:8081</code> · admin actions run as <code class="inline">svc-halcyon</code> on a flat, unsegmented network.</div>
+</div>
+<style>.linkbtn{background:none;border:0;color:var(--cyan-deep);cursor:pointer;font:inherit;font-weight:700;padding:0}</style>
+<script>function restart(b){b.textContent="restarting…";b.disabled=true;setTimeout(()=>{b.textContent="✓ up";b.style.color="var(--green)";},700);}</script>
+</body>
+</html>

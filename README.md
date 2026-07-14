@@ -9,6 +9,7 @@ An interactive playbook for running the **Zero Trust Agentic Design Sprint** des
 - ➡️ **[Participant page — `zero-trust-design-sprint.html`](./zero-trust-design-sprint.html)** — the playbook each participant opens (served at `/zero-trust-design-sprint.html`). A **Focus view** toggle hides reference sections during the hour so teams stay on task.
 - 👁️ **[Proctor roster & evaluation — `proctor.html`](./proctor.html)** — live view of all teams and members as they join, with per-role counts, team-completeness flags, a search filter, **CSV export**, and a printable **participant report** (PDF-ready). Also lets the proctor open each team's **submitted solution and score it** (3 injections + final solution = 100). Scales comfortably to ~300 participants.
 - 🏆 **[Leaderboard — `leaderboard.html`](./leaderboard.html)** — live team rankings by score; project it on the shared screen.
+- 🏢 **[Design Clinic Environment — `design-clinic-env/`](./design-clinic-env/index.html)** — a simulated **"before" enterprise** (fictional *Halcyon Pay*) for SEs to explore: web/db/mail/app servers, six static application pages, and a **single-page topology map** showing every server, application, and how they connect today. Gives the team a concrete current-state to redesign around Zero Trust. See [`design-clinic-env/README.md`](./design-clinic-env/README.md).
 
 **Live cross-device roster (optional setup)**
 

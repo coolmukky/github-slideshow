@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fraud Triage · Halcyon Pay (simulated)</title>
+<link rel="stylesheet" href="../assets/env.css">
+</head>
+<body>
+<div class="sim-banner">🧪 <b>Simulated app</b> — static demo data for the Zero Trust Design Sprint. Nothing here is real. &nbsp;·&nbsp; <a href="../index.html">← Environment map</a></div>
+
+<div class="app-bar">
+  <span class="logo"><span class="dot"></span> Halcyon Pay</span>
+  <span class="name">Fraud Triage</span>
+  <span class="spacer"></span>
+  <span class="host">web-01 : 9443</span>
+  <span class="whoami">runs as: svc-halcyon</span>
+</div>
+
+<div class="wrap">
+  <a class="back-link" href="../index.html">← Environment map</a>
+  <div class="page-head">
+    <h1>🚨 Fraud Triage</h1>
+    <p>Review flagged transactions and freeze accounts. The <b>fraud-triage agent</b> queries transactions and freezes
+       accounts autonomously through this console.</p>
+  </div>
+
+  <div class="notice bad" style="margin-bottom:18px">
+    <b>Design-clinic note:</b> freezing an account is a high-impact action, yet it fires with <b>no second approval</b>
+    and broad read access to <b>every</b> customer's transactions — all under the shared service account.
+  </div>
+
+  <div class="grid cols-3" style="margin-bottom:18px">
+    <div class="card kpi"><div class="n" style="color:var(--red)">23</div><div class="l">Flagged now</div></div>
+    <div class="card kpi"><div class="n">4</div><div class="l">Frozen today</div></div>
+    <div class="card kpi"><div class="n">2.1M</div><div class="l">Txns readable</div></div>
+  </div>
+
+  <div class="section-title" style="margin-top:0">Flagged transactions</div>
+  <div class="card" style="padding:4px 6px">
+    <table class="data">
+      <thead><tr><th>Txn</th><th>Customer</th><th>Amount</th><th>Risk</th><th>Signal</th><th></th></tr></thead>
+      <tbody>
+        <tr><td class="mono">TX-771204</td><td class="mono">CU-40318</td><td class="mono">$4,900.00</td><td><span class="badge bad"><span class="d"></span>High</span></td><td>velocity</td><td><button class="linkbtn" onclick="freeze(this)">Freeze account</button></td></tr>
+        <tr><td class="mono">TX-771250</td><td class="mono">CU-38771</td><td class="mono">$820.00</td><td><span class="badge warn"><span class="d"></span>Med</span></td><td>geo mismatch</td><td><button class="linkbtn" onclick="freeze(this)">Freeze account</button></td></tr>
+        <tr><td class="mono">TX-771288</td><td class="mono">CU-41002</td><td class="mono">$12,000.00</td><td><span class="badge bad"><span class="d"></span>High</span></td><td>new payee</td><td><button class="linkbtn" onclick="freeze(this)">Freeze account</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="notice" style="margin-top:12px">The agent can read across <b>all 2.1M transactions</b> and freeze any account
+    on its own. Your target design should scope its reads and put a human (or policy checkpoint) on the freeze.</div>
+
+  <div class="section-title">Recent freezes</div>
+  <div class="card" style="padding:4px 6px">
+    <table class="data">
+      <thead><tr><th>Time</th><th>Account</th><th>By</th><th>Approved by</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">13:44</td><td class="mono">CU-39501</td><td><span class="badge bad"><span class="d"></span>svc-halcyon</span></td><td style="color:var(--red);font-weight:700">— none —</td></tr>
+        <tr><td class="mono">12:20</td><td class="mono">CU-40771</td><td><span class="badge bad"><span class="d"></span>svc-halcyon</span></td><td style="color:var(--red);font-weight:700">— none —</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="foot-note">Simulated Fraud Triage · runs as <code class="inline">svc-halcyon</code> on <code class="inline">web-01:9443</code> · reads the Ledger DB (db-01) across all customers.</div>
+</div>
+<style>.linkbtn{background:none;border:0;color:var(--red);cursor:pointer;font:inherit;font-weight:700;padding:0}</style>
+<script>function freeze(b){b.textContent="✓ frozen (no approval)";b.style.color="var(--ink-faint)";b.disabled=true;}</script>
+</body>
+</html>

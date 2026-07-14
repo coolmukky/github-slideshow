@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledger &amp; Reconciliation · Halcyon Pay (simulated)</title>
+<link rel="stylesheet" href="../assets/env.css">
+</head>
+<body>
+<div class="sim-banner">🧪 <b>Simulated app</b> — static demo data for the Zero Trust Design Sprint. Nothing here is real. &nbsp;·&nbsp; <a href="../index.html">← Environment map</a></div>
+
+<div class="app-bar">
+  <span class="logo"><span class="dot"></span> Halcyon Pay</span>
+  <span class="name">Ledger &amp; Reconciliation</span>
+  <span class="spacer"></span>
+  <span class="host">web-01 : 8443</span>
+  <span class="whoami">runs as: svc-halcyon</span>
+</div>
+
+<div class="wrap">
+  <a class="back-link" href="../index.html">← Environment map</a>
+  <div class="page-head">
+    <h1>📒 Ledger &amp; Reconciliation</h1>
+    <p>Reconcile the internal ledger against partner-bank statements. The <b>reconciliation agent</b> moves data
+       between the ledger and partner banks through this service — with standing outbound access to every partner API.</p>
+  </div>
+
+  <div class="notice bad" style="margin-bottom:18px">
+    <b>Design-clinic note:</b> a single shared key authorizes <b>all outbound money movement</b> to every partner bank.
+    There is no per-transaction scoping and no checkpoint that a human (or policy) approved the transfer.
+  </div>
+
+  <div class="grid cols-3" style="margin-bottom:18px">
+    <div class="card kpi"><div class="n">99.4%</div><div class="l">Auto-matched</div></div>
+    <div class="card kpi"><div class="n">$1.9M</div><div class="l">Settled today</div></div>
+    <div class="card kpi"><div class="n" style="color:var(--amber)">7</div><div class="l">Exceptions</div></div>
+  </div>
+
+  <div class="section-title" style="margin-top:0">Partner bank connections</div>
+  <div class="card" style="padding:4px 6px">
+    <table class="data">
+      <thead><tr><th>Partner</th><th>Endpoint</th><th>Auth</th><th>Scope</th><th>Last sync</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Northwind Bank</td><td class="mono">api.northwind:443</td><td><span class="badge bad"><span class="d"></span>svc-halcyon key</span></td><td>transfers · read · write</td><td class="mono">14:00</td><td><span class="badge ok"><span class="d"></span>OK</span></td></tr>
+        <tr><td>Cedar Federal</td><td class="mono">api.cedarfed:443</td><td><span class="badge bad"><span class="d"></span>svc-halcyon key</span></td><td>transfers · read · write</td><td class="mono">13:55</td><td><span class="badge ok"><span class="d"></span>OK</span></td></tr>
+        <tr><td>Meridian Trust</td><td class="mono">api.meridiant:443</td><td><span class="badge bad"><span class="d"></span>svc-halcyon key</span></td><td>transfers · read · write</td><td class="mono">13:41</td><td><span class="badge warn"><span class="d"></span>Retry</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">Ledger entries (unmatched)</div>
+  <div class="card" style="padding:4px 6px">
+    <table class="data">
+      <thead><tr><th>Entry</th><th>Date</th><th>Amount</th><th>Counterparty</th><th></th></tr></thead>
+      <tbody>
+        <tr><td class="mono">LE-88214</td><td class="mono">2026-07-14</td><td class="mono">$12,400.00</td><td>Northwind Bank</td><td><button class="linkbtn" onclick="match(this)">Match &amp; post</button></td></tr>
+        <tr><td class="mono">LE-88219</td><td class="mono">2026-07-14</td><td class="mono">$3,050.75</td><td>Cedar Federal</td><td><button class="linkbtn" onclick="match(this)">Match &amp; post</button></td></tr>
+        <tr><td class="mono">LE-88231</td><td class="mono">2026-07-14</td><td class="mono">$980.10</td><td>Meridian Trust</td><td><button class="linkbtn" onclick="match(this)">Match &amp; post</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="notice" style="margin-top:12px">Posting a match writes to the <b>Ledger DB</b> and can trigger an outbound
+    transfer — all under one long-lived credential, with <b>no policy checkpoint</b> between the agent and the money.</div>
+
+  <div class="foot-note">Simulated Ledger console · runs as <code class="inline">svc-halcyon</code> on <code class="inline">web-01:8443</code> · writes to Ledger DB (db-01) and calls partner-bank APIs.</div>
+</div>
+<style>.linkbtn{background:none;border:0;color:var(--cyan-deep);cursor:pointer;font:inherit;font-weight:700;padding:0}</style>
+<script>function match(b){b.textContent="✓ posted";b.style.color="var(--green)";b.disabled=true;}</script>
+</body>
+</html>

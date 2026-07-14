@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DB Admin · db-01 · Halcyon Pay (simulated)</title>
+<link rel="stylesheet" href="../assets/env.css">
+</head>
+<body>
+<div class="sim-banner">🧪 <b>Simulated app</b> — static demo data for the Zero Trust Design Sprint. Nothing here is real. &nbsp;·&nbsp; <a href="../index.html">← Environment map</a></div>
+
+<div class="app-bar">
+  <span class="logo"><span class="dot"></span> Halcyon Pay</span>
+  <span class="name">DB Admin · db-01</span>
+  <span class="spacer"></span>
+  <span class="host">db-01 : 8080 → :5432</span>
+  <span class="whoami">connected as: svc-halcyon</span>
+</div>
+
+<div class="wrap">
+  <a class="back-link" href="../index.html">← Environment map</a>
+  <div class="page-head">
+    <h1>🗄️ Ledger Database</h1>
+    <p>PostgreSQL 15 holding customer records, the ledger, and transaction history — the crown jewels. A web-based
+       admin UI is reachable on the flat network, and every app and agent connects with the same account.</p>
+  </div>
+
+  <div class="notice bad" style="margin-bottom:18px">
+    <b>Design-clinic note:</b> one database, one login (<code class="inline">svc-halcyon</code>), <b>no row-level scoping</b>
+    per agent, and an admin UI that anything on the VLAN can reach. A compromised agent has the whole store.
+  </div>
+
+  <div class="grid cols-2" style="align-items:start">
+    <div class="card">
+      <div class="section-title" style="margin-top:0">Tables</div>
+      <table class="data">
+        <thead><tr><th>Table</th><th>Rows</th><th>Access</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">customers</td><td class="mono">412,880</td><td><span class="badge bad"><span class="d"></span>rw · svc-halcyon</span></td></tr>
+          <tr><td class="mono">ledger_entries</td><td class="mono">9,204,113</td><td><span class="badge bad"><span class="d"></span>rw · svc-halcyon</span></td></tr>
+          <tr><td class="mono">transactions</td><td class="mono">2,108,940</td><td><span class="badge bad"><span class="d"></span>rw · svc-halcyon</span></td></tr>
+          <tr><td class="mono">account_freezes</td><td class="mono">1,204</td><td><span class="badge bad"><span class="d"></span>rw · svc-halcyon</span></td></tr>
+          <tr><td class="mono">refunds</td><td class="mono">88,410</td><td><span class="badge bad"><span class="d"></span>rw · svc-halcyon</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="section-title" style="margin-top:0">Query</div>
+      <textarea style="width:100%;min-height:96px;font-family:var(--mono);font-size:12.5px;border:1px solid var(--line);border-radius:10px;padding:10px;resize:vertical" readonly>SELECT id, name, balance
+FROM customers
+ORDER BY balance DESC
+LIMIT 3;</textarea>
+      <button class="linkbtn" style="margin-top:8px" onclick="run()">▶ Run query</button>
+      <table class="data" id="qres" style="margin-top:10px;display:none">
+        <thead><tr><th>id</th><th>name</th><th>balance</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">CU-41002</td><td>Priya Nair</td><td class="mono">$284,120.00</td></tr>
+          <tr><td class="mono">CU-38771</td><td>Marcus Vale</td><td class="mono">$196,540.10</td></tr>
+          <tr><td class="mono">CU-40318</td><td>Dana Ableton</td><td class="mono">$2,140.55</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="notice" style="margin-top:16px">Every connecting app (Support, Ledger, Fraud) and all three agents use the
+    <b>same</b> DB login, so the database can't distinguish or constrain them. Per-agent identities + scoped grants are
+    the fix your design should show.</div>
+
+  <div class="foot-note">Simulated DB Admin (Adminer-style) · PostgreSQL 15 on <code class="inline">db-01:5432</code>, UI on <code class="inline">:8080</code> · accepts connections from the flat web/app VLAN.</div>
+</div>
+<style>.linkbtn{background:none;border:0;color:var(--cyan-deep);cursor:pointer;font:inherit;font-weight:700;padding:0}</style>
+<script>function run(){document.getElementById("qres").style.display="";}</script>
+</body>
+</html>

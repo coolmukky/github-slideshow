@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Webmail · mail-01 · Halcyon Pay (simulated)</title>
+<link rel="stylesheet" href="../assets/env.css">
+</head>
+<body>
+<div class="sim-banner">🧪 <b>Simulated app</b> — static demo data for the Zero Trust Design Sprint. Nothing here is real. &nbsp;·&nbsp; <a href="../index.html">← Environment map</a></div>
+
+<div class="app-bar">
+  <span class="logo"><span class="dot"></span> Halcyon Pay</span>
+  <span class="name">Webmail · mail-01</span>
+  <span class="spacer"></span>
+  <span class="host">mail-01 : 443 (IMAP :993)</span>
+  <span class="whoami">mailbox: notifications@ (svc-halcyon)</span>
+</div>
+
+<div class="wrap">
+  <a class="back-link" href="../index.html">← Environment map</a>
+  <div class="page-head">
+    <h1>✉️ Webmail — notifications@halcyonpay.io</h1>
+    <p>Internal mail and customer notifications. Postfix + Dovecot with a webmail UI. Agents send customer mail through
+       this server using the shared account, with no restriction on who or what they email as the company.</p>
+  </div>
+
+  <div class="notice bad" style="margin-bottom:18px">
+    <b>Design-clinic note:</b> any agent can send mail <b>as Halcyon Pay</b> to any address, unthrottled, under
+    <code class="inline">svc-halcyon</code>. A compromised agent could phish customers from a trusted domain.
+  </div>
+
+  <div class="card" style="padding:4px 6px">
+    <table class="data">
+      <thead><tr><th style="width:26px"></th><th>From / To</th><th>Subject</th><th>Sent by</th><th>Time</th></tr></thead>
+      <tbody>
+        <tr><td>📤</td><td>→ dana.ableton@example.com</td><td>Your refund of $59.00 has been processed</td><td><span class="badge bad"><span class="d"></span>svc-halcyon</span></td><td class="mono">14:02</td></tr>
+        <tr><td>📤</td><td>→ ops@halcyonpay.io</td><td>[recon] Meridian Trust sync retried</td><td><span class="badge bad"><span class="d"></span>svc-halcyon</span></td><td class="mono">13:41</td></tr>
+        <tr><td>📤</td><td>→ m.vale@example.com</td><td>Action needed: your account has been frozen</td><td><span class="badge bad"><span class="d"></span>svc-halcyon</span></td><td class="mono">13:44</td></tr>
+        <tr><td>📥</td><td>← partner-alerts@northwind</td><td>Settlement batch #4471 confirmed</td><td>—</td><td class="mono">14:00</td></tr>
+        <tr><td>📤</td><td>→ (bulk 1,204 customers)</td><td>Scheduled maintenance notice</td><td><span class="badge bad"><span class="d"></span>svc-halcyon</span></td><td class="mono">09:15</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="notice" style="margin-top:12px">Notice all outbound mail is <b>Sent by</b> the same shared account — including
+    the customer-facing "account frozen" and refund notices the agents generate. There's no per-agent sending identity
+    and no rate or recipient policy.</div>
+
+  <div class="foot-note">Simulated Webmail · Postfix + Dovecot on <code class="inline">mail-01</code> · IMAP <code class="inline">:993</code>, UI <code class="inline">:443</code> · reachable from the flat network; agents relay through it via the shared account.</div>
+</div>
+</body>
+</html>
