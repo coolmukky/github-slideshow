@@ -538,6 +538,50 @@
   .sheet-field.filled{border-color:var(--cyan);background:#FAFEFF}
   .sheet-field:focus-within{border-color:var(--cyan-deep);box-shadow:0 0 0 3px rgba(15,169,190,.12)}
 
+  /* --- use-case hub + workspace --- */
+  .uc-list{display:flex;flex-direction:column;gap:10px}
+  .uc-card{display:flex;align-items:center;gap:14px;width:100%;text-align:left;cursor:pointer;
+    background:var(--surface,#fff);border:1px solid var(--line);border-left:5px solid var(--cyan);border-radius:12px;padding:13px 16px;transition:box-shadow .15s,border-color .15s}
+  .uc-card:hover{box-shadow:0 10px 24px -16px rgba(14,26,43,.5)}
+  .uc-card.sel{border-color:var(--cyan-deep);box-shadow:0 0 0 3px rgba(15,169,190,.14)}
+  .uc-card.done{border-left-color:var(--green)}
+  .uc-card.soon,.uc-card.locked{border-left-color:#C7D2DE;opacity:.72;cursor:not-allowed}
+  .uc-card .uc-n{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:20px;width:30px;text-align:center;color:var(--cyan-deep)}
+  .uc-card.done .uc-n{color:var(--green)}
+  .uc-card .uc-mid{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+  .uc-card .uc-t{font-weight:600;font-size:15px;color:var(--ink)}
+  .uc-card .uc-tag{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint)}
+  .uc-card .uc-state{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;color:var(--ink-soft);white-space:nowrap}
+  .uc-card.done .uc-state{color:var(--green)}
+  .uc-empty{padding:26px;text-align:center;color:var(--ink-soft);background:#F6F9FC;border:1px dashed var(--line);border-radius:12px}
+  .uc-empty h3{margin:0 0 6px;color:var(--ink)}
+  .uc-brief{background:#F7FAFD;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:18px}
+  .uc-brief-h{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .uc-badge{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--cyan-deep);border-radius:6px;padding:3px 8px}
+  .uc-brief-h h3{margin:0;font-size:18px}
+  .uc-intro{font-size:13.5px;color:var(--ink-soft);margin:0 0 14px}
+  .uc-col-h{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:7px}
+  .uc-col ul{margin:0;padding-left:18px}.uc-col li{font-size:12.5px;color:var(--ink);margin-bottom:5px;line-height:1.45}
+  .uc-col.red .uc-col-h{color:#b53636}.uc-col.cyan .uc-col-h{color:var(--cyan-deep)}
+  .uc-step{margin-top:20px}
+  .uc-step-h{display:flex;align-items:center;gap:10px;font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:16px;color:var(--ink)}
+  .uc-step-n{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--cyan-deep);color:#fff;font-size:13px}
+  .uc-step-sub{font-size:12.5px;color:var(--ink-soft);margin:5px 0 10px}
+  .uc-table-wrap{overflow-x:auto}
+  .uctab{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
+  .uctab th{text-align:left;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);padding:6px 10px;border-bottom:2px solid var(--line)}
+  .uctab td{vertical-align:top;padding:6px 10px;border-bottom:1px solid var(--line-soft)}
+  .uctab td.pp{font-size:12.5px;color:var(--ink);width:34%}
+  .uctab textarea{width:100%;border:1px solid var(--line);border-radius:8px;background:#fff;resize:vertical;min-height:34px;
+    font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:13px;color:var(--ink);line-height:1.45;padding:7px 9px;outline:none}
+  .uctab textarea:focus{border-color:var(--cyan-deep);box-shadow:0 0 0 3px rgba(15,169,190,.1)}
+  .uctab textarea::placeholder{color:var(--ink-faint);font-style:italic}
+  .uc-diagrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .uc-diagrow .diag-thumb{height:44px;width:66px}
+  .uc-submit{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:22px;padding-top:16px;border-top:1px dashed var(--line-soft)}
+  .uc-substatus{font-family:"IBM Plex Mono",monospace;font-size:11.5px;margin-right:auto}
+  #ucAddProd{margin-top:10px}
+
   /* --- persona "take your seat" login --- */
   .persona-btn{
     font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;letter-spacing:.04em;
@@ -762,158 +806,58 @@
 
   <nav class="toc" aria-label="Contents">
     <span class="toc-lbl">Jump to</span>
-    <a href="#goal">Goal</a><a href="#outcomes">Outcomes</a><a href="#components">Components</a>
-    <a href="#roles">Roles</a><a href="#package">Package</a><a href="#start">Start here</a>
-    <a href="#play">Play</a><a href="#journey">Journey</a><a href="#injections">Injections</a>
-    <a href="#scenario">Scenario</a><a href="#templates">Templates</a><a href="#example">Example</a>
-    <a href="#scoring">Scoring</a><a href="#rubric">Rubric</a><a href="#debrief">Debrief</a>
-    <a href="#cheatsheet">Cheat sheet</a><a href="#facilitator">Facilitator</a>
+    <a href="#environment">Environment</a><a href="#objectives">Objectives</a>
+    <a href="#roles">Roles</a><a href="#methodology">Methodology</a>
+    <a href="#usecases">Use cases</a><a href="#workspace">Workspace</a>
     <span class="focus-note">Focus view · reference sections hidden</span>
   </nav>
 
 
-  <!-- ============ THE BOARD / TIMELINE ============ -->
-  <section class="sec" id="board">
+  <!-- ============ CUSTOMER ENVIRONMENT ============ -->
+  <section class="sec" id="environment">
     <div class="sec-head">
-      <span class="sec-no">THE BOARD</span>
-      <h2>Your 60-minute mission track</h2>
+      <span class="sec-no">ENVIRONMENT</span>
+      <h2>The customer environment</h2>
     </div>
-    <p class="sec-sub">Six phases, one hour. This track is the spine of the whole exercise — every phase below shows where you are on it. The IT Director moves the team from station to station and never lets a phase overrun. When the amber band fills, the round is locked.</p>
-    <div class="track-card">
-      <span class="eyebrow">Move left → right · Times are hard stops</span>
-      <div class="track-scroll">
-        <div class="track">
-          <div class="stop" style="--g:8;--c:#E2891F">
-            <div class="bar"></div>
-            <div class="ph"><i></i>P0 · Brief-In</div>
-            <div class="nm">Open the box, read the dossier, assign roles</div>
-            <div class="tc">00:00 → 08:00</div>
-          </div>
-          <div class="stop" style="--g:12;--c:#DB4A4A">
-            <div class="bar"></div>
-            <div class="ph"><i></i>P1 · Expose</div>
-            <div class="nm">Hunt the pain points &amp; threat surface</div>
-            <div class="tc">08:00 → 20:00</div>
-          </div>
-          <div class="stop" style="--g:13;--c:#0FA9BE">
-            <div class="bar"></div>
-            <div class="ph"><i></i>P2 · Decide</div>
-            <div class="nm">Choose the Zero Trust + agentic pattern</div>
-            <div class="tc">20:00 → 33:00</div>
-          </div>
-          <div class="stop" style="--g:15;--c:#2a6fb0">
-            <div class="bar"></div>
-            <div class="ph"><i></i>P3 · Design</div>
-            <div class="nm">Draw the topology on the canvas</div>
-            <div class="tc">33:00 → 48:00</div>
-          </div>
-          <div class="stop" style="--g:8;--c:#27A276">
-            <div class="bar"></div>
-            <div class="ph"><i></i>P4 · Document</div>
-            <div class="nm">Fill the one-page solution sheet</div>
-            <div class="tc">48:00 → 56:00</div>
-          </div>
-          <div class="stop" style="--g:4;--c:#AEC4DE">
-            <div class="bar"></div>
-            <div class="ph"><i></i>P5 · Submit</div>
-            <div class="nm">Photo, upload, lock in</div>
-            <div class="tc">56:00 → 60:00</div>
-          </div>
-        </div>
-      </div>
-      <div class="track-scale">
-        <span>00:00</span><span>10:00</span><span>20:00</span><span>30:00</span><span>40:00</span><span>50:00</span><span>60:00</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ OBJECTIVE / WIN ============ -->
-  <section class="sec" id="goal">
-    <div class="sec-head">
-      <span class="sec-no">GOAL</span>
-      <h2>How you complete it</h2>
-    </div>
-    <p class="sec-sub">This is a learning exercise, not a contest — teams aren't compared with each other. The aim is for every person to leave the hour better than they arrived.</p>
-    <div class="win">
-      <div class="panel accent-cyan">
-        <h3>
-          <span class="ic" style="background:var(--cyan-soft,#E4F5F8)"><svg viewBox="0 0 24 24" fill="none" stroke="#0A7C8C"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1" fill="#0A7C8C"/></svg></span>
-          The objective
-        </h3>
-        <p style="color:var(--ink-soft);font-size:14px;margin-bottom:12px">Take a fictional company drowning in over-privileged autonomous AI agents and redesign its architecture around Zero Trust. You've completed it when an evaluator can look at your topology and your one-pager and clearly see <b>identity, least privilege, continuous verification, and blast-radius control</b> applied to every agent.</p>
-        <ul class="checklist">
-          <li>Every pain point in the dossier is addressed by a control in your design.</li>
-          <li>Each AI agent has its own identity and only the access it needs, only when it needs it.</li>
-          <li>Every agent-to-resource call passes through a policy checkpoint and is logged.</li>
-          <li>All three injections are answered inside your design, not bolted on after.</li>
+    <p class="sec-sub">You're the Cisco team on point for <b>a large enterprise customer</b> running campus and branch networks with a mix of wired and wireless clients. Read the environment once as a group so everyone shares the same picture, then work the use cases in order.</p>
+    <div class="grid g2">
+      <div class="panel" style="border-top:4px solid var(--cyan)">
+        <h3>Network at a glance</h3>
+        <ul>
+          <li><b>Campus HQ</b> — access / distribution / core switching, wired desktops and wireless, a large IoT footprint.</li>
+          <li><b>Branches</b> — wired and wireless clients, connected back over SD-WAN.</li>
+          <li><b>Data center</b> — on-prem applications plus workloads extending into public cloud.</li>
+          <li><b>Wireless</b> — corporate SSIDs and a Guest SSID.</li>
+          <li><b>Identity &amp; policy</b> — the customer can run Cisco ISE for authentication, profiling and posture.</li>
         </ul>
       </div>
-      <div class="panel accent-green">
-        <h3>
-          <span class="ic" style="background:var(--green-soft)"><svg viewBox="0 0 24 24" fill="none" stroke="#1f8a63"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/></svg></span>
-          What you hand in
-        </h3>
-        <div class="deliver"><div class="num">1</div><div><b>The Topology Diagram</b><p>A hand-drawn architecture on the canvas. Photographed to the clipboard and read by the AI proctor — so draw labelled boxes and clear arrows.</p></div></div>
-        <div class="deliver"><div class="num">2</div><div><b>The Solution Sheet</b><p>A single page: the problem, your approach, key decisions, how the design answers each injection — plus a one-line <b>individual reflection from each member</b>. Uploaded and scored against the rubric.</p></div></div>
-        <p style="font-size:12.5px;color:var(--ink-faint);margin-top:12px;margin-bottom:0">Both are graded together. A great diagram with a thin write-up — or vice versa — caps your score.</p>
+      <div class="panel" style="border-top:4px solid var(--amber)">
+        <h3>Who's on the network</h3>
+        <ul>
+          <li><b>Employees &amp; trusted devices</b> — laptops, mobiles (Group = Employees).</li>
+          <li><b>IoT</b> — printers, cameras, badge readers (Group = IOT).</li>
+          <li><b>Deskside agents</b> — dedicated Mac-minis (Group = deskagents).</li>
+          <li><b>Guests</b> — Internet-only (Group = Guest).</li>
+          <li><b>Corporate PCs</b> — some behind on AntiVirus / OS updates.</li>
+        </ul>
       </div>
     </div>
   </section>
 
-  <!-- ============ OUTCOMES ============ -->
-  <section class="sec" id="outcomes">
+  <!-- ============ BUSINESS OBJECTIVES ============ -->
+  <section class="sec" id="objectives">
     <div class="sec-head">
-      <span class="sec-no">OUTCOMES</span>
-      <h2>What you'll take away</h2>
+      <span class="sec-no">OBJECTIVES</span>
+      <h2>Business objectives</h2>
     </div>
-    <p class="sec-sub">In one focused hour, you'll move from a messy real-world brief to a defensible design — and walk away with a mental model you can reuse in front of customers.</p>
+    <p class="sec-sub">What success looks like for the customer — every solution you propose should ladder up to these.</p>
     <div class="grid g3">
-      <div class="card" style="border-top:4px solid var(--cyan)">
-        <div class="ic" style="background:var(--cyan)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></div>
-        <h3>Understand</h3>
-        <p>How Zero Trust applies to autonomous AI agents: per-agent identity, least privilege, a policy checkpoint on every call, blast-radius control, and audit by design.</p>
-      </div>
-      <div class="card" style="border-top:4px solid var(--amber)">
-        <div class="ic" style="background:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff"><path d="M14 4l6 6-9 9H5v-6z"/></svg></div>
-        <h3>Practise</h3>
-        <p>Reading an ambiguous brief, choosing an architecture as a team, deciding when the brief changes, and communicating the design clearly under time pressure.</p>
-      </div>
-      <div class="card" style="border-top:4px solid var(--green)">
-        <div class="ic" style="background:var(--green)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff"><path d="M5 3h14v18l-7-4-7 4z"/></svg></div>
-        <h3>Walk away with</h3>
-        <p>A reusable eight-control reference pattern for agentic security — and the habit of defending design trade-offs out loud, not just drawing them.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ COMPONENTS ============ -->
-  <section class="sec" id="components">
-    <div class="sec-head">
-      <span class="sec-no">IN THE BOX</span>
-      <h2>Your components</h2>
-    </div>
-    <p class="sec-sub">Lay these out before the clock starts. Everything you need is on the table — nothing else is allowed unless your facilitator says so.</p>
-    <div class="grid g4">
-      <div class="card">
-        <div class="ic" style="background:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="#7FE2EF"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div>
-        <h3>Scenario Dossier</h3>
-        <p>One page describing the company, its agents, and its current security posture.</p>
-      </div>
-      <div class="card">
-        <div class="ic" style="background:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h4"/></svg></div>
-        <h3>Instruction Card</h3>
-        <p>This playbook — phases, roles, times, and the rubric you're judged on.</p>
-      </div>
-      <div class="card">
-        <div class="ic" style="background:var(--red)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg></div>
-        <h3>Injection Cards ×3</h3>
-        <p>Sealed twists. The IT Director reveals them at set times — they force live decisions.</p>
-      </div>
-      <div class="card">
-        <div class="ic" style="background:var(--cyan)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M3 12l5-3 4 3 3-2 6 4"/></svg></div>
-        <h3>Canvas + Sheet</h3>
-        <p>A blank diagram canvas and the single-page solution sheet template.</p>
-      </div>
+      <div class="deliver"><div class="num">1</div><div><b>Secure, scalable segmentation</b><p>Put every device in the right group and control what each group can reach — without re-architecting VLANs and subnets.</p></div></div>
+      <div class="deliver"><div class="num">2</div><div><b>Pass compliance (PCI)</b><p>Demonstrate segmentation and control of the cardholder environment and keep passing audits.</p></div></div>
+      <div class="deliver"><div class="num">3</div><div><b>Cut operational toil</b><p>Stop hand-profiling every new device and manually chasing posture — automate it.</p></div></div>
+      <div class="deliver"><div class="num">4</div><div><b>Work within budget</b><p>Reuse the existing network for enforcement — no wave of new firewalls just to segment.</p></div></div>
+      <div class="deliver"><div class="num">5</div><div><b>Improve endpoint hygiene</b><p>Bring corporate PCs up to date on AV and OS before they get full access.</p></div></div>
+      <div class="deliver"><div class="num">6</div><div><b>Complete as many use cases as you can</b><p>Five use cases, in order. Each completed use case is scored — solve one, submit, move to the next.</p></div></div>
     </div>
   </section>
 
@@ -972,821 +916,62 @@
     </div>
   </section>
 
-  <!-- ============ THE PACKAGE ============ -->
-  <section class="sec" id="package">
+  <!-- ============ SEGMENTATION METHODOLOGY (reference) ============ -->
+  <section class="sec" id="methodology">
     <div class="sec-head">
-      <span class="sec-no">PACKAGE</span>
-      <h2>What the group receives — and who holds what</h2>
+      <span class="sec-no">REFERENCE</span>
+      <h2>Segmentation methodology — read before you start</h2>
     </div>
-    <p class="sec-sub">Each team gets one shared kit plus a per-person role card. Most information is shared with everyone; two things are deliberately restricted — the injections (held by the IT Director, revealed on a timer) and the reference answer (held by the facilitator until the debrief). That restriction is what makes the decisions real.</p>
-    <div class="win">
-      <div class="panel accent-cyan">
-        <h3 style="display:flex;align-items:center;gap:9px"><span class="ic" style="background:var(--cyan-soft,#E4F5F8);margin:0"><svg viewBox="0 0 24 24" fill="none" stroke="#0A7C8C" stroke-width="1.8"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg></span>What's in the kit</h3>
-        <ul class="kit">
-          <li><span class="qty">×1</span><div><b>Scenario Dossier</b><small>The company, its agents, and its current posture — shared with everyone.</small></div></li>
-          <li><span class="qty">×1</span><div><b>This Playbook / Instruction Card</b><small>Phases, roles, rubric, time cues — visible to the whole table.</small></div></li>
-          <li><span class="qty">×3</span><div><b>Injection Cards (sealed)</b><small>Held face-down by the IT Director; opened only at their cue time.</small></div></li>
-          <li><span class="qty">×4</span><div><b>Role Cards</b><small>One per person — IT Director, Digital Resiliency Officer, Network Architect, Network Security Engineer.</small></div></li>
-          <li><span class="qty">×1</span><div><b>Diagram Canvas + markers</b><small>One large sheet the Network Architect draws on; everyone contributes.</small></div></li>
-          <li><span class="qty">×1</span><div><b>Solution Sheet template</b><small>The single page the Network Security Engineer completes for the team.</small></div></li>
-        </ul>
-      </div>
-      <div>
-        <div class="panel">
-          <h3 style="display:flex;align-items:center;gap:9px"><span class="ic" style="background:var(--cyan-soft,#E4F5F8);margin:0"><svg viewBox="0 0 24 24" fill="none" stroke="#0A7C8C" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg></span>Digital &amp; access</h3>
-          <ul class="kit">
-            <li><span class="qty dig">LINK</span><div><b>Proctor upload (QR or URL)</b><small>Where the diagram photo and solution sheet are submitted.</small></div></li>
-            <li><span class="qty dig">SHOWN</span><div><b>Rubric</b><small>Open to the team during play — scoring is transparent, not a surprise.</small></div></li>
-            <li><span class="qty dig">TIMER</span><div><b>One shared timer</b><small>A phone or screen counting up from 00:00, run by the IT Director.</small></div></li>
-          </ul>
-          <div class="withhold">
-            <b>Held back until the debrief</b>
-            <p>The reference design / answer key is <b>not</b> in the team's kit. The facilitator or SME holds it and reveals it only after submission — so teams reason their way to a solution instead of matching one.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div style="margin-top:18px">
-      <table class="rubric">
-        <thead><tr><th>Information / material</th><th>Held by</th><th>Who sees it</th><th>When</th></tr></thead>
-        <tbody>
-          <tr><td><b>Scenario dossier</b></td><td>IT Director reads it</td><td>Everyone</td><td class="w">From 00:00</td></tr>
-          <tr><td><b>Playbook &amp; rubric</b></td><td>On the table</td><td>Everyone</td><td class="w">Throughout</td></tr>
-          <tr><td><b>Role cards</b></td><td>Each person</td><td>That person</td><td class="w">Before 00:00</td></tr>
-          <tr><td><b>Injection 01 / 02 / 03</b></td><td>IT Director (sealed)</td><td>Everyone, on reveal</td><td class="w">24:00 / 38:00 / 50:00</td></tr>
-          <tr><td><b>Diagram canvas</b></td><td>Network Architect holds the pen</td><td>Everyone contributes</td><td class="w">From 33:00</td></tr>
-          <tr><td><b>Solution sheet</b></td><td>Network Security Engineer writes it</td><td>Everyone contributes</td><td class="w">Throughout, finalised 48:00–56:00</td></tr>
-          <tr><td><b>Reference design / answer key</b></td><td>Facilitator / SME</td><td>The team</td><td class="w">Debrief only (after 60:00)</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- ============ START HERE ============ -->
-  <section class="sec" id="start">
-    <div class="sec-head">
-      <span class="sec-no">START HERE</span>
-      <h2>Before the clock starts</h2>
-    </div>
-    <p class="sec-sub">Do these five things first — they take about two minutes and the timer is <b>not</b> running yet. Once step 5 happens, you're in Phase 0 and the 60 minutes begin.</p>
-    <div class="kick">
-      <div class="steps">
-        <div class="sh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg><b>The first two minutes (clock off)</b></div>
-        <div class="step">
-          <div class="sn">1</div>
-          <div><span class="who all">Everyone</span><h4>Lay out the components</h4><p>Put the four pieces on the table where all can see them: the <b>Scenario Dossier</b>, this <b>Instruction Card</b>, the three sealed <b>Injection Cards</b>, and the <b>Canvas + Solution Sheet</b>. Keep one device free for the timer.</p></div>
-        </div>
-        <div class="step">
-          <div class="sn">2</div>
-          <div><span class="who all">Everyone</span><h4>Choose your IT Director</h4><p>One person volunteers to run the session — usually whoever organized it or is keenest. <b>No volunteer?</b> The person whose birthday is next becomes the IT Director. This takes ten seconds, not a discussion.</p></div>
-        </div>
-        <div class="step">
-          <div class="sn">3</div>
-          <div><span class="who con">IT Director reads aloud</span><h4>Read the key instructions to the team</h4><p>The IT Director reads three things out loud so everyone hears the same thing: the <b>"how you complete it"</b> goal, the <b>two deliverables</b>, and the <b>six phases on the board</b>. No need to read the whole card — just enough that everyone knows the shape of the hour.</p></div>
-        </div>
-        <div class="step">
-          <div class="sn">4</div>
-          <div><span class="who con">IT Director reads aloud</span><h4>Read the four roles and claim them</h4><p>The IT Director reads each role card aloud — IT Director, Digital Resiliency Officer, Network Architect, Network Security Engineer — and the team claims them as they're read. <b>Whoever is keenest on a role takes it.</b> The IT Director keeps their own role. See the box on the right if two people want the same one.</p></div>
-        </div>
-        <div class="step">
-          <div class="sn">5</div>
-          <div><span class="who con">IT Director</span><h4>Start the timer — you're now in Phase 0</h4><p>The IT Director starts a timer counting <b>up from 00:00 to 60:00</b> and says <b>"We have 60 minutes — Phase 0 starts now."</b> From here, follow the phase cards below in order.</p></div>
-        </div>
-      </div>
-      <div>
-        <div class="timehow">
-          <span class="eyebrow">The one rule that keeps you on track</span>
-          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>How time-checking works</h3>
-          <ol>
-            <li>Use <b>one timer everyone can see</b> — a phone or laptop counting up from <b>00:00</b>. Every time in this playbook is "minutes elapsed."</li>
-            <li>The <b>IT Director owns the clock</b> and is the only person watching it closely, so the others can focus on the work.</li>
-            <li>At each checkpoint, the IT Director <b>says the time out loud</b> — e.g. <b>"We're at 20:00, moving to Decide."</b> So the whole team always knows where the clock is.</li>
-            <li>The full list of what to say and when is on the <b>IT Director's time-cue cheat sheet</b> at the end of this card. Red lines on it are injection reveals.</li>
-            <li>When a phase's hard-stop time hits, <b>stop and move on</b> — even if you're not finished. An unfinished phase beats an unsubmitted exercise.</li>
-          </ol>
-        </div>
-        <div class="pickbox">
-          <b>If two people want the same role</b>
-          <p>Rock-paper-scissors, or the person who has done it <em>least</em> before takes it — this is practice, so stretch into the unfamiliar. Every role carries equal weight.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ PHASES ============ -->
-  <section class="sec" id="play">
-    <div class="sec-head">
-      <span class="sec-no">PLAY</span>
-      <h2>Phase by phase</h2>
-    </div>
-    <p class="sec-sub">Each card shows your position on the board, who leads, what every role does, and the time you must respect. Read the <b>Exit</b> line before you move on — if you can't tick it, you're not done.</p>
-
-    <!-- P0 -->
-    <div class="phase">
-      <div class="phase-top">
-        <div class="phase-badge" style="--pc:var(--amber)">
-          <span class="pno">PHASE 0</span><span class="pnm">BRIEF-IN</span><span class="pmin">8 min · 00:00–08:00</span>
-        </div>
-        <div class="phase-meta">
-          <div class="goal">Get aligned fast: absorb the scenario together and agree on what "good" looks like. (Roles were already claimed in Start Here.)</div>
-          <div class="progress" style="--pc:var(--amber)">
-            <div class="progress-head"><span class="pl">Progress</span><span class="pr">Step 1 of 6 · 0&ndash;8 min</span></div>
-            <div class="ptrack">
-              <span class="pseg now" style="--g:8"><b>P0</b></span><span class="pseg" style="--g:12"><b>P1</b></span><span class="pseg" style="--g:13"><b>P2</b></span><span class="pseg" style="--g:15"><b>P3</b></span><span class="pseg" style="--g:8"><b>P4</b></span><span class="pseg" style="--g:4"><b>P5</b></span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="phase-body">
-        <div class="lbl">What each role does</div>
-        <div class="acts">
-          <div class="act"><span class="chip con">IT Director</span> Start the timer at 00:00, then read the scenario dossier out loud so everyone hears the same story.</div>
-          <div class="act"><span class="chip all">Everyone</span> Confirm the roles you claimed in Start Here — don't re-debate them.</div>
-          <div class="act"><span class="chip thr">Digital Resiliency Officer</span> Say out loud the one risk that worries you most — you'll lead the hunt for more next.</div>
-          <div class="act"><span class="chip scr">Network Security Engineer</span> Write the team's mission in one sentence at the top of the solution sheet.</div>
-        </div>
-        <div class="timecheck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><p><b>@ 06:00</b> — everyone can restate the mission in one sentence. <b>@ 08:00</b> IT Director says "moving to Expose" and the team starts Phase 1.</p></div>
-        <div class="exit"><b>Exit criteria</b>Scenario understood · everyone can state the company's problem in one sentence · the one-line mission is written on the sheet.</div>
-      </div>
-    </div>
-
-    <!-- P1 -->
-    <div class="phase">
-      <div class="phase-top">
-        <div class="phase-badge" style="--pc:var(--red)">
-          <span class="pno">PHASE 1</span><span class="pnm">EXPOSE</span><span class="pmin">12 min · 08:00–20:00</span>
-        </div>
-        <div class="phase-meta">
-          <div class="goal">Find the pain. List every place the current setup violates Zero Trust or lets an agent do damage.</div>
-          <div class="progress" style="--pc:var(--red)">
-            <div class="progress-head"><span class="pl">Progress</span><span class="pr">Step 2 of 6 · 8&ndash;20 min</span></div>
-            <div class="ptrack">
-              <span class="pseg done" style="--g:8"><b>P0</b></span><span class="pseg now" style="--g:12"><b>P1</b></span><span class="pseg" style="--g:13"><b>P2</b></span><span class="pseg" style="--g:15"><b>P3</b></span><span class="pseg" style="--g:8"><b>P4</b></span><span class="pseg" style="--g:4"><b>P5</b></span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="phase-body">
-        <div class="lbl">What each role does</div>
-        <div class="acts">
-          <div class="act"><span class="chip thr">Digital Resiliency Officer</span> Go around the table — each person names one weakness in the current setup, with no repeats.</div>
-          <div class="act"><span class="chip arc">Network Architect</span> Sort the weaknesses as they're called into three buckets: identity, network, and audit.</div>
-          <div class="act"><span class="chip scr">Network Security Engineer</span> Write the 5–7 strongest pain points on the sheet as the team names them.</div>
-          <div class="act"><span class="chip con">IT Director</span> At 14:00, stop the listing and have everyone agree on the worst 2–3.</div>
-        </div>
-        <div class="timecheck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><p><b>@ 14:00</b> — stop listing, start ranking. <b>@ 20:00</b> hard stop: the top risks are circled and you move to Decide.</p></div>
-        <div class="exit"><b>Exit criteria</b>A ranked list of pain points · agreement on the 2–3 that matter most · captured on the sheet.</div>
-      </div>
-    </div>
-
-    <!-- P2 -->
-    <div class="phase">
-      <div class="phase-top">
-        <div class="phase-badge" style="--pc:var(--cyan)">
-          <span class="pno">PHASE 2</span><span class="pnm">DECIDE</span><span class="pmin">13 min · 20:00–33:00</span>
-        </div>
-        <div class="phase-meta">
-          <div class="goal">Choose the security pattern. Agree on the Zero Trust + agentic controls that solve your ranked pain points.</div>
-          <div class="progress" style="--pc:var(--cyan)">
-            <div class="progress-head"><span class="pl">Progress</span><span class="pr">Step 3 of 6 · 20&ndash;33 min</span></div>
-            <div class="ptrack">
-              <span class="pseg done" style="--g:8"><b>P0</b></span><span class="pseg done" style="--g:12"><b>P1</b></span><span class="pseg now" style="--g:13"><b>P2</b></span><span class="pseg" style="--g:15"><b>P3</b></span><span class="pseg" style="--g:8"><b>P4</b></span><span class="pseg" style="--g:4"><b>P5</b></span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="phase-body">
-        <div class="lbl">What each role does</div>
-        <div class="acts">
-          <div class="act"><span class="chip all">Everyone</span> For each top pain point, agree on one specific control that fixes it.</div>
-          <div class="act"><span class="chip arc">Network Architect</span> Say the core building blocks out loud: agent identity, a policy checkpoint, network segmentation.</div>
-          <div class="act"><span class="chip thr">Digital Resiliency Officer</span> Challenge each control — ask "does this actually shrink the damage if an agent is hacked?"</div>
-          <div class="act"><span class="chip scr">Network Security Engineer</span> Write each decision down with a one-line reason next to it.</div>
-        </div>
-        <div class="inj-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 16H3z"/><path d="M12 10v4"/></svg> INJECTION 01 revealed at 24:00 — decide together, then continue</div>
-        <div class="timecheck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><p><b>@ 24:00</b> IT Director reveals Injection 01 (≈3 min to resolve). <b>@ 30:00</b> controls locked. <b>@ 33:00</b> hand the pen to the Network Architect.</p></div>
-        <div class="exit"><b>Exit criteria</b>A chosen set of controls, one per top pain point · Injection 01 answered · reasons written down.</div>
-      </div>
-    </div>
-
-    <!-- P3 -->
-    <div class="phase">
-      <div class="phase-top">
-        <div class="phase-badge" style="--pc:#2a6fb0">
-          <span class="pno">PHASE 3</span><span class="pnm">DESIGN</span><span class="pmin">15 min · 33:00–48:00</span>
-        </div>
-        <div class="phase-meta">
-          <div class="goal">Draw the topology. Turn the agreed controls into a clear, labelled architecture the proctor can read.</div>
-          <div class="progress" style="--pc:#2a6fb0">
-            <div class="progress-head"><span class="pl">Progress</span><span class="pr">Step 4 of 6 · 33&ndash;48 min</span></div>
-            <div class="ptrack">
-              <span class="pseg done" style="--g:8"><b>P0</b></span><span class="pseg done" style="--g:12"><b>P1</b></span><span class="pseg done" style="--g:13"><b>P2</b></span><span class="pseg now" style="--g:15"><b>P3</b></span><span class="pseg" style="--g:8"><b>P4</b></span><span class="pseg" style="--g:4"><b>P5</b></span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="phase-body">
-        <div class="lbl">What each role does</div>
-        <div class="acts">
-          <div class="act"><span class="chip arc">Network Architect</span> Draw a labelled box for every component and an arrow for every request between them.</div>
-          <div class="act"><span class="chip thr">Digital Resiliency Officer</span> Trace one agent's request through the drawing and point out any gap you find.</div>
-          <div class="act"><span class="chip scr">Network Security Engineer</span> Keep a legend — make sure every box on the diagram has a clear name.</div>
-          <div class="act"><span class="chip con">IT Director</span> Call the time at 43:00 and 45:00 so the drawing finishes before 48:00.</div>
-        </div>
-        <div class="lifecycle">
-          <div class="lc-note">What you produce here is the <b>logical design</b> — the conceptual first step. In a real engagement it then advances through:</div>
-          <div class="lc-track">
-            <span class="lc-step now">Logical design<small>you are here</small></span>
-            <span class="lc-arr">&rarr;</span><span class="lc-step">Network design</span>
-            <span class="lc-arr">&rarr;</span><span class="lc-step">Detailed design</span>
-            <span class="lc-arr">&rarr;</span><span class="lc-step">BOM</span>
-            <span class="lc-arr">&rarr;</span><span class="lc-step">POC</span>
-            <span class="lc-arr">&rarr;</span><span class="lc-step">Production network</span>
-          </div>
-        </div>
-        <div class="inj-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 16H3z"/><path d="M12 10v4"/></svg> INJECTION 02 revealed at 38:00 — adapt the diagram, don't restart it</div>
-        <div class="timecheck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><p><b>@ 38:00</b> Injection 02 lands — show how the design contains it. <b>@ 45:00</b> stop adding, start labelling. <b>@ 48:00</b> pens down, diagram is final.</p></div>
-        <div class="exit"><b>Exit criteria</b>Labelled topology with clear data/trust flows · Injection 02 visible on the diagram · legible enough to photograph.</div>
-      </div>
-    </div>
-
-    <!-- P4 -->
-    <div class="phase">
-      <div class="phase-top">
-        <div class="phase-badge" style="--pc:var(--green)">
-          <span class="pno">PHASE 4</span><span class="pnm">DOCUMENT</span><span class="pmin">8 min · 48:00–56:00</span>
-        </div>
-        <div class="phase-meta">
-          <div class="goal">Write the one-pager. Explain the problem, your approach, and the decisions that won the design.</div>
-          <div class="progress" style="--pc:var(--green)">
-            <div class="progress-head"><span class="pl">Progress</span><span class="pr">Step 5 of 6 · 48&ndash;56 min</span></div>
-            <div class="ptrack">
-              <span class="pseg done" style="--g:8"><b>P0</b></span><span class="pseg done" style="--g:12"><b>P1</b></span><span class="pseg done" style="--g:13"><b>P2</b></span><span class="pseg done" style="--g:15"><b>P3</b></span><span class="pseg now" style="--g:8"><b>P4</b></span><span class="pseg" style="--g:4"><b>P5</b></span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="phase-body">
-        <div class="lbl">What each role does</div>
-        <div class="acts">
-          <div class="act"><span class="chip scr">Network Security Engineer</span> Fill in every field on the solution sheet — start with the approach and key decisions.</div>
-          <div class="act"><span class="chip arc">Network Architect</span> Add the diagram's legend and point to it from the write-up so the two match.</div>
-          <div class="act"><span class="chip thr">Digital Resiliency Officer</span> Write one line for each injection: the threat, then your answer.</div>
-          <div class="act"><span class="chip all">Everyone</span> Add your own one-line reflection with initials — the decision you drove or would change (60 seconds each).</div>
-          <div class="act"><span class="chip con">IT Director</span> Read the finished sheet back aloud — fix anything a stranger wouldn't understand.</div>
-        </div>
-        <div class="inj-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 16H3z"/><path d="M12 10v4"/></svg> INJECTION 03 revealed at 50:00 — answer it in writing on the sheet</div>
-        <div class="timecheck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><p><b>@ 50:00</b> Injection 03 lands — capture your answer on the page. <b>@ 56:00</b> sheet is done. Move straight to Submit.</p></div>
-        <div class="exit"><b>Exit criteria</b>Every field complete · all three injections addressed · one reflection per member with initials · sheet readable by an outsider.</div>
-      </div>
-    </div>
-
-    <!-- P5 -->
-    <div class="phase">
-      <div class="phase-top">
-        <div class="phase-badge" style="--pc:var(--navy)">
-          <span class="pno">PHASE 5</span><span class="pnm">SUBMIT</span><span class="pmin">4 min · 56:00–60:00</span>
-        </div>
-        <div class="phase-meta">
-          <div class="goal">Lock it in. Photograph the diagram, upload the sheet, confirm both landed before zero.</div>
-          <div class="progress" style="--pc:var(--navy)">
-            <div class="progress-head"><span class="pl">Progress</span><span class="pr">Step 6 of 6 · 56&ndash;60 min</span></div>
-            <div class="ptrack">
-              <span class="pseg done" style="--g:8"><b>P0</b></span><span class="pseg done" style="--g:12"><b>P1</b></span><span class="pseg done" style="--g:13"><b>P2</b></span><span class="pseg done" style="--g:15"><b>P3</b></span><span class="pseg done" style="--g:8"><b>P4</b></span><span class="pseg now" style="--g:4"><b>P5</b></span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="phase-body">
-        <div class="lbl">What each role does</div>
-        <div class="acts">
-          <div class="act"><span class="chip con">IT Director</span> Count down the last 4 minutes out loud: "3 minutes", "2 minutes", "1 minute".</div>
-          <div class="act"><span class="chip arc">Network Architect</span> Take a clear, flat, well-lit photo of the diagram and copy it to the clipboard.</div>
-          <div class="act"><span class="chip scr">Network Security Engineer</span> Upload the solution sheet and confirm the proctor shows it as received.</div>
-          <div class="act"><span class="chip thr">Digital Resiliency Officer</span> Do a final check that the diagram and the sheet tell the same story.</div>
-        </div>
-        <div class="timecheck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><p><b>@ 58:00</b> photo taken and on the clipboard. <b>@ 60:00</b> both artifacts submitted. Anything not submitted is not scored.</p></div>
-        <div class="exit"><b>Exit criteria</b>Diagram image captured to clipboard · solution sheet uploaded · both confirmed received.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ PLAYER JOURNEY ============ -->
-  <section class="sec" id="journey">
-    <div class="sec-head">
-      <span class="sec-no">JOURNEY</span>
-      <h2>What each person experiences, minute by minute</h2>
-    </div>
-    <p class="sec-sub">The same hour from four seats. Read down your column to see your whole game; the <b>LEAD</b> tag marks the phase you own. Notice the rhythm — everyone leads once and supports the rest, so the spotlight moves around the table.</p>
-    <div class="jwrap">
-      <table class="jtable">
-        <thead>
-          <tr>
-            <th class="ph">Phase</th>
-            <th class="hcon">IT Director</th>
-            <th class="hthr">Digital Resiliency Officer</th>
-            <th class="harc">Network Architect</th>
-            <th class="hscr">Network Security Engineer</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="phc">P0 · Brief-In<small>00:00–08:00</small></td>
-            <td><span class="lead con">Lead</span>Start the timer, read the dossier aloud, run the role pick.</td>
-            <td>Listen in; note the first decision you'll want to challenge.</td>
-            <td>Listen in; start picturing the current architecture.</td>
-            <td>Write the team's one-line mission on the sheet.</td>
-          </tr>
-          <tr>
-            <td class="phc">P1 · Expose<small>08:00–20:00</small></td>
-            <td>Keep pace; cut listing for ranking at 14:00.</td>
-            <td><span class="lead thr">Lead</span>Run the round-robin pain-point hunt; rank the worst.</td>
-            <td>Cluster weaknesses into identity, network, audit.</td>
-            <td>Capture the top 5–7 pain points as they're called.</td>
-          </tr>
-          <tr>
-            <td class="phc">P2 · Decide<small>20:00–33:00</small></td>
-            <td>Reveal Injection 01 at 24:00; protect the clock.</td>
-            <td>Challenge each control — does it shrink the damage?</td>
-            <td>Name the building blocks: identity, gateway, segments.</td>
-            <td>Record each decision with a one-line reason.</td>
-          </tr>
-          <tr>
-            <td class="phc">P3 · Design<small>33:00–48:00</small></td>
-            <td>Reveal Injection 02 at 38:00; call 43:00 &amp; 45:00.</td>
-            <td>Trace an agent's request through the drawing; find gaps.</td>
-            <td><span class="lead arc">Lead</span>Draw the labelled topology, boxes and arrows.</td>
-            <td>Keep the legend; make sure every box is named.</td>
-          </tr>
-          <tr>
-            <td class="phc">P4 · Document<small>48:00–56:00</small></td>
-            <td>Reveal Injection 03 at 50:00; read the sheet back aloud.</td>
-            <td>Write the one-line answer to each injection.</td>
-            <td>Add the legend; tie the diagram to the write-up.</td>
-            <td><span class="lead scr">Lead</span>Fill every field; collect each member's reflection.</td>
-          </tr>
-          <tr>
-            <td class="phc">P5 · Submit<small>56:00–60:00</small></td>
-            <td>Count down the final 4 minutes out loud.</td>
-            <td>Final check: diagram and sheet tell one story.</td>
-            <td>Photograph the diagram to the clipboard.</td>
-            <td>Upload the sheet; confirm the proctor received it.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="takeaways">
-      <div class="ta" style="--tc:var(--amber);--tc-ink:#a3640f"><h4>IT Director practises</h4><p>Facilitation under time pressure, scope control, and keeping a team to an outcome.</p></div>
-      <div class="ta" style="--tc:var(--red);--tc-ink:#b53636"><h4>Digital Resiliency Officer practises</h4><p>Constructive challenge, threat-spotting, and driving team dialogue toward a stronger design.</p></div>
-      <div class="ta" style="--tc:var(--cyan);--tc-ink:#0a7c8c"><h4>Network Architect practises</h4><p>Translating requirements into a clear topology and defending placement choices.</p></div>
-      <div class="ta" style="--tc:var(--green);--tc-ink:#1f8a63"><h4>Network Security Engineer practises</h4><p>Crisp technical writing and turning a messy discussion into a decision record.</p></div>
-    </div>
-  </section>
-
-  <!-- ============ INJECTIONS ============ -->
-  <section class="sec" id="injections">
-    <div class="sec-head">
-      <span class="sec-no">TWISTS</span>
-      <h2>The injections</h2>
-    </div>
-    <p class="sec-sub">Sealed until their moment. Each one is a real decision under pressure — the IT Director reads it aloud, the team has roughly three minutes to decide, and the answer must show up in your design or your sheet. They exist to see how you think when the brief changes. <b>All three are always used</b>, so every team is scored on the same twists.</p>
-    <div class="grid g3">
-      <div class="inj">
-        <div class="inj-head"><div class="l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.4"/></svg><span class="tt">01 · Autonomous Expansion</span></div><span class="when">@ 24:00</span></div>
-        <div class="inj-body">
-          <p class="scn">A new reconciliation agent must read and write the <b>production customer ledger</b> with no human in the loop. Leadership wants it live this week.</p>
-          <div class="dec">Decide together</div>
-          <div class="tests">How do you grant this access under Zero Trust <b>without</b> standing, broad privilege? Look for: per-agent identity, just-in-time scoped tokens, policy-gated writes, and human approval reserved for the riskiest actions.</div>
-        </div>
-      </div>
-      <div class="inj">
-        <div class="inj-head"><div class="l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.4"/></svg><span class="tt">02 · Token in the Wild</span></div><span class="when">@ 38:00</span></div>
-        <div class="inj-body">
-          <p class="scn">Monitoring fires: one agent's credential is calling APIs from an <b>unexpected region at 20× normal volume</b>. It may be compromised right now.</p>
-          <div class="dec">Decide together</div>
-          <div class="tests">How does your design contain the blast radius in real time? Look for: short token lifetimes, instant revocation, continuous verification, segmentation that stops lateral movement, and behavioural anomaly response.</div>
-        </div>
-      </div>
-      <div class="inj">
-        <div class="inj-head"><div class="l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.4"/></svg><span class="tt">03 · Prove It</span></div><span class="when">@ 50:00</span></div>
-        <div class="inj-body">
-          <p class="scn">An auditor demands a <b>complete, tamper-evident trail of every agent-to-resource action</b> for the last 90 days — produced on demand.</p>
-          <div class="dec">Decide together</div>
-          <div class="tests">Does your design already produce this, and where? Look for: logging at the policy checkpoint, identity-bound records, immutable/append-only storage, and a single place to query it.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ SCENARIO ============ -->
-  <section class="sec" id="scenario">
-    <div class="sec-head">
-      <span class="sec-no">DOSSIER</span>
-      <h2>The scenario</h2>
-    </div>
-    <p class="sec-sub">This is a sample dossier — swap in your own company and agents to reuse the exercise. The pain points on the right are what a strong team is expected to surface in Phase 1.</p>
-    <div class="dossier">
-      <div class="dossier-top">
-        <span class="eyebrow">Confidential · Internal Architecture Review</span>
-        <span class="stamp">ZERO TRUST · TARGET STATE</span>
-      </div>
-      <div class="dossier-grid">
-        <div class="dossier-main">
-          <h3>Halcyon Pay</h3>
-          <p>Halcyon Pay is a mid-size fintech that recently deployed three autonomous AI agents into production: a <b>support-resolution agent</b> that reads customer records and issues refunds, a <b>reconciliation agent</b> that moves data between the ledger and partner banks, and a <b>fraud-triage agent</b> that queries transactions and freezes accounts.</p>
-          <p>Today, each agent authenticates once with a shared service account and is then trusted to act broadly across internal APIs, databases, and SaaS tools. The network is flat, credentials are long-lived, and there's no record of which agent did what. Leadership has mandated a move to Zero Trust before the next agent ships. <b>Your team designs the target-state architecture.</b></p>
-          <div class="state-row">
-            <div class="state"><b>3 agents</b><span>acting autonomously</span></div>
-            <div class="state"><b>Flat network</b><span>perimeter trust only</span></div>
-            <div class="state"><b>Shared creds</b><span>long-lived, broad</span></div>
-            <div class="state"><b>No audit</b><span>of agent actions</span></div>
-          </div>
-        </div>
-        <div class="dossier-side">
-          <h4>Pain points to surface</h4>
-          <ul class="painlist">
-            <li>Agents share one over-privileged service account — no per-agent identity.</li>
-            <li>Implicit trust after first login; no re-verification per request.</li>
-            <li>Flat network lets a compromised agent move laterally.</li>
-            <li>Static, long-lived credentials that are never rotated.</li>
-            <li>No policy checkpoint authorising individual agent actions.</li>
-            <li>No audit trail tying actions to a specific agent.</li>
-            <li>Tool and prompt-injection misuse with no runtime guardrails.</li>
-            <li>No human-in-the-loop on high-risk actions (refunds, freezes).</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ TEMPLATES ============ -->
-  <section class="sec" id="templates">
-    <div class="sec-head">
-      <span class="sec-no">TEMPLATES</span>
-      <h2>Diagram canvas &amp; solution sheet</h2>
-    </div>
-    <p class="sec-sub">Two artifacts, two formats. Draw the topology on the canvas; tell the story on the sheet. The proctor reads the picture, the rubric reads the page.</p>
+    <p class="sec-sub">A short primer on how modern segmentation works, so the whole team shares the vocabulary. This is reference material — not the answer. Apply it to each use case.</p>
     <div class="grid g2">
-      <div class="tmpl">
-        <div class="tmpl-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M3 12l5-3 4 3 3-2 6 4"/></svg><h3>Topology Canvas</h3></div>
-        <div class="tmpl-b">
-          <div class="canvas">Draw labelled nodes + directional arrows here.<br>Agents · identities · policy checkpoint · resources · logging.</div>
-          <p style="font-size:12.5px;color:var(--ink-soft);margin:12px 0 6px"><b>Draw it so a machine can read it:</b></p>
-          <div class="legend">
-            <span>◻ box = component</span><span>→ arrow = request flow</span><span>⬚ dashed = trust boundary</span><span>★ = policy checkpoint</span><span>label everything</span>
-          </div>
-        </div>
-      </div>
-      <div class="tmpl">
-        <div class="tmpl-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h14v18H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><h3>Solution Sheet — one page</h3></div>
-        <div class="tmpl-b">
-          <div class="sheet-field"><div class="k">Problem in one sentence</div><div class="v">What Halcyon Pay risks today…</div></div>
-          <div class="sheet-field"><div class="k">Approach</div><div class="v">The Zero Trust pattern you applied to agents…</div></div>
-          <div class="sheet-field"><div class="k">Key decisions &amp; why</div><div class="v">Identity · least privilege · policy checkpoint · segmentation · audit…</div></div>
-          <div class="sheet-field"><div class="k">Injection responses 01 / 02 / 03</div><div class="v">One line each: threat → your answer…</div></div>
-          <div class="sheet-field"><div class="k">Diagram legend</div><div class="v">What each labelled box means…</div></div>
-          <div class="sheet-field" style="margin-bottom:0;border-left:3px solid var(--cyan)"><div class="k" style="color:var(--cyan-deep)">Individual reflection — one line each, with initials</div><div class="v">Each member: the decision I drove, or the one thing I'd change. (e.g. "AS — pushed for short-lived tokens over static keys.")</div></div>
-        </div>
-      </div>
+      <div class="panel"><h3>Why VLANs / subnets alone struggle</h3><ul>
+        <li>Segmentation tied to IP/VLAN means topology changes ripple everywhere — complex and tedious.</li>
+        <li>Access rules become long IP ACLs that are hard to read, audit and maintain.</li>
+        <li>Every new device type needs new subnets and rules; staff can't keep up.</li>
+      </ul></div>
+      <div class="panel"><h3>Identity-based (group) segmentation</h3><ul>
+        <li>Classify each user/device into a <b>group</b> at the point of access (authentication + profiling).</li>
+        <li>Carry the group as a tag with the traffic, independent of IP / VLAN / topology.</li>
+        <li>Write policy as <b>group-to-group</b> (who may talk to whom), enforced across the existing network.</li>
+      </ul></div>
+      <div class="panel"><h3>The building blocks</h3><ul>
+        <li><b>Authenticate &amp; profile</b> every endpoint (802.1X, MAB, web auth) and learn what it is.</li>
+        <li><b>Posture</b> — check endpoint health (AV, OS, patches) and remediate before granting full access.</li>
+        <li><b>Tag &amp; enforce</b> — assign a group tag; switches / routers / firewalls enforce group policy inline.</li>
+        <li><b>Share context</b> — feed identity/group to firewalls, data center, SD-WAN and threat tools for consistent policy and rapid containment.</li>
+      </ul></div>
+      <div class="panel"><h3>How to approach each use case</h3><ul>
+        <li><b>1 · Map pain &rarr; product.</b> For every customer pain point, name the product/feature that fixes it.</li>
+        <li><b>2 · Say how &amp; why.</b> For each product, one line on how it works and why it's the right fit (differentiators welcome).</li>
+        <li><b>3 · Read the task &amp; parameters.</b> Note the specific groups, access rules and constraints.</li>
+        <li><b>4 · Propose a diagram.</b> Draw the topology with your solution on it, then submit for scoring.</li>
+      </ul></div>
     </div>
   </section>
 
-  <!-- ============ WORKED EXAMPLE ============ -->
-  <section class="sec" id="example">
+  <!-- ============ USE CASES (hub) ============ -->
+  <section class="sec" id="usecases">
     <div class="sec-head">
-      <span class="sec-no">EXAMPLE</span>
-      <h2>A worked solution, end to end</h2>
+      <span class="sec-no">USE CASES</span>
+      <h2>Five use cases · solve in order</h2>
     </div>
-    <p class="sec-sub">Here's what a strong team produces for the Halcyon Pay scenario — a labelled topology and a completed solution sheet. Use it to calibrate, not to copy: your scenario specifics will differ. The numbers ①–⑧ on the diagram map to the eight reference controls in the Debrief.</p>
-
-    <div class="tmpl" style="margin-bottom:18px">
-      <div class="tmpl-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M3 12l5-3 4 3 3-2 6 4"/></svg><h3>Sample topology — Halcyon Pay target state</h3></div>
-      <div class="svgwrap">
-        <svg viewBox="0 0 1000 600" style="font-family:'IBM Plex Sans',sans-serif" role="img" aria-label="Zero Trust agentic reference topology">
-          <defs>
-            <marker id="ah" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#46566E"/></marker>
-            <marker id="ahg" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#27A276"/></marker>
-            <marker id="ahr" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#DB4A4A"/></marker>
-          </defs>
-
-          <!-- control plane -->
-          <rect x="40" y="24" width="240" height="74" rx="9" fill="#fff" stroke="#0FA9BE" stroke-width="2"/>
-          <text x="70" y="56" font-size="15" font-weight="600" fill="#0A5560">Identity Provider</text>
-          <text x="70" y="76" font-size="11" fill="#5b6b82">per-agent workload identity</text>
-          <circle cx="56" cy="40" r="11" fill="#0FA9BE"/><text x="56" y="44.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">1</text>
-
-          <rect x="300" y="24" width="230" height="74" rx="9" fill="#fff" stroke="#0FA9BE" stroke-width="2"/>
-          <text x="330" y="52" font-size="15" font-weight="600" fill="#0A5560">Token Service</text>
-          <text x="330" y="72" font-size="11" fill="#5b6b82">JIT · scoped · short-lived</text>
-          <circle cx="316" cy="40" r="11" fill="#0FA9BE"/><text x="316" y="44.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">2</text>
-
-          <rect x="560" y="24" width="250" height="74" rx="9" fill="#fff" stroke="#0FA9BE" stroke-width="2"/>
-          <text x="590" y="52" font-size="15" font-weight="600" fill="#0A5560">Policy Decision Point</text>
-          <text x="590" y="72" font-size="11" fill="#5b6b82">deny by default · least privilege</text>
-
-          <!-- agents -->
-          <rect x="40" y="150" width="210" height="72" rx="9" fill="#122A47"/>
-          <text x="62" y="182" font-size="14" font-weight="600" fill="#fff">Support agent</text>
-          <text x="62" y="201" font-size="11" fill="#9FB6CE" font-family="IBM Plex Mono">id: agent-A</text>
-          <rect x="40" y="252" width="210" height="72" rx="9" fill="#122A47"/>
-          <text x="62" y="284" font-size="14" font-weight="600" fill="#fff">Reconciliation agent</text>
-          <text x="62" y="303" font-size="11" fill="#9FB6CE" font-family="IBM Plex Mono">id: agent-B</text>
-          <rect x="40" y="354" width="210" height="72" rx="9" fill="#122A47"/>
-          <text x="62" y="386" font-size="14" font-weight="600" fill="#fff">Fraud-triage agent</text>
-          <text x="62" y="405" font-size="11" fill="#9FB6CE" font-family="IBM Plex Mono">id: agent-C</text>
-          <text x="40" y="142" font-size="11" font-weight="600" fill="#46566E" font-family="IBM Plex Mono">AUTONOMOUS AGENTS</text>
-
-          <!-- gateway / PEP -->
-          <rect x="330" y="160" width="250" height="200" rx="12" fill="#122A47" stroke="#0FA9BE" stroke-width="2.5"/>
-          <text x="455" y="206" font-size="17" font-weight="700" fill="#fff" text-anchor="middle">Agent Gateway</text>
-          <text x="455" y="228" font-size="13" fill="#7FE2EF" text-anchor="middle">Policy Enforcement Point</text>
-          <text x="455" y="262" font-size="12" fill="#cdd9e8" text-anchor="middle">★ authorizes every call</text>
-          <text x="455" y="300" font-size="12" fill="#cdd9e8" text-anchor="middle">+ tool &amp; input guardrails</text>
-          <circle cx="348" cy="176" r="11" fill="#0FA9BE"/><text x="348" y="180.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">3</text>
-          <circle cx="348" cy="320" r="11" fill="#0FA9BE"/><text x="348" y="324.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">6</text>
-
-          <!-- monitor -->
-          <rect x="330" y="392" width="250" height="66" rx="9" fill="#FBE2E2" stroke="#DB4A4A" stroke-width="1.6"/>
-          <text x="358" y="420" font-size="13.5" font-weight="600" fill="#b53636">Continuous verification</text>
-          <text x="358" y="439" font-size="11" fill="#8a4a4a">anomaly detection · revoke on abuse</text>
-          <circle cx="346" cy="404" r="11" fill="#DB4A4A"/><text x="346" y="408.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">5</text>
-
-          <!-- resource zone -->
-          <rect x="612" y="150" width="338" height="188" rx="12" fill="none" stroke="#0FA9BE" stroke-width="1.6" stroke-dasharray="7 5"/>
-          <text x="636" y="144" font-size="10.5" font-weight="600" fill="#0A7C8C" font-family="IBM Plex Mono">MICROSEGMENTED · VERIFY EVERY CALL</text>
-          <circle cx="624" cy="150" r="11" fill="#0FA9BE"/><text x="624" y="154.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">4</text>
-          <rect x="632" y="166" width="300" height="44" rx="7" fill="#fff" stroke="#122A47" stroke-width="1.4"/>
-          <text x="650" y="193" font-size="13" font-weight="600" fill="#122A47">Customer records</text>
-          <rect x="632" y="220" width="300" height="44" rx="7" fill="#fff" stroke="#122A47" stroke-width="1.4"/>
-          <text x="650" y="247" font-size="13" font-weight="600" fill="#122A47">Production ledger DB</text>
-          <rect x="632" y="274" width="300" height="44" rx="7" fill="#fff" stroke="#122A47" stroke-width="1.4"/>
-          <text x="650" y="301" font-size="13" font-weight="600" fill="#122A47">Partner bank API</text>
-
-          <!-- human in the loop -->
-          <rect x="632" y="372" width="318" height="62" rx="9" fill="#FBEBD3" stroke="#E2891F" stroke-width="1.6"/>
-          <text x="662" y="398" font-size="13.5" font-weight="600" fill="#8a560f">Human-in-the-loop approval</text>
-          <text x="662" y="417" font-size="11" fill="#8a6a3a">refunds · account freezes · production writes</text>
-          <circle cx="648" cy="384" r="11" fill="#E2891F"/><text x="648" y="388.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">7</text>
-
-          <!-- audit log -->
-          <rect x="330" y="520" width="620" height="56" rx="9" fill="#D7F0E6" stroke="#27A276" stroke-width="1.6"/>
-          <text x="640" y="546" font-size="14" font-weight="600" fill="#1f8a63" text-anchor="middle">Immutable, identity-bound audit log</text>
-          <text x="640" y="565" font-size="11" fill="#2c7a5e" text-anchor="middle">every agent→resource call · queryable on demand</text>
-          <circle cx="346" cy="532" r="11" fill="#27A276"/><text x="346" y="536.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">8</text>
-
-          <!-- arrows -->
-          <line x1="160" y1="98" x2="150" y2="150" stroke="#46566E" stroke-width="1.6" marker-end="url(#ah)"/>
-          <text x="168" y="130" font-size="10.5" fill="#46566E">identity</text>
-          <line x1="250" y1="186" x2="330" y2="200" stroke="#46566E" stroke-width="1.6" marker-end="url(#ah)"/>
-          <line x1="250" y1="288" x2="330" y2="260" stroke="#46566E" stroke-width="1.6" marker-end="url(#ah)"/>
-          <line x1="250" y1="390" x2="330" y2="320" stroke="#46566E" stroke-width="1.6" marker-end="url(#ah)"/>
-          <text x="262" y="238" font-size="10.5" fill="#46566E">requests</text>
-          <line x1="415" y1="98" x2="440" y2="160" stroke="#46566E" stroke-width="1.6" marker-end="url(#ah)"/>
-          <text x="356" y="128" font-size="10.5" fill="#46566E">1 token / action</text>
-          <line x1="610" y1="98" x2="545" y2="160" stroke="#46566E" stroke-width="1.6" marker-end="url(#ah)"/>
-          <text x="566" y="128" font-size="10.5" fill="#46566E">consult</text>
-          <line x1="580" y1="200" x2="632" y2="190" stroke="#46566E" stroke-width="1.8" marker-end="url(#ah)"/>
-          <text x="586" y="178" font-size="10.5" fill="#0A7C8C">authorized scoped call</text>
-          <line x1="575" y1="332" x2="632" y2="394" stroke="#46566E" stroke-width="1.8" marker-end="url(#ah)"/>
-          <text x="556" y="360" font-size="10.5" fill="#8a560f">high-risk</text>
-          <line x1="781" y1="372" x2="781" y2="320" stroke="#46566E" stroke-width="1.6" marker-end="url(#ah)"/>
-          <text x="790" y="352" font-size="10.5" fill="#8a560f">approved write</text>
-          <line x1="455" y1="360" x2="455" y2="392" stroke="#DB4A4A" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ahr)"/>
-          <text x="464" y="382" font-size="10.5" fill="#b53636">observe</text>
-          <polyline points="330,425 18,425 18,61 300,61" fill="none" stroke="#DB4A4A" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ahr)"/>
-          <text x="26" y="250" font-size="10.5" fill="#b53636" transform="rotate(-90 26 250)">revoke compromised token</text>
-          <line x1="455" y1="458" x2="455" y2="520" stroke="#27A276" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ahg)"/>
-          <text x="464" y="495" font-size="10.5" fill="#1f8a63">log</text>
-          <line x1="900" y1="338" x2="900" y2="520" stroke="#27A276" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ahg)"/>
-          <text x="908" y="470" font-size="10.5" fill="#1f8a63">log</text>
-        </svg>
-      </div>
-      <p class="excap">Read it as a flow: agents authenticate with <b>their own identity</b>, the gateway issues a <b>scoped, short-lived token per action</b> after consulting a <b>deny-by-default policy</b>, calls reach <b>only their microsegment</b>, high-risk actions need a <b>human</b>, anomalies trigger <b>revocation</b>, and everything lands in an <b>immutable audit log</b>.</p>
-    </div>
-
-    <div class="panel" style="border-top:4px solid var(--green)">
-      <h3 style="font-size:17px;margin-bottom:12px;display:flex;align-items:center;gap:9px">
-        <span class="ic" style="background:var(--green-soft);margin:0"><svg viewBox="0 0 24 24" fill="none" stroke="#1f8a63" stroke-width="1.8"><path d="M5 3h14v18H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>
-        Sample solution sheet — completed
-      </h3>
-      <div class="exgrid">
-        <div class="exf full"><div class="k">Problem in one sentence</div><p class="v">Halcyon Pay's three autonomous agents share one over-privileged account on a flat network with no per-agent audit, so a single compromised agent could read, move, or alter customer funds undetected.</p></div>
-        <div class="exf full"><div class="k">Approach</div><p class="v">Re-architect around Zero Trust: give every agent its own identity, broker every action through a policy enforcement point that issues just-in-time least-privilege tokens, isolate resources into microsegments, gate irreversible actions behind a human, and log every call to an immutable, identity-bound trail.</p></div>
-        <div class="exf full"><div class="k">Key decisions &amp; why</div>
-          <ul>
-            <li><b>Per-agent workload identity</b> over a shared service account — every action is attributable and individually revocable.</li>
-            <li><b>JIT, scoped, short-lived tokens</b> over static keys — a leaked token expires fast and unlocks only one action.</li>
-            <li><b>One gateway/PEP + deny-by-default policy</b> — a single place to authorize, guardrail, and log every call.</li>
-            <li><b>Microsegmentation</b> between ledger, records, and partner API — contains blast radius, blocks lateral movement.</li>
-            <li><b>Human-in-the-loop</b> on refunds, freezes, and production writes — keep autonomy without ceding irreversible actions.</li>
-          </ul>
-        </div>
-        <div class="exf inj"><div class="k">Injection 01 · Autonomous expansion</div><p class="v">Give the reconciliation agent its own identity and a token scoped to "ledger read + one write," issued per task and expiring in minutes; production writes still route through human approval. No standing broad access.</p></div>
-        <div class="exf inj"><div class="k">Injection 02 · Token in the wild</div><p class="v">The monitor flags the abnormal region and volume, the gateway revokes that agent's token instantly, and short TTLs plus microsegmentation cap what the attacker reaches in the seconds before revocation.</p></div>
-        <div class="exf inj full"><div class="k">Injection 03 · Prove it</div><p class="v">Every agent→resource call is already logged at the gateway, identity-bound and append-only, so the 90-day trail is a single query — nothing to reconstruct.</p></div>
-        <div class="exf full"><div class="k">Diagram legend</div><p class="v">Navy = autonomous agents &amp; the gateway · cyan = identity/policy control plane &amp; trust boundary · white boxes in the dashed zone = microsegmented resources · amber = human approval · red = monitoring/revocation · green = audit log.</p></div>
-        <div class="exf refl full"><div class="k">Individual reflection — one line each</div>
-          <ul>
-            <li><b>AS</b> — drove per-agent identity over the shared account; it's the keystone everything else hangs on.</li>
-            <li><b>RK</b> — pushed JIT short-lived tokens; next time I'd add automated rotation.</li>
-            <li><b>ML</b> — designed the microsegmentation; I'd tighten the partner-API segment further.</li>
-            <li><b>JP</b> — placed the audit log at the gateway; would add hash-chaining for tamper-evidence.</li>
-          </ul>
-        </div>
-      </div>
-      <div class="lands">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg>
-        <p><b>Where this lands:</b> all eight agentic controls present and placed, every injection answered inside the design, a clear write-up, and four distinct individual contributions → <b>Advanced–Expert</b> band.</p>
-      </div>
-    </div>
+    <p class="sec-sub">Work them top to bottom. Complete a use case, submit your group response for scoring, and the next one unlocks. Do as many as you can before the clock runs out — each is scored on the leaderboard.</p>
+    <div class="uc-list" id="ucList"><!-- built by the interactive engine --></div>
   </section>
 
-  <!-- ============ EVALUATION FLOW ============ -->
-  <section class="sec" id="scoring">
+  <!-- ============ WORKSPACE (active use case) ============ -->
+  <section class="sec" id="workspace">
     <div class="sec-head">
-      <span class="sec-no">SCORING</span>
-      <h2>How it's evaluated</h2>
+      <span class="sec-no">WORKSPACE</span>
+      <h2>Group response</h2>
     </div>
-    <p class="sec-sub">Your artifacts go through the <b>Circuit AI proctor</b> — which turns your photographed diagram into a structured topology and checks it against the reference pattern — or a subject-matter expert reviewing by hand. Either way, the rubric is the same.</p>
-    <div class="flow">
-      <div class="fstep">
-        <span class="fn">STEP 1</span>
-        <div class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="6" width="18" height="13" rx="2"/><circle cx="12" cy="12.5" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg></div>
-        <h4>Capture</h4>
-        <p>Photograph the diagram to the clipboard; upload the solution sheet.</p>
-      </div>
-      <div class="farrow">→</div>
-      <div class="fstep">
-        <span class="fn">STEP 2</span>
-        <div class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="6" cy="6" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M7.6 7.6l3 8M16.4 7.6l-3 8M8.4 6h7.2"/></svg></div>
-        <h4>Convert</h4>
-        <p>The proctor reads the image into a topology graph of nodes and flows.</p>
-      </div>
-      <div class="farrow">→</div>
-      <div class="fstep">
-        <span class="fn">STEP 3</span>
-        <div class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h16M4 12h16M4 17h10"/><path d="M19 15l2 2-2 2"/></svg></div>
-        <h4>Compare</h4>
-        <p>Topology + sheet checked against the reference Zero Trust pattern.</p>
-      </div>
-      <div class="farrow">→</div>
-      <div class="fstep">
-        <span class="fn">STEP 4</span>
-        <div class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3a9 9 0 109 9"/><path d="M12 12l5-5"/><path d="M21 3v5h-5"/></svg></div>
-        <h4>Score</h4>
-        <p>Each rubric dimension is rated and weighted into a total.</p>
-      </div>
-      <div class="farrow">→</div>
-      <div class="fstep">
-        <span class="fn">STEP 5</span>
-        <div class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 21V10M12 21V4M18 21v-7"/></svg></div>
-        <h4>Level</h4>
-        <p>The total maps to a proficiency level; an SME can review or override.</p>
-      </div>
-    </div>
-    <div class="proctor-note">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      <p><b>Legibility helps the read, but never sinks the design.</b> Clear labels and a named box for every control make sure the proctor sees what you built — yet drawing quality is judged only under <em>Topology</em>. If the proctor's confidence in a converted topology is low, the diagram is routed to a human <b>SME, who re-reads it by hand</b> before any score is set. The machine speeds up scoring; it doesn't get the final word.</p>
-    </div>
-  </section>
-
-  <!-- ============ RUBRIC ============ -->
-  <section class="sec" id="rubric">
-    <div class="sec-head">
-      <span class="sec-no">RUBRIC</span>
-      <h2>What earns the points</h2>
-    </div>
-    <p class="sec-sub">Both artifacts are scored on these six dimensions. The two heaviest — Zero Trust principles and agentic-specific controls — are where strong SEs separate themselves.</p>
-    <table class="rubric">
-      <thead><tr><th>Dimension</th><th>Weight</th><th>What a top answer shows</th></tr></thead>
-      <tbody>
-        <tr><td><b>Pain-point identification</b></td><td class="w">10%</td><td>Surfaces the real risks — shared identity, implicit trust, flat network, no audit — and ranks them.</td></tr>
-        <tr><td><b>Zero Trust principles</b></td><td class="w">20%</td><td>Never trust / always verify, least privilege, assume breach, and microsegmentation applied throughout.</td></tr>
-        <tr><td><b>Agentic-specific controls</b></td><td class="w">25%</td><td>Per-agent identity, just-in-time scoped tokens, a policy checkpoint on every call, runtime guardrails, human-in-the-loop on high-risk actions.</td></tr>
-        <tr><td><b>Topology quality</b></td><td class="w">10%</td><td>Correct component placement and clear trust/data flows. <b>Legibility is judged here only</b> — a hard-to-read diagram never lowers the security scores above.</td></tr>
-        <tr><td><b>Decisions under injection</b></td><td class="w">15%</td><td>All three injections answered coherently and reflected in the design, not bolted on.</td></tr>
-        <tr><td><b>Solution-sheet communication</b></td><td class="w">10%</td><td>Approach and key decisions explained clearly, with the "why" behind each choice.</td></tr>
-        <tr><td><b>Individual contribution</b></td><td class="w">10%</td><td>Each member's reflection shows a distinct decision they drove — gives an individual signal inside a team result.</td></tr>
-      </tbody>
-    </table>
-    <div class="levels">
-      <div class="lvl l1"><span class="lr">0–49</span><h4>Foundational</h4><p>Names some risks; controls are partial or generic, not agent-aware.</p></div>
-      <div class="lvl l2"><span class="lr">50–69</span><h4>Proficient</h4><p>Solid Zero Trust design; most agentic controls present and placed correctly.</p></div>
-      <div class="lvl l3"><span class="lr">70–84</span><h4>Advanced</h4><p>Complete, well-reasoned design; injections handled with clear trade-offs.</p></div>
-      <div class="lvl l4"><span class="lr">85–100</span><h4>Expert</h4><p>Elegant, defensible architecture; every control justified and audit-ready.</p></div>
-    </div>
-    <p style="font-size:12.5px;color:var(--ink-faint);margin-top:14px">These bands map an <b>individual's growth path — not a ranking between teams.</b> Keep one sample diagram and sheet at each band as anchors so reviewers grade consistently, and treat the score cutoffs as provisional until calibrated against real cohorts.</p>
-  </section>
-
-  <!-- ============ DEBRIEF ============ -->
-  <section class="sec" id="debrief">
-    <div class="sec-head">
-      <span class="sec-no">DEBRIEF</span>
-      <h2>After the clock — where the learning happens</h2>
-    </div>
-    <p class="sec-sub">The score sorts; the debrief teaches. Run this 10-minute conversation right after submitting, while the design is fresh. Reveal the reference design, compare, and leave with one thing each person will do differently.</p>
-    <div class="win">
-      <div class="panel accent-cyan">
-        <h3>
-          <span class="ic" style="background:var(--cyan-soft,#E4F5F8)"><svg viewBox="0 0 24 24" fill="none" stroke="#0A7C8C" stroke-width="1.8"><path d="M8 12h8M8 8h8M8 16h5"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg></span>
-          Run the 10-minute debrief
-        </h3>
-        <ul class="checklist">
-          <li>Compare your diagram to the reference design on the right — what did you have, what did you miss?</li>
-          <li>Each member reads their reflection: the decision they drove, and one they'd change.</li>
-          <li>Name the injection that was hardest and why it stretched the design.</li>
-          <li>Agree on one team takeaway to carry into a real customer design.</li>
-          <li>If an SME is present, ask for the single highest-leverage improvement.</li>
-        </ul>
-      </div>
-      <div class="timehow">
-        <span class="eyebrow">Target state · the pattern you were aiming at</span>
-        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>Reference design at a glance</h3>
-        <ol>
-          <li><b>Per-agent identity</b> — each agent has its own verifiable identity; no shared service accounts.</li>
-          <li><b>Just-in-time, scoped, short-lived tokens</b> — least privilege per action, expiring fast.</li>
-          <li><b>Policy checkpoint on every call</b> — authorize each agent→resource request; deny by default.</li>
-          <li><b>Microsegmentation</b> — isolate agents so a compromise can't move laterally.</li>
-          <li><b>Continuous verification + anomaly monitoring</b> — re-check trust each request; revoke fast.</li>
-          <li><b>Runtime guardrails on agent tools</b> — constrain tools and inputs to blunt prompt-injection.</li>
-          <li><b>Human-in-the-loop</b> on high-risk actions — refunds, freezes, production writes.</li>
-          <li><b>Immutable, identity-bound audit log</b> at the checkpoint — queryable on demand.</li>
-        </ol>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ FACILITATOR CUES ============ -->
-  <section class="sec" id="cheatsheet">
-    <div class="sec-head">
-      <span class="sec-no">CONDUCTOR</span>
-      <h2>Time-cue cheat sheet</h2>
-    </div>
-    <p class="sec-sub">The IT Director reads these out loud. Red lines are injection reveals. Say the time at every checkpoint — the whole team should always know where the clock is.</p>
-    <div class="cues">
-      <div class="cue"><span class="t">00:00</span><span class="d"><b>Start.</b> (Roles already claimed.) Timer on, counting up. Read the dossier aloud. "We have 60 minutes."</span></div>
-      <div class="cue"><span class="t">06:00</span><span class="d">Everyone can restate the mission in one sentence.</span></div>
-      <div class="cue"><span class="t">08:00</span><span class="d"><b>→ Expose.</b> "Pain-point hunt — one each, no repeats."</span></div>
-      <div class="cue"><span class="t">14:00</span><span class="d">"Stop listing, start ranking."</span></div>
-      <div class="cue"><span class="t">20:00</span><span class="d"><b>→ Decide.</b> Map each top pain point to a control.</span></div>
-      <div class="cue fire"><span class="t">24:00</span><span class="d"><b>INJECTION 01 — Autonomous Expansion.</b> Read it. ~3 min to decide.</span></div>
-      <div class="cue"><span class="t">30:00</span><span class="d">"Controls locked — half time gone."</span></div>
-      <div class="cue"><span class="t">33:00</span><span class="d"><b>→ Design.</b> Network Architect takes the pen.</span></div>
-      <div class="cue fire"><span class="t">38:00</span><span class="d"><b>INJECTION 02 — Token in the Wild.</b> Adapt the diagram.</span></div>
-      <div class="cue"><span class="t">45:00</span><span class="d">"Stop adding, start labelling."</span></div>
-      <div class="cue"><span class="t">48:00</span><span class="d"><b>→ Document.</b> "Pens down — diagram is final."</span></div>
-      <div class="cue fire"><span class="t">50:00</span><span class="d"><b>INJECTION 03 — Prove It.</b> Answer it on the sheet.</span></div>
-      <div class="cue"><span class="t">56:00</span><span class="d"><b>→ Submit.</b> Photograph, upload, confirm.</span></div>
-      <div class="cue"><span class="t">58:00</span><span class="d">Photo on clipboard. Sheet uploading.</span></div>
-      <div class="cue fire"><span class="t">60:00</span><span class="d"><b>Time. Hands off.</b> Anything not submitted isn't scored.</span></div>
-      <div class="cue"><span class="t">+10:00</span><span class="d"><b>Debrief.</b> Reveal the reference design, compare, each member shares one change.</span></div>
-    </div>
-  </section>
-
-  <!-- ============ FACILITATOR CHECKLIST ============ -->
-  <section class="sec" id="facilitator">
-    <div class="sec-head">
-      <span class="sec-no">FACILITATOR</span>
-      <h2>Setup checklist (one page)</h2>
-    </div>
-    <p class="sec-sub">For the person running the session — distinct from the in-game IT Director. Runs for any number of teams in parallel; one facilitator can comfortably cover three to four tables.</p>
-    <div class="grid g3">
-      <div class="panel" style="border-top:4px solid var(--cyan)">
-        <h3 style="display:flex;align-items:center;gap:9px"><span class="ic" style="background:var(--cyan-soft,#E4F5F8);margin:0"><svg viewBox="0 0 24 24" fill="none" stroke="#0A7C8C" stroke-width="1.8"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h9"/></svg></span>Before the session</h3>
-        <ul class="checklist">
-          <li>Print one kit per team: dossier, playbook, 3 injection cards, 4 role cards, canvas + markers, solution sheet.</li>
-          <li>Seal the three injection cards and hand them only to each team's IT Director.</li>
-          <li>Set up and test the proctor upload (QR or URL); confirm scoring is reachable.</li>
-          <li>Have the reference design / answer key ready but kept out of sight.</li>
-          <li>Give each table room to draw and one visible timer.</li>
-          <li>Aim for teams of four; adapt for three or five using the roles note.</li>
-        </ul>
-      </div>
-      <div class="panel" style="border-top:4px solid var(--amber)">
-        <h3 style="display:flex;align-items:center;gap:9px"><span class="ic" style="background:var(--amber-soft);margin:0"><svg viewBox="0 0 24 24" fill="none" stroke="#a3640f" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>During the hour</h3>
-        <ul class="checklist">
-          <li>Start every team's timer together; note the official start time.</li>
-          <li>Float between tables — don't answer design questions; redirect to the rubric.</li>
-          <li>If a team stalls, prompt with a question, never an answer.</li>
-          <li>Check injection reveals land near 24:00 / 38:00 / 50:00.</li>
-          <li>At 60:00, confirm both artifacts are submitted before scoring.</li>
-        </ul>
-      </div>
-      <div class="panel" style="border-top:4px solid var(--green)">
-        <h3 style="display:flex;align-items:center;gap:9px"><span class="ic" style="background:var(--green-soft);margin:0"><svg viewBox="0 0 24 24" fill="none" stroke="#1f8a63" stroke-width="1.8"><path d="M3 12h4l3 7 4-14 3 7h4"/></svg></span>After the clock</h3>
-        <ul class="checklist">
-          <li>Run the 10-minute debrief and reveal the reference design.</li>
-          <li>Score with the rubric; route low-confidence diagrams to an SME.</li>
-          <li>Capture one improvement per team; name common gaps across tables.</li>
-          <li>Keep strong sample diagrams and sheets as anchors for next time.</li>
-        </ul>
-      </div>
-    </div>
+    <p class="sec-sub">Your live worksheet for the selected use case. Everything is saved in this browser as you type; when the group agrees, attach your diagram and submit for scoring.</p>
+    <div id="ucWorkspace"><!-- built by the interactive engine from the selected use case --></div>
   </section>
 
   <div class="foot">
-    <span class="eyebrow">Zero Trust Agentic Design Sprint · Team Playbook</span>
-    <span class="tag">4 roles · 60 minutes · 1 diagram + 1 sheet</span>
+    <span class="eyebrow">Segmentation Design Clinic · Team Playbook</span>
+    <span class="tag">4 roles · 60 minutes · 5 use cases</span>
   </div>
 
 </div>
@@ -2149,131 +1334,250 @@
     refresh();
   });
 
-  // ---------- fillable solution sheet (templates section only) ----------
-  var firstSheetField = $("#templates .sheet-field");
-  if(firstSheetField){
-    var body = firstSheetField.closest(".tmpl-b");
-    var fields = $$("#templates .sheet-field");
-    // tools bar
-    var tools=document.createElement("div");
-    tools.className="sheet-tools";
-    tools.innerHTML =
-      '<span class="st-note">Type directly into the sheet — <b>saved in this browser</b> automatically.</span>'+
-      '<button class="st-btn" data-copy><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h8"/></svg>Copy</button>'+
-      '<button class="st-btn" data-print><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9V3h12v6"/><rect x="4" y="9" width="16" height="8" rx="2"/><path d="M8 17h8v4H8z"/></svg>Print</button>'+
-      '<button class="st-btn" data-clear><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13"/></svg>Clear</button>'+
-      '<label class="st-btn" data-diaglabel><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M3 17l5-4 4 3 3-2 6 5"/></svg>Attach diagram<input type="file" accept="image/*" data-diag hidden></label>'+
-      '<img class="diag-thumb" data-diagthumb alt="diagram" hidden>'+
-      '<button class="st-btn" data-diagclear hidden>✕</button>'+
-      '<span class="st-status" data-substatus></span>'+
-      '<button class="st-btn go" data-submit><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg>Submit for scoring</button>';
-    body.insertBefore(tools, body.firstChild);
+  // ---------- use-case activity workspace ----------
+  // Participant-facing use cases (no answer keys here — the cheat sheet lives on proctor.html).
+  var USE_CASES = [
+    {
+      n:1, title:"Managed Environment — Segmentation", tag:"Segmentation",
+      intro:"The customer wants to segment campus & branch wired/wireless client devices into logical groups and control what each group can reach.",
+      requirements:[
+        "Segment campus & branch wired and wireless clients into logical groups: Employees, IOT, deskagents, Guest.",
+        "Employees = laptops, mobiles (Group=Employees). IoT = printers, cameras, badge readers (Group=IOT). Deskside = dedicated Mac-minis (Group=deskagents). Guest SSID = Internet only (Group=Guest).",
+        "IoT restricted from the other groups but needs data center and Internet access.",
+        "Guests get Internet access only.",
+        "Employees and IoT require controlled Internet and data center application access.",
+        "Deskside Mac-minis reach the on-prem data center only."
+      ],
+      painpoints:[
+        "Prior segmentation failed — using VLANs/IP subnets is complex and tedious.",
+        "Profiling is labour-intensive; staff unable to keep up with constant new devices joining.",
+        "Failing PCI audits.",
+        "Corporate PCs not running the latest AntiVirus and OS updates.",
+        "No budget for buying more firewalls to do segmentation."
+      ],
+      tasks:[
+        "Draw a diagram of the customer's campus and branch wired/wireless networks.",
+        "Create your proposed segmentation solution; be ready to explain the product selected, how it works, and why (include Cisco differentiators if available).",
+        "Make sure your proposed solution addresses each customer requirement and pain point.",
+        "Attach the diagram and submit for SME review and scoring."
+      ],
+      productRows:6
+    },
+    { n:2, title:"Use Case 2", locked:true },
+    { n:3, title:"Use Case 3", locked:true },
+    { n:4, title:"Use Case 4", locked:true },
+    { n:5, title:"Use Case 5", locked:true }
+  ];
+  function ucByN(n){ for(var i=0;i<USE_CASES.length;i++){ if(USE_CASES[i].n===n) return USE_CASES[i]; } return null; }
+  function ucTeamKey(){ return (persona && (persona.teamCode || (persona.team||"").trim().toLowerCase())) || "solo"; }
+  function ucFieldKey(n, id){ return "ztds.uc."+n+"."+ucTeamKey()+"."+id; }
+  function ucGet(n,id){ try{ return localStorage.getItem(ucFieldKey(n,id))||""; }catch(e){ return ""; } }
+  function ucSet(n,id,v){ try{ localStorage.setItem(ucFieldKey(n,id), v); }catch(e){} }
+  function ucEsc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
 
-    var inputs=[];
-    fields.forEach(function(f, fi){
-      var v=$(".v", f); if(!v) return;
-      var ph=v.textContent.trim();
-      var ta=document.createElement("textarea");
-      ta.placeholder=ph; ta.rows=1;
-      var key="ztds.sheet."+fi;
-      try{ ta.value=localStorage.getItem(key)||""; }catch(e){}
-      v.textContent=""; v.appendChild(ta);
+  var ucSelected = 1;
+  try{ ucSelected = parseInt(localStorage.getItem("ztds.uc.selected")||"1",10)||1; }catch(e){}
+  var ucSubmitted = {};          // team-shared: {n:true} learned from the solutions store
+  var ucSubmitInfo = {};         // {n:{at,totalTimeSec,overtimeSec,late,by}}
+
+  function ucIsSubmitted(n){ return !!ucSubmitted[n]; }
+  function ucIsUnlocked(n){ if(n<=1) return true; return ucIsSubmitted(n-1); }   // sequential
+
+  // ----- solutions store sync (so all teammates see the same submitted/unlocked state) -----
+  function onSolutions(docs){
+    ucSubmitted = {}; ucSubmitInfo = {};
+    var tk = ucTeamKey();
+    (docs||[]).forEach(function(d){
+      if(!d) return;
+      var dk = d.teamCode || (d.teamName||"").trim().toLowerCase();
+      if(dk!==tk) return;
+      var n = d.useCase || 0; if(!n) return;
+      ucSubmitted[n]=true;
+      ucSubmitInfo[n]={ at:d.submittedAt, totalTimeSec:d.totalTimeSec, overtimeSec:d.overtimeSec, late:d.late, by:d.submittedByName };
+    });
+    renderUcHub(); if(!ucByN(ucSelected) || true) renderUcWorkspace();
+  }
+
+  // ----- hub (list of 5 use case cards) -----
+  function renderUcHub(){
+    var list=$("#ucList"); if(!list) return;
+    list.innerHTML="";
+    USE_CASES.forEach(function(uc){
+      var unlocked = ucIsUnlocked(uc.n) && !uc.locked;
+      var submitted = ucIsSubmitted(uc.n);
+      var card=document.createElement("button");
+      card.type="button";
+      card.className="uc-card"+(uc.n===ucSelected?" sel":"")+(uc.locked?" soon":"")+(!unlocked?" locked":"")+(submitted?" done":"");
+      var state = uc.locked ? "Coming soon" : (submitted ? "Submitted ✓" : (unlocked ? (uc.n===ucSelected?"Selected":"Open") : "Locked"));
+      card.innerHTML =
+        '<span class="uc-n">'+uc.n+'</span>'+
+        '<span class="uc-mid"><span class="uc-t">'+ucEsc(uc.title)+'</span>'+(uc.tag?'<span class="uc-tag">'+ucEsc(uc.tag)+'</span>':'')+'</span>'+
+        '<span class="uc-state">'+state+'</span>';
+      card.addEventListener("click", function(){
+        if(uc.locked){ toast("Use case "+uc.n+" — coming soon","This use case will be added soon. Complete Use Case 1 first.","phase"); return; }
+        if(!ucIsUnlocked(uc.n)){ toast("Locked","Submit Use Case "+(uc.n-1)+" first — then this one unlocks.","fire"); return; }
+        ucSelected=uc.n; try{ localStorage.setItem("ztds.uc.selected", String(uc.n)); }catch(e){}
+        renderUcHub(); renderUcWorkspace();
+        var ws=document.getElementById("workspace"); if(ws) ws.scrollIntoView({behavior:"smooth",block:"start"});
+      });
+      list.appendChild(card);
+    });
+  }
+
+  // ----- image downscale (shared with submit) -----
+  function ucLoadDiagram(file, cb){
+    var reader=new FileReader();
+    reader.onload=function(){
+      var img=new Image();
+      img.onload=function(){
+        var max=1000, w=img.width, h=img.height;
+        if(w>max||h>max){ if(w>=h){ h=Math.round(h*max/w); w=max; } else { w=Math.round(w*max/h); h=max; } }
+        var c=document.createElement("canvas"); c.width=w; c.height=h;
+        c.getContext("2d").drawImage(img,0,0,w,h);
+        var url=c.toDataURL("image/jpeg",0.7);
+        if(url.length>900000) url=c.toDataURL("image/jpeg",0.5);
+        cb(url);
+      };
+      img.onerror=function(){ cb(null); };
+      img.src=reader.result;
+    };
+    reader.onerror=function(){ cb(null); };
+    reader.readAsDataURL(file);
+  }
+
+  // ----- workspace (active use case) -----
+  function renderUcWorkspace(){
+    var host=$("#ucWorkspace"); if(!host) return;
+    var uc=ucByN(ucSelected);
+    if(!uc || uc.locked){
+      host.innerHTML='<div class="uc-empty"><h3>Use Case '+(uc?uc.n:ucSelected)+' — coming soon</h3><p>This use case will be added soon. For now, complete <b>Use Case 1</b>.</p></div>';
+      return;
+    }
+    if(!ucIsUnlocked(uc.n)){
+      host.innerHTML='<div class="uc-empty"><h3>Use Case '+uc.n+' is locked</h3><p>Submit <b>Use Case '+(uc.n-1)+'</b> first — then this one unlocks.</p></div>';
+      return;
+    }
+    var li = function(arr){ return arr.map(function(x){ return "<li>"+ucEsc(x)+"</li>"; }).join(""); };
+    var painRows = uc.painpoints.map(function(p,i){
+      return '<tr>'+
+        '<td class="pp">'+ucEsc(p)+'</td>'+
+        '<td><textarea data-uc="pm_prod_'+i+'" rows="1" placeholder="Proposed product / feature…"></textarea></td>'+
+        '<td><textarea data-uc="pm_note_'+i+'" rows="1" placeholder="How it addresses this pain point / why…"></textarea></td>'+
+      '</tr>';
+    }).join("");
+    var nProd = uc.productRows||5;
+    var prodRows="";
+    for(var r=0;r<nProd;r++){
+      prodRows += '<tr>'+
+        '<td><textarea data-uc="pr_name_'+r+'" rows="1" placeholder="Product / feature…"></textarea></td>'+
+        '<td><textarea data-uc="pr_how_'+r+'" rows="1" placeholder="Description / how it works…"></textarea></td>'+
+        '<td><textarea data-uc="pr_why_'+r+'" rows="1" placeholder="Why / differentiator…"></textarea></td>'+
+      '</tr>';
+    }
+    host.innerHTML =
+      '<div class="uc-brief">'+
+        '<div class="uc-brief-h"><span class="uc-badge">Use Case '+uc.n+'</span><h3>'+ucEsc(uc.title)+'</h3></div>'+
+        '<p class="uc-intro">'+ucEsc(uc.intro)+'</p>'+
+        '<div class="grid g3">'+
+          '<div class="uc-col"><div class="uc-col-h">Customer requirements</div><ul>'+li(uc.requirements)+'</ul></div>'+
+          '<div class="uc-col red"><div class="uc-col-h">Customer pain points</div><ul>'+li(uc.painpoints)+'</ul></div>'+
+          '<div class="uc-col cyan"><div class="uc-col-h">Your tasks</div><ul>'+li(uc.tasks)+'</ul></div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="uc-step"><div class="uc-step-h"><span class="uc-step-n">1</span>Pain point &rarr; product mapping</div>'+
+        '<p class="uc-step-sub">For each customer pain point, name the product/feature you propose and how it addresses it.</p>'+
+        '<div class="uc-table-wrap"><table class="uctab"><thead><tr><th>Customer pain point</th><th>Proposed product(s)</th><th>How it addresses / why</th></tr></thead><tbody>'+painRows+'</tbody></table></div>'+
+      '</div>'+
+      '<div class="uc-step"><div class="uc-step-h"><span class="uc-step-n">2</span>Products proposed</div>'+
+        '<p class="uc-step-sub">List each product/feature in your solution with a short how and a why/differentiator.</p>'+
+        '<div class="uc-table-wrap"><table class="uctab"><thead><tr><th>Product / feature</th><th>Description / how</th><th>Why / differentiator</th></tr></thead><tbody id="ucProdBody">'+prodRows+'</tbody></table></div>'+
+        '<button type="button" class="st-btn" id="ucAddProd">+ Add product</button>'+
+      '</div>'+
+      '<div class="uc-step"><div class="uc-step-h"><span class="uc-step-n">3</span>Proposed diagram</div>'+
+        '<p class="uc-step-sub">Draw the customer topology with your segmentation solution on it, photograph it, and attach.</p>'+
+        '<div class="uc-diagrow">'+
+          '<label class="st-btn" id="ucDiagLabel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M3 17l5-4 4 3 3-2 6 5"/></svg>Attach diagram<input type="file" accept="image/*" id="ucDiag" hidden></label>'+
+          '<img class="diag-thumb" id="ucDiagThumb" alt="diagram" hidden>'+
+          '<button type="button" class="st-btn" id="ucDiagClear" hidden>✕ Remove</button>'+
+        '</div>'+
+      '</div>'+
+      '<div class="uc-submit">'+
+        '<span class="uc-substatus" id="ucSubStatus"></span>'+
+        '<button type="button" class="st-btn go" id="ucSubmit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg>Submit group response for Use Case '+uc.n+'</button>'+
+      '</div>';
+
+    // wire textareas (persist + autosize)
+    $$("#ucWorkspace textarea[data-uc]").forEach(function(ta){
+      var id=ta.getAttribute("data-uc");
+      ta.value=ucGet(uc.n, id);
       function autosize(){ ta.style.height="auto"; ta.style.height=(ta.scrollHeight)+"px"; }
-      function onChange(){ try{ localStorage.setItem(key, ta.value); }catch(e){} f.classList.toggle("filled", ta.value.trim().length>0); autosize(); }
-      ta.addEventListener("input", onChange);
-      f.classList.toggle("filled", ta.value.trim().length>0);
-      inputs.push({field:f, ta:ta, key:key, label:$(".k",f)?$(".k",f).textContent.trim():"" });
+      ta.addEventListener("input", function(){ ucSet(uc.n, id, ta.value); autosize(); });
       setTimeout(autosize,0);
     });
 
-    tools.querySelector("[data-copy]").addEventListener("click", function(){
-      var out = inputs.map(function(x){ return x.label.toUpperCase()+"\n"+(x.ta.value.trim()||"—"); }).join("\n\n");
-      out = "ZERO TRUST AGENTIC DESIGN SPRINT — SOLUTION SHEET\n\n"+out;
-      var done=function(){ toast("Copied","Solution sheet copied to your clipboard.","phase"); };
-      if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(out).then(done, function(){ fallbackCopy(out); done(); }); }
-      else { fallbackCopy(out); done(); }
+    // add-product row
+    var addBtn=$("#ucAddProd");
+    if(addBtn) addBtn.addEventListener("click", function(){
+      var body=$("#ucProdBody"); if(!body) return;
+      var r=body.querySelectorAll("tr").length;
+      var tr=document.createElement("tr");
+      tr.innerHTML='<td><textarea data-uc="pr_name_'+r+'" rows="1" placeholder="Product / feature…"></textarea></td>'+
+                   '<td><textarea data-uc="pr_how_'+r+'" rows="1" placeholder="Description / how it works…"></textarea></td>'+
+                   '<td><textarea data-uc="pr_why_'+r+'" rows="1" placeholder="Why / differentiator…"></textarea></td>';
+      body.appendChild(tr);
+      Array.prototype.slice.call(tr.querySelectorAll("textarea[data-uc]")).forEach(function(ta){
+        var id=ta.getAttribute("data-uc"); ta.value=ucGet(uc.n,id);
+        ta.addEventListener("input", function(){ ucSet(uc.n,id,ta.value); ta.style.height="auto"; ta.style.height=ta.scrollHeight+"px"; });
+      });
     });
-    tools.querySelector("[data-print]").addEventListener("click", function(){ window.print(); });
-    tools.querySelector("[data-clear]").addEventListener("click", function(){
-      if(!confirm("Clear every field on the solution sheet? This can't be undone.")) return;
-      inputs.forEach(function(x){ x.ta.value=""; try{ localStorage.removeItem(x.key); }catch(e){} x.field.classList.remove("filled"); x.ta.style.height="auto"; });
-    });
-    function fallbackCopy(text){
-      var t=document.createElement("textarea"); t.value=text; t.style.position="fixed"; t.style.opacity="0";
-      document.body.appendChild(t); t.select(); try{ document.execCommand("copy"); }catch(e){} document.body.removeChild(t);
-    }
 
-    // --- diagram photo attach (downscaled, stored with the submission) ---
-    var diagramDataUrl = null;
-    try{ diagramDataUrl = localStorage.getItem("ztds.diagram") || null; }catch(e){}
-    var diagInput=tools.querySelector("[data-diag]"), diagThumb=tools.querySelector("[data-diagthumb]"), diagClear=tools.querySelector("[data-diagclear]");
-    function showDiag(){
-      if(diagramDataUrl){ diagThumb.src=diagramDataUrl; diagThumb.hidden=false; diagClear.hidden=false; }
-      else { diagThumb.removeAttribute("src"); diagThumb.hidden=true; diagClear.hidden=true; }
-    }
-    function loadDiagram(file, cb){
-      var reader=new FileReader();
-      reader.onload=function(){
-        var img=new Image();
-        img.onload=function(){
-          var max=1000, w=img.width, h=img.height;
-          if(w>max||h>max){ if(w>=h){ h=Math.round(h*max/w); w=max; } else { w=Math.round(w*max/h); h=max; } }
-          var c=document.createElement("canvas"); c.width=w; c.height=h;
-          c.getContext("2d").drawImage(img,0,0,w,h);
-          var url=c.toDataURL("image/jpeg",0.7);
-          if(url.length>900000) url=c.toDataURL("image/jpeg",0.5);
-          cb(url);
-        };
-        img.onerror=function(){ cb(null); };
-        img.src=reader.result;
-      };
-      reader.onerror=function(){ cb(null); };
-      reader.readAsDataURL(file);
-    }
+    // diagram (per use case)
+    var diagKey="ztds.ucdiag."+uc.n+"."+ucTeamKey();
+    var diagUrl=null; try{ diagUrl=localStorage.getItem(diagKey)||null; }catch(e){}
+    var diagInput=$("#ucDiag"), diagThumb=$("#ucDiagThumb"), diagClear=$("#ucDiagClear");
+    function showDiag(){ if(diagUrl){ diagThumb.src=diagUrl; diagThumb.hidden=false; diagClear.hidden=false; } else { diagThumb.removeAttribute("src"); diagThumb.hidden=true; diagClear.hidden=true; } }
     diagInput.addEventListener("change", function(){
       var f=diagInput.files && diagInput.files[0]; if(!f) return;
-      loadDiagram(f, function(url){
+      ucLoadDiagram(f, function(url){
         if(!url){ toast("Couldn't read image","Try a different photo (JPG/PNG).","fire"); return; }
-        diagramDataUrl=url; try{ localStorage.setItem("ztds.diagram", url); }catch(e){}
+        diagUrl=url; try{ localStorage.setItem(diagKey,url); }catch(e){}
         showDiag(); toast("Diagram attached","It'll be sent to the proctor with your submission.","phase");
       });
       diagInput.value="";
     });
-    diagClear.addEventListener("click", function(){ diagramDataUrl=null; try{ localStorage.removeItem("ztds.diagram"); }catch(e){} showDiag(); });
+    diagClear.addEventListener("click", function(){ diagUrl=null; try{ localStorage.removeItem(diagKey); }catch(e){} showDiag(); });
     showDiag();
 
-    // --- submit for scoring (sends the solution to the proctor via the shared store) ---
-    var statusEl = tools.querySelector("[data-substatus]");
-    var subBtn = tools.querySelector("[data-submit]");
-    function teamKey(t){ return (t||"").trim().toLowerCase(); }
-    function refreshSubmitStatus(){
-      if(!persona || !persona.team){ statusEl.textContent=""; subBtn.lastChild.textContent="Submit for scoring"; return; }
-      var raw=null; try{ raw=localStorage.getItem("ztds.submitInfo."+(persona.teamCode||teamKey(persona.team))); }catch(e){}
-      if(raw){ var s; try{ s=JSON.parse(raw); }catch(e){ s=null; }
-        if(s){ statusEl.textContent="Submitted "+new Date(s.at).toLocaleTimeString()+(s.late?(" · LATE +"+fmt(s.overtimeSec)):"")+" · took "+fmt(s.totalTimeSec); statusEl.style.color=s.late?"var(--red)":"var(--green)"; }
-        subBtn.lastChild.textContent="Re-submit for scoring";
-      } else { statusEl.textContent=""; subBtn.lastChild.textContent="Submit for scoring"; }
+    // submit
+    var subStatus=$("#ucSubStatus");
+    function refreshSub(){
+      var info=ucSubmitInfo[uc.n];
+      if(info){ subStatus.textContent="Submitted "+new Date(info.at).toLocaleTimeString()+(info.by?(" · by "+info.by):"")+(info.late?(" · LATE +"+fmt(info.overtimeSec)):"")+" · took "+fmt(info.totalTimeSec); subStatus.style.color=info.late?"var(--red)":"var(--green)"; $("#ucSubmit").lastChild.textContent="Re-submit group response for Use Case "+uc.n; }
+      else { subStatus.textContent=""; }
     }
-    subBtn.addEventListener("click", function(){
-      if(!persona || persona.role==="facilitator" || !persona.team){
-        toast("Take your seat first","Click “Take your seat” (top bar) and enter your team name before submitting for scoring.","fire"); return;
-      }
+    refreshSub();
+    $("#ucSubmit").addEventListener("click", function(){
+      if(!persona || persona.role==="facilitator" || !persona.team){ toast("Take your seat first","Click “Take your seat” (top bar), join your team, then submit.","fire"); return; }
       if(!roster){ toast("Not connected yet","The scoring sync isn't ready — wait a moment and try again.","fire"); return; }
-      var tk=(persona.teamCode||teamKey(persona.team)), when=Date.now();
-      // timing: total time on the team clock (uncapped), overtime past 60:00, late flag
-      var total = teamStartedAt ? (when-teamStartedAt)/1000 : elapsed;
-      total=Math.max(0,Math.round(total)); var over=Math.max(0,total-TOTAL), late=total>TOTAL;
-      var doc={ id:ROOM+"__"+tk, room:ROOM, teamCode:persona.teamCode||"", teamName:persona.team, submittedByName:persona.name||"", submittedAt:when,
-                totalTimeSec:total, overtimeSec:over, late:late, diagram: diagramDataUrl||"",
-                fields: inputs.map(function(x){ return { label:x.label, value:x.ta.value.trim() }; }) };
+      var tk=(persona.teamCode||(persona.team||"").trim().toLowerCase()), when=Date.now();
+      var total = teamStartedAt ? (when-teamStartedAt)/1000 : elapsed; total=Math.max(0,Math.round(total));
+      var over=Math.max(0,total-TOTAL), late=total>TOTAL;
+      var painMap = uc.painpoints.map(function(p,i){ return { pain:p, product:ucGet(uc.n,"pm_prod_"+i).trim(), note:ucGet(uc.n,"pm_note_"+i).trim() }; });
+      var products=[]; var body=$("#ucProdBody"); var rows=body?body.querySelectorAll("tr").length:nProd;
+      for(var r=0;r<rows;r++){ var name=ucGet(uc.n,"pr_name_"+r).trim(), how=ucGet(uc.n,"pr_how_"+r).trim(), why=ucGet(uc.n,"pr_why_"+r).trim(); if(name||how||why) products.push({ product:name, how:how, why:why }); }
+      var doc={ id:ROOM+"__"+tk+"__uc"+uc.n, room:ROOM, teamCode:persona.teamCode||"", teamName:persona.team, useCase:uc.n, useCaseTitle:uc.title,
+                submittedByName:persona.name||"", submittedAt:when, totalTimeSec:total, overtimeSec:over, late:late,
+                diagram:diagUrl||"", painMap:painMap, products:products };
       try{ roster.write("solutions", doc); }catch(e){}
-      try{ localStorage.setItem("ztds.submitInfo."+tk, JSON.stringify({at:when,totalTimeSec:total,overtimeSec:over,late:late})); }catch(e){}
-      refreshSubmitStatus();
-      if(late) toast("Submitted — marked late","Recorded at "+fmt(total)+" (+"+fmt(over)+" over 60:00). You can still edit and re-submit.","fire");
-      else toast("Submitted for scoring","Sent to the proctor in "+fmt(total)+". You can edit and re-submit until it’s scored.","phase");
+      ucSubmitted[uc.n]=true; ucSubmitInfo[uc.n]={ at:when, totalTimeSec:total, overtimeSec:over, late:late, by:persona.name||"" };
+      refreshSub(); renderUcHub();
+      if(late) toast("Use Case "+uc.n+" submitted — marked late","Recorded at "+fmt(total)+" (+"+fmt(over)+" over 60:00). Next use case unlocked.","fire");
+      else toast("Use Case "+uc.n+" submitted","Sent to the proctor in "+fmt(total)+". Next use case unlocked — you can still edit and re-submit.","phase");
     });
-    setTimeout(refreshSubmitStatus, 0);
   }
+
+  // initial paint once all engine vars are assigned
+  setTimeout(function(){ renderUcHub(); renderUcWorkspace(); }, 0);
 
   // ---------- persona "take your seat" login ----------
   var ROLES = {
@@ -2307,6 +1611,7 @@
       if(persona && persona.role && persona.role!=="facilitator" && persona.email && persona.teamCode){ try{ roster.write("players", rosterRecord(persona)); }catch(e){} }
       try{ roster.watch("control", ROOM, function(d){ applyControlDocs(d||[]); }); }catch(e){}
       try{ roster.watch("players", ROOM, function(d){ onPlayers(d||[]); }); }catch(e){}
+      try{ roster.watch("solutions", ROOM, function(d){ onSolutions(d||[]); }); }catch(e){}
     });
   }
 

@@ -128,11 +128,18 @@ Troubleshooting:
   card gives that team a fresh 60:00; **Reset** (event) closes it and **Start event** reopens.
 - **Reports:** on `proctor.html`, use **Export CSV** for raw data or **Report** for a printable
   (PDF-ready) participant summary with per-team completeness. Scales to ~300 participants.
-- **Scoring & leaderboard:** teams click **Submit for scoring** on the participant page (after
-  taking a seat with a team). On `proctor.html`, each submitted team shows an **Evaluate** button —
-  open it to read their solution and score 3 injections (10 each) + final solution (70) = 100.
-  Scores rank teams live on **`leaderboard.html`** (project it on the shared screen). Evaluation is
-  manual by the proctor. *(AI-agent evaluation is not enabled in this version.)*
+- **The activity — five use cases:** each team works a customer environment with **5 sequential use
+  cases** (Use Case 1 = *Managed Environment; Segmentation*; 2–5 are placeholders for now). For each
+  use case they fill a **pain-point → product mapping**, a **products (how / why)** table, attach a
+  **diagram**, and **Submit group response for Use Case N**. Submitting unlocks the next use case;
+  teams complete as many as they can before the clock ends.
+- **Scoring & leaderboard:** on `proctor.html`, each team card lists every submitted use case with an
+  **Evaluate** button. Open it to see the team's response **and the proctor-only cheat sheet** for
+  that use case, then score three criteria — pain→product mapping (40) + products how/why (30) +
+  diagram & overall solution (30) = **100 per use case**. An **AI-evaluation** control (model picker +
+  *Evaluate with AI*) is present as a preview; live model scoring is a follow-up (manual scoring is
+  fully working). **`leaderboard.html`** ranks teams by **total points across use cases** and shows how
+  many each solved (project it on the shared screen).
 
 ## 5. Privacy / after the session
 
