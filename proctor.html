@@ -164,6 +164,14 @@
   .mini-btn{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;color:#fff;background:var(--cyan-deep);border:none;border-radius:8px;padding:6px 12px;cursor:pointer}
   .mini-btn:hover{background:#0a6c7a}
   .mini-btn.re{background:#fff;color:var(--cyan-deep);border:1px solid var(--cyan)}
+  .score-row.col{flex-direction:column;align-items:stretch;gap:7px}
+  .uc-score-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .uc-score-row{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--ink);background:#fff;border:1px solid var(--line-soft);border-radius:9px;padding:6px 10px}
+  .uc-score-row .uc-lbl{font-family:"Chakra Petch",sans-serif;font-weight:700;color:var(--cyan-deep);min-width:38px}
+  .uc-score-row .uc-when{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-faint);margin-right:auto}
+  .uc-score-row .uc-pts{font-family:"IBM Plex Mono",monospace;font-weight:700;color:var(--navy);margin-left:auto;margin-right:8px}
+  .uc-score-row .mini-btn{margin-left:0}
+  .uc-score-row .late-badge{padding:1px 6px}
 
   /* evaluate modal */
   .eval-modal{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(8,18,34,.72)}
@@ -189,6 +197,21 @@
   .em-notes{flex-direction:column;align-items:stretch !important}
   .em-notes textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px;font-family:"IBM Plex Sans",sans-serif;font-size:13px;min-height:56px;resize:vertical;outline:none;margin-top:5px}
   .em-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+  .em-tab{width:100%;border-collapse:collapse;font-size:12px;margin-top:2px}
+  .em-tab th{text-align:left;font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);padding:4px 7px;border-bottom:1px solid var(--line)}
+  .em-tab td{vertical-align:top;padding:4px 7px;border-bottom:1px solid var(--line-soft);color:var(--ink);word-break:break-word}
+  .em-tab td.empty{color:var(--ink-faint);font-style:italic}
+  .em-cheat{margin-top:4px;border:1px dashed var(--amber,#E2891F);border-radius:10px;padding:8px 12px;background:#FFFBF3}
+  .em-cheat summary{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8a560f;cursor:pointer}
+  .em-cheat .cs-h{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#8a560f;margin:10px 0 3px}
+  .em-ai{border:1px solid var(--line-soft);border-radius:10px;padding:10px 12px;margin:4px 0 12px;background:#F4F8FF}
+  .em-ai-h{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan-deep);margin-bottom:7px;display:flex;align-items:center;gap:7px}
+  .em-ai-tag{font-size:8.5px;color:#fff;background:var(--cyan-deep);border-radius:10px;padding:1px 6px;letter-spacing:.06em}
+  .em-ai-row{display:flex;gap:8px;align-items:center}
+  .em-ai-row select{flex:1;border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12.5px;background:#fff;outline:none}
+  .em-ai-note{font-size:11.5px;color:var(--ink-soft);margin-top:7px;line-height:1.45}
+  .em-ai-note code{background:#E7EEF7;padding:1px 5px;border-radius:5px;font-size:11px}
+  .ucbreak{font-family:monospace;font-size:11px;color:#46566E;margin:2px 0 6px}
   @media (max-width:720px){ .em-cols{grid-template-columns:1fr} }
 </style>
 </head>
@@ -273,20 +296,30 @@
 <div class="eval-modal" id="evalModal" hidden role="dialog" aria-modal="true" aria-labelledby="emTeam">
   <div class="em-card">
     <button class="em-close" id="emClose" aria-label="Close">&times;</button>
-    <div class="em-eyebrow">Evaluate solution</div>
+    <div class="em-eyebrow" id="emEyebrow">Evaluate use case</div>
     <h2 id="emTeam">Team</h2>
     <div class="em-meta" id="emMeta"></div>
     <div class="em-cols">
       <div id="emSolution"></div>
       <div class="em-score">
-        <h3>Score</h3>
-        <label>Injection 01 — Autonomous Expansion <input type="number" min="0" max="10" step="1" id="emI1"> <span>/ 10</span></label>
-        <label>Injection 02 — Token in the Wild <input type="number" min="0" max="10" step="1" id="emI2"> <span>/ 10</span></label>
-        <label>Injection 03 — Prove It <input type="number" min="0" max="10" step="1" id="emI3"> <span>/ 10</span></label>
-        <label class="em-sol">Final solution — completion &amp; best-practice controls (8 reference controls, coherence)
-          <span class="r"><input type="number" min="0" max="70" step="1" id="emSol"> <span>/ 70</span></span>
-        </label>
+        <h3>Score this use case</h3>
+        <label>Pain-point &rarr; product mapping <input type="number" min="0" max="40" step="1" id="emC1"> <span>/ 40</span></label>
+        <label>Products — how &amp; why / differentiators <input type="number" min="0" max="30" step="1" id="emC2"> <span>/ 30</span></label>
+        <label>Diagram &amp; overall solution <input type="number" min="0" max="30" step="1" id="emC3"> <span>/ 30</span></label>
         <div class="em-total">Total: <span id="emTotal">0</span> / 100</div>
+        <div class="em-ai">
+          <div class="em-ai-h">AI evaluation <span class="em-ai-tag">preview</span></div>
+          <div class="em-ai-row">
+            <select id="emModel">
+              <option value="claude-opus-4-8">Claude Opus 4.8</option>
+              <option value="claude-sonnet-5">Claude Sonnet 5</option>
+              <option value="gpt-4o">GPT-4o</option>
+              <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+            </select>
+            <button class="btn" id="emAi" type="button">Evaluate with AI</button>
+          </div>
+          <div class="em-ai-note" id="emAiNote">Choose manual scoring above, or run an AI pass to pre-fill a suggested score and notes.</div>
+        </div>
         <label class="em-notes">Notes (optional)<textarea id="emNotes" placeholder="What was strong / missing…"></textarea></label>
         <div class="em-actions">
           <button class="btn" id="emCancel">Cancel</button>
@@ -324,18 +357,45 @@
   if($("#footRoom")) $("#footRoom").textContent = ROOM||"—";
   if($("#btnLeaderboard")) $("#btnLeaderboard").href = "leaderboard.html" + (ROOM ? ("?room="+encodeURIComponent(ROOM)) : "");
   var latest = [];
-  var solutions = {};   // teamKey -> solution doc
-  var scores = {};      // teamKey -> score doc
-  var ranks = {};       // teamKey -> rank (1-based, scored teams only)
-  var MAX_INJ = 10, MAX_SOL = 70;
+  var solutions = {};   // teamKey -> { useCaseN -> solution doc }
+  var scores = {};      // teamKey -> { useCaseN -> score doc }
+  var ranks = {};       // teamKey -> rank (1-based, teams with any score)
+  var MAX_C1 = 40, MAX_C2 = 30, MAX_C3 = 30;   // per-use-case rubric = 100
   function tkey(t){ return (t==null?"":String(t)).trim().toLowerCase(); }
   function clampNum(v, max){ v = parseInt(v,10); if(isNaN(v)||v<0) v=0; if(v>max) v=max; return v; }
+  function teamTotal(tk){ var m=scores[tk]||{}, t=0; Object.keys(m).forEach(function(n){ t+=(m[n].total||0); }); return t; }
+  function teamSolved(tk){ return Object.keys(scores[tk]||{}).length; }         // scored use cases
+  function teamSubmitted(tk){ return Object.keys(solutions[tk]||{}).length; }   // submitted use cases
+  function ucNums(map, tk){ return Object.keys(map[tk]||{}).map(function(n){ return parseInt(n,10); }).sort(function(a,b){ return a-b; }); }
   function computeRanks(){
     ranks = {};
-    var scored = Object.keys(scores).map(function(k){ return { k:k, total:scores[k].total||0 }; });
+    var scored = Object.keys(scores).map(function(k){ return { k:k, total:teamTotal(k) }; }).filter(function(x){ return teamSolved(x.k)>0; });
     scored.sort(function(a,b){ return b.total-a.total; });
     scored.forEach(function(s,i){ ranks[s.k] = i+1; });
   }
+
+  // Proctor-only answer keys (cheat sheets) for manual evaluation — NOT shown to participants.
+  var CHEATSHEETS = {
+    1: {
+      title:"Managed Environment — Segmentation",
+      painResponse:[
+        ["Prior segmentation failed. VLANs/IP subnets complex and tedious.", "Implement SGTs over VLAN/IP subnets."],
+        ["Profiling labour-intensive; staff can't keep up with new devices.", "ISE cloud AI profiling."],
+        ["Failing PCI audits.", "Apply SGT for segmentation and insert FW services where L7 security is required."],
+        ["Corporate PCs not running latest AntiVirus / OS updates.", "Use ISE Posture and remediate out-of-date PCs."],
+        ["No budget for more firewalls to do segmentation.", "Use SGTs to enforce segmentation within the wired/wireless network."]
+      ],
+      products:[
+        ["ISE", "Authenticate and profile every user and device (web, 802.1X, MAB).", "Visibility and scalable."],
+        ["ISE-SGT", "Assign an SGT to each group (Employee, IoT, Desktop-mini, Internet).", "Cisco innovation; dynamic policy, topology-independent; end-to-end segmentation into multicloud data centers."],
+        ["ISE SGT ACL policy", "Granular access policy.", "SGACL more efficient than IP ACLs."],
+        ["ISE pxGrid", "pxGrid / Rapid Threat Containment; shares context with the ecosystem.", "Cisco innovation, RFC8600; dynamically quarantines threat devices; integrates with ACI, FW, SNA, SD-WAN, CSW, switches, routers."],
+        ["Catalyst SD-WAN", "pxGrid integration for unified security policy via C3 / Security Cloud Control.", "Consistent policy across the WAN fabric."],
+        ["FMC / SCC / FTD", "Threat detection/protection (NGIPS, malware, content filtering) and source/dest SGT policy enforcement.", "Integrates with ISE via pxGrid for Rapid Threat Containment; dynamic SGT-based enforcement (Cisco innovation)."],
+        ["Cisco Secure Workload", "App Dependency Mapping; profiles flows and builds app-segmentation policy; ingests NetFlow from FTD; pxGrid/ISE connector.", "Auto policy creation, validation and enforcement based on identity + posture from ISE/pxGrid."]
+      ]
+    }
+  };
 
   function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
   function fmtTime(ms){ if(!ms) return ""; var d=new Date(ms); var h=d.getHours(), m=d.getMinutes(); return (h<10?"0":"")+h+":"+(m<10?"0":"")+m; }
@@ -418,22 +478,26 @@
       else { clockHtml = '<span class="tclock'+(rem<300?' low':'')+'" data-teamclock="'+esc(code)+'">⏱ '+fmtClock(rem)+' left</span>'; }
       var clockRow = '<div class="clock-row">'+(code?'<span class="tcode">'+esc(code)+'</span>':'')+clockHtml+
         (code&&tc&&tc.startedAt?'<button class="treset" data-treset="'+esc(code)+'">Reset clock</button>':'')+'</div>';
-      // score / evaluate footer
-      var sol = solutions[tk], sc = scores[tk];
+      // score / evaluate footer — one row per submitted use case
+      var subNums = ucNums(solutions, tk);
       var footer;
-      if(sc){
-        footer = '<div class="score-row">'+
+      if(subNums.length){
+        var total = teamTotal(tk), solved = teamSolved(tk);
+        var head = '<div class="uc-score-head">'+
           (ranks[tk] ? '<span class="rank-badge">#'+ranks[tk]+'</span>' : '')+
-          '<span class="score-big">'+sc.total+'<small> / 100</small></span>'+
-          '<span class="sub-badge">i '+(sc.i1||0)+'/'+(sc.i2||0)+'/'+(sc.i3||0)+' · sol '+(sc.solution||0)+'</span>'+
-          '<button class="mini-btn re" data-eval="'+esc(tk)+'">Re-evaluate</button></div>';
-      } else if(sol){
-        footer = '<div class="score-row"><span class="sub-badge">Submitted '+fmtTime(sol.submittedAt)+'</span>'+
-          (sol.totalTimeSec!=null?'<span class="time-badge">took '+fmtClock(sol.totalTimeSec)+'</span>':'')+
-          (sol.late?'<span class="late-badge">LATE +'+fmtClock(sol.overtimeSec||0)+'</span>':'')+
-          '<button class="mini-btn" data-eval="'+esc(tk)+'">Evaluate</button></div>';
+          '<span class="score-big">'+total+'<small> pts</small></span>'+
+          '<span class="sub-badge">'+solved+'/'+subNums.length+' use case'+(subNums.length===1?'':'s')+' scored</span></div>';
+        var rows2 = subNums.map(function(n){
+          var s=solutions[tk][n], sc=(scores[tk]||{})[n];
+          var right = sc
+            ? '<span class="uc-pts">'+sc.total+'/100</span><button class="mini-btn re" data-eval="'+esc(tk)+'|'+n+'">Re-evaluate</button>'
+            : '<button class="mini-btn" data-eval="'+esc(tk)+'|'+n+'">Evaluate</button>';
+          return '<div class="uc-score-row"><span class="uc-lbl">UC '+n+'</span>'+
+            '<span class="uc-when">'+fmtTime(s.submittedAt)+(s.late?' · <b class="late-badge">LATE</b>':'')+'</span>'+right+'</div>';
+        }).join("");
+        footer = '<div class="score-row col">'+head+rows2+'</div>';
       } else {
-        footer = '<div class="score-row muted">No solution submitted yet</div>';
+        footer = '<div class="score-row muted">No use case submitted yet</div>';
       }
       return '<div class="team '+(teamComplete?"complete":"incomplete")+'"><div class="team-h"><h3>'+esc(g.name)+'</h3><span class="cnt'+(teamComplete?' ok':'')+'">'+g.members.length+'/4</span></div>'+clockRow+rows+missHtml+footer+'</div>';
     }).join("");
@@ -477,10 +541,12 @@
       var mem = g.members.map(function(p){
         return '<tr><td>'+esc(p.role||"—")+'</td><td>'+esc(p.name||"—")+'</td><td>'+esc(p.email||"")+'</td><td>'+fmtTime(p.joinedAt)+'</td></tr>';
       }).join("");
-      var sc=scores[key], sol=solutions[key];
-      var scoreSpan = sc ? ' <span class="score">'+sc.total+'/100'+(ranks[key]?' · #'+ranks[key]:'')+'</span>' : '';
-      var timeSpan = (sol&&sol.totalTimeSec!=null) ? ' <span class="'+(sol.late?'bad':'ok')+'">took '+fmtClock(sol.totalTimeSec)+(sol.late?(' · LATE +'+fmtClock(sol.overtimeSec||0)):'')+'</span>' : '';
-      return '<div class="rt"><h3>'+esc(g.name)+' <span class="'+(missing.length?"bad":"ok")+'">'+(missing.length?("incomplete — missing "+missing.join(", ")):"complete")+'</span>'+scoreSpan+timeSpan+'</h3>'+
+      var submittedN=teamSubmitted(key), solvedN=teamSolved(key), total=teamTotal(key);
+      var scoreSpan = solvedN ? ' <span class="score">'+total+' pts · '+solvedN+' UC'+(solvedN===1?'':'s')+(ranks[key]?' · #'+ranks[key]:'')+'</span>' : '';
+      var subSpan = submittedN ? ' <span class="ok">'+submittedN+' submitted</span>' : '';
+      var ucBreak = ucNums(solutions, key).map(function(n){ var s=(scores[key]||{})[n]; return 'UC'+n+': '+(s?(s.total+'/100'):'submitted'); }).join(" · ");
+      return '<div class="rt"><h3>'+esc(g.name)+' <span class="'+(missing.length?"bad":"ok")+'">'+(missing.length?("incomplete — missing "+missing.join(", ")):"complete")+'</span>'+scoreSpan+subSpan+'</h3>'+
+        (ucBreak?'<div class="ucbreak">'+esc(ucBreak)+'</div>':'')+
         '<table class="mt"><thead><tr><th>Role</th><th>Name</th><th>Email</th><th>Joined</th></tr></thead><tbody>'+mem+'</tbody></table></div>';
     }).join("");
     var roleLine = ["conductor","critic","architect","scribe","facilitator"].map(function(rk){ return ROLE_LABELS[rk]+": <b>"+(roleCounts[rk]||0)+"</b>"; }).join(" &nbsp;·&nbsp; ");
@@ -525,52 +591,79 @@
   // ---------- evaluate modal ----------
   var adapterRef = null, evalKey = null;
   var evalModal=$("#evalModal");
+  var evalTk=null, evalUc=null;
   function emUpdateTotal(){
-    var t = clampNum($("#emI1").value,MAX_INJ)+clampNum($("#emI2").value,MAX_INJ)+clampNum($("#emI3").value,MAX_INJ)+clampNum($("#emSol").value,MAX_SOL);
+    var t = clampNum($("#emC1").value,MAX_C1)+clampNum($("#emC2").value,MAX_C2)+clampNum($("#emC3").value,MAX_C3);
     $("#emTotal").textContent = t; return t;
   }
-  ["emI1","emI2","emI3","emSol"].forEach(function(id){ $("#"+id).addEventListener("input", emUpdateTotal); });
-  function openEval(tk){
-    var sol=solutions[tk], sc=scores[tk];
-    var teamName = (sol&&sol.teamName) || (scores[tk]&&scores[tk].teamName) || tk;
-    evalKey = tk;
-    $("#emTeam").textContent = teamName;
-    var meta = sol ? ("Submitted "+fmtTime(sol.submittedAt)+(sol.submittedByName?(" · by "+sol.submittedByName):"")+(sol.totalTimeSec!=null?(" · took "+fmtClock(sol.totalTimeSec)):"")+(sol.late?("  ⚠ LATE +"+fmtClock(sol.overtimeSec||0)):"")) : "No submission on record";
-    $("#emMeta").textContent = meta;
+  ["emC1","emC2","emC3"].forEach(function(id){ $("#"+id).addEventListener("input", emUpdateTotal); });
+  function cellsTable(head, rows){
+    return '<table class="em-tab"><thead><tr>'+head.map(function(h){return '<th>'+esc(h)+'</th>';}).join("")+'</tr></thead><tbody>'+
+      rows.map(function(r){ return '<tr>'+r.map(function(c){ var v=(c==null?"":String(c)).trim(); return '<td class="'+(v?'':'empty')+'">'+(v?esc(v):"—")+'</td>'; }).join("")+'</tr>'; }).join("")+'</tbody></table>';
+  }
+  function openEval(key){
+    var parts0=String(key).split("|"); var tk=parts0[0], n=parseInt(parts0[1],10)||1;
+    var sol=(solutions[tk]||{})[n], sc=(scores[tk]||{})[n];
+    var teamName = (sol&&sol.teamName) || tk;
+    evalTk=tk; evalUc=n; evalKey=key;
+    $("#emEyebrow").textContent = "Evaluate · Use Case "+n;
+    $("#emTeam").textContent = teamName + (sol&&sol.useCaseTitle? (" — "+sol.useCaseTitle) : "");
+    $("#emMeta").textContent = sol ? ("Submitted "+fmtTime(sol.submittedAt)+(sol.submittedByName?(" · by "+sol.submittedByName):"")+(sol.totalTimeSec!=null?(" · took "+fmtClock(sol.totalTimeSec)):"")+(sol.late?("  ⚠ LATE +"+fmtClock(sol.overtimeSec||0)):"")) : "No submission on record";
     $("#emMeta").style.color = (sol&&sol.late) ? "var(--red)" : "";
-    var solEl=$("#emSolution");
+    // ----- team response -----
     var parts=[];
     if(sol && typeof sol.diagram==="string" && sol.diagram.indexOf("data:image")===0){
-      parts.push('<div class="em-field"><div class="k">Diagram</div><img class="em-diag" src="'+sol.diagram+'" alt="team diagram"></div>');
+      parts.push('<div class="em-field"><div class="k">Proposed diagram</div><img class="em-diag" src="'+sol.diagram+'" alt="team diagram"></div>');
+    } else {
+      parts.push('<div class="em-field"><div class="k">Proposed diagram</div><div class="v empty">— no diagram attached —</div></div>');
     }
-    if(sol && sol.fields && sol.fields.length){
-      parts.push(sol.fields.map(function(f){
-        var v=(f.value||"").trim();
-        return '<div class="em-field"><div class="k">'+esc(f.label)+'</div><div class="v'+(v?'':' empty')+'">'+(v?esc(v):"— left blank —")+'</div></div>';
-      }).join(""));
-    } else if(!parts.length){
-      parts.push('<div class="em-field"><div class="v empty">This team hasn\'t submitted a solution sheet. You can still score from their diagram / discussion.</div></div>');
+    var pm = (sol&&sol.painMap)||[];
+    parts.push('<div class="em-field"><div class="k">Pain point &rarr; product mapping</div>'+
+      (pm.length ? cellsTable(["Pain point","Product(s)","How / why"], pm.map(function(x){ return [x.pain, x.product, x.note]; })) : '<div class="v empty">— not filled in —</div>')+'</div>');
+    var pr = (sol&&sol.products)||[];
+    parts.push('<div class="em-field"><div class="k">Products proposed</div>'+
+      (pr.length ? cellsTable(["Product / feature","Description / how","Why / differentiator"], pr.map(function(x){ return [x.product, x.how, x.why]; })) : '<div class="v empty">— not filled in —</div>')+'</div>');
+    // ----- cheat sheet (proctor only) -----
+    var cs=CHEATSHEETS[n];
+    if(cs){
+      parts.push('<details class="em-cheat" open><summary>Cheat sheet — reference answer (Use Case '+n+')</summary>'+
+        '<div class="cs-h">Addressing pain points</div>'+cellsTable(["Customer pain point","Cisco response"], cs.painResponse)+
+        '<div class="cs-h">Proposed products / features</div>'+cellsTable(["Product / feature","Description / how","Why / differentiator"], cs.products)+
+      '</details>');
     }
-    solEl.innerHTML = parts.join("");
-    $("#emI1").value = sc?sc.i1:""; $("#emI2").value = sc?sc.i2:""; $("#emI3").value = sc?sc.i3:"";
-    $("#emSol").value = sc?sc.solution:""; $("#emNotes").value = sc?(sc.notes||""):"";
+    $("#emSolution").innerHTML = parts.join("");
+    // ----- score inputs -----
+    $("#emC1").value = sc?sc.c1:""; $("#emC2").value = sc?sc.c2:""; $("#emC3").value = sc?sc.c3:"";
+    $("#emNotes").value = sc?(sc.notes||""):"";
+    $("#emModel").value = (sc&&sc.model) || $("#emModel").value;
+    $("#emAiNote").textContent = (sc&&sc.method==="ai") ? ("Last scored with AI ("+(sc.model||"")+"). You can adjust and save.") : "Choose manual scoring above, or run an AI pass to pre-fill a suggested score and notes.";
     emUpdateTotal();
     evalModal.hidden=false;
   }
-  function closeEval(){ evalModal.hidden=true; evalKey=null; }
+  function closeEval(){ evalModal.hidden=true; evalKey=evalTk=evalUc=null; }
   $("#emClose").addEventListener("click", closeEval);
   $("#emCancel").addEventListener("click", closeEval);
   evalModal.addEventListener("click", function(e){ if(e.target===evalModal) closeEval(); });
   document.addEventListener("keydown", function(e){ if(e.key==="Escape" && !evalModal.hidden) closeEval(); });
+  // AI evaluation — stub (UI + model choice; live model call is a follow-up)
+  var aiUsed=false;
+  $("#emAi").addEventListener("click", function(){
+    var model=$("#emModel").value;
+    $("#emAiNote").innerHTML = '<b>AI evaluation preview.</b> Model <code>'+esc(model)+'</code> selected. Live model scoring isn\'t wired to an API yet — this is where the proctor would send the team\'s response + cheat sheet to the model and get back a suggested score and rationale. For now, score manually above; the selected model is saved with the score.';
+    aiUsed=true;
+  });
   $("#emSave").addEventListener("click", function(){
-    if(!evalKey || !adapterRef) return;
-    var i1=clampNum($("#emI1").value,MAX_INJ), i2=clampNum($("#emI2").value,MAX_INJ), i3=clampNum($("#emI3").value,MAX_INJ), sv=clampNum($("#emSol").value,MAX_SOL);
-    var sol=solutions[evalKey];
-    var teamName=(sol&&sol.teamName) || (scores[evalKey]&&scores[evalKey].teamName) || evalKey;
-    var doc={ id:ROOM+"__"+evalKey, room:ROOM, teamCode:(solutions[evalKey]&&solutions[evalKey].teamCode)||evalKey, teamName:teamName, i1:i1,i2:i2,i3:i3, solution:sv, total:i1+i2+i3+sv, notes:($("#emNotes").value||"").trim(), evaluatedAt:Date.now() };
+    if(!evalTk || !adapterRef) return;
+    var c1=clampNum($("#emC1").value,MAX_C1), c2=clampNum($("#emC2").value,MAX_C2), c3=clampNum($("#emC3").value,MAX_C3);
+    var sol=(solutions[evalTk]||{})[evalUc];
+    var teamName=(sol&&sol.teamName) || evalTk;
+    var doc={ id:ROOM+"__"+evalTk+"__uc"+evalUc, room:ROOM, teamCode:(sol&&sol.teamCode)||evalTk, teamName:teamName,
+              useCase:evalUc, useCaseTitle:(sol&&sol.useCaseTitle)||("Use Case "+evalUc),
+              c1:c1, c2:c2, c3:c3, total:c1+c2+c3, notes:($("#emNotes").value||"").trim(),
+              method: aiUsed?"ai":"manual", model: $("#emModel").value, evaluatedAt:Date.now() };
     try{ adapterRef.write("scores", doc); }catch(e){}
-    scores[evalKey]=doc; // optimistic
-    closeEval(); render();
+    (scores[evalTk]=scores[evalTk]||{})[evalUc]=doc; // optimistic
+    aiUsed=false; closeEval(); render();
   });
   // delegate Evaluate buttons
   $("#teams").addEventListener("click", function(e){
@@ -707,8 +800,8 @@
       $("#statusText").textContent=live?"Live · Firebase":"Single-device (local)";
       $("#localNotice").hidden=live;
       adapter.watch("players", ROOM, function(d){ latest=d||[]; render(); });
-      adapter.watch("solutions", ROOM, function(d){ solutions={}; (d||[]).forEach(function(s){ solutions[s.teamCode||tkey(s.teamName)]=s; }); render(); });
-      adapter.watch("scores", ROOM, function(d){ scores={}; (d||[]).forEach(function(s){ scores[s.teamCode||tkey(s.teamName)]=s; }); render(); });
+      adapter.watch("solutions", ROOM, function(d){ solutions={}; (d||[]).forEach(function(s){ var tk=s.teamCode||tkey(s.teamName), n=s.useCase||1; (solutions[tk]=solutions[tk]||{})[n]=s; }); render(); });
+      adapter.watch("scores", ROOM, function(d){ scores={}; (d||[]).forEach(function(s){ var tk=s.teamCode||tkey(s.teamName), n=s.useCase||1; (scores[tk]=scores[tk]||{})[n]=s; }); render(); });
       adapter.watch("control", ROOM, function(d){
         var docs=d||[]; eventDoc=docs.filter(function(x){ return x.id===ROOM; })[0]||null;
         teamClocks={}; docs.forEach(function(x){ if(x.kind==="team" && x.teamCode) teamClocks[x.teamCode]=x; });

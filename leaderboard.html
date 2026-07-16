@@ -63,7 +63,7 @@
     <div>
       <span class="eyebrow">Zero Trust Agentic Design Sprint</span>
       <h1>🏆 Leaderboard</h1>
-      <div class="sub">Team scores — 3 injections (10 each) + final solution (70) = 100. Updates live.</div>
+      <div class="sub">Team scores — each use case is 100 pts (up to 5). Ranked by total. Updates live.</div>
     </div>
     <div class="spacer"></div>
     <span class="status" id="status"><span class="dot"></span><span id="statusText">Connecting…</span></span>
@@ -89,37 +89,48 @@
   var $=function(s){return document.querySelector(s);};
   var ROOM=(new URLSearchParams(location.search)).get("room"); ROOM = ROOM ? ROOM.trim().toUpperCase() : "DEFAULT";
   $("#footRoom").textContent=ROOM;
-  var scores={}, solutions={};
+  var scoreDocs=[], solDocs=[];
+  var TOTAL_UC=5;
   function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
   function tkey(t){ return (t==null?"":String(t)).trim().toLowerCase(); }
+  function tkOf(o){ return o.teamCode||tkey(o.teamName); }
   function fmtClock(s){ s=Math.max(0,Math.round(s)); var m=Math.floor(s/60),ss=s%60; return (m<10?"0":"")+m+":"+(ss<10?"0":"")+ss; }
   var MEDALS={1:"🥇",2:"🥈",3:"🥉"};
 
   function bars(n,max){ var out=""; for(var i=0;i<max;i++){ out+='<i class="'+(i<n?'f':'')+'" style="flex:1"></i>'; } return out; }
 
+  function aggregate(){
+    var teams={};
+    function team(k,name){ var t=teams[k]||(teams[k]={teamName:name||"",total:0,byUc:{},solved:0,submitted:0,late:false}); if(!t.teamName&&name) t.teamName=name; return t; }
+    scoreDocs.forEach(function(s){ var t=team(tkOf(s),s.teamName); t.total+=(s.total||0); t.byUc[s.useCase||1]=(s.total||0); t.solved++; });
+    solDocs.forEach(function(s){ var t=team(tkOf(s),s.teamName); t.submitted++; if(s.late) t.late=true; });
+    return teams;
+  }
+
   function render(){
-    var list=Object.keys(scores).map(function(k){ return scores[k]; });
-    list.sort(function(a,b){ return (b.total||0)-(a.total||0) || String(a.teamName||"").localeCompare(String(b.teamName||"")); });
+    var teams=aggregate();
+    var list=Object.keys(teams).map(function(k){ return teams[k]; }).filter(function(t){ return t.solved>0; });
+    list.sort(function(a,b){ return b.total-a.total || b.solved-a.solved || String(a.teamName||"").localeCompare(String(b.teamName||"")); });
     var board=$("#board");
     if(!list.length){ board.innerHTML=""; $("#empty").hidden=false; $("#pending").hidden=true; return; }
     $("#empty").hidden=true;
-    board.innerHTML=list.map(function(s,i){
+    board.innerHTML=list.map(function(t,i){
       var rank=i+1;
       var head = MEDALS[rank] ? ('<div class="medal">'+MEDALS[rank]+'</div>') : ('<div class="rank">'+rank+'</div>');
-      var sol = solutions[s.teamCode||tkey(s.teamName)];
-      var lateTag = (sol && sol.late) ? ' <span class="late">LATE +'+fmtClock(sol.overtimeSec||0)+'</span>' : '';
-      var timeTag = (sol && sol.totalTimeSec!=null) ? '  ·  ⏱ '+fmtClock(sol.totalTimeSec) : '';
+      var lateTag = t.late ? ' <span class="late">LATE</span>' : '';
+      var ucBreak = Object.keys(t.byUc).map(function(n){ return parseInt(n,10); }).sort(function(a,b){return a-b;})
+        .map(function(n){ return 'UC'+n+' '+t.byUc[n]+'/100'; }).join('  ·  ');
       return '<div class="row r'+rank+'">'+head+
-        '<div class="team"><div class="nm">'+esc(s.teamName||"—")+lateTag+'</div>'+
-          '<div class="bd">Injections '+(s.i1||0)+' / '+(s.i2||0)+' / '+(s.i3||0)+'  ·  Solution '+(s.solution||0)+' / 70'+timeTag+'</div>'+
-          '<div class="bars">'+bars((s.i1||0)+(s.i2||0)+(s.i3||0),30)+'</div>'+
+        '<div class="team"><div class="nm">'+esc(t.teamName||"—")+lateTag+'</div>'+
+          '<div class="bd">'+t.solved+' / '+TOTAL_UC+' use cases solved'+(ucBreak?('  ·  '+ucBreak):'')+'</div>'+
+          '<div class="bars">'+bars(t.solved,TOTAL_UC)+'</div>'+
         '</div>'+
-        '<div class="total">'+(s.total||0)+'<small> / 100</small></div>'+
+        '<div class="total">'+t.total+'<small> pts</small></div>'+
       '</div>';
     }).join("");
-    // pending (submitted but not scored)
-    var pend=0; Object.keys(solutions).forEach(function(k){ if(!scores[k]) pend++; });
-    if(pend){ $("#pending").hidden=false; $("#pending").textContent=pend+" team"+(pend===1?"":"s")+" submitted and awaiting scoring."; }
+    // pending (submitted use cases still awaiting a score)
+    var pend=0; Object.keys(teams).forEach(function(k){ if(teams[k].submitted>teams[k].solved) pend++; });
+    if(pend){ $("#pending").hidden=false; $("#pending").textContent=pend+" team"+(pend===1?"":"s")+" with use cases awaiting scoring."; }
     else { $("#pending").hidden=true; }
   }
 
@@ -129,8 +140,8 @@
       var live=adapter.mode==="firebase";
       $("#status").className="status "+(live?"live":"local");
       $("#statusText").textContent=live?"Live · Firebase":"Single-device (local)";
-      adapter.watch("scores", ROOM, function(d){ scores={}; (d||[]).forEach(function(s){ scores[s.teamCode||tkey(s.teamName)]=s; }); render(); });
-      adapter.watch("solutions", ROOM, function(d){ solutions={}; (d||[]).forEach(function(s){ solutions[s.teamCode||tkey(s.teamName)]=s; }); render(); });
+      adapter.watch("scores", ROOM, function(d){ scoreDocs=d||[]; render(); });
+      adapter.watch("solutions", ROOM, function(d){ solDocs=d||[]; render(); });
     });
   } else { $("#statusText").textContent="Leaderboard unavailable"; }
 })();
