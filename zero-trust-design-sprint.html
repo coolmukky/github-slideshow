@@ -538,6 +538,18 @@
   .sheet-field.filled{border-color:var(--cyan);background:#FAFEFF}
   .sheet-field:focus-within{border-color:var(--cyan-deep);box-shadow:0 0 0 3px rgba(15,169,190,.12)}
 
+  /* --- design clinic brief / topology / sample --- */
+  .callout{background:#F0F8FA;border:1px solid #BEE3EA;border-left:4px solid var(--cyan-deep);border-radius:12px;padding:14px 18px;font-size:13.5px;color:#0a5560;line-height:1.6}
+  .topo-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:#fff;padding:10px}
+  .topo-wrap svg{display:block;min-width:760px;width:100%;height:auto}
+  .topo-wrap img{display:block;width:100%;min-width:720px;height:auto;border-radius:8px}
+  .topo-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;font-size:12px;color:var(--ink-soft)}
+  .topo-legend span{display:inline-flex;align-items:center;gap:6px}
+  .topo-legend i{width:14px;height:14px;border-radius:4px;display:inline-block}
+  .sample-note{font-size:12.5px;color:var(--ink-soft);margin:0 0 14px}
+  .sample-grid .uctab td{color:var(--ink)}
+  .sample-tag{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#166049;background:#E4F6EE;border:1px solid #A9DEC9;border-radius:20px;padding:3px 10px;margin-bottom:10px}
+
   /* --- use-case hub + workspace --- */
   .uc-list{display:flex;flex-direction:column;gap:10px}
   .uc-card{display:flex;align-items:center;gap:14px;width:100%;text-align:left;cursor:pointer;
@@ -693,7 +705,7 @@
   </div>
   <div class="fb-phase">
     <span class="fp-name" id="barPhase">Press Start</span>
-    <span class="fp-next" id="barNext">Phase 0 · Brief-In begins on start</span>
+    <span class="fp-next" id="barNext">Solve as many of the 5 use cases as you can before 60:00</span>
   </div>
   <div class="fb-bar" aria-hidden="true"><i id="barFill"></i></div>
   <div class="fb-spacer"></div>
@@ -765,14 +777,14 @@
   <div class="wrap">
     <div class="hero-inner">
       <div class="anim">
-        <span class="eyebrow">Team Assessment · Solutions Engineering</span>
-        <h1>Zero Trust<br><span>Agentic</span> Design Sprint</h1>
-        <p class="lede">A timed, four-person tabletop exercise. Read the breach, design a Zero Trust architecture for autonomous AI agents, and ship one diagram and one solution sheet — before the clock hits zero.</p>
+        <span class="eyebrow">Design Clinic · Solutions Engineering</span>
+        <h1>Design<br><span>Clinic</span></h1>
+        <p class="lede">A real enterprise, a real reference network, and five problems the customer hasn't solved yet. Sixty minutes, four seats at the table, and the segmentation cycle. Diagnose what the customer actually needs, place the right Cisco platforms on the network, and earn the right to the next meeting.</p>
         <div class="facts">
-          <div class="fact"><b>4</b><small>Roles</small></div>
+          <div class="fact"><b>4</b><small>Seats</small></div>
           <div class="fact"><b>60:00</b><small>On the clock</small></div>
-          <div class="fact"><b>2</b><small>Deliverables</small></div>
-          <div class="fact"><b>3</b><small>Injections</small></div>
+          <div class="fact"><b>5</b><small>Use cases</small></div>
+          <div class="fact"><b>∞</b><small>Solve as many as you can</small></div>
         </div>
       </div>
       <div class="dial anim" aria-hidden="true">
@@ -806,12 +818,34 @@
 
   <nav class="toc" aria-label="Contents">
     <span class="toc-lbl">Jump to</span>
-    <a href="#environment">Environment</a><a href="#objectives">Objectives</a>
-    <a href="#roles">Roles</a><a href="#methodology">Methodology</a>
-    <a href="#usecases">Use cases</a><a href="#workspace">Workspace</a>
+    <a href="#brief">Brief</a><a href="#environment">Environment</a><a href="#topology">Topology</a>
+    <a href="#objectives">Objectives</a><a href="#roles">Roles</a><a href="#methodology">Methodology</a>
+    <a href="#usecases">Use cases</a><a href="#sample">Sample</a><a href="#workspace">Workspace</a>
     <span class="focus-note">Focus view · reference sections hidden</span>
   </nav>
 
+
+  <!-- ============ DESIGN CLINIC BRIEF ============ -->
+  <section class="sec" id="brief">
+    <div class="sec-head">
+      <span class="sec-no">DESIGN CLINIC</span>
+      <h2>A real enterprise, a real network, five problems to solve</h2>
+    </div>
+    <p class="sec-sub"><b>4 seats · 60 minutes · 5 use cases · complete as many as you can.</b> Diagnose what the customer actually needs, place the right Cisco platforms on the network, and earn the right to the next meeting.</p>
+    <div class="grid g2">
+      <div class="panel" style="border-top:4px solid var(--cyan)">
+        <h3>The customer</h3>
+        <p>A <b>distributed enterprise</b>: a corporate HQ and on-premises data centre, a fleet of remote branches on <b>SD-WAN</b>, a growing remote and hybrid workforce — some of them now running <b>AI agents</b> — and an application estate spread across <b>on-prem, AWS and Azure</b>. They've grown by acquisition, they're mid-flight into public cloud, and their security controls haven't kept pace with their footprint.</p>
+      </div>
+      <div class="panel" style="border-top:4px solid var(--amber)">
+        <h3>The ask</h3>
+        <p>They are <b>not</b> asking you to rip anything out. They're asking you to bring <b>Zero Trust</b> to an environment that already exists — to <b>segment it, see it, and keep enforcing policy</b> no matter where the user, the device, or the workload happens to be.</p>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:16px">
+      <p style="margin:0">Welcome to the design clinic. In today's threat landscape, static network boundaries are no longer sufficient. To achieve a true Zero Trust posture we shift from reactive security to an <b>iterative, dynamic</b> approach. Your group will design a <b>SASE environment</b> to satisfy the five use cases using the ZT Access and Agentic Identity controls discussed earlier. By integrating <b>SD-WAN, Cisco ISE, policy controls, telemetry</b> and any tool in the Cisco toolbox, you'll move beyond simple connectivity to an intelligent, digitally resilient network.</p>
+    </div>
+  </section>
 
   <!-- ============ CUSTOMER ENVIRONMENT ============ -->
   <section class="sec" id="environment">
@@ -844,6 +878,19 @@
     </div>
   </section>
 
+  <!-- ============ REFERENCE TOPOLOGY ============ -->
+  <section class="sec" id="topology">
+    <div class="sec-head">
+      <span class="sec-no">REFERENCE</span>
+      <h2>Current customer architecture</h2>
+    </div>
+    <p class="sec-sub">The reference network you're designing for — everyone starts from the same picture. Your diagram for each use case is your version of this, with the products and policy you propose drawn on top.</p>
+    <div class="topo-wrap">
+      <img src="reference-network.jpg" alt="Current customer architecture — reference network diagram: remote branches and Zero Trust Access users connect via SD-WAN and SSE to the corporate HQ head-end routers, the on-premises application environment, and apps in Azure and AWS via cloud-exchange peering. Microsoft Entra ID provides identity; SaaS and Internet are reached through SSE.">
+    </div>
+    <p class="sample-note">Remote branches and Zero Trust Access users reach the enterprise through <b>SD-WAN</b> and <b>SSE</b>; the corporate HQ (on-prem head-end routers) connects to the on-premises application environment and to <b>Azure</b> and <b>AWS</b> apps over cloud-exchange peering, with identity from <b>Microsoft Entra ID</b>. This is the network you're securing — draw your solution for each use case on top of it.</p>
+  </section>
+
   <!-- ============ BUSINESS OBJECTIVES ============ -->
   <section class="sec" id="objectives">
     <div class="sec-head">
@@ -857,7 +904,7 @@
       <div class="deliver"><div class="num">3</div><div><b>Cut operational toil</b><p>Stop hand-profiling every new device and manually chasing posture — automate it.</p></div></div>
       <div class="deliver"><div class="num">4</div><div><b>Work within budget</b><p>Reuse the existing network for enforcement — no wave of new firewalls just to segment.</p></div></div>
       <div class="deliver"><div class="num">5</div><div><b>Improve endpoint hygiene</b><p>Bring corporate PCs up to date on AV and OS before they get full access.</p></div></div>
-      <div class="deliver"><div class="num">6</div><div><b>Complete as many use cases as you can</b><p>Five use cases, in order. Each completed use case is scored — solve one, submit, move to the next.</p></div></div>
+      <div class="deliver"><div class="num">6</div><div><b>Complete as many use cases as you can — to score more</b><p>Five use cases, in order. Each one you solve and submit adds to your team's score on the leaderboard, so bank as many as the clock allows.</p></div></div>
     </div>
   </section>
 
@@ -867,26 +914,26 @@
       <span class="sec-no">ROLES</span>
       <h2>Four roles, no passengers</h2>
     </div>
-    <p class="sec-sub">Everyone leads one phase and carries one standing job for the whole hour. Pick roles in the first two minutes. If you're a team of three, the IT Director also runs the Network Security Engineer's standing job; with five, add a second Digital Resiliency Officer. The Digital Resiliency Officer's job is to challenge decisions and spark dialogue — not to block — modelled on the "scientific critic" role used in multi-agent research.</p>
+    <p class="sec-sub">Four seats at the table, one standing job each for the whole hour. Pick roles in the first two minutes. Teams of three or five adapt — the facilitator will say how. The Digital Resiliency Officer's job is to challenge decisions and spark dialogue — not to block.</p>
     <div class="grid g4">
       <div class="card role" style="--rc:var(--amber);--rc-ink:#a3640f">
-        <span class="rtag">Owns the clock</span>
+        <span class="rtag">Owns the pace</span>
         <h3>IT Director</h3>
-        <div class="owns">LEADS · P0 Brief-In &amp; P5 Submit</div>
+        <div class="owns">Pace &amp; submissions</div>
         <ul>
-          <li>Reads instructions aloud, keeps the team on the track.</li>
-          <li>Calls every time check and reveals injection cards on cue.</li>
-          <li>Confirms each phase's exit before moving on.</li>
+          <li>Watches the clock and keeps the team moving through the use cases.</li>
+          <li>Calls time checks so the team banks as many use cases as it can.</li>
+          <li>Confirms each use case is submitted before moving to the next.</li>
         </ul>
         <div class="always"><b>Always:</b> watches the timer and says the time out loud at each checkpoint.</div>
       </div>
       <div class="card role" style="--rc:var(--red);--rc-ink:#b53636">
         <span class="rtag">Owns the challenge</span>
         <h3>Digital Resiliency Officer</h3>
-        <div class="owns">LEADS · P1 Expose</div>
+        <div class="owns">Challenge &amp; resilience</div>
         <ul>
           <li>Challenges each decision — "what would make this fail?" — to spark dialogue, not to block.</li>
-          <li>Surfaces the threat surface and how an attacker could abuse an agent.</li>
+          <li>Surfaces the threat surface and how an attacker could move if a control is missing.</li>
           <li>Makes the team justify choices and weigh trade-offs out loud.</li>
         </ul>
         <div class="always"><b>Always:</b> asks "what are we assuming, and what could break it?" at every step.</div>
@@ -894,10 +941,10 @@
       <div class="card role" style="--rc:var(--cyan);--rc-ink:#0a7c8c">
         <span class="rtag">Owns the design</span>
         <h3>Network Architect</h3>
-        <div class="owns">LEADS · P3 Design</div>
+        <div class="owns">The diagram</div>
         <ul>
           <li>Holds the pen, draws the topology, keeps it legible.</li>
-          <li>Ensures every control has a home on the diagram.</li>
+          <li>Ensures every product and control has a home on the diagram.</li>
           <li>Decides component placement and trust boundaries.</li>
         </ul>
         <div class="always"><b>Always:</b> sketches the current idea so the team argues over a picture, not words.</div>
@@ -905,11 +952,11 @@
       <div class="card role" style="--rc:var(--green);--rc-ink:#1f8a63">
         <span class="rtag">Owns the write-up</span>
         <h3>Network Security Engineer</h3>
-        <div class="owns">LEADS · P4 Document</div>
+        <div class="owns">Mapping &amp; submit</div>
         <ul>
           <li>Captures every key decision the moment it's made.</li>
-          <li>Writes and owns the one-page solution sheet.</li>
-          <li>Runs the upload and final submission with the IT Director.</li>
+          <li>Owns the pain-point → product mapping and the product write-up.</li>
+          <li>Runs the diagram upload and final submission with the IT Director.</li>
         </ul>
         <div class="always"><b>Always:</b> records the "why" behind each choice — that's what the rubric rewards.</div>
       </div>
@@ -959,6 +1006,30 @@
     <div class="uc-list" id="ucList"><!-- built by the interactive engine --></div>
   </section>
 
+  <!-- ============ WHAT GOOD LOOKS LIKE (sample) ============ -->
+  <section class="sec" id="sample">
+    <div class="sec-head">
+      <span class="sec-no">SAMPLE</span>
+      <h2>What "good" looks like</h2>
+    </div>
+    <p class="sec-sub">A short, <b>illustrative</b> example on a <b>different</b> scenario — use it to calibrate depth and format, not to copy. Strong answers name a specific product, say <b>how</b> it works in one line, and say <b>why</b> it fits (a Cisco differentiator earns extra).</p>
+    <span class="sample-tag">Example scenario · not one of your use cases</span>
+    <p class="sample-note">Customer pain: <i>"Guests and IoT cameras share the same VLAN, so a compromised camera can reach guest laptops — and we've no budget for more firewalls."</i></p>
+    <div class="sample-grid">
+      <div class="uc-step-h" style="font-size:15px;margin-bottom:8px"><span class="uc-step-n">1</span>Pain point &rarr; product mapping</div>
+      <div class="uc-table-wrap"><table class="uctab"><thead><tr><th>Customer pain point</th><th>Proposed product(s)</th><th>How it addresses / why</th></tr></thead><tbody>
+        <tr><td class="pp">IoT and Guest share a VLAN; a hacked camera can reach guests</td><td>Cisco ISE + TrustSec SGTs</td><td>Profile each device at onboarding, tag <b>IOT</b> and <b>Guest</b> groups, and enforce an SGACL that denies IOT&#8596;Guest — on the existing switches.</td></tr>
+        <tr><td class="pp">No budget for more firewalls to segment</td><td>TrustSec SGACL enforcement</td><td>Group-to-group policy is enforced <b>inline</b> on the Catalyst switches you already own — no new firewall to buy or cable.</td></tr>
+      </tbody></table></div>
+      <div class="uc-step-h" style="font-size:15px;margin:18px 0 8px"><span class="uc-step-n">2</span>Products proposed</div>
+      <div class="uc-table-wrap"><table class="uctab"><thead><tr><th>Product / feature</th><th>Description / how</th><th>Why / differentiator</th></tr></thead><tbody>
+        <tr><td>Cisco ISE</td><td>802.1X / MAB authenticate and profile every endpoint, then assign a group (SGT).</td><td>One policy source of truth; scales without per-subnet ACLs.</td></tr>
+        <tr><td>TrustSec SGACL</td><td>Group-to-group allow/deny enforced inline on Catalyst switches.</td><td>Topology-independent; far fewer rules than IP ACLs (Cisco differentiator).</td></tr>
+      </tbody></table></div>
+      <div class="callout" style="margin-top:16px"><b>A strong diagram</b> labels every group, marks the <b>enforcement point</b> (where the SGACL/firewall sits), and traces <b>one flow end-to-end</b> (e.g. camera &rarr; denied &rarr; guest). Legible beats pretty.</div>
+    </div>
+  </section>
+
   <!-- ============ WORKSPACE (active use case) ============ -->
   <section class="sec" id="workspace">
     <div class="sec-head">
@@ -984,12 +1055,7 @@
   "use strict";
   var TOTAL = 60 * 60; // seconds
   var PHASES = [
-    {no:"PHASE 0", name:"Brief-In", start:0,  end:8,  color:"#E2891F"},
-    {no:"PHASE 1", name:"Expose",   start:8,  end:20, color:"#DB4A4A"},
-    {no:"PHASE 2", name:"Decide",   start:20, end:33, color:"#0FA9BE"},
-    {no:"PHASE 3", name:"Design",   start:33, end:48, color:"#2a6fb0"},
-    {no:"PHASE 4", name:"Document", start:48, end:56, color:"#27A276"},
-    {no:"PHASE 5", name:"Submit",   start:56, end:60, color:"#122A47"}
+    {no:"LIVE", name:"Design Clinic", start:0, end:60, color:"#0FA9BE"}
   ];
   var $ = function(s,r){return (r||document).querySelector(s);};
   var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
@@ -1094,7 +1160,7 @@
       teamStartedAt=started;
       var e=Math.min(TOTAL,(Date.now()-teamStartedAt)/1000);
       primeFiredUpTo(e); INJ.forEach(function(j){ j.manual=false; });
-      if(e<3){ toastWrap.innerHTML=""; toast("Your team clock started","Everyone's in — 60 minutes begin now, Phase 0 · Brief-In.","phase","00:00"); }
+      if(e<3){ toastWrap.innerHTML=""; toast("Your team clock started","Everyone's in — 60 minutes begin now. Solve as many use cases as you can.","phase","00:00"); }
     } else if(!started){ teamStartedAt=null; }
   }
   function managedTick(){ reconcileTeamStart(); elapsed=evElapsed(); running=(managed&&eventOpen&&!!teamStartedAt&&elapsed<TOTAL); render(); checkEvents(); updateManagedUI(); renderWait(); }
@@ -1206,7 +1272,7 @@
       $("#barNext").textContent = ot>0 ? ("+"+fmt(ot)+" over 60:00 · you can still submit (marked late)") : "Submit if you haven't · run the debrief";
     } else if(!started){
       $("#barPhase").textContent="Press Start";
-      $("#barNext").textContent="Phase 0 · Brief-In begins on start";
+      $("#barNext").textContent="Solve as many of the 5 use cases as you can before 60:00";
     } else {
       $("#barPhase").textContent = ph.no+" · "+ph.name;
       var leftInPhase = ph.end*60 - elapsed;
@@ -1282,7 +1348,7 @@
     if(managed) return;
     initAudio();
     if(running){ stop(); }
-    else { if(elapsed===0) toast("Session started","60 minutes on the clock — Phase 0 · Brief-In begins now.","phase","00:00"); startTimer(); }
+    else { if(elapsed===0) toast("Session started","60 minutes on the clock — solve as many use cases as you can.","phase","00:00"); startTimer(); }
   });
   $("#btnSkip").addEventListener("click", function(){
     if(managed) return;
@@ -1295,7 +1361,7 @@
   });
   $("#btnReset").addEventListener("click", function(){
     if(managed) return;
-    if(!confirm("Reset the session clock to 00:00 and re-seal all injections?\n\n(Your checklists and solution sheet are kept.)")) return;
+    if(!confirm("Reset the session clock to 00:00?\n\n(Your use-case answers are kept.)")) return;
     stop(); elapsed=0; fired={};
     INJ.forEach(function(j){ j.manual=false; });
     toastWrap.innerHTML="";
@@ -1581,10 +1647,10 @@
 
   // ---------- persona "take your seat" login ----------
   var ROLES = {
-    conductor:{label:"IT Director", short:"IT Director", color:"#E2891F", chip:"con", col:1, card:"IT Director", tag:"Owns the clock · leads Brief-In & Submit"},
-    critic:{label:"Digital Resiliency Officer", short:"Digital Resiliency Officer", color:"#DB4A4A", chip:"thr", col:2, card:"Digital Resiliency Officer", tag:"Owns the challenge · leads Expose"},
-    architect:{label:"Network Architect", short:"Network Architect", color:"#0FA9BE", chip:"arc", col:3, card:"Network Architect", tag:"Owns the design · leads Design"},
-    scribe:{label:"Network Security Engineer", short:"Network Security Engineer", color:"#27A276", chip:"scr", col:4, card:"Network Security Engineer", tag:"Owns the write-up · leads Document"},
+    conductor:{label:"IT Director", short:"IT Director", color:"#E2891F", chip:"con", col:1, card:"IT Director", tag:"Owns the pace · time checks & submissions"},
+    critic:{label:"Digital Resiliency Officer", short:"Digital Resiliency Officer", color:"#DB4A4A", chip:"thr", col:2, card:"Digital Resiliency Officer", tag:"Owns the challenge · what could break it?"},
+    architect:{label:"Network Architect", short:"Network Architect", color:"#0FA9BE", chip:"arc", col:3, card:"Network Architect", tag:"Owns the design · draws the topology"},
+    scribe:{label:"Network Security Engineer", short:"Network Security Engineer", color:"#27A276", chip:"scr", col:4, card:"Network Security Engineer", tag:"Owns the write-up · mapping & submit"},
     facilitator:{label:"Facilitator / Observer", short:"Facilitator", color:"#7E8CA1", chip:null, col:0, card:null, tag:"Runs the session — not an in-game seat"}
   };
   var personaModal=$("#personaModal"), personaLabel=$("#personaLabel"), pmRoles=$("#pmRoles");
@@ -1768,7 +1834,7 @@
 
   // ---------- focus / play view (hide reference sections during the hour) ----------
   // "live" sections stay; everything else is reference that teams don't need mid-hour.
-  var LIVE_SECTIONS = { board:1, goal:1, start:1, play:1, injections:1, scenario:1 };
+  var LIVE_SECTIONS = { environment:1, topology:1, usecases:1, workspace:1 };
   $$(".sec").forEach(function(sec){ if(sec.id && !LIVE_SECTIONS[sec.id]) sec.classList.add("ref-sec"); });
   $$(".toc a").forEach(function(a){ var id=(a.getAttribute("href")||"").replace("#",""); if(id && !LIVE_SECTIONS[id]) a.classList.add("ref-link"); });
   var focusBtn=$("#btnFocus"), focusLabel=$("#btnFocusLabel"), focusOn=false;
@@ -1784,7 +1850,7 @@
     focusOn=!focusOn; try{ localStorage.setItem("ztds.focus", focusOn?"1":"0"); }catch(e){}
     applyFocus();
     toast(focusOn?"Focus view on":"Full view",
-      focusOn ? "Reference sections hidden — showing only what teams need during the hour (board, goal, start, play, injections, scenario)."
+      focusOn ? "Reference sections hidden — showing only what teams need during the hour (environment, topology, use cases, workspace)."
               : "All sections visible again.", "phase");
   });
 
