@@ -645,12 +645,39 @@
   $("#emCancel").addEventListener("click", closeEval);
   evalModal.addEventListener("click", function(e){ if(e.target===evalModal) closeEval(); });
   document.addEventListener("keydown", function(e){ if(e.key==="Escape" && !evalModal.hidden) closeEval(); });
-  // AI evaluation — stub (UI + model choice; live model call is a follow-up)
+  // AI evaluation — calls a serverless proxy (holds the API key) when configured.
   var aiUsed=false;
+  function aiEndpoint(){ return (window.AI_EVAL_ENDPOINT||"").trim(); }
   $("#emAi").addEventListener("click", function(){
-    var model=$("#emModel").value;
-    $("#emAiNote").innerHTML = '<b>AI evaluation preview.</b> Model <code>'+esc(model)+'</code> selected. Live model scoring isn\'t wired to an API yet — this is where the proctor would send the team\'s response + cheat sheet to the model and get back a suggested score and rationale. For now, score manually above; the selected model is saved with the score.';
-    aiUsed=true;
+    var model=$("#emModel").value, ep=aiEndpoint(), note=$("#emAiNote"), btn=$("#emAi");
+    if(!ep){
+      note.innerHTML = '<b>AI evaluation preview.</b> No endpoint is configured, so live scoring is off. Set <code>window.AI_EVAL_ENDPOINT</code> in <code>firebase-config.js</code> to your deployed proxy (see <code>AI-EVAL.md</code>). For now score manually — the selected model (<code>'+esc(model)+'</code>) is saved with the score.';
+      aiUsed=true; return;
+    }
+    var sol=(solutions[evalTk]||{})[evalUc];
+    if(!sol){ note.textContent="No submission to evaluate."; return; }
+    var payload={ model:model, useCase:evalUc, useCaseTitle:sol.useCaseTitle||("Use Case "+evalUc),
+      rubric:{ c1:{label:"Pain-point → product mapping", max:MAX_C1}, c2:{label:"Products — how & why", max:MAX_C2}, c3:{label:"Diagram & overall solution", max:MAX_C3} },
+      cheatSheet: CHEATSHEETS[evalUc]||null,
+      response:{ painMap:sol.painMap||[], products:sol.products||[], diagram:sol.diagram||"" } };
+    var headers={"content-type":"application/json"}; if(window.AI_EVAL_TOKEN) headers["x-eval-token"]=window.AI_EVAL_TOKEN;
+    var oldLabel=btn.textContent; btn.disabled=true; btn.textContent="Evaluating…";
+    note.textContent="Asking "+model+" to score against the cheat sheet…";
+    fetch(ep, { method:"POST", headers:headers, body:JSON.stringify(payload) })
+      .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }, function(){ return {ok:false, j:{error:"non-JSON response"}}; }); })
+      .then(function(res){
+        if(res.ok && res.j && typeof res.j.c1==="number"){
+          $("#emC1").value=res.j.c1; $("#emC2").value=res.j.c2; $("#emC3").value=res.j.c3; emUpdateTotal();
+          var rat=res.j.rationale||"";
+          note.innerHTML='<b>AI suggestion ('+esc(res.j.model||model)+'):</b> '+esc(rat)+'<br><span style="color:var(--ink-faint)">Adjust if needed, then Save score.</span>';
+          if(rat && !$("#emNotes").value.trim()) $("#emNotes").value="[AI · "+(res.j.model||model)+"] "+rat;
+          aiUsed=true;
+        } else {
+          note.textContent="AI evaluation failed: "+((res.j&&res.j.error)||"unexpected response")+((res.j&&res.j.detail)?(" — "+res.j.detail):"");
+        }
+      })
+      .catch(function(err){ note.textContent="AI evaluation error: "+((err&&err.message)||err)+". Check the endpoint URL / CORS (AI-EVAL.md)."; })
+      .then(function(){ btn.disabled=false; btn.textContent=oldLabel; });
   });
   $("#emSave").addEventListener("click", function(){
     if(!evalTk || !adapterRef) return;

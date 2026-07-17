@@ -1,0 +1,122 @@
+# Live AI evaluation — setup
+
+The proctor console (`proctor.html`) can score a team's use-case response with
+**Claude** and pre-fill the rubric (you still review and **Save**). Because this
+site is static (GitHub Pages) and the Anthropic API key must **never** ship in
+browser JavaScript, the model is called through a tiny **serverless proxy** that
+holds the key as a server secret.
+
+- Proxy code: [`ai-eval-worker.js`](./ai-eval-worker.js) (Cloudflare Workers reference; adaptable)
+- Client config: `window.AI_EVAL_ENDPOINT` in [`firebase-config.js`](./firebase-config.js)
+
+Manual scoring always works; AI evaluation is **optional** and stays in "preview"
+mode until you set the endpoint.
+
+---
+
+## What happens
+
+1. Proctor opens **Evaluate** on a submitted use case and clicks **Evaluate with AI**.
+2. The page POSTs the team's response + the **cheat sheet** + the rubric maxima to your proxy.
+3. The proxy calls the **Anthropic Messages API** (with the key it holds) and forces a
+   structured `submit_score` result: `c1`, `c2`, `c3`, and a short rationale.
+4. The page fills the three score boxes and the notes; the proctor adjusts if needed and **Saves**.
+   The score is stored with `method:"ai"` and the model used.
+
+Data flow (nothing sensitive in the browser):
+
+```
+proctor.html ──POST {response, cheatSheet, rubric}──▶ your proxy ──x-api-key──▶ Anthropic
+             ◀──── {c1,c2,c3,total,rationale} ───────           ◀── tool_use ──
+```
+
+---
+
+## Option A — Cloudflare Workers (recommended, free tier)
+
+1. Install Wrangler and log in:
+   ```
+   npm i -g wrangler
+   wrangler login
+   ```
+2. Create the Worker from the reference file:
+   - `wrangler init clinic-ai-eval` (choose "Hello World" / no starter framework), then
+     replace the generated `src/index.js` with the contents of [`ai-eval-worker.js`](./ai-eval-worker.js).
+   - (Or keep your own layout — the file is a standard `export default { fetch }` module.)
+3. Set the secret and vars:
+   ```
+   wrangler secret put ANTHROPIC_API_KEY        # paste your Anthropic key when prompted
+   # optional, recommended — lock CORS to your site:
+   wrangler deploy --var ALLOW_ORIGIN:https://coolmukky.github.io
+   # optional light abuse guard (see below):
+   wrangler secret put EVAL_SHARED_TOKEN
+   ```
+   You can also set `ALLOW_ORIGIN` in the dashboard (Workers → your worker → Settings → Variables).
+4. Deploy:
+   ```
+   wrangler deploy
+   ```
+   Note the URL, e.g. `https://clinic-ai-eval.<you>.workers.dev`.
+5. Point the app at it — edit [`firebase-config.js`](./firebase-config.js):
+   ```js
+   window.AI_EVAL_ENDPOINT = "https://clinic-ai-eval.<you>.workers.dev";
+   window.AI_EVAL_TOKEN = "";   // set only if you configured EVAL_SHARED_TOKEN
+   ```
+   Commit and push. Hard-refresh `proctor.html`.
+
+---
+
+## Option B — Firebase Cloud Functions (same Google project)
+
+Requires the **Blaze** (pay-as-you-go) plan. Sketch:
+
+```js
+// functions/index.js  (2nd-gen HTTPS function)
+const { onRequest } = require("firebase-functions/v2/https");
+const { defineSecret } = require("firebase-functions/params");
+const ANTHROPIC_API_KEY = defineSecret("ANTHROPIC_API_KEY");
+
+exports.aiEval = onRequest({ secrets: [ANTHROPIC_API_KEY], cors: ["https://coolmukky.github.io"] },
+  async (req, res) => {
+    // Reuse the request/prompt/Anthropic logic from ai-eval-worker.js:
+    // read req.body, build the messages + submit_score tool, call
+    // https://api.anthropic.com/v1/messages with x-api-key: ANTHROPIC_API_KEY.value(),
+    // then res.json({ c1, c2, c3, total, rationale, model }).
+  });
+```
+
+Deploy with `firebase deploy --only functions`, set the secret with
+`firebase functions:secrets:set ANTHROPIC_API_KEY`, then set
+`window.AI_EVAL_ENDPOINT` to the function URL.
+
+---
+
+## Configuration reference
+
+**Proxy environment (server side — never in the browser):**
+
+| Name | Required | Purpose |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | yes | Your Anthropic API key (a server secret). |
+| `ALLOW_ORIGIN` | recommended | Exact origin allowed via CORS, e.g. `https://coolmukky.github.io`. Defaults to `*`. |
+| `EVAL_SHARED_TOKEN` | optional | If set, requests must send a matching `x-eval-token` header. Light abuse guard. |
+
+**Client (`firebase-config.js`):**
+
+| Name | Purpose |
+|---|---|
+| `window.AI_EVAL_ENDPOINT` | Your proxy URL. Empty = AI evaluation stays in preview mode. |
+| `window.AI_EVAL_TOKEN` | Only if you set `EVAL_SHARED_TOKEN`. It ships in the page, so treat it as low-value (rotate/limit via origin restriction). |
+
+**Models:** the proctor's picker offers Claude Opus 4.8 / Sonnet 5 (and Haiku).
+The proxy allow-lists Claude model ids and defaults to `claude-opus-4-8`.
+
+---
+
+## Notes & limits
+
+- **The AI suggests; the proctor decides.** Scores are pre-filled, not auto-saved — always review before Save.
+- **Cheat sheet drives grading.** The model is told to grade against the reference answer for that use case (in `CHEATSHEETS` in `proctor.html`). Use cases without a cheat sheet still work but grade more loosely.
+- **Diagrams** are sent to the model (Claude is multimodal) when a team attached one, so the "diagram & overall solution" criterion reflects the picture.
+- **Cost/rate:** each click is one API call. The optional `EVAL_SHARED_TOKEN` + `ALLOW_ORIGIN` reduce casual abuse; for anything public, add real auth/rate-limiting at the proxy.
+- **CORS errors?** Make sure `ALLOW_ORIGIN` exactly matches your site's origin (scheme + host, no trailing slash), then hard-refresh.

@@ -136,10 +136,11 @@ Troubleshooting:
 - **Scoring & leaderboard:** on `proctor.html`, each team card lists every submitted use case with an
   **Evaluate** button. Open it to see the team's response **and the proctor-only cheat sheet** for
   that use case, then score three criteria — pain→product mapping (40) + products how/why (30) +
-  diagram & overall solution (30) = **100 per use case**. An **AI-evaluation** control (model picker +
-  *Evaluate with AI*) is present as a preview; live model scoring is a follow-up (manual scoring is
-  fully working). **`leaderboard.html`** ranks teams by **total points across use cases** and shows how
-  many each solved (project it on the shared screen).
+  diagram & overall solution (30) = **100 per use case**. An **AI-evaluation** option (model picker +
+  *Evaluate with AI*) can pre-fill the score with **Claude** via a serverless proxy — see
+  [`AI-EVAL.md`](./AI-EVAL.md) to enable it; until it's configured it stays in preview and manual
+  scoring is fully working. **`leaderboard.html`** ranks teams by **total points across use cases** and
+  shows how many each solved (project it on the shared screen).
 
 ## 5. Privacy / after the session
 

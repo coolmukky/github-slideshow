@@ -67,3 +67,15 @@ window.FIREBASE_CONFIG = {
   messagingSenderId: "278404586451",
   appId: "1:278404586451:web:459afeba6085107d712d26"
 };
+
+/* ----------------------------------------------------------------------------
+   AI evaluation (optional) — proctor.html "Evaluate with AI".
+   Point this at your deployed serverless proxy (see ai-eval-worker.js + AI-EVAL.md).
+   The proxy holds the Anthropic API key as a SERVER secret; the key must NOT be
+   placed here. Leave the endpoint empty to keep AI evaluation in preview mode
+   (manual scoring always works regardless).
+   AI_EVAL_TOKEN is optional and only needed if you set EVAL_SHARED_TOKEN on the
+   proxy — it's a light abuse guard, not a real secret, so keep it low-value.
+   -------------------------------------------------------------------------- */
+window.AI_EVAL_ENDPOINT = "";   // e.g. "https://clinic-ai-eval.<you>.workers.dev"
+window.AI_EVAL_TOKEN = "";      // optional; matches the proxy's EVAL_SHARED_TOKEN
