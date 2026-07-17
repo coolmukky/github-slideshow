@@ -38,7 +38,7 @@ the in-session phase/time cues live on the participant page itself.)
 
 - [ ] Teams fill the solution sheet, optionally **Attach diagram** (a photo of their topology), and click **Submit for scoring** (last submit wins). Participants get **5-min and 1-min** warnings automatically.
 - [ ] **Late is allowed:** teams can still submit after 60:00 — the submission records **total time taken** and is flagged **LATE +overtime** (not auto-penalized; you decide how to weigh it).
-- [ ] On **proctor**, each team card lists every **submitted use case** with an **Evaluate** button → open it to see the team's **pain→product mapping, products, diagram + time taken** alongside the **proctor-only cheat sheet**, and score **pain→product (40) + products how/why (30) + diagram & solution (30) = 100 per use case**. An **AI-evaluation** preview (model picker) is present; live model scoring is a follow-up. Totals rank live on **`leaderboard.html`** (project it).
+- [ ] On **proctor**, each team card lists every **submitted use case** with an **Evaluate** button → open it to see the team's **pain→product mapping, products, diagram + time taken** alongside the **proctor-only cheat sheet**, and score **pain→product (40) + products how/why (30) + diagram & solution (30) = 100 per use case**. An **AI-evaluation** option (model picker + *Evaluate with AI*) can pre-fill the score with Claude once you enable it (see `AI-EVAL.md`); you still review and Save. Totals rank live on **`leaderboard.html`** (project it).
 - [ ] On **proctor**, click **Report** → **Print / Save as PDF** for a per-team record (now includes scores), or **Export CSV** for raw data.
 - [ ] Run the 10-minute debrief (reference design is in the participant page's Debrief section).
 
