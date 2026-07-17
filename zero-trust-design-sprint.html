@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zero Trust Agentic Design Sprint — Team Playbook</title>
+<title>Zero Trust Access Design Clinic — Team Playbook</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -764,7 +764,7 @@
 <div class="persona-modal" id="personaModal" hidden role="dialog" aria-modal="true" aria-labelledby="pmTitle">
   <div class="pm-card">
     <button class="pm-close" id="pmClose" aria-label="Close">&times;</button>
-    <div class="pm-eyebrow" id="pmEvent">Join the sprint</div>
+    <div class="pm-eyebrow" id="pmEvent">Join the clinic</div>
     <h2 id="pmTitle">Take your seat</h2>
     <p class="pm-sub">Enter your details and your role. <b>First on your team?</b> Create the team and share the code. <b>Joining teammates?</b> Enter their team code — your clock starts when everyone's in.</p>
     <div class="pm-fields">
@@ -799,8 +799,8 @@
   <div class="wrap">
     <div class="hero-inner">
       <div class="anim">
-        <span class="eyebrow">Design Clinic · Solutions Engineering</span>
-        <h1>Design<br><span>Clinic</span></h1>
+        <span class="eyebrow">Zero Trust Access Design Clinic · Solutions Engineering</span>
+        <h1>Zero Trust Access<br><span>Design Clinic</span></h1>
         <p class="lede">A real enterprise, a real reference network, and five problems the customer hasn't solved yet. Sixty minutes, four seats at the table, and the segmentation cycle. Diagnose what the customer actually needs, place the right Cisco platforms on the network, and earn the right to the next meeting.</p>
         <div class="facts">
           <div class="fact"><b>4</b><small>Seats</small></div>
@@ -1063,7 +1063,7 @@
   </section>
 
   <div class="foot">
-    <span class="eyebrow">Segmentation Design Clinic · Team Playbook</span>
+    <span class="eyebrow">Zero Trust Access Design Clinic · Team Playbook</span>
     <span class="tag">4 roles · 60 minutes · 5 use cases</span>
   </div>
 
@@ -1852,7 +1852,7 @@
   function showPmError(m){ pmError.textContent=m; pmError.hidden=false; }
   function hidePmError(){ pmError.hidden=true; }
   function openPersona(){
-    var evEl=$("#pmEvent"); if(evEl) evEl.textContent = eventName ? ("Join · "+eventName) : "Join the sprint";
+    var evEl=$("#pmEvent"); if(evEl) evEl.textContent = eventName ? ("Join · "+eventName) : "Join the clinic";
     pmName.value = persona&&persona.name ? persona.name : "";
     pmEmail.value = persona&&persona.email ? persona.email : "";
     if(persona && persona.teamCode){ setTeamMode("join"); pmCode.value=persona.teamCode; pmTeam.value=persona.team||""; }
