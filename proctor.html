@@ -938,8 +938,8 @@
     location.search="?room="+encodeURIComponent(t.getAttribute("data-resume"));
   });
   $("#ctlNew").addEventListener("click", function(){
-    // keep the current event saved; reload into the create screen (recent list lets you resume it)
-    window.location.href = location.pathname;
+    // keep the current event saved; go to the create screen (?new skips auto-restore)
+    window.location.href = location.pathname + "?new=1";
   });
 
   // ---------- event setup (create) ----------
@@ -977,6 +977,16 @@
     });
   }
 
+  // Auto-restore the last event on a fresh open (no ?room), so a refresh/reopen never
+  // "loses" it. ?new=1 (the New event button) skips this and shows the create screen.
+  var wantNew = (new URLSearchParams(location.search)).has("new");
+  if(!ROOM && !wantNew){
+    var _evs = loadEvents();
+    if(_evs.length && _evs[0].code){
+      ROOM = _evs[0].code; updateRoomLabels();
+      try{ history.replaceState(null,"","?room="+encodeURIComponent(ROOM)); }catch(e){}
+    }
+  }
   render(); renderControl(); renderRecent();
   if(ROOM){ startRoster(); } else { setupEl.hidden=false; controlEl.hidden=true; }
 })();
