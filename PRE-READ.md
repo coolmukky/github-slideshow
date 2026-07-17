@@ -1,39 +1,49 @@
 # Before you join — 2-minute pre-read
 
 Skim this **before** the session so you arrive ready and the team can hit the ground running.
-(The full playbook is on the participant page; you don't need to read it in advance.)
+(The full brief, methodology reference, and use cases are on the participant page; you don't need
+to read them in advance.)
 
 ## What it is
-A **timed, 60-minute, four-person tabletop exercise.** Your team reads a short breach
-scenario and designs a **Zero Trust architecture for autonomous AI agents** — producing one
-labelled diagram and one solution sheet before the clock hits zero. It's a learning exercise,
-not a competition.
+A **timed, 60-minute, four-person team exercise.** You're the **Cisco team** working a real customer
+environment. Your team reads the customer's network, requirements, and pain points, then designs
+**segmentation solutions** — working through a set of **use cases in order**, producing a product
+mapping and a labelled diagram for each before the clock runs out. It's a learning exercise, not a
+competition.
 
 ## Your goal
-Take a company drowning in over-privileged AI agents and redesign it so every agent has its
-own identity, only the access it needs, a checkpoint on every action, and a full audit trail.
+Take a customer whose flat, VLAN/subnet-based segmentation is failing and redesign it with
+**identity-based (group) segmentation** — so every device lands in the right group, only reaches what
+it should, stays compliant (PCI), and is easy to operate. For each use case you'll say **which
+products solve which pain points, how, and why**, and back it with a diagram.
 
 ## Pick a role (you'll choose at the start)
-- **IT Director** — owns the clock; keeps the team on pace.
+- **IT Director** — owns the clock; keeps the team on pace and drives submissions.
 - **Digital Resiliency Officer** — challenges decisions: "what would make this fail?"
-- **Network Architect** — draws the topology diagram.
-- **Network Security Engineer** — writes the one-page solution sheet.
+- **Network Architect** — draws the topology / solution diagram.
+- **Network Security Engineer** — writes up the product mapping and solution.
 
 *(Teams of 3 or 5 adapt — the facilitator will say how.)*
 
 ## The hour at a glance
-`Brief-In → Expose → Decide → Design → Document → Submit` — six phases, hard time stops, with
-three surprise "injections" revealed along the way that make you adapt on the fly.
+Five **use cases, solved in order.** For each one, your team:
+1. **Maps pain → product** — for every customer pain point, name the product/feature that fixes it.
+2. **Says how & why** — for each product, one line on how it works and why it fits (differentiators welcome).
+3. **Reads the task & parameters** — the specific groups, access rules, and constraints.
+4. **Proposes a diagram** — draws the topology with your solution on it, attaches it, and **submits**.
+
+Submitting a use case unlocks the next. **Complete as many as you can** — each is scored on the
+leaderboard. (Use Case 1 is *Managed Environment — Segmentation*; more follow.)
 
 ## Six ideas you'll use (the quick primer)
-So the topic isn't cold, these are the Zero Trust controls a strong design applies to AI agents:
+So the topic isn't cold, these are the segmentation concepts a strong design applies:
 
-1. **Per-agent identity** — each agent has its own identity; no shared accounts.
-2. **Least privilege, just-in-time** — short-lived, narrowly-scoped tokens per action.
-3. **Verify every call** — a policy checkpoint authorizes each agent→resource request (deny by default).
-4. **Contain the blast radius** — microsegmentation so one compromised agent can't roam.
-5. **Human-in-the-loop** — a person approves the riskiest actions (refunds, freezes, prod writes).
-6. **Audit everything** — an immutable, identity-bound log of every action.
+1. **Why VLANs/subnets struggle** — tying policy to IP/VLAN is complex, tedious, and audit-unfriendly.
+2. **Group-based segmentation** — classify each device into a *group* at access; carry it as a tag, independent of topology.
+3. **Authenticate & profile** — identify every user/device (802.1X, MAB, web auth) and learn what it is.
+4. **Posture** — check endpoint health (AV, OS, patches) and remediate before granting full access.
+5. **Tag & enforce** — assign a group tag; the existing switches/routers/firewalls enforce group-to-group policy inline (no forklift of new firewalls).
+6. **Share context** — feed identity/group to firewalls, data center, SD-WAN, and threat tools for consistent policy and rapid containment.
 
 Don't worry about mastering these — the exercise is about applying and defending them as a team.
 
