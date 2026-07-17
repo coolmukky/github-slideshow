@@ -1,0 +1,18 @@
+# Cloudflare Workers config for the AI evaluation proxy.
+# Deploy from the repo root:
+#   npm i -g wrangler && wrangler login
+#   wrangler secret put ANTHROPIC_API_KEY      # paste your Anthropic key
+#   wrangler deploy
+# (Optional light abuse guard: wrangler secret put EVAL_SHARED_TOKEN)
+#
+# Nothing secret lives in this file. The API key is a Worker *secret*, set via
+# the CLI above — never put it here. See AI-EVAL.md for the full guide.
+
+name = "clinic-ai-eval"
+main = "ai-eval-worker.js"
+compatibility_date = "2024-11-01"
+
+[vars]
+# Lock CORS to your site's origin (scheme + host, no trailing slash).
+# Change this if you serve the pages from a different origin.
+ALLOW_ORIGIN = "https://coolmukky.github.io"

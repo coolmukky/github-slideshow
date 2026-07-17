@@ -34,35 +34,36 @@ proctor.html ──POST {response, cheatSheet, rubric}──▶ your proxy ─�
 
 ## Option A — Cloudflare Workers (recommended, free tier)
 
-1. Install Wrangler and log in:
+The repo already ships the Worker ([`ai-eval-worker.js`](./ai-eval-worker.js)) **and** a ready
+[`wrangler.toml`](./wrangler.toml), so deploy is basically: set your key, deploy.
+
+1. Install Wrangler and log in (once):
    ```
    npm i -g wrangler
    wrangler login
    ```
-2. Create the Worker from the reference file:
-   - `wrangler init clinic-ai-eval` (choose "Hello World" / no starter framework), then
-     replace the generated `src/index.js` with the contents of [`ai-eval-worker.js`](./ai-eval-worker.js).
-   - (Or keep your own layout — the file is a standard `export default { fetch }` module.)
-3. Set the secret and vars:
+2. From the **repo root**, set your Anthropic key as a Worker secret:
    ```
    wrangler secret put ANTHROPIC_API_KEY        # paste your Anthropic key when prompted
-   # optional, recommended — lock CORS to your site:
-   wrangler deploy --var ALLOW_ORIGIN:https://coolmukky.github.io
    # optional light abuse guard (see below):
-   wrangler secret put EVAL_SHARED_TOKEN
+   # wrangler secret put EVAL_SHARED_TOKEN
    ```
-   You can also set `ALLOW_ORIGIN` in the dashboard (Workers → your worker → Settings → Variables).
-4. Deploy:
+3. Deploy (uses `wrangler.toml` automatically — name, entry file, and `ALLOW_ORIGIN` are preset):
    ```
    wrangler deploy
    ```
-   Note the URL, e.g. `https://clinic-ai-eval.<you>.workers.dev`.
-5. Point the app at it — edit [`firebase-config.js`](./firebase-config.js):
+   Note the printed URL, e.g. `https://clinic-ai-eval.<you>.workers.dev`.
+
+   > `wrangler.toml` presets `ALLOW_ORIGIN = https://coolmukky.github.io`. If you serve the pages
+   > from a different origin, edit that line before deploying.
+
+4. Point the app at it — edit [`firebase-config.js`](./firebase-config.js):
    ```js
    window.AI_EVAL_ENDPOINT = "https://clinic-ai-eval.<you>.workers.dev";
    window.AI_EVAL_TOKEN = "";   // set only if you configured EVAL_SHARED_TOKEN
    ```
-   Commit and push. Hard-refresh `proctor.html`.
+   Commit and push, then hard-refresh `proctor.html`.
+5. On the proctor, click **Test AI** → expect **"AI endpoint OK · &lt;model&gt; · &lt;ms&gt; ms"**.
 
 ---
 
