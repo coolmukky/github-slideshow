@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Cedarline Design Clinic — HMF Team Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E9EEF5;
+    --surface:#FFFFFF;
+    --ink:#0E1A2B;
+    --ink-soft:#46566E;
+    --ink-faint:#7E8CA1;
+    --line:#CBD5E3;
+    --line-soft:#E1E8F1;
+    --navy:#0D274D;        /* Cisco midnight blue */
+    --navy-deep:#041E42;
+    --cyan:#00BCEB;        /* Cisco blue */
+    --cyan-deep:#036C8F;   /* darker Cisco blue for text/links */
+    --amber:#E2891F;
+    --amber-soft:#FBEBD3;
+    --red:#DB4A4A;
+    --red-soft:#FBE2E2;
+    --green:#27A276;
+    --green-soft:#D7F0E6;
+    --shadow:0 1px 0 rgba(14,26,43,.04), 0 18px 40px -28px rgba(14,26,43,.55);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:"IBM Plex Sans",system-ui,sans-serif;
+    color:var(--ink);
+    background:#F3F6FA;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  h1,h2,h3,h4{font-family:"Chakra Petch",sans-serif;margin:0;line-height:1.08;letter-spacing:-.01em}
+  .mono{font-family:"IBM Plex Mono",monospace}
+  p{margin:0 0 .7em}
+  a{color:var(--cyan-deep)}
+
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:11.5px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--cyan-deep);
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:radial-gradient(130% 150% at 86% -12%,#0a5a99 0%,#0d3f73 34%,var(--navy) 62%,var(--navy-deep) 100%);
+    color:#EAF1F8;border-radius:0 0 26px 26px;border-bottom:3px solid var(--cyan);
+    position:relative;overflow:hidden;
+  }
+  .hero::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+    background-size:34px 34px;mask-image:radial-gradient(70% 90% at 80% 0%,#000,transparent 75%);
+  }
+  .hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:1.5fr .8fr;gap:30px;align-items:center;padding:34px 0 40px}
+  .hero .eyebrow{color:#7FE2EF}
+  .hero h1{font-size:clamp(34px,5.6vw,60px);font-weight:700;margin:.28em 0 .3em;color:#fff}
+  .hero h1 span{color:var(--cyan)}
+  .hero .lede{color:#AEC4DC;font-size:16px;max-width:46ch;margin-bottom:18px}
+  .facts{display:flex;gap:10px;flex-wrap:wrap}
+  .fact{
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:11px;
+    padding:9px 13px;min-width:88px;
+  }
+  .fact b{font-family:"Chakra Petch";font-size:20px;display:block;color:#fff;line-height:1}
+  .fact small{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#8FA8C4}
+
+  .dial{display:flex;justify-content:center}
+  .dial svg{width:200px;height:200px;filter:drop-shadow(0 12px 26px rgba(0,0,0,.45))}
+  .prearrival{position:relative;z-index:1;margin:0 0 4px;padding:14px 18px;background:rgba(0,188,235,.10);border:1px solid rgba(0,188,235,.3);border-left:4px solid var(--cyan);border-radius:0 12px 12px 0}
+  .prearrival p{margin:0;font-size:13.5px;color:#CFE0F1}
+  .prearrival b{color:#fff}
+
+  /* ---------- SECTION SHELL ---------- */
+  .sec{padding:46px 0 8px;scroll-margin-top:16px}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:20px;flex-wrap:wrap}
+  .sec-no{font-family:"IBM Plex Mono";font-size:12px;font-weight:600;color:var(--cyan-deep);border:1.5px solid var(--cyan);border-radius:7px;padding:3px 8px}
+  .sec-head h2{font-size:clamp(22px,3vw,30px);font-weight:700}
+  .sec-sub{color:var(--ink-soft);max-width:70ch;margin-top:-6px}
+
+  /* ---------- TOC ---------- */
+  .toc{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:22px 0 2px;padding:13px 16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+  .toc-lbl{font-family:"IBM Plex Mono";font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin-right:4px}
+  .toc a{font-size:12.5px;color:var(--ink-soft);text-decoration:none;background:#EEF3F9;border:1px solid var(--line-soft);border-radius:20px;padding:5px 12px;transition:background .15s,color .15s}
+  .toc a:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+  /* ---------- TIMELINE TRACK ---------- */
+  .track-card{background:var(--navy);color:#fff;border-radius:18px;padding:26px 26px 22px;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.08)}
+  .track-card .eyebrow{color:#7FE2EF}
+  .track-scroll{overflow-x:auto;padding-bottom:6px}
+  .track{display:flex;gap:6px;min-width:680px;margin:18px 0 8px}
+  .stop{flex-grow:var(--g);flex-basis:0;min-width:78px;position:relative}
+  .stop .bar{height:13px;border-radius:5px;background:var(--c);position:relative;opacity:.92}
+  .stop .ph{font-family:"Chakra Petch";font-weight:700;font-size:13px;margin-top:11px;color:#fff;display:flex;align-items:center;gap:6px}
+  .stop .ph i{width:8px;height:8px;border-radius:50%;background:var(--c);display:inline-block}
+  .stop .nm{font-size:12px;color:#B8CCE2;line-height:1.3}
+  .stop .tc{font-family:"IBM Plex Mono";font-size:11px;color:#7FE2EF;margin-top:3px;letter-spacing:.04em}
+  .track-scale{display:flex;justify-content:space-between;font-family:"IBM Plex Mono";font-size:10.5px;color:#6F87A4;border-top:1px dashed rgba(255,255,255,.18);padding-top:8px;margin-top:6px}
+
+  /* ---------- generic cards/grids ---------- */
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .g5{grid-template-columns:repeat(5,1fr)}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px 18px;box-shadow:var(--shadow)}
+  .card h3{font-size:16px;font-weight:600;margin-bottom:6px}
+  .card p{font-size:14px;color:var(--ink-soft);margin-bottom:0}
+  .card .num{font-family:"Chakra Petch";font-weight:700;font-size:15px;color:#fff;background:var(--cyan-deep);min-width:26px;height:26px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:9px}
+
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+  .panel.accent-cyan{border-top:4px solid var(--cyan)}
+  .panel.accent-green{border-top:4px solid var(--green)}
+  .panel.accent-amber{border-top:4px solid var(--amber)}
+  .panel h3{font-size:17px;margin-bottom:10px;display:flex;align-items:center;gap:9px}
+
+  .win{display:grid;grid-template-columns:1.2fr 1fr;gap:16px}
+  .deliver{display:flex;gap:13px;align-items:flex-start;padding:13px 0;border-bottom:1px dashed var(--line-soft)}
+  .deliver:last-child{border-bottom:none}
+  .deliver .num{font-family:"Chakra Petch";font-weight:700;font-size:15px;color:#fff;background:var(--green);min-width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+  .deliver b{font-size:14.5px}
+  .deliver p{font-size:13px;margin:2px 0 0;color:var(--ink-soft)}
+
+  /* ---------- data tables ---------- */
+  .tblwrap{overflow-x:auto;border-radius:13px;box-shadow:var(--shadow);border:1px solid var(--line)}
+  table.data{width:100%;border-collapse:collapse;background:#fff;font-size:13px;min-width:640px}
+  table.data th{background:var(--navy);color:#fff;text-align:left;padding:11px 14px;font-family:"Chakra Petch";font-weight:600;font-size:12.5px}
+  table.data td{padding:11px 14px;border-bottom:1px solid var(--line-soft);border-right:1px solid var(--line-soft);color:var(--ink-soft);vertical-align:top}
+  table.data td:last-child{border-right:none}
+  table.data tr:last-child td{border-bottom:none}
+  table.data td b,table.data td strong{color:var(--ink)}
+  table.data td.z{background:#EEF3F9;font-weight:600;color:var(--ink);white-space:nowrap}
+
+  /* ---------- objectives ---------- */
+  .obj{counter-reset:o;display:grid;gap:12px;grid-template-columns:1fr 1fr}
+  .objc{display:flex;gap:13px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
+  .objc .on{counter-increment:o;font-family:"Chakra Petch";font-weight:700;font-size:14px;color:#fff;background:var(--navy);min-width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+  .objc .on::before{content:counter(o,decimal-leading-zero)}
+  .objc b{font-size:14px}
+  .objc p{font-size:13px;color:var(--ink-soft);margin:3px 0 0}
+
+  /* ---------- SME flag ---------- */
+  .sme{display:inline-flex;align-items:center;gap:8px;font-family:"IBM Plex Mono";font-size:11px;font-weight:600;letter-spacing:.04em;color:#8a560f;background:var(--amber-soft);border:1px solid #F0CE97;border-radius:8px;padding:8px 13px;margin-top:14px}
+  .sme svg{width:14px;height:14px;color:var(--amber)}
+
+  /* ---------- briefing transcript ---------- */
+  .brief-meta{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+  .who-chip{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:9px 14px;box-shadow:var(--shadow)}
+  .who-chip b{font-size:13.5px}
+  .who-chip small{font-family:"IBM Plex Mono";font-size:10.5px;color:var(--ink-faint);letter-spacing:.03em}
+  .transcript{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+  .tr-top{background:linear-gradient(160deg,var(--navy) 0%,var(--navy-deep) 100%);color:#DCE8F5;padding:14px 22px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  .tr-top .eyebrow{color:#7FE2EF}
+  .tr-top small{font-family:"IBM Plex Mono";font-size:11px;color:#9FB6CE}
+  .tr-body{padding:8px 22px 18px}
+  .line{display:grid;grid-template-columns:104px 1fr;gap:16px;padding:12px 0;border-bottom:1px dashed var(--line-soft)}
+  .line:last-child{border-bottom:none}
+  .line .spk{font-family:"IBM Plex Mono";font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding-top:2px}
+  .line.priya .spk{color:var(--cyan-deep)}
+  .line.marcus .spk{color:var(--red)}
+  .line.daesun .spk{color:var(--green)}
+  .line.se .spk{color:var(--ink-faint)}
+  .line .txt{font-size:14px;color:var(--ink)}
+  .line.se .txt{color:var(--ink-soft);font-style:italic}
+  .line .stage{color:var(--ink-faint);font-style:italic;font-size:13px}
+  .pull{display:inline;background:linear-gradient(transparent 62%,#FBE2E2 62%);font-weight:500}
+
+  /* ---------- the one decision ---------- */
+  .decision{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px}
+  .play{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+  .play-top{padding:16px 20px;color:#fff;display:flex;align-items:center;justify-content:space-between}
+  .play.wide .play-top{background:linear-gradient(120deg,#0a5a99,var(--navy))}
+  .play.deep .play-top{background:linear-gradient(120deg,var(--green),#155c43)}
+  .play-top b{font-family:"Chakra Petch";font-size:22px;letter-spacing:.02em}
+  .play-top small{font-family:"IBM Plex Mono";font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;opacity:.85}
+  .play-body{padding:16px 20px}
+  .play-body .row{padding:9px 0;border-bottom:1px dashed var(--line-soft)}
+  .play-body .row:last-child{border-bottom:none}
+  .play-body .k{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan-deep);margin-bottom:3px}
+  .play-body .v{font-size:13.5px;color:var(--ink-soft)}
+  .play-body .v.cost{color:#9a3b3b}
+  .warnstrip{display:flex;gap:12px;align-items:center;background:var(--red-soft);border:1px solid #F0C4C4;border-radius:12px;padding:13px 16px;margin-top:16px}
+  .warnstrip svg{width:20px;height:20px;color:var(--red);flex-shrink:0}
+  .warnstrip p{margin:0;font-size:13.5px;color:#8a2f2f}
+  .warnstrip b{color:#6e2323}
+
+  /* ---------- role cards ---------- */
+  .role{position:relative;overflow:hidden;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+  .role::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:var(--rc)}
+  .role .rtag{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#fff;background:var(--rc);display:inline-block;padding:3px 8px;border-radius:5px;margin:4px 0 9px}
+  .role h3{font-size:16px}
+  .role .owns{font-size:12.5px;color:var(--ink-soft);margin:8px 0 10px}
+  .role .owns b{color:var(--ink)}
+  .role ol{margin:0;padding-left:0;list-style:none;counter-reset:r}
+  .role ol li{counter-increment:r;position:relative;padding:5px 0 5px 34px;font-size:12.5px;color:var(--ink-soft);border-bottom:1px dashed var(--line-soft)}
+  .role ol li:last-child{border-bottom:none}
+  .role ol li::before{content:"R" counter(r);position:absolute;left:0;top:5px;font-family:"IBM Plex Mono";font-size:10px;font-weight:600;color:#fff;background:var(--rc-ink);border-radius:5px;padding:2px 5px}
+  .role ol li b{color:var(--ink)}
+
+  /* ---------- phase cards ---------- */
+  .phase{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px}
+  .phase-top{display:flex;align-items:stretch;gap:0;border-bottom:1px solid var(--line-soft)}
+  .phase-badge{background:var(--pc);color:#fff;padding:16px 18px;min-width:132px;display:flex;flex-direction:column;justify-content:center}
+  .phase-badge .pno{font-family:"IBM Plex Mono";font-size:11px;letter-spacing:.14em;opacity:.9}
+  .phase-badge .pnm{font-family:"Chakra Petch";font-weight:700;font-size:21px;line-height:1;margin-top:3px}
+  .phase-badge .pmin{font-family:"IBM Plex Mono";font-size:11px;margin-top:7px;opacity:.95}
+  .phase-meta{flex:1;padding:14px 18px;display:flex;align-items:center}
+  .phase-meta .goal{font-size:14.5px;color:var(--ink)}
+  .phase-body{padding:14px 18px 16px}
+  .phase-body p{font-size:13.5px;color:var(--ink-soft);margin:0}
+  .phase-body .chk{display:flex;gap:10px;align-items:flex-start;background:#F7F9FC;border:1px solid var(--line-soft);border-radius:9px;padding:9px 12px;margin-top:11px}
+  .phase-body .chk svg{width:16px;height:16px;color:var(--cyan-deep);flex-shrink:0;margin-top:1px}
+  .phase-body .chk p{font-size:12.5px;color:var(--ink-soft)}
+  .phase-body .chk b{color:var(--cyan-deep)}
+
+  /* ---------- design canvas ---------- */
+  .canvas-note{display:flex;gap:12px;align-items:flex-start;background:var(--navy);color:#DCE8F5;border-radius:14px;padding:16px 20px;margin-bottom:18px;border:1px solid rgba(255,255,255,.08)}
+  .canvas-note svg{width:22px;height:22px;color:#7FE2EF;flex-shrink:0;margin-top:2px}
+  .canvas-note p{margin:0;font-size:13.5px}
+  .canvas-note b{color:#fff}
+  .slots{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .slot{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 15px;box-shadow:var(--shadow);position:relative}
+  .slot .sn{font-family:"IBM Plex Mono";font-size:11px;font-weight:600;color:#fff;background:var(--cyan-deep);border-radius:6px;padding:2px 8px}
+  .slot.plane{border:1.5px solid var(--amber);background:linear-gradient(180deg,#FFF9EF,#fff)}
+  .slot.plane .sn{background:var(--amber)}
+  .slot h4{font-size:14px;margin:9px 0 4px}
+  .slot p{font-size:12.5px;color:var(--ink-soft);margin:0}
+  .qlist{counter-reset:q;list-style:none;margin:16px 0 0;padding:0;display:grid;gap:10px;grid-template-columns:1fr 1fr}
+  .qlist li{counter-increment:q;position:relative;padding:12px 14px 12px 44px;background:var(--surface);border:1px solid var(--line);border-radius:11px;font-size:13px;color:var(--ink-soft);box-shadow:var(--shadow)}
+  .qlist li::before{content:counter(q,decimal-leading-zero);position:absolute;left:12px;top:12px;font-family:"IBM Plex Mono";font-size:11px;font-weight:600;color:#fff;background:var(--navy);border-radius:6px;padding:3px 6px}
+  .qlist li b{color:var(--ink)}
+
+  /* ---------- submission sheets ---------- */
+  .tmpl{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+  .tmpl-h{padding:13px 16px;border-bottom:1px solid var(--line-soft);display:flex;align-items:center;gap:10px;background:#F7F9FC}
+  .tmpl-h .sheetno{font-family:"IBM Plex Mono";font-size:10px;font-weight:600;letter-spacing:.1em;color:#fff;background:var(--navy);border-radius:6px;padding:3px 8px}
+  .tmpl-h h3{font-size:15px}
+  .tmpl-b{padding:16px}
+  .playpick{display:flex;align-items:center;gap:14px;background:#EEF3F9;border:1px solid var(--line-soft);border-radius:10px;padding:12px 15px;margin-bottom:14px;flex-wrap:wrap}
+  .playpick .opt{font-family:"Chakra Petch";font-weight:700;font-size:16px;border:2px solid var(--line);border-radius:9px;padding:6px 18px;color:var(--ink-soft)}
+  .playpick .sl{font-size:12.5px;color:var(--ink-faint);font-style:italic}
+  table.painboard{width:100%;border-collapse:collapse;font-size:12.5px;min-width:560px}
+  table.painboard th{background:var(--navy);color:#fff;text-align:left;padding:9px 12px;font-family:"Chakra Petch";font-weight:600;font-size:11.5px}
+  table.painboard td{padding:0;border-bottom:1px solid var(--line-soft);border-right:1px solid var(--line-soft)}
+  table.painboard td:last-child{border-right:none}
+  table.painboard .rn{text-align:center;font-family:"IBM Plex Mono";font-weight:600;color:var(--cyan-deep);background:#F7F9FC;width:34px}
+  table.painboard .blank{height:34px}
+  .sheet-field{border:1px solid var(--line-soft);border-radius:9px;padding:9px 12px;margin-bottom:9px}
+  .sheet-field .k{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan-deep);margin-bottom:3px}
+  .sheet-field .v{font-size:12.5px;color:var(--ink-faint);font-style:italic}
+
+  /* ---------- rubric ---------- */
+  .rubric{width:100%;border-collapse:collapse;background:var(--surface);border-radius:13px;overflow:hidden;box-shadow:var(--shadow);font-size:13px;min-width:720px}
+  .rubric th{background:var(--navy);color:#fff;text-align:left;padding:11px 13px;font-family:"Chakra Petch";font-weight:600;font-size:12px;letter-spacing:.02em}
+  .rubric td{padding:10px 13px;border-bottom:1px solid var(--line-soft);color:var(--ink-soft);vertical-align:top}
+  .rubric tr:last-child td{border-bottom:none}
+  .rubric td b{color:var(--ink)}
+  .rubric .crit{font-weight:600;color:var(--ink);white-space:nowrap}
+  .rubric .lv1{background:#FBFCFE} .rubric .lv4{background:#F1FaF6}
+  .levels{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
+  .lvl{border-radius:12px;padding:15px;color:#fff}
+  .lvl .lr{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:.1em;opacity:.9}
+  .lvl h4{font-family:"Chakra Petch";font-size:18px;margin:4px 0 6px}
+  .lvl p{font-size:12px;margin:0;opacity:.95;line-height:1.4}
+  .lvl.l1{background:#8593A6} .lvl.l2{background:var(--cyan-deep)} .lvl.l3{background:#2a6fb0} .lvl.l4{background:var(--green)}
+
+  /* ---------- what good looks like ---------- */
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .cc{border-radius:13px;padding:16px 18px;box-shadow:var(--shadow)}
+  .cc.bad{background:var(--red-soft);border:1px solid #F0C4C4}
+  .cc.good{background:var(--green-soft);border:1px solid #A9DEC9}
+  .cc .tag{font-family:"IBM Plex Mono";font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px;margin-bottom:9px}
+  .cc.bad .tag{color:#9a3b3b} .cc.good .tag{color:#155c43}
+  .cc .k{font-family:"IBM Plex Mono";font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin:8px 0 2px}
+  .cc .v{font-size:13px;color:var(--ink);margin:0 0 6px}
+  .cc.good .v b{color:#155c43}
+  .lands{display:flex;gap:12px;align-items:flex-start;background:var(--navy);color:#DCE8F5;border-radius:12px;padding:14px 18px;margin-top:16px;border:1px solid rgba(255,255,255,.08)}
+  .lands svg{width:20px;height:20px;color:#7FE2EF;flex-shrink:0;margin-top:2px}
+  .lands p{margin:0;font-size:13.5px}
+  .lands b{color:#fff}
+
+  /* ---------- callouts ---------- */
+  .note{display:flex;gap:12px;align-items:flex-start;background:#EAF7F9;border:1px solid #B6E4EB;border-radius:12px;padding:14px 16px;margin-top:16px}
+  .note svg{width:20px;height:20px;color:var(--cyan-deep);flex-shrink:0;margin-top:2px}
+  .note p{margin:0;font-size:13.5px;color:#0a5560}
+  .note b{color:#073f47}
+
+  /* ---------- footer ---------- */
+  .foot{margin:46px 0 30px;padding-top:22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;align-items:center}
+  .foot .eyebrow{color:var(--ink-faint)}
+  .foot .tag{font-family:"IBM Plex Mono";font-size:11px;color:var(--ink-faint)}
+
+  .anim{opacity:0;transform:translateY(10px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  @media (max-width:860px){
+    .hero-inner{grid-template-columns:1fr}.dial{justify-content:flex-start}
+    .win{grid-template-columns:1fr}.decision{grid-template-columns:1fr}
+    .g4,.g3,.g5{grid-template-columns:1fr 1fr}.obj{grid-template-columns:1fr}
+    .slots{grid-template-columns:1fr 1fr}.qlist{grid-template-columns:1fr}
+    .compare{grid-template-columns:1fr}.levels{grid-template-columns:1fr 1fr}
+    .line{grid-template-columns:1fr}.line .spk{padding-top:0}
+  }
+  @media (max-width:560px){
+    .g4,.g3,.g2,.g5{grid-template-columns:1fr}.slots{grid-template-columns:1fr}
+    .levels{grid-template-columns:1fr}.phase-top{flex-direction:column}
+    .phase-badge{min-width:0;flex-direction:row;gap:10px;align-items:center}.phase-badge .pmin{margin-top:0}
+  }
+  @media print{
+    body{background:#fff}.hero{border-radius:0}
+    .anim{animation:none;opacity:1;transform:none}*{box-shadow:none !important}
+    .toc{display:none}.sec{padding:18px 0 4px}
+    .sec-head,.card,.panel,.phase,.role,.slot,.tmpl,.lvl,.cc,.transcript{break-inside:avoid}
+    h1,h2,h3,h4{break-after:avoid}tr{break-inside:avoid}
+  }
+  @media (prefers-reduced-motion:reduce){.anim{animation:none;opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<!-- ===================== HERO ===================== -->
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+      <div>
+        <span class="eyebrow">Cisco Secure · Design Clinic · Team Playbook</span>
+        <h1>The Cedarline<br><span>Design Clinic</span></h1>
+        <p class="lede">A regional health group has budget, executive attention, and no plan. You have forty minutes, four seats at the table, and everything they told you on the call. Find what is actually wrong. Then fix it — and earn the right to the next conversation.</p>
+        <div class="facts">
+          <div class="fact"><b>4</b><small>Players</small></div>
+          <div class="fact"><b>40</b><small>Minutes</small></div>
+          <div class="fact"><b>6</b><small>Rounds</small></div>
+          <div class="fact"><b>2</b><small>Ways to win</small></div>
+        </div>
+      </div>
+      <div class="dial" aria-hidden="true">
+        <svg viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="92" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="6"/>
+          <circle cx="100" cy="100" r="92" fill="none" stroke="#00BCEB" stroke-width="6" stroke-linecap="round"
+                  stroke-dasharray="578" stroke-dashoffset="145" transform="rotate(-90 100 100)"/>
+          <text x="100" y="92" text-anchor="middle" font-family="IBM Plex Mono" font-size="34" font-weight="600" fill="#fff">40:00</text>
+          <text x="100" y="116" text-anchor="middle" font-family="IBM Plex Mono" font-size="10.5" letter-spacing="3" fill="#7FE2EF">HYBRID MESH FIREWALL</text>
+        </svg>
+      </div>
+    </div>
+    <div class="prearrival">
+      <p><b>Read this playbook before you arrive.</b> On the day, the only thing you read cold is the customer conversation. Forty minutes is not enough time to learn the game and play it.</p>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ===================== TOC ===================== -->
+  <nav class="toc" aria-label="Sections">
+    <span class="toc-lbl">Playbook</span>
+    <a href="#customer">01 · The Customer</a>
+    <a href="#briefing">02 · The Briefing</a>
+    <a href="#play">03 · How to Play</a>
+    <a href="#board">04 · The Board</a>
+    <a href="#canvas">05 · The Design Canvas</a>
+    <a href="#submission">06 · The Submission</a>
+    <a href="#scoring">07 · Scoring</a>
+    <a href="#good">08 · What Good Looks Like</a>
+  </nav>
+
+  <!-- ===================== 01 THE CUSTOMER ===================== -->
+  <section class="sec anim" id="customer">
+    <div class="sec-head">
+      <span class="sec-no">01</span>
+      <h2>The Customer</h2>
+    </div>
+    <p class="sec-sub">Cedarline Health Group is a regional healthcare payer-provider. Roughly 8,000 employees across four hospitals and thirty-one clinics, plus a claims-processing business that handles the money. They have grown largely by acquisition — most recently swallowing a competitor two years ago, and with it an entire second data centre, absorbed as-is. They are mid-flight in a move to public cloud, and it has not been an orderly one.</p>
+
+    <h3 style="font-size:15px;margin:26px 0 12px;color:var(--ink)">What the business is trying to achieve</h3>
+    <div class="obj">
+      <div class="objc"><span class="on"></span><div><b>Answer the board.</b><p>After a security incident in March, the board asked what would have stopped it. Leadership still cannot answer, and the next review is coming.</p></div></div>
+      <div class="objc"><span class="on"></span><div><b>Finish the cloud migration.</b><p>Claims analytics, the new patient portal and data science are all live in public cloud, and growing.</p></div></div>
+      <div class="objc"><span class="on"></span><div><b>Protect patient and claims data without slowing clinical systems.</b><p>Regulated data; zero appetite for clinical downtime.</p></div></div>
+      <div class="objc"><span class="on"></span><div><b>Do it with the team they have.</b><p>Hiring is slow, the security function is small, and knowledge is concentrated in very few heads.</p></div></div>
+      <div class="objc"><span class="on"></span><div><b>Spend the window.</b><p>Budget is approved for this fiscal year and executive attention is live — both are explicitly temporary.</p></div></div>
+    </div>
+    <div class="sme">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+      <span>[SME VALIDATION NEEDED] Business objectives are drafted to fit the scenario and require SME confirmation.</span>
+    </div>
+
+    <h3 style="font-size:15px;margin:30px 0 12px;color:var(--ink)">The current system</h3>
+    <div class="tblwrap">
+      <table class="data">
+        <thead><tr><th style="width:150px">Zone</th><th>What's there</th><th>What you should know</th></tr></thead>
+        <tbody>
+          <tr><td class="z">Campus &amp; clinics</td><td>Four hospitals, thirty-one clinics, billing workstations, remote clinical staff on VPN.</td><td>Enterprise directory exists. <b>No identity-to-policy mapping anywhere.</b></td></tr>
+          <tr><td class="z">Firewall estate</td><td>Mixed vendor, mixed generation. Three management consoles.</td><td>Change backlog measured in weeks. <b>Two engineers</b> hold working knowledge of the whole estate.</td></tr>
+          <tr><td class="z">DC-1 (owned)</td><td>Claims platform · clinical records · imaging store · reporting warehouse.</td><td><b>Effectively flat.</b> Any workload can reach almost any other. It grew that way.</td></tr>
+          <tr><td class="z">DC-2 (acquired)</td><td>Legacy claims, shared services, backup/archive. Absorbed as-is two years ago.</td><td>Inherited rulebase. <b>Nobody can prove what a rule does, so nobody deletes one.</b></td></tr>
+          <tr><td class="z">Public cloud</td><td>AWS (claims analytics) · Azure (patient portal) · GCP (data science).</td><td>Three teams, three policy models, three workflows. Independently built.</td></tr>
+          <tr><td class="z">Encryption</td><td>TLS mandated internally since the 2023 audit.</td><td>Applies to clinical apps, claims and internal APIs.</td></tr>
+          <tr><td class="z">Commercial</td><td>Budget approved for this fiscal year. Executive sponsorship live.</td><td>Both are explicitly time-limited.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel accent-amber" style="margin-top:22px">
+      <h3>The problem they've asked you to solve</h3>
+      <p style="font-size:14.5px;color:var(--ink);font-style:italic;margin-bottom:12px">"We have budget, we have executive attention, and the two of those being true at the same time is rare and it won't last. What we don't have is a coherent plan — we have a pile of problems and a lot of opinions. Tell us where you'd start. And tell us why."</p>
+      <p style="font-size:13.5px;color:var(--ink-soft);margin:0"><b style="color:var(--ink)">Note carefully.</b> Cedarline has not given you a requirements list. They have given you a conversation. The problems are inside it — stated once, in passing, usually as a symptom rather than a cause. Nothing is numbered, highlighted or counted for you. Some of what they say is not a problem at all. <b style="color:var(--ink)">Extracting the real pain points is the first thing you are scored on.</b></p>
+    </div>
+  </section>
+
+  <!-- ===================== 02 THE BRIEFING ===================== -->
+  <section class="sec anim" id="briefing">
+    <div class="sec-head">
+      <span class="sec-no">02</span>
+      <h2>The Briefing</h2>
+    </div>
+    <p class="sec-sub">Your second meeting with Cedarline. Sixty minutes, in their offices. Transcript picked up after the introductions.</p>
+
+    <div class="brief-meta">
+      <div class="who-chip"><b>Priya Raman</b><small>Director of Infrastructure</small></div>
+      <div class="who-chip"><b>Marcus Bell</b><small>Security Operations Manager</small></div>
+      <div class="who-chip"><b>Dae-Sun Cho</b><small>Cloud Platform Lead</small></div>
+      <div class="who-chip"><b>SE</b><small>You / your team</small></div>
+    </div>
+
+    <div class="transcript">
+      <div class="tr-top">
+        <span class="eyebrow">Discovery Transcript · Meeting 2</span>
+        <small>Cedarline Health Group · on site</small>
+      </div>
+      <div class="tr-body">
+        <div class="line priya"><div class="spk">Priya</div><div class="txt">Last time you asked what we were trying to fix and I gave you a polished answer. Today I'm going to give you the real one. We passed our audit in November. We have a firewall at every edge. We have a security programme with a name and a slide deck. And none of it is helping me sleep. Marcus — tell them about March.</div></div>
+        <div class="line marcus"><div class="spk">Marcus</div><div class="txt">March. Not a breach — I want to be precise, because internally people say "the breach" and it wasn't. Something landed on a workstation in billing. It sat there, did some reconnaissance, and it was four days before anybody noticed. Four days. And when we finally pulled the thread, the reason we missed it was almost boring: it wasn't anything we had a signature for. There was nothing to match. <span class="pull">We're worried traditional signature-based detection won't catch new or unknown attacks quickly enough.</span> That's not a philosophical concern any more. That's a description of what happened.</div></div>
+        <div class="line priya"><div class="spk">Priya</div><div class="txt">The board asked what would have stopped it.</div></div>
+        <div class="line marcus"><div class="spk">Marcus</div><div class="txt">I didn't have an answer. I still don't.</div></div>
+        <div class="line se"><div class="spk">SE</div><div class="txt">What's your inspection posture today? What are you actually seeing?</div></div>
+        <div class="line marcus"><div class="spk">Marcus</div><div class="txt">Less than you'd hope. After the 2023 audit we mandated TLS everywhere — clinical apps, claims, internal APIs. That was the right call and I'd make it again. But <span class="pull">most of our traffic is encrypted, so we've lost visibility into a huge part of our environment.</span> My tooling is looking at ciphertext and telling me everything's fine.</div></div>
+        <div class="line se"><div class="spk">SE</div><div class="txt">Have you looked at decryption?</div></div>
+        <div class="line marcus"><div class="spk">Marcus</div><div class="txt">Twice. Compliance's position — and I don't think they're wrong — is that broadly decrypting clinical traffic is a non-starter. And at our volumes I'm not confident we could carry the performance cost anyway. So we traded one risk for another, and I don't have a way out of it I can defend to legal.</div></div>
+        <div class="line"><div class="spk">&nbsp;</div><div class="txt stage">[Priya pulls up a diagram.]</div></div>
+        <div class="line priya"><div class="spk">Priya</div><div class="txt">This is the part I want you to look at. Two data centres. One is ours; the other we inherited two years ago when we acquired a competitor — and when I say inherited, I mean we took the whole thing. Their firewalls, their rulebase, their conventions, their two remaining engineers. We run three management consoles now. My change backlog is measured in weeks. And every change is a small act of archaeology, because nobody will delete a rule — nobody can prove what it does. <span class="pull">Our firewall environment has become too complex to manage manually.</span> I have two people who genuinely understand that estate. If either takes a better offer, I have a problem I cannot hire my way out of inside six months.</div></div>
+        <div class="line se"><div class="spk">SE</div><div class="txt">And inside the data centre itself?</div></div>
+        <div class="line priya"><div class="spk">Priya</div><div class="txt">Open. Effectively open. Claims talks to clinical records, clinical records talks to imaging, imaging talks to the reporting warehouse — none of it controlled in any meaningful sense. It just grew. <span class="pull">We don't feel like we have enough control over east-west movement inside the data center.</span> If you're a workload in that estate, you can reach almost any other workload, and nobody would stop you or particularly notice.</div></div>
+        <div class="line se"><div class="spk">SE</div><div class="txt">Has segmentation been on the table?</div></div>
+        <div class="line priya"><div class="spk">Priya</div><div class="txt">[laughs] Three times. Three attempts, three years. And every time it dies in the same place. We get through the business case, we get through the design, and then somebody works out that to enforce it we'd need to write something like ten thousand rules by hand and keep them correct forever — and the project quietly stops being funded. So if you come back to me with "you should segment your data centre," I will agree with you. And then nothing will happen. Again.</div></div>
+        <div class="line marcus"><div class="spk">Marcus</div><div class="txt">Can I connect those two? Because they're the same nightmare. Take March, change one variable. It doesn't land on a laptop in billing — it lands on a server in that data centre. Same four days of dwell time, except now it's sitting in a flat network with our claims data in it. <span class="pull">We're worried that once an attacker gets into the environment, they can move laterally across applications.</span> And I can't tell you what would slow that down. Not stop — slow down. I'd take slow down.</div></div>
+        <div class="line priya"><div class="spk">Priya</div><div class="txt">Dae-Sun. Say your piece, because I know you think we're under-weighting it.</div></div>
+        <div class="line daesun"><div class="spk">Dae-Sun</div><div class="txt">I do. Everything you've heard is about the data centre, and the data centre is where our history is — but it isn't where our growth is. Claims analytics is in AWS. The patient portal went into Azure, because that's where the dev team already was. The data science group stood themselves up in GCP, and honestly we found out afterwards. So: <span class="pull">we're deploying across AWS, Azure, and GCP, but each cloud has its own constructs and workflows.</span> Three sets of security groups and NSGs and native policies, three teams writing them, three mental models. My engineers are expert in one cloud and tourists in the other two. A policy that means one thing in AWS means something subtly different in Azure — not wrong, just different — and the gaps between those meanings are where I expect we'll get hurt.</div></div>
+        <div class="line se"><div class="spk">SE</div><div class="txt">Who can tell you your posture across all three?</div></div>
+        <div class="line daesun"><div class="spk">Dae-Sun</div><div class="txt">Nobody. That's the answer. Nobody can.</div></div>
+        <div class="line priya"><div class="spk">Priya</div><div class="txt">There's also a VPN refresh coming in Q1, and the identity team keeps asking about MFA coverage for clinical staff. I'd park both today — they're funded, they have owners, they're not what I need you for.</div></div>
+        <div class="line marcus"><div class="spk">Marcus</div><div class="txt">Although the March thing did start on a user's machine.</div></div>
+        <div class="line priya"><div class="spk">Priya</div><div class="txt">It did. Note it. It's not the ask.</div></div>
+        <div class="line priya"><div class="spk">Priya</div><div class="txt">So that's the picture. We have budget approved for this fiscal year, and we have executive attention, and those two things being true at once is rare and won't last. What we don't have is a coherent plan — we have a pile of problems and a lot of opinions. So I'm not going to ask you for a proposal today. I'm going to ask you for something harder. <b>Tell us where you'd start. And tell us why.</b></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 03 HOW TO PLAY ===================== -->
+  <section class="sec anim" id="play">
+    <div class="sec-head">
+      <span class="sec-no">03</span>
+      <h2>How to Play</h2>
+    </div>
+    <p class="sec-sub"><b>Object of the game.</b> Turn an unstructured customer conversation into an architecture you would defend in front of the customer — and earn the right to the next meeting. You are not competing with the other tables. Every table can do well.</p>
+
+    <div class="win" style="margin-top:20px">
+      <div class="panel accent-cyan">
+        <h3>What you hand in</h3>
+        <div class="deliver"><span class="num">1</span><div><b>The Pain Board</b> <span class="mono" style="font-size:11px;color:var(--ink-faint)">(Sheet 1)</span><p>Every real pain, in your words — and your WIDE/DEEP call at the top.</p></div></div>
+        <div class="deliver"><span class="num">2</span><div><b>The Design Canvas</b> <span class="mono" style="font-size:11px;color:var(--ink-faint)">(Section 05)</span><p>Platform, funded-pain number and reasoning written into the slots you touch.</p></div></div>
+        <div class="deliver"><span class="num">3</span><div><b>The Grow &amp; Defend card</b> <span class="mono" style="font-size:11px;color:var(--ink-faint)">(Sheet 3)</span><p>Upsell, competitive alternatives, who runs it, and your reframes.</p></div></div>
+        <p style="font-size:13px;color:var(--ink-soft);margin:12px 0 0"><b style="color:var(--ink)">Locked at 36:00.</b> Anything not written on them does not exist.</p>
+      </div>
+      <div class="panel accent-green">
+        <h3>Take your seat</h3>
+        <p style="font-size:13.5px;color:var(--ink-soft)">Your role card is already on the table. The proctor deals them. Don't negotiate — you'd be spending learning time on admin.</p>
+        <p style="font-size:13.5px;color:var(--ink-soft)"><b style="color:var(--ink)">You will not be given the seat you live in.</b> If your day job is firewalls, you are not the Network Security Engineer today. The stretch is the point.</p>
+        <p style="font-size:13.5px;color:var(--ink-soft);margin:0">Roles are lenses, not walls. Everyone contributes to every decision. Your seat tells you what you are responsible for making sure nobody misses.</p>
+      </div>
+    </div>
+
+    <h3 style="font-size:18px;margin:34px 0 6px;color:var(--ink)">The one decision that shapes everything</h3>
+    <p style="font-size:13.5px;color:var(--ink-soft);max-width:70ch;margin-bottom:14px">There are two honest answers to Priya, and you have to pick one. You cannot give her both in eleven minutes — and trying is how teams end up with six half-answers and nothing they would defend in front of her.</p>
+
+    <div class="decision">
+      <div class="play wide">
+        <div class="play-top"><b>GO WIDE</b><small>the full picture</small></div>
+        <div class="play-body">
+          <div class="row"><div class="k">What you say to Priya</div><div class="v">"Here is everything that's wrong in your environment, and what addresses each of it. Now let's talk about what to do first."</div></div>
+          <div class="row"><div class="k">How you spend Round 3</div><div class="v">Map every pain to a platform. ~2 minutes each. Named product, one line of reasoning, move on.</div></div>
+          <div class="row"><div class="k">What it costs you</div><div class="v cost">Two minutes buys a product name, not a justification. Priya can see you heard her — but not that you understood her business.</div></div>
+        </div>
+      </div>
+      <div class="play deep">
+        <div class="play-top"><b>GO DEEP</b><small>the conviction</small></div>
+        <div class="play-body">
+          <div class="row"><div class="k">What you say to Priya</div><div class="v">"Here are the three I would fund this year. Here is exactly why — and precisely why not the others."</div></div>
+          <div class="row"><div class="k">How you spend Round 3</div><div class="v">Solve three pains properly: platform, how it works, why it fits Cedarline, what it doesn't cover. Park the rest, with reasons.</div></div>
+          <div class="row"><div class="k">What it costs you</div><div class="v cost">You didn't put an answer against every problem she raised. If your reasons for parking are thin, it reads as an answer you didn't have — not a decision you made.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="warnstrip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+      <p><b>Neither is the safe answer.</b> Both are scored fairly, and both can score well. What loses is not choosing — drifting into six shallow rows because nobody said out loud what the plan was. SEs make this call in real rooms, under roughly this much time pressure. Make it on purpose.</p>
+    </div>
+
+    <h3 style="font-size:18px;margin:34px 0 14px;color:var(--ink)">The four seats</h3>
+    <div class="grid g2">
+      <div class="role" style="--rc:var(--cyan);--rc-ink:var(--cyan-deep)">
+        <span class="rtag">mirrors Priya</span>
+        <h3>IT Architect</h3>
+        <p class="owns">Owns <b>the shape of the answer, and the pen.</b> Priya asked where to start. You are the one who has to answer her.</p>
+        <ol>
+          <li>Run the round. Force problems, not quoted sentences.</li>
+          <li><b>Your round</b> — drive the WIDE/DEEP call.</li>
+          <li>Keep pace. Park anything that stalls.</li>
+          <li>Check the upsell follows from what you funded.</li>
+          <li>Deliver the readout. Lead with sequence.</li>
+        </ol>
+      </div>
+      <div class="role" style="--rc:var(--red);--rc-ink:#b03636">
+        <span class="rtag">mirrors Marcus</span>
+        <h3>Network Security Engineer</h3>
+        <p class="owns">Owns <b>threat, detection, inspection, enforcement.</b> If it's about seeing an attack or stopping one, it's yours. You carry the March incident.</p>
+        <ol>
+          <li>Name the detection and visibility problems.</li>
+          <li>Argue the risk case.</li>
+          <li><b>Your round</b> — platforms, and what each does NOT catch.</li>
+          <li>The gap you can't close is where the upsell lives.</li>
+          <li>Pre-empt Marcus's objection.</li>
+        </ol>
+      </div>
+      <div class="role" style="--rc:var(--amber);--rc-ink:#a8640f">
+        <span class="rtag">mirrors Priya's team</span>
+        <h3>Network Operations Engineer</h3>
+        <p class="owns">Owns <b>the estate on Monday morning.</b> Consoles, rulebases, backlog — and the fact that two people hold all the knowledge. Your question: who actually operates this?</p>
+        <ol>
+          <li>Surface the operational pain.</li>
+          <li>Veto anything undeployable this year.</li>
+          <li>Own the policy plane. Fewer places to write policy, or more?</li>
+          <li><b>Your round</b> — services, partner, adoption support.</li>
+          <li>Take "four new products for two people."</li>
+        </ol>
+      </div>
+      <div class="role" style="--rc:var(--green);--rc-ink:#1c7a58">
+        <span class="rtag">mirrors Dae-Sun &amp; the app owners</span>
+        <h3>Business Applications Team</h3>
+        <p class="owns">Owns <b>the applications — and the money.</b> What does this cost the business today, and what does the board hear?</p>
+        <ol>
+          <li>Keep the cloud and app voice from being drowned out.</li>
+          <li><b>Your round</b> — every funded pain needs a business reason.</li>
+          <li>Ask what breaks. Segmentation that downs claims is not a win.</li>
+          <li>Their alternatives to Cisco, and why we win.</li>
+          <li>Take budget and business impact.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      <p><b>Nobody plays the customer.</b> All four of you are on the Cisco side. In Round 5 your table proctor plays Cedarline. Which is why each seat has a counterpart: before they speak, ask what your counterpart would object to — and answer it first. <b>Anticipating an objection scores higher than surviving one.</b></p>
+    </div>
+  </section>
+
+  <!-- ===================== 04 THE BOARD ===================== -->
+  <section class="sec anim" id="board">
+    <div class="sec-head">
+      <span class="sec-no">04</span>
+      <h2>The Board</h2>
+    </div>
+    <p class="sec-sub">Six rounds, played in order. Each has a fixed clock, and the board moves whether you are ready or not. That is deliberate — Cedarline's clock is real too.</p>
+
+    <div class="track-card" style="margin-bottom:22px">
+      <span class="eyebrow">Round clock · 5 + 7 + 3 + 11 + 6 + 4 + 4 = 40 minutes</span>
+      <div class="track-scroll">
+        <div class="track">
+          <div class="stop" style="--g:5;--c:#8593A6"><div class="bar"></div><div class="ph"><i></i>Read</div><div class="nm">R0 · silent</div><div class="tc">0:00–5:00</div></div>
+          <div class="stop" style="--g:7;--c:var(--amber)"><div class="bar"></div><div class="ph"><i></i>Diagnose</div><div class="nm">R1 · no products</div><div class="tc">5:00–12:00</div></div>
+          <div class="stop" style="--g:3;--c:var(--red)"><div class="bar"></div><div class="ph"><i></i>Call Play</div><div class="nm">R2 · WIDE / DEEP</div><div class="tc">12:00–15:00</div></div>
+          <div class="stop" style="--g:11;--c:var(--cyan)"><div class="bar"></div><div class="ph"><i></i>Design</div><div class="nm">R3 · the canvas</div><div class="tc">15:00–26:00</div></div>
+          <div class="stop" style="--g:6;--c:#2a6fb0"><div class="bar"></div><div class="ph"><i></i>Grow</div><div class="nm">R4 · upsell</div><div class="tc">26:00–32:00</div></div>
+          <div class="stop" style="--g:4;--c:var(--green)"><div class="bar"></div><div class="ph"><i></i>Defend</div><div class="nm">R5 · lock 36:00</div><div class="tc">32:00–36:00</div></div>
+          <div class="stop" style="--g:4;--c:#7a5cc0"><div class="bar"></div><div class="ph"><i></i>Readout</div><div class="nm">★ scoring</div><div class="tc">36:00–40:00</div></div>
+        </div>
+      </div>
+      <div class="track-scale"><span>0:00</span><span>DIAGNOSE ALL, THEN CALL YOUR PLAY</span><span>40:00</span></div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-top"><div class="phase-badge" style="--pc:#8593A6"><span class="pno">ROUND 0</span><span class="pnm">Read</span><span class="pmin">5 min · 0:00–5:00</span></div><div class="phase-meta"><span class="goal">Silent. No discussion. Read the transcript and mark anything that sounds like a problem.</span></div></div>
+      <div class="phase-body"><p>Your role card is already in front of you.</p><div class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><p><b>By the end:</b> everyone has read it properly, and nobody has said a product name out loud.</p></div></div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-top"><div class="phase-badge" style="--pc:var(--amber)"><span class="pno">ROUND 1</span><span class="pnm">Diagnose</span><span class="pmin">7 min · 5:00–12:00</span></div><div class="phase-meta"><span class="goal">Name every pain point, in your own words — the problem underneath the sentence, not the sentence. Then strike out anything that isn't one.</span></div></div>
+      <div class="phase-body"><p><b style="color:var(--ink)">House rule:</b> no products this round.</p><div class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><p><b>Check:</b> has every voice in the room been heard? Did you list something the customer told you to park?</p></div></div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-top"><div class="phase-badge" style="--pc:var(--red)"><span class="pno">ROUND 2</span><span class="pnm">Call Your Play</span><span class="pmin">3 min · 12:00–15:00</span></div><div class="phase-meta"><span class="goal">Say it out loud and write it at the top of Sheet 1: WIDE or DEEP.</span></div></div>
+      <div class="phase-body"><p>If <b style="color:var(--ink)">DEEP</b>, name the three pains you're funding and one sentence each on why — plus one sentence on what you tell Priya about the rest. If <b style="color:var(--ink)">WIDE</b>, rank the pains, because you'll run out of clock before you run out of rows.</p><div class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><p><b>The most common way to lose is to never make this call.</b></p></div></div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-top"><div class="phase-badge" style="--pc:var(--cyan)"><span class="pno">ROUND 3</span><span class="pnm">Design</span><span class="pmin">11 min · 15:00–26:00</span></div><div class="phase-meta"><span class="goal">Eleven minutes on the Design Canvas. For every slot you touch: platform (named), which pain it closes, how it works, and why it fits Cedarline.</span></div></div>
+      <div class="phase-body"><p>WIDE ≈ 2 min a pain. DEEP ≈ 3½.</p><div class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><p><b>The bar, in either play:</b> if your reasoning would read the same for any customer, it isn't reasoning — it's a brochure.</p></div></div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-top"><div class="phase-badge" style="--pc:#2a6fb0"><span class="pno">ROUND 4</span><span class="pnm">Grow</span><span class="pmin">6 min · 26:00–32:00</span></div><div class="phase-meta"><span class="goal">Three things, two minutes each.</span></div></div>
+      <div class="phase-body"><p><b style="color:var(--ink)">(a)</b> The upsell — what your board doesn't cover, the platform that closes it, and the line in the transcript that points there. <b style="color:var(--ink)">(b)</b> Cedarline's alternatives to Cisco, and why yours wins for a team this size. <b style="color:var(--ink)">(c)</b> Who deploys and operates this.</p><div class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><p><b>(b) and (c) take ninety seconds each and teams leave them blank every time.</b> They are also the two questions a customer asks the moment your design lands.</p></div></div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-top"><div class="phase-badge" style="--pc:var(--green)"><span class="pno">ROUND 5</span><span class="pnm">Defend &amp; Lock</span><span class="pmin">4 min · 32:00–36:00</span></div><div class="phase-meta"><span class="goal">Around the table once, a minute each. Each seat names the objection its counterpart would raise — and the reframe. Write both down.</span></div></div>
+      <div class="phase-body"><div class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><p><b>A reframe that only happened out loud didn't happen.</b> At 36:00 the board is locked.</p></div></div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-top"><div class="phase-badge" style="--pc:#7a5cc0"><span class="pno">★ READOUT</span><span class="pnm">Scoring</span><span class="pmin">4 min · 36:00–40:00</span></div><div class="phase-meta"><span class="goal">Sixty seconds, standing at the board: the pains you took on and why, the architecture, the upsell.</span></div></div>
+      <div class="phase-body"><p>Then the proctor — playing Cedarline — asks one question. Usually: <i>"You left problems on the table. What do you want me to do about them?"</i></p></div>
+    </div>
+  </section>
+
+  <!-- ===================== 05 THE DESIGN CANVAS ===================== -->
+  <section class="sec anim" id="canvas">
+    <div class="sec-head">
+      <span class="sec-no">05</span>
+      <h2>The Design Canvas</h2>
+    </div>
+    <p class="sec-sub">This is Cedarline's environment drawn as a Hybrid Mesh Firewall board — campus and branch, internet and SaaS, two data centres, three public clouds, and a policy plane running underneath all of it. The nine numbered slots are the places policy could be enforced. None of them are filled in. That is your job — and in Round 5 you will stand at this board and explain the architecture from it.</p>
+
+    <div class="canvas-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+      <p><b>The board is your design.</b> There is no separate solution table. You write the platform, the pain number and the reasoning straight into the slots. You will fill <b>three or four</b> slots. Not nine. A board with nine half-answers loses to a board with four defended ones. An empty slot you can explain is a design decision. An empty slot you can't is a gap.</p>
+    </div>
+
+    <div class="slots">
+      <div class="slot"><span class="sn">SLOT 1</span><h4>Campus &amp; clinic edge</h4><p>Hospitals, clinics, billing workstations, remote clinical staff.</p></div>
+      <div class="slot"><span class="sn">SLOT 2</span><h4>Internet &amp; SaaS edge</h4><p>Outbound and the encrypted-traffic blind spot.</p></div>
+      <div class="slot"><span class="sn">SLOT 3</span><h4>DC-1 perimeter (owned)</h4><p>Claims, clinical records, imaging, warehouse.</p></div>
+      <div class="slot"><span class="sn">SLOT 4</span><h4>DC-1 east-west</h4><p>The flat, effectively-open interior.</p></div>
+      <div class="slot"><span class="sn">SLOT 5</span><h4>DC-2 perimeter (acquired)</h4><p>Inherited rulebase nobody can prove.</p></div>
+      <div class="slot"><span class="sn">SLOT 6</span><h4>AWS — claims analytics</h4><p>Native security groups, one team.</p></div>
+      <div class="slot"><span class="sn">SLOT 7</span><h4>Azure — patient portal</h4><p>NSGs, a different team, a different model.</p></div>
+      <div class="slot"><span class="sn">SLOT 8</span><h4>GCP — data science</h4><p>Stood up independently, found out afterwards.</p></div>
+      <div class="slot plane"><span class="sn">SLOT 9</span><h4>The policy plane</h4><p>Where policy is written once and pushed everywhere. Not optional.</p></div>
+    </div>
+
+    <div class="note" style="margin-top:18px;background:#FFF9EF;border-color:#F0CE97">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#a8640f" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg>
+      <p style="color:#8a560f"><b style="color:#6e440a">Slot 9 is the one teams forget.</b> A board full of enforcement points with no policy plane is not an architecture — it's a shopping list, and it makes Priya's problem worse, not better. She has three consoles today. If your answer hands her <i>more</i> places to write policy rather than fewer, you have not listened to her.</p>
+    </div>
+
+    <h3 style="font-size:16px;margin:28px 0 4px;color:var(--ink)">For every slot you touch, answer these</h3>
+    <ol class="qlist">
+      <li><b>Does Cedarline need enforcement here at all?</b> A slot left empty on purpose, and defended, scores. A silent gap does not.</li>
+      <li><b>Which platform goes here — named, not a category?</b> And which pain from Sheet 1 does it close? Write the number in the slot.</li>
+      <li><b>Does this survive their constraints?</b> Compliance killed decryption twice. Segmentation died three times on ten thousand hand-written rules. Two people run the whole estate.</li>
+      <li><b>Trace one policy across the board.</b> "Billing users may not reach the imaging store." Where is it written? Where is it enforced? How many places did you have to touch?</li>
+      <li><b>What does the finished board NOT cover?</b> That is where your upsell lives. Go and find it.</li>
+    </ol>
+  </section>
+
+  <!-- ===================== 06 THE SUBMISSION ===================== -->
+  <section class="sec anim" id="submission">
+    <div class="sec-head">
+      <span class="sec-no">06</span>
+      <h2>The Submission</h2>
+    </div>
+    <p class="sec-sub">Three sheets. Round 1 fills the left of Sheet 1; Round 2 fills the right. You will not need all eight rows — striking something out, on purpose, is worth as much as adding it.</p>
+
+    <div class="tmpl" style="margin-bottom:18px">
+      <div class="tmpl-h"><span class="sheetno">SHEET 1</span><h3>The Pain Board</h3></div>
+      <div class="tmpl-b">
+        <div class="playpick">
+          <span class="mono" style="font-size:10px;letter-spacing:.1em;color:var(--cyan-deep)">OUR PLAY — CIRCLE ONE</span>
+          <span class="opt">WIDE</span><span style="color:var(--ink-faint)">/</span><span class="opt">DEEP</span>
+          <span class="sl">Because… (one sentence — the proctor will read this)</span>
+        </div>
+        <div class="tblwrap" style="box-shadow:none;border:none">
+          <table class="painboard">
+            <thead><tr><th style="width:34px">#</th><th>Pain point — in your words (the problem, not the quote)</th><th style="width:110px">Rank / Fund</th><th style="width:200px">Why — one sentence</th></tr></thead>
+            <tbody>
+              <tr><td class="rn">1</td><td class="blank"></td><td></td><td></td></tr>
+              <tr><td class="rn">2</td><td class="blank"></td><td></td><td></td></tr>
+              <tr><td class="rn">3</td><td class="blank"></td><td></td><td></td></tr>
+              <tr><td class="rn">4</td><td class="blank"></td><td></td><td></td></tr>
+              <tr><td class="rn">5</td><td class="blank"></td><td></td><td></td></tr>
+              <tr><td class="rn">6</td><td class="blank"></td><td></td><td></td></tr>
+              <tr><td class="rn">7</td><td class="blank"></td><td></td><td></td></tr>
+              <tr><td class="rn">8</td><td class="blank"></td><td></td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid g2">
+      <div class="tmpl">
+        <div class="tmpl-h"><span class="sheetno">SHEET 2</span><h3>The Design Canvas</h3></div>
+        <div class="tmpl-b">
+          <p style="font-size:13px;color:var(--ink-soft)">The board in Section 05. Platform, funded-pain number, and why-it-fits written into the slots you touch. Leave the rest deliberately empty.</p>
+          <div class="sheet-field"><div class="k">Slot · platform (named)</div><div class="v">e.g. Cisco Secure Firewall / Hypershield / Multicloud Defense…</div></div>
+          <div class="sheet-field"><div class="k">Pain # closed · how it works</div><div class="v">one line each</div></div>
+          <div class="sheet-field"><div class="k">Why it fits Cedarline</div><div class="v">turns on something they said</div></div>
+          <div class="note" style="margin-top:6px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg><p style="font-size:12.5px"><b>Slot 9 — the policy plane — is not optional.</b></p></div>
+        </div>
+      </div>
+      <div class="tmpl">
+        <div class="tmpl-h"><span class="sheetno">SHEET 3</span><h3>Grow &amp; Defend</h3></div>
+        <div class="tmpl-b">
+          <div class="sheet-field"><div class="k">The upsell</div><div class="v">platform · the gap it closes · the line in the transcript that points there · why now · what it depends on</div></div>
+          <div class="sheet-field"><div class="k">Their alternatives to us</div><div class="v">native controls? the incumbent vendor? a point tool per pain? doing nothing? Why do we win for a two-person team?</div></div>
+          <div class="sheet-field"><div class="k">Who runs it</div><div class="v">services, partner, adoption support — for a customer who has abandoned this project three times</div></div>
+          <div class="sheet-field"><div class="k">Objection + reframe</div><div class="v">one from your seat's counterpart</div></div>
+          <div class="sheet-field" style="margin-bottom:0"><div class="k">Objection + reframe</div><div class="v">one more</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 07 SCORING ===================== -->
+  <section class="sec anim" id="scoring">
+    <div class="sec-head">
+      <span class="sec-no">07</span>
+      <h2>Scoring</h2>
+    </div>
+    <p class="sec-sub">Your table proctor scores the board and the readout against six criteria. Each is scored independently from 1 to 4. There is no single grade, and tables are not ranked against each other — this is a proficiency ladder.</p>
+
+    <div class="tblwrap">
+      <table class="rubric">
+        <thead><tr><th style="width:190px">Criterion</th><th class="lv1">Developing (1)</th><th>Proficient (2)</th><th>Advanced (3)</th><th class="lv4">Expert (4)</th></tr></thead>
+        <tbody>
+          <tr><td class="crit">1 · Diagnose &amp; map requirements</td><td class="lv1">Identifies few requirements; inaccurate mapping.</td><td>Maps most requirements to basic capabilities.</td><td>Accurately maps all requirements to specific capabilities.</td><td class="lv4">Maps all requirements and identifies unstated underlying needs.</td></tr>
+          <tr><td class="crit">2 · Knowledge of technical landscape</td><td class="lv1">Basic understanding; struggles with integration.</td><td>Understands products and basic integrations.</td><td>Strong grasp of architecture and cross-product workflows.</td><td class="lv4">Deep expertise; seamlessly integrates complex concepts.</td></tr>
+          <tr><td class="crit">3 · Articulation of value proposition</td><td class="lv1">Focuses on features; misses business value.</td><td>Connects features to basic business outcomes.</td><td>Clearly articulates business value and ROI.</td><td class="lv4">Compelling, executive-ready value tailored to the customer.</td></tr>
+          <tr><td class="crit">4 · Analysis of competitive landscape</td><td class="lv1">Unaware of competitive threats.</td><td>Identifies competitors but lacks differentiation.</td><td>Clearly differentiates Cisco from key competitors.</td><td class="lv4">Proactively traps competitors; highlights unique Cisco advantages.</td></tr>
+          <tr><td class="crit">5 · Reframing &amp; managing objections</td><td class="lv1">Struggles to answer; gets defensive.</td><td>Answers directly but misses reframing.</td><td>Successfully reframes objections to Cisco strengths.</td><td class="lv4">Anticipates objections and preemptively addresses them.</td></tr>
+          <tr><td class="crit">6 · Integration of services &amp; partners</td><td class="lv1">Ignores services and partners.</td><td>Mentions services/partners as an afterthought.</td><td>Integrates services/partners into the solution.</td><td class="lv4">Positions services/partners as critical to customer success.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="font-size:16px;margin:28px 0 12px;color:var(--ink)">Where each criterion is earned</h3>
+    <div class="tblwrap">
+      <table class="data">
+        <thead><tr><th style="width:180px">Criterion</th><th style="width:120px">Won in</th><th>What the proctor is looking for</th></tr></thead>
+        <tbody>
+          <tr><td class="z">1 · Diagnose &amp; map</td><td><b>R1 + R3</b></td><td>Every pain named and reframed in your language; noise rejected on purpose. <b>Expert:</b> a pain Cedarline never said out loud.</td></tr>
+          <tr><td class="z">2 · Technical landscape</td><td><b>R3 Design</b></td><td>Named platforms in the right slots. What each one doesn't cover. How they work together.</td></tr>
+          <tr><td class="z">3 · Value proposition</td><td><b>R2 + R4</b></td><td>Why these pains, in this order, for this customer. Priya's question gets answered here — or it doesn't.</td></tr>
+          <tr><td class="z">4 · Competitive landscape</td><td><b>R4 Grow (b)</b></td><td>What else Cedarline could do, and why you win for a team this size. Ninety seconds. Almost always blank.</td></tr>
+          <tr><td class="z">5 · Objections</td><td><b>R5 Defend</b></td><td>Reframes, written down. <b>Expert:</b> you raised it before the customer did.</td></tr>
+          <tr><td class="z">6 · Services &amp; partners</td><td><b>R4 Grow (c)</b></td><td>Who deploys this, who runs it, what makes attempt four stick. Ninety seconds. Also almost always blank.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="levels">
+      <div class="lvl l1"><div class="lr">LEVEL 1</div><h4>Developing</h4><p>Repeats what the customer said. Product names without reasoning.</p></div>
+      <div class="lvl l2"><div class="lr">LEVEL 2</div><h4>Proficient</h4><p>A good day. Solid teams land here. Correct, but generic.</p></div>
+      <div class="lvl l3"><div class="lr">LEVEL 3</div><h4>Advanced</h4><p>Specificity. The reasoning turns on something this customer said.</p></div>
+      <div class="lvl l4"><div class="lr">LEVEL 4</div><h4>Expert</h4><p>Volunteering. You surfaced what nobody asked for. Rare — read aloud to the room.</p></div>
+    </div>
+
+    <div class="note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      <p><b>Half of this is won after the architecture is finished.</b> Three of the six things you're measured on — what else could they buy, how you handle pushback, who runs it once it's live — have nothing to do with your design. They're decided entirely in Rounds 4 and 5, and they are the same work whichever play you called. That isn't an artefact of the scoring. It's the job.</p>
+    </div>
+
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card"><span class="num">A</span><h3>Written beats spoken</h3><p>You are scored on the board plus the 60-second readout. A brilliant point made at minute 20 and never captured does not exist at 36:00.</p></div>
+      <div class="card"><span class="num" style="background:var(--navy)">B</span><h3>An unfinished row is worth nothing</h3><p>Coverage only counts where the mapping is accurate. Six product names with no reasoning isn't a wide play — it's a blank sheet with logos on it.</p></div>
+    </div>
+  </section>
+
+  <!-- ===================== 08 WHAT GOOD LOOKS LIKE ===================== -->
+  <section class="sec anim" id="good">
+    <div class="sec-head">
+      <span class="sec-no">08</span>
+      <h2>What Good Looks Like</h2>
+    </div>
+    <p class="sec-sub">This example is from a different customer, in a different technology domain — deliberately. It shows you the standard expected in a slot and on the Grow card. It tells you nothing about Cedarline, and none of it belongs on your board.</p>
+
+    <div class="panel" style="margin-bottom:18px">
+      <p style="font-size:13.5px;color:var(--ink-soft);margin:0"><b style="color:var(--ink)">Example customer: Harborline Freight.</b> Mid-size logistics operator. In their discovery call the Operations Manager said: <i>"Every shift, the handheld scanners in the north warehouse drop off somewhere around aisle 40, and the crew just gives up and writes the manifest on paper. We find out at the end of the day, when the counts don't reconcile."</i></p>
+    </div>
+
+    <h3 style="font-size:15px;margin:0 0 12px;color:var(--ink)">The Pain Board entry</h3>
+    <div class="compare">
+      <div class="cc bad">
+        <span class="tag"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6 6 18M6 6l12 12"/></svg>Weak — repeats the quote</span>
+        <p class="v">"Scanners drop off around aisle 40."</p>
+      </div>
+      <div class="cc good">
+        <span class="tag"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Strong — names the problem underneath</span>
+        <p class="v">Wireless coverage gaps in the north warehouse are causing an undetected <b>data-integrity failure</b>. Staff fall back to paper; the discrepancy surfaces a full shift late. The pain is the reconciliation loss, not the dead zone. <b>Fund it</b> — the only pain with a measurable financial loss, and it compounds every shift it isn't fixed.</p>
+      </div>
+    </div>
+
+    <h3 style="font-size:15px;margin:26px 0 12px;color:var(--ink)">The same slot on the canvas — filled badly, then well</h3>
+    <div class="compare">
+      <div class="cc bad">
+        <span class="tag"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6 6 18M6 6l12 12"/></svg>Slot · warehouse access edge</span>
+        <div class="k">Platform</div><p class="v">Something for wireless coverage. · Pain #1</p>
+        <div class="k">Why it fits</div><p class="v" style="margin-bottom:0">It would fix the Wi-Fi and give them better coverage, which improves productivity.</p>
+      </div>
+      <div class="cc good">
+        <span class="tag"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Slot · warehouse access edge</span>
+        <div class="k">Platform</div><p class="v"><b>Cisco Meraki MR-series access points</b>, managed from the Meraki dashboard. · Pain #1</p>
+        <div class="k">How it works</div><p class="v">Re-survey and re-site the APs to close the aisle-40 gap; the dashboard's client-health and roaming telemetry surfaces drop-offs as they happen.</p>
+        <div class="k">Why it fits Harborline</div><p class="v">No dedicated network staff — a cloud-managed dashboard means the warehouse supervisor sees a coverage problem without raising a ticket. And it attacks the real pain: they stop finding out a shift late.</p>
+        <div class="k">What it doesn't solve</div><p class="v" style="margin-bottom:0">If the scanners themselves are failing over badly, coverage alone won't fix it — client behaviour needs checking too.</p>
+      </div>
+    </div>
+
+    <div class="grid g3" style="margin-top:26px">
+      <div class="card"><h3 style="color:var(--cyan-deep)">The platform names a product</h3><p>The weak slot names a category. The strong slot names a product.</p></div>
+      <div class="card"><h3 style="color:var(--cyan-deep)">The justification is specific</h3><p>The weak one would be true for any customer on earth. The strong one turns on what this customer said: no network staff; the loss is discovered a shift late.</p></div>
+      <div class="card"><h3 style="color:var(--cyan-deep)">It says what it doesn't cover</h3><p>That is not a weakness — it's the difference between an engineer and a brochure.</p></div>
+    </div>
+
+    <h3 style="font-size:15px;margin:26px 0 12px;color:var(--ink)">The Grow &amp; Defend card, done well</h3>
+    <div class="tblwrap">
+      <table class="data">
+        <thead><tr><th style="width:170px">Prompt</th><th>Answer</th></tr></thead>
+        <tbody>
+          <tr><td class="z">The upsell</td><td><b>Cisco Spaces</b> — location analytics riding on the same wireless estate. The gap: Harborline knows THAT the counts don't reconcile; they never know WHERE the process broke. The line that points here: <i>"we find out at the end of the day"</i> — a visibility complaint, the one they didn't ask us to fix. <b>Why now:</b> rides the same hardware refresh, no second deployment. <b>Depends on:</b> the AP re-siting landing first.</td></tr>
+          <tr><td class="z">Their alternatives to us</td><td>Re-site their existing APs and change nothing else — cheapest, fixes the dead zone but not the day-late discovery. Or go to their incumbent vendor, who sells them a controller they'd then have to run. <b>We win because they have no network staff:</b> every alternative solves coverage and hands them an operational burden they cannot carry.</td></tr>
+          <tr><td class="z">Who runs it</td><td>Partner-led site survey and install; the warehouse supervisor owns the dashboard day to day — no new headcount, which is the only version of this Harborline can actually sustain.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="lands">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+      <p><b>The trap this example exists to show you.</b> That slot is technically excellent — and if the team had stopped there, they'd have lost half their marks. The two rows under the upsell — what else could they buy, and who runs it — took ninety seconds each and are worth as much as the entire design. That is the single most common way good SEs lose in this room, and in the real one.</p>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="foot">
+    <span class="eyebrow">Cisco Secure · Design Clinic · Team Playbook</span>
+    <span class="tag">[Draft scaffold — SME review] · Cedarline Health Group is fictional</span>
+  </footer>
+
+</div>
+
+<script>
+  // Progressive scroll-reveal as a pure enhancement. Sections are already visible
+  // by default (the .anim CSS animation ends at opacity 1 and runs on load); this
+  // only re-triggers the rise-in as each section nears the viewport. If
+  // IntersectionObserver is missing, nothing is hidden — the CSS animation stands.
+  (function(){
+    if(!('IntersectionObserver' in window)) return;
+    var secs = Array.prototype.slice.call(document.querySelectorAll('.sec.anim'));
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          e.target.style.animation='none';
+          // force reflow, then replay
+          void e.target.offsetWidth;
+          e.target.style.animation='';
+          io.unobserve(e.target);
+        }
+      });
+    },{rootMargin:'0px 0px -6% 0px',threshold:.03});
+    secs.forEach(function(s){ io.observe(s); });
+  })();
+</script>
+</body>
+</html>
