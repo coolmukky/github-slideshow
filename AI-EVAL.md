@@ -9,8 +9,33 @@ holds the key as a server secret.
 - Proxy code: [`ai-eval-worker.js`](./ai-eval-worker.js) (Cloudflare Workers reference; adaptable)
 - Client config: `window.AI_EVAL_ENDPOINT` in [`firebase-config.js`](./firebase-config.js)
 
-Manual scoring always works; AI evaluation is **optional** and stays in "preview"
-mode until you set the endpoint.
+Manual scoring always works; AI evaluation is **optional**.
+
+There are **two ways** to turn it on:
+- **Quickest — no backend (your own key):** paste your Anthropic key into the proctor
+  page; it's kept only in that browser tab and calls Claude directly. Zero deploy. Best
+  for a demo or a single facilitator. See **[Quickest](#quickest--no-backend-your-own-key)** below.
+- **Serverless proxy:** a small function holds the key server-side (the key never touches
+  any browser). Best for shared/repeat use. See **[Option A](#option-a--cloudflare-workers-recommended-free-tier)**.
+
+---
+
+## Quickest — no backend (your own key)
+
+No Cloudflare, no terminal, no deploy.
+
+1. Open **`proctor.html`** → click **AI key** (top bar).
+2. Paste your Anthropic key (`sk-ant-…`, from `console.anthropic.com`) → **Save key**.
+   It's stored in **sessionStorage** — only this browser tab, cleared when you close it.
+3. Click **Test AI** → expect **"AI evaluation OK (your key) · &lt;model&gt; · &lt;ms&gt; ms"**.
+4. In an Evaluate modal, click **Evaluate with AI** → it pre-fills the score + rationale to review and Save.
+
+**Tradeoff (be aware):** the key lives in that browser tab while you use it, so anyone
+with access to *that* browser's dev tools could read it. Since only the facilitator opens
+the proctor page — and you can **Clear** the key (or just close the tab) afterward, and
+rotate it in the Anthropic console — this is a reasonable trade for a facilitated session.
+For anything shared or long-lived, use the proxy instead (below). If both a proxy endpoint
+and a pasted key are present, the **proxy wins**.
 
 ---
 
