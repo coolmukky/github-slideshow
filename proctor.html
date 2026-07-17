@@ -56,6 +56,10 @@
   .notice.ok{border-color:#A9DEC9;background:#E4F6EE;color:#1f6e52}
   .notice.ok b{color:#166049}
   .notice.ok code{background:rgba(31,110,82,.12)}
+  .aikey-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:9px}
+  .aikey-row input{flex:1;min-width:220px;border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-family:"IBM Plex Mono",monospace;font-size:13px;outline:none}
+  .aikey-row input:focus{border-color:var(--cyan-deep);box-shadow:0 0 0 3px rgba(15,169,190,.12)}
+  #aiKeyStatus{font-family:"IBM Plex Mono",monospace;font-size:11.5px}
 
   /* session control (start the event for everyone) */
   .control{display:flex;align-items:center;gap:16px;margin:14px 0 0;padding:14px 18px;background:linear-gradient(180deg,#0c1d34,#0a1830);border:1px solid rgba(255,255,255,.08);border-left:4px solid var(--cyan);border-radius:14px;color:#EAF1F8;box-shadow:var(--shadow);flex-wrap:wrap}
@@ -241,7 +245,8 @@
     <span class="room">room:&nbsp;<input id="roomInput" type="text" spellcheck="false"><button class="btn" id="roomGo">Switch</button></span>
     <span class="filter">🔎&nbsp;<input id="filterInput" type="text" placeholder="Filter name / email / team / role" spellcheck="false"></span>
     <span class="spacer"></span>
-    <button class="btn" id="btnAiTest" title="Check the AI evaluation endpoint / CORS before a session"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3a9 9 0 100 18 9 9 0 000-18z"/><path d="M12 8v4l3 2"/></svg>Test AI</button>
+    <button class="btn" id="btnAiKey" title="Use your own Anthropic key for AI scoring (stored only in this browser)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2L20 3m-4 0l3 3m-6 3l3 3"/></svg>AI key</button>
+    <button class="btn" id="btnAiTest" title="Check AI evaluation works before a session"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3a9 9 0 100 18 9 9 0 000-18z"/><path d="M12 8v4l3 2"/></svg>Test AI</button>
     <button class="btn" id="btnRefresh" title="Reload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4v6h6"/><path d="M4 10a8 8 0 113 8"/></svg>Reload</button>
     <button class="btn" id="btnCsv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M5 21h14"/></svg>Export CSV</button>
     <button class="btn" id="btnReport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 3h9l5 5v13H6z"/><path d="M14 3v6h6"/><path d="M9 13h7M9 17h7"/></svg>Report</button>
@@ -249,6 +254,15 @@
   </div>
   <div class="notice" id="localNotice" hidden>
     <b>Single-device mode.</b> Firebase isn't configured, so this roster only shows people who joined <b>on this device/browser</b>. To see every participant's device live, fill in <code>firebase-config.js</code> (setup steps are in that file).
+  </div>
+  <div class="notice" id="aiKeyRow" hidden>
+    <b>Your Anthropic API key</b> — for AI scoring without a backend. Stored <b>only in this browser tab</b> (cleared when you close it); it calls Claude directly from your machine. Get one at <code>console.anthropic.com</code>.
+    <div class="aikey-row">
+      <input type="password" id="aiKeyInput" placeholder="sk-ant-…" autocomplete="off" spellcheck="false">
+      <button class="btn primary" id="aiKeySave" type="button">Save key</button>
+      <button class="btn" id="aiKeyClear" type="button">Clear</button>
+      <span id="aiKeyStatus"></span>
+    </div>
   </div>
   <div class="notice" id="aiTestNotice" hidden></div>
   <div class="notice err" id="ruleNotice" hidden>
@@ -651,71 +665,158 @@
   $("#emCancel").addEventListener("click", closeEval);
   evalModal.addEventListener("click", function(e){ if(e.target===evalModal) closeEval(); });
   document.addEventListener("keydown", function(e){ if(e.key==="Escape" && !evalModal.hidden) closeEval(); });
-  // AI evaluation — calls a serverless proxy (holds the API key) when configured.
+  // ---------- AI evaluation: serverless proxy OR the proctor's own key (browser-direct) ----------
   var aiUsed=false;
+  var AI_MODELS=["claude-opus-4-8","claude-sonnet-5","claude-haiku-4-5-20251001"];
+  var AI_SYSTEM="You are an expert subject-matter examiner grading a team's network segmentation "+
+    "solution in a Cisco design clinic. Grade ONLY against the provided reference answer (cheat sheet) "+
+    "and the rubric maxima. Award partial credit generously where the team's intent matches the "+
+    "reference, but do not reward blank or off-topic answers. Judge the diagram (if provided) for the "+
+    "third criterion. Always respond by calling the submit_score tool.";
   function aiEndpoint(){ return (window.AI_EVAL_ENDPOINT||"").trim(); }
-  $("#emAi").addEventListener("click", function(){
-    var model=$("#emModel").value, ep=aiEndpoint(), note=$("#emAiNote"), btn=$("#emAi");
-    if(!ep){
-      note.innerHTML = '<b>AI evaluation preview.</b> No endpoint is configured, so live scoring is off. Set <code>window.AI_EVAL_ENDPOINT</code> in <code>firebase-config.js</code> to your deployed proxy (see <code>AI-EVAL.md</code>). For now score manually — the selected model (<code>'+esc(model)+'</code>) is saved with the score.';
-      aiUsed=true; return;
+  function getAiKey(){ try{ return sessionStorage.getItem("ztds.aiKey")||""; }catch(e){ return ""; } }
+  function setAiKey(k){ try{ if(k) sessionStorage.setItem("ztds.aiKey",k); else sessionStorage.removeItem("ztds.aiKey"); }catch(e){} updateAiKeyBtn(); }
+  function aiConfigured(){ return !!(aiEndpoint() || getAiKey()); }
+  function aiRubric(p){ return p.rubric||{c1:{label:"Mapping",max:40},c2:{label:"Products",max:30},c3:{label:"Diagram & solution",max:30}}; }
+  function aiParseDataUrl(u){ if(typeof u!=="string") return null; var m=u.match(/^data:([^;]+);base64,(.+)$/); if(!m) return null; var mime=m[1]; if(["image/jpeg","image/png","image/gif","image/webp"].indexOf(mime)<0) return null; return {mime:mime,data:m[2]}; }
+  function aiClamp(v,max){ v=parseInt(v,10); if(isNaN(v)||v<0)v=0; if(v>max)v=max; return v; }
+  function aiModel(p){ return AI_MODELS.indexOf(p.model)>=0 ? p.model : "claude-opus-4-8"; }
+  function aiUserText(p){
+    var cs=p.cheatSheet||{}, resp=p.response||{}, r=aiRubric(p), L=[];
+    L.push("USE CASE "+(p.useCase||"?")+": "+(p.useCaseTitle||""),"");
+    L.push("=== RUBRIC (score each; integers) ===");
+    L.push("c1 — "+r.c1.label+" (0-"+r.c1.max+")");
+    L.push("c2 — "+r.c2.label+" (0-"+r.c2.max+")");
+    L.push("c3 — "+r.c3.label+" (0-"+r.c3.max+"); judge the attached diagram image if present.","");
+    L.push("=== REFERENCE ANSWER (cheat sheet) ===","Pain point → expected response:");
+    (cs.painResponse||[]).forEach(function(x){ L.push("  - "+x[0]+"  =>  "+x[1]); });
+    L.push("Expected products (name / how / why):");
+    (cs.products||[]).forEach(function(x){ L.push("  - "+x[0]+" | "+x[1]+" | "+x[2]); });
+    L.push("","=== TEAM'S RESPONSE (grade this) ===","Pain-point → product mapping:");
+    (resp.painMap||[]).forEach(function(x){ L.push("  - PAIN: "+(x.pain||"")+" | PRODUCT: "+(x.product||"—")+" | HOW/WHY: "+(x.note||"—")); });
+    L.push("Products proposed (name / how / why):");
+    (resp.products||[]).forEach(function(x){ L.push("  - "+(x.product||"—")+" | "+(x.how||"—")+" | "+(x.why||"—")); });
+    L.push("Diagram attached: "+(aiParseDataUrl(resp.diagram)?"yes (see image)":"no"),"");
+    L.push("Score the team's response against the reference using the rubric. Call submit_score.");
+    return L.join("\n");
+  }
+  function aiAnthropicBody(p){
+    var r=aiRubric(p), content=[{type:"text",text:aiUserText(p)}];
+    var img=aiParseDataUrl(p.response&&p.response.diagram);
+    if(img) content.push({type:"image",source:{type:"base64",media_type:img.mime,data:img.data}});
+    var tool={ name:"submit_score", description:"Return the rubric scores and a short rationale.",
+      input_schema:{ type:"object", properties:{
+        c1:{type:"integer",minimum:0,maximum:r.c1.max}, c2:{type:"integer",minimum:0,maximum:r.c2.max},
+        c3:{type:"integer",minimum:0,maximum:r.c3.max}, rationale:{type:"string"} }, required:["c1","c2","c3","rationale"] } };
+    return { model:aiModel(p), max_tokens:1024, system:AI_SYSTEM, tools:[tool], tool_choice:{type:"tool",name:"submit_score"}, messages:[{role:"user",content:content}] };
+  }
+  // Returns Promise<{c1,c2,c3,total,rationale,model}>. Uses the proxy if set, else the browser key.
+  function runAiEval(p){
+    var ep=aiEndpoint();
+    if(ep){
+      var h={"content-type":"application/json"}; if(window.AI_EVAL_TOKEN) h["x-eval-token"]=window.AI_EVAL_TOKEN;
+      return fetch(ep,{method:"POST",headers:h,body:JSON.stringify(p)}).then(function(res){
+        return res.json().then(function(j){ if(!res.ok||!j||typeof j.c1!=="number") throw new Error((j&&j.error)?(j.error+(j.detail?(" — "+j.detail):"")):("endpoint error "+res.status)); return j; },
+          function(){ throw new Error("non-JSON response from endpoint ("+res.status+")"); });
+      });
     }
+    var key=getAiKey();
+    if(key){
+      var r=aiRubric(p);
+      return fetch("https://api.anthropic.com/v1/messages",{ method:"POST",
+        headers:{ "content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true" },
+        body:JSON.stringify(aiAnthropicBody(p)) }).then(function(res){
+        return res.json().then(function(j){ return {status:res.status,ok:res.ok,j:j}; }, function(){ return {status:res.status,ok:false,j:null}; });
+      }).then(function(o){
+        if(!o.ok){ var m=(o.j&&o.j.error&&o.j.error.message)||("Anthropic API error "+o.status); throw new Error(m); }
+        var use=((o.j&&o.j.content)||[]).filter(function(b){return b.type==="tool_use";})[0];
+        if(!use||!use.input) throw new Error("model returned no structured score");
+        var c1=aiClamp(use.input.c1,r.c1.max),c2=aiClamp(use.input.c2,r.c2.max),c3=aiClamp(use.input.c3,r.c3.max);
+        return { c1:c1,c2:c2,c3:c3, total:c1+c2+c3, rationale:String(use.input.rationale||""), model:aiModel(p) };
+      });
+    }
+    return Promise.reject({ _notConfigured:true });
+  }
+  function aiSetupHint(){ return 'Click <b>AI key</b> (top bar) to paste your Anthropic key — stored only in this browser tab — or set <code>window.AI_EVAL_ENDPOINT</code> to a proxy (see <code>AI-EVAL.md</code>).'; }
+
+  $("#emAi").addEventListener("click", function(){
+    var model=$("#emModel").value, note=$("#emAiNote"), btn=$("#emAi");
     var sol=(solutions[evalTk]||{})[evalUc];
     if(!sol){ note.textContent="No submission to evaluate."; return; }
+    if(!aiConfigured()){
+      note.innerHTML='<b>AI evaluation not set up.</b> '+aiSetupHint()+' Manual scoring works meanwhile; the selected model (<code>'+esc(model)+'</code>) is saved with your score.';
+      aiUsed=true; return;
+    }
     var payload={ model:model, useCase:evalUc, useCaseTitle:sol.useCaseTitle||("Use Case "+evalUc),
       rubric:{ c1:{label:"Pain-point → product mapping", max:MAX_C1}, c2:{label:"Products — how & why", max:MAX_C2}, c3:{label:"Diagram & overall solution", max:MAX_C3} },
       cheatSheet: CHEATSHEETS[evalUc]||null,
       response:{ painMap:sol.painMap||[], products:sol.products||[], diagram:sol.diagram||"" } };
-    var headers={"content-type":"application/json"}; if(window.AI_EVAL_TOKEN) headers["x-eval-token"]=window.AI_EVAL_TOKEN;
     var oldLabel=btn.textContent; btn.disabled=true; btn.textContent="Evaluating…";
-    note.textContent="Asking "+model+" to score against the cheat sheet…";
-    fetch(ep, { method:"POST", headers:headers, body:JSON.stringify(payload) })
-      .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }, function(){ return {ok:false, j:{error:"non-JSON response"}}; }); })
-      .then(function(res){
-        if(res.ok && res.j && typeof res.j.c1==="number"){
-          $("#emC1").value=res.j.c1; $("#emC2").value=res.j.c2; $("#emC3").value=res.j.c3; emUpdateTotal();
-          var rat=res.j.rationale||"";
-          note.innerHTML='<b>AI suggestion ('+esc(res.j.model||model)+'):</b> '+esc(rat)+'<br><span style="color:var(--ink-faint)">Adjust if needed, then Save score.</span>';
-          if(rat && !$("#emNotes").value.trim()) $("#emNotes").value="[AI · "+(res.j.model||model)+"] "+rat;
-          aiUsed=true;
-        } else {
-          note.textContent="AI evaluation failed: "+((res.j&&res.j.error)||"unexpected response")+((res.j&&res.j.detail)?(" — "+res.j.detail):"");
-        }
-      })
-      .catch(function(err){ note.textContent="AI evaluation error: "+((err&&err.message)||err)+". Check the endpoint URL / CORS (AI-EVAL.md)."; })
-      .then(function(){ btn.disabled=false; btn.textContent=oldLabel; });
+    note.textContent="Asking "+model+" to score against the cheat sheet"+(aiEndpoint()?" (via your proxy)":" (with your key)")+"…";
+    runAiEval(payload).then(function(j){
+      $("#emC1").value=j.c1; $("#emC2").value=j.c2; $("#emC3").value=j.c3; emUpdateTotal();
+      var rat=j.rationale||"";
+      note.innerHTML='<b>AI suggestion ('+esc(j.model||model)+'):</b> '+esc(rat)+'<br><span style="color:var(--ink-faint)">Adjust if needed, then Save score.</span>';
+      if(rat && !$("#emNotes").value.trim()) $("#emNotes").value="[AI · "+(j.model||model)+"] "+rat;
+      aiUsed=true;
+    }).catch(function(err){
+      if(err&&err._notConfigured){ note.innerHTML='<b>AI evaluation not set up.</b> '+aiSetupHint(); return; }
+      note.textContent="AI evaluation error: "+((err&&err.message)||err)+".";
+    }).then(function(){ btn.disabled=false; btn.textContent=oldLabel; });
   });
 
-  // Test the AI endpoint / CORS before a session (sends one tiny real request).
+  // Test the AI setup before a session (sends one tiny real request via proxy or key).
   $("#btnAiTest").addEventListener("click", function(){
     var n=$("#aiTestNotice"), btn=$("#btnAiTest");
     function show(cls,html){ n.className="notice "+cls; n.innerHTML=html; n.hidden=false; }
-    var ep=aiEndpoint();
-    if(!ep){ show("err","<b>No AI endpoint configured.</b> Set <code>window.AI_EVAL_ENDPOINT</code> in <code>firebase-config.js</code> to your deployed proxy (see <code>AI-EVAL.md</code>). AI evaluation stays in preview until then; manual scoring works regardless."); return; }
+    if(!aiConfigured()){ show("err","<b>AI evaluation isn't set up yet.</b> "+aiSetupHint()+" Manual scoring works regardless."); return; }
     var model=($("#emModel")&&$("#emModel").value) || "claude-opus-4-8";
-    var headers={"content-type":"application/json"}; if(window.AI_EVAL_TOKEN) headers["x-eval-token"]=window.AI_EVAL_TOKEN;
     var payload={ model:model, useCase:0, useCaseTitle:"Connection test",
       rubric:{c1:{label:"mapping",max:40},c2:{label:"products",max:30},c3:{label:"diagram",max:30}},
       cheatSheet:{painResponse:[["example pain point","example response"]], products:[["ExampleProduct","how it works","why it fits"]]},
       response:{ painMap:[{pain:"example pain point",product:"ExampleProduct",note:"addresses it"}], products:[{product:"ExampleProduct",how:"how",why:"why"}], diagram:"" } };
+    var via=aiEndpoint()?"proxy":"your key";
     var old=btn.textContent; btn.disabled=true; btn.textContent="Testing…";
-    show("","Testing AI endpoint… contacting <code>"+esc(ep)+"</code>");
+    show("","Testing AI ("+via+")… asking <code>"+esc(model)+"</code> to score a sample.");
     var t0=Date.now();
-    fetch(ep,{method:"POST",headers:headers,body:JSON.stringify(payload)})
-      .then(function(r){ return r.json().then(function(j){return {status:r.status,ok:r.ok,j:j};}, function(){return {status:r.status,ok:false,j:{error:"non-JSON response"}};}); })
-      .then(function(res){
-        var ms=Date.now()-t0;
-        if(res.ok && res.j && typeof res.j.c1==="number"){
-          show("ok","<b>AI endpoint OK.</b> Model <code>"+esc(res.j.model||model)+"</code> responded in "+ms+" ms (sample score "+res.j.total+"/100). Ready to <b>Evaluate with AI</b>.");
-        } else {
-          show("err","<b>Endpoint reachable but returned an error"+(res.status?(" ("+res.status+")"):"")+".</b> "+esc((res.j&&res.j.error)||"unexpected response")+((res.j&&res.j.detail)?(" — "+esc(String(res.j.detail))):"")+" — check <code>ANTHROPIC_API_KEY</code> / model in <code>AI-EVAL.md</code>.");
-        }
-      })
-      .catch(function(err){
-        show("err","<b>Couldn't reach the AI endpoint.</b> "+esc(String((err&&err.message)||err))+" — usually a wrong URL or a <b>CORS</b> block. Set the proxy's <code>ALLOW_ORIGIN</code> to <code>"+esc(location.origin)+"</code> (see <code>AI-EVAL.md</code>).");
-      })
-      .then(function(){ btn.disabled=false; btn.textContent=old; });
+    runAiEval(payload).then(function(j){
+      var ms=Date.now()-t0;
+      show("ok","<b>AI evaluation OK</b> ("+via+"). Model <code>"+esc(j.model||model)+"</code> responded in "+ms+" ms (sample score "+j.total+"/100). Ready to <b>Evaluate with AI</b>.");
+    }).catch(function(err){
+      if(err&&err._notConfigured){ show("err","<b>AI evaluation isn't set up.</b> "+aiSetupHint()); return; }
+      var m=esc(String((err&&err.message)||err));
+      if(aiEndpoint()) show("err","<b>Proxy error.</b> "+m+" — check the endpoint URL, <code>ALLOW_ORIGIN</code> (should be <code>"+esc(location.origin)+"</code>), and <code>ANTHROPIC_API_KEY</code> (AI-EVAL.md).");
+      else show("err","<b>Couldn't score with your key.</b> "+m+" — check the key is valid and has credit. (If it mentions CORS, the browser blocked the call.)");
+    }).then(function(){ btn.disabled=false; btn.textContent=old; });
   });
+
+  // AI key entry (browser-direct mode, no backend)
+  function updateAiKeyBtn(){
+    var b=$("#btnAiKey"); if(!b) return;
+    var set=!!getAiKey(), ep=!!aiEndpoint();
+    b.classList.toggle("primary", set);
+    b.lastChild.textContent = ep ? "AI key" : (set ? "AI key ✓" : "AI key");
+    b.title = ep ? "A proxy endpoint is configured; AI scoring uses that." : (set ? "Your Anthropic key is set for this browser tab. Click to change/clear." : "Use your own Anthropic key for AI scoring (stored only in this browser)");
+  }
+  function refreshAiKeyStatus(){
+    var s=$("#aiKeyStatus"); if(!s) return;
+    if(aiEndpoint()){ s.textContent="A proxy endpoint is configured — key not needed."; s.style.color="var(--ink-faint)"; }
+    else if(getAiKey()){ s.textContent="Key set for this tab ✓"; s.style.color="var(--green,#1f8a63)"; }
+    else { s.textContent="No key set — AI scoring is off (manual still works)."; s.style.color="var(--ink-faint)"; }
+  }
+  $("#btnAiKey").addEventListener("click", function(){
+    var row=$("#aiKeyRow"); row.hidden=!row.hidden;
+    if(!row.hidden){ $("#aiKeyInput").value=""; refreshAiKeyStatus(); setTimeout(function(){ $("#aiKeyInput").focus(); },30); }
+  });
+  $("#aiKeySave").addEventListener("click", function(){
+    var v=($("#aiKeyInput").value||"").trim();
+    if(!v){ refreshAiKeyStatus(); return; }
+    if(v.indexOf("sk-")!==0){ $("#aiKeyStatus").textContent="That doesn't look like an Anthropic key (starts with sk-…). Saved anyway."; $("#aiKeyStatus").style.color="var(--red)"; }
+    setAiKey(v); $("#aiKeyInput").value=""; refreshAiKeyStatus();
+    var s=$("#aiKeyStatus"); if(s.style.color!=="var(--red)"){ s.textContent="Key saved for this tab ✓ — try Test AI."; s.style.color="var(--green,#1f8a63)"; }
+  });
+  $("#aiKeyClear").addEventListener("click", function(){ setAiKey(""); $("#aiKeyInput").value=""; refreshAiKeyStatus(); });
+  updateAiKeyBtn();
   $("#emSave").addEventListener("click", function(){
     if(!evalTk || !adapterRef) return;
     var c1=clampNum($("#emC1").value,MAX_C1), c2=clampNum($("#emC2").value,MAX_C2), c3=clampNum($("#emC3").value,MAX_C3);

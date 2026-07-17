@@ -75,9 +75,14 @@ tabs to fill a team of 4 and see the clock auto-start.)
 
 ## Optional — turn on Live AI evaluation
 Manual scoring already works; do this only if you want the **Evaluate with AI** button live.
-1. Deploy the proxy: `wrangler deploy` on [`ai-eval-worker.js`](./ai-eval-worker.js); set the
-   `ANTHROPIC_API_KEY` secret and `ALLOW_ORIGIN=https://coolmukky.github.io` (full steps in
-   [`AI-EVAL.md`](./AI-EVAL.md)).
+
+**Quickest (no backend, for a demo):**
+1. On **proctor.html**, click **AI key** (top bar) → paste your Anthropic key (`sk-ant-…`) → **Save key**.
+   (Stored only in that browser tab; click **Clear** or close the tab when done.)
+2. Click **Test AI** → expect **"AI evaluation OK (your key) · <model> · <ms>ms"**.
+3. In an Evaluate modal, click **Evaluate with AI** → it pre-fills the score + rationale to review and Save.
+
+**Shared/secure (proxy — key off the browser):**
+1. Deploy the proxy: `wrangler deploy` (repo ships [`ai-eval-worker.js`](./ai-eval-worker.js) + [`wrangler.toml`](./wrangler.toml)); set the `ANTHROPIC_API_KEY` secret (full steps in [`AI-EVAL.md`](./AI-EVAL.md)).
 2. Put the proxy URL in `window.AI_EVAL_ENDPOINT` in [`firebase-config.js`](./firebase-config.js); commit + hard-refresh.
-3. On the proctor, click **Test AI** → expect **"AI endpoint OK · <model> · <ms>ms"**.
-4. In an Evaluate modal, click **Evaluate with AI** → it pre-fills the score + rationale for you to review and Save.
+3. **Test AI** → expect **"AI evaluation OK (proxy) · <model> · <ms>ms"**. (If both are set, the proxy is used.)
