@@ -51,7 +51,11 @@
   .notice b{color:#6e440a}
   .notice.err{border-color:#E7A6A6;background:#FBE3E3;color:#9a2a2a}
   .notice.err b{color:#7d1f1f}
-  .notice.err code{background:rgba(154,42,42,.12);padding:1px 5px;border-radius:5px;font-size:12px}
+  .notice code{background:rgba(0,0,0,.07);padding:1px 5px;border-radius:5px;font-size:12px}
+  .notice.err code{background:rgba(154,42,42,.12)}
+  .notice.ok{border-color:#A9DEC9;background:#E4F6EE;color:#1f6e52}
+  .notice.ok b{color:#166049}
+  .notice.ok code{background:rgba(31,110,82,.12)}
 
   /* session control (start the event for everyone) */
   .control{display:flex;align-items:center;gap:16px;margin:14px 0 0;padding:14px 18px;background:linear-gradient(180deg,#0c1d34,#0a1830);border:1px solid rgba(255,255,255,.08);border-left:4px solid var(--cyan);border-radius:14px;color:#EAF1F8;box-shadow:var(--shadow);flex-wrap:wrap}
@@ -237,6 +241,7 @@
     <span class="room">room:&nbsp;<input id="roomInput" type="text" spellcheck="false"><button class="btn" id="roomGo">Switch</button></span>
     <span class="filter">🔎&nbsp;<input id="filterInput" type="text" placeholder="Filter name / email / team / role" spellcheck="false"></span>
     <span class="spacer"></span>
+    <button class="btn" id="btnAiTest" title="Check the AI evaluation endpoint / CORS before a session"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3a9 9 0 100 18 9 9 0 000-18z"/><path d="M12 8v4l3 2"/></svg>Test AI</button>
     <button class="btn" id="btnRefresh" title="Reload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4v6h6"/><path d="M4 10a8 8 0 113 8"/></svg>Reload</button>
     <button class="btn" id="btnCsv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M5 21h14"/></svg>Export CSV</button>
     <button class="btn" id="btnReport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 3h9l5 5v13H6z"/><path d="M14 3v6h6"/><path d="M9 13h7M9 17h7"/></svg>Report</button>
@@ -245,6 +250,7 @@
   <div class="notice" id="localNotice" hidden>
     <b>Single-device mode.</b> Firebase isn't configured, so this roster only shows people who joined <b>on this device/browser</b>. To see every participant's device live, fill in <code>firebase-config.js</code> (setup steps are in that file).
   </div>
+  <div class="notice" id="aiTestNotice" hidden></div>
   <div class="notice err" id="ruleNotice" hidden>
     <b>Firestore rejected the write (<code id="ruleCode">permission-denied</code>).</b>
     Your security rules are missing (or out of date for) the <code>control</code> collection, so the event never reaches
@@ -678,6 +684,37 @@
       })
       .catch(function(err){ note.textContent="AI evaluation error: "+((err&&err.message)||err)+". Check the endpoint URL / CORS (AI-EVAL.md)."; })
       .then(function(){ btn.disabled=false; btn.textContent=oldLabel; });
+  });
+
+  // Test the AI endpoint / CORS before a session (sends one tiny real request).
+  $("#btnAiTest").addEventListener("click", function(){
+    var n=$("#aiTestNotice"), btn=$("#btnAiTest");
+    function show(cls,html){ n.className="notice "+cls; n.innerHTML=html; n.hidden=false; }
+    var ep=aiEndpoint();
+    if(!ep){ show("err","<b>No AI endpoint configured.</b> Set <code>window.AI_EVAL_ENDPOINT</code> in <code>firebase-config.js</code> to your deployed proxy (see <code>AI-EVAL.md</code>). AI evaluation stays in preview until then; manual scoring works regardless."); return; }
+    var model=($("#emModel")&&$("#emModel").value) || "claude-opus-4-8";
+    var headers={"content-type":"application/json"}; if(window.AI_EVAL_TOKEN) headers["x-eval-token"]=window.AI_EVAL_TOKEN;
+    var payload={ model:model, useCase:0, useCaseTitle:"Connection test",
+      rubric:{c1:{label:"mapping",max:40},c2:{label:"products",max:30},c3:{label:"diagram",max:30}},
+      cheatSheet:{painResponse:[["example pain point","example response"]], products:[["ExampleProduct","how it works","why it fits"]]},
+      response:{ painMap:[{pain:"example pain point",product:"ExampleProduct",note:"addresses it"}], products:[{product:"ExampleProduct",how:"how",why:"why"}], diagram:"" } };
+    var old=btn.textContent; btn.disabled=true; btn.textContent="Testing…";
+    show("","Testing AI endpoint… contacting <code>"+esc(ep)+"</code>");
+    var t0=Date.now();
+    fetch(ep,{method:"POST",headers:headers,body:JSON.stringify(payload)})
+      .then(function(r){ return r.json().then(function(j){return {status:r.status,ok:r.ok,j:j};}, function(){return {status:r.status,ok:false,j:{error:"non-JSON response"}};}); })
+      .then(function(res){
+        var ms=Date.now()-t0;
+        if(res.ok && res.j && typeof res.j.c1==="number"){
+          show("ok","<b>AI endpoint OK.</b> Model <code>"+esc(res.j.model||model)+"</code> responded in "+ms+" ms (sample score "+res.j.total+"/100). Ready to <b>Evaluate with AI</b>.");
+        } else {
+          show("err","<b>Endpoint reachable but returned an error"+(res.status?(" ("+res.status+")"):"")+".</b> "+esc((res.j&&res.j.error)||"unexpected response")+((res.j&&res.j.detail)?(" — "+esc(String(res.j.detail))):"")+" — check <code>ANTHROPIC_API_KEY</code> / model in <code>AI-EVAL.md</code>.");
+        }
+      })
+      .catch(function(err){
+        show("err","<b>Couldn't reach the AI endpoint.</b> "+esc(String((err&&err.message)||err))+" — usually a wrong URL or a <b>CORS</b> block. Set the proxy's <code>ALLOW_ORIGIN</code> to <code>"+esc(location.origin)+"</code> (see <code>AI-EVAL.md</code>).");
+      })
+      .then(function(){ btn.disabled=false; btn.textContent=old; });
   });
   $("#emSave").addEventListener("click", function(){
     if(!evalTk || !adapterRef) return;
