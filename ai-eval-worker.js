@@ -55,8 +55,8 @@ export default {
       "criterion. Always respond by calling the submit_score tool.";
 
     const content = [{ type: "text", text: buildUserText(body, rubric) }];
-    const img = parseDataUrl(body && body.response && body.response.diagram);
-    if (img) content.push({ type: "image", source: { type: "base64", media_type: img.mime, data: img.data } });
+    const blk = imageBlock(body && body.response && body.response.diagram);
+    if (blk) content.push(blk);
 
     const tool = {
       name: "submit_score",
@@ -137,7 +137,7 @@ function buildUserText(body, rubric) {
   (resp.painMap || []).forEach(function (r) { lines.push("  - PAIN: " + (r.pain || "") + " | PRODUCT: " + (r.product || "—") + " | HOW/WHY: " + (r.note || "—")); });
   lines.push("Products proposed (name / how / why):");
   (resp.products || []).forEach(function (r) { lines.push("  - " + (r.product || "—") + " | " + (r.how || "—") + " | " + (r.why || "—")); });
-  lines.push("Diagram attached: " + (parseDataUrl(resp.diagram) ? "yes (see image)" : "no"));
+  lines.push("Diagram attached: " + (imageBlock(resp.diagram) ? "yes (see image)" : "no"));
   lines.push("");
   lines.push("Score the team's response against the reference using the rubric. Call submit_score.");
   return lines.join("\n");
@@ -150,6 +150,14 @@ function parseDataUrl(u) {
   const mime = m[1];
   if (["image/jpeg", "image/png", "image/gif", "image/webp"].indexOf(mime) < 0) return null;
   return { mime: mime, data: m[2] };
+}
+
+// Build an Anthropic image block from either a Storage/HTTP URL or an inline data URL.
+function imageBlock(u) {
+  if (typeof u !== "string") return null;
+  if (u.indexOf("http") === 0) return { type: "image", source: { type: "url", url: u } };
+  const img = parseDataUrl(u);
+  return img ? { type: "image", source: { type: "base64", media_type: img.mime, data: img.data } } : null;
 }
 
 function clamp(v, max) { v = parseInt(v, 10); if (isNaN(v) || v < 0) v = 0; if (v > max) v = max; return v; }

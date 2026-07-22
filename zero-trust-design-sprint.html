@@ -1693,12 +1693,19 @@
     else { try{ diagUrl=localStorage.getItem(diagKey)||null; }catch(e){} }
     var diagInput=$("#ucDiag"), diagThumb=$("#ucDiagThumb"), diagClear=$("#ucDiagClear");
     function showDiag(){ if(diagUrl){ diagThumb.src=diagUrl; diagThumb.hidden=false; diagClear.hidden=false; } else { diagThumb.removeAttribute("src"); diagThumb.hidden=true; diagClear.hidden=true; } }
+    function shareDiag(val){ diagUrl=val; try{ localStorage.setItem(diagKey,val); }catch(e){} showDiag(); pushDraftDiagram(uc.n, val); }
     diagInput.addEventListener("change", function(){
       var f=diagInput.files && diagInput.files[0]; if(!f) return;
       ucLoadDiagram(f, function(url){
         if(!url){ toast("Couldn't read image","Try a different photo (JPG/PNG).","fire"); return; }
         diagUrl=url; try{ localStorage.setItem(diagKey,url); }catch(e){}
-        showDiag(); pushDraftDiagram(uc.n, url); toast("Diagram attached","Shared with your team; sent to the proctor when you submit.","phase");
+        showDiag(); toast("Diagram attached","Shared with your team; sent to the proctor when you submit.","phase");
+        // Move the bytes to Firebase Storage and share the short URL (keeps big images out of
+        // Firestore). Falls back to the inline image if Storage isn't available.
+        if(roster && roster.uploadDiagram && ROOM){
+          var path="diagrams/"+ROOM+"/"+ucTeamKey()+"/uc"+uc.n+".jpg";
+          roster.uploadDiagram(path, url).then(function(remote){ shareDiag(remote||url); }, function(){ shareDiag(url); });
+        } else { shareDiag(url); }
       });
       diagInput.value="";
     });
