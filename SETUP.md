@@ -5,6 +5,7 @@ roster, and confirm it works. The activity **works without Firebase** (single-de
 mode); Firebase only adds the shared, cross-device proctor roster.
 
 - **Participant page:** `zero-trust-design-sprint.html`
+- **Briefing (reference reading):** `briefing.html` — the customer story, environment, reference architecture, objectives, roles and segmentation method, linked from the participant page so the main page stays focused on the work.
 - **Proctor roster & evaluation:** `proctor.html`
 - **Leaderboard:** `leaderboard.html`
 - **Config file:** `firebase-config.js`
