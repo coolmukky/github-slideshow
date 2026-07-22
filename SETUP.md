@@ -168,11 +168,12 @@ wrong people out of a facilitated clinic; for real security, use Firebase sign-i
   card gives that team a fresh 60:00; **Reset** (event) closes it and **Start event** reopens.
 - **Reports:** on `proctor.html`, use **Export CSV** for raw data or **Report** for a printable
   (PDF-ready) participant summary with per-team completeness. Scales to ~300 participants.
-- **The activity — five use cases:** each team works a customer environment with **5 sequential use
-  cases** (Use Case 1 = *Managed Environment; Segmentation*; 2–5 are placeholders for now). For each
-  use case they fill a **pain-point → product mapping**, a **products (how / why)** table, attach a
-  **diagram**, and **Submit group response for Use Case N**. Submitting unlocks the next use case;
-  teams complete as many as they can before the clock ends.
+- **The activity — five use cases (3 required + 2 bonus):** each team works a customer environment
+  with **5 sequential use cases** — **Use Cases 1–3 are required, 4 & 5 are bonus** (tiles are tagged
+  *Required* / *Bonus*). Use Case 1 = *Managed Environment; Segmentation*; 2–5 are placeholders for now.
+  For each use case they fill a **pain-point → product mapping**, a **products (how / why)** table,
+  attach a **diagram**, and **Submit group response for Use Case N**. Submitting unlocks the next use
+  case; teams clear the required cases, then bank the bonus rounds before the clock ends.
 - **Scoring & leaderboard:** on `proctor.html`, each team card lists every submitted use case with an
   **Evaluate** button. Open it to see the team's response **and the proctor-only cheat sheet** for
   that use case, then score three criteria — pain→product mapping (40) + products how/why (30) +
