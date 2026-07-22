@@ -30,6 +30,7 @@ the in-session phase/time cues live on the participant page itself.)
 
 ## During the hour
 
+- [ ] **Shared editing:** all four teammates co-author **one live answer sheet per use case** — fields, added product rows, and the attached diagram sync across their devices in real time (the field someone is actively typing in is never overwritten). They open a use case, fill it together, then **Submit**.
 - [ ] Each team runs on **its own clock**; boards, phases, and **injection reveals (24/38/50 min)** follow it, with automatic **5-min / 1-min** warnings. Participants' local Start/Pause is locked.
 - [ ] *(Optional)* Ask teams to press **Focus** to hide reference sections — cuts on-page reading ~in half.
 - [ ] Need to give a team a fresh 60? On its card press **Reset clock**. Press **Reset** (event) to close the event; **Start event** to reopen.

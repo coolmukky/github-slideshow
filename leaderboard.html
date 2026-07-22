@@ -141,7 +141,7 @@
       $("#status").className="status "+(live?"live":"local");
       $("#statusText").textContent=live?"Live · Firebase":"Single-device (local)";
       adapter.watch("scores", ROOM, function(d){ scoreDocs=d||[]; render(); });
-      adapter.watch("solutions", ROOM, function(d){ solDocs=d||[]; render(); });
+      adapter.watch("solutions", ROOM, function(d){ solDocs=(d||[]).filter(function(s){ return s && s.kind!=="draft"; }); render(); });
     });
   } else { $("#statusText").textContent="Leaderboard unavailable"; }
 })();
