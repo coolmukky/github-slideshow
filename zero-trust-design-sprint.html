@@ -828,6 +828,17 @@
 
   /* ---- confetti canvas ---- */
   #confetti{position:fixed;inset:0;pointer-events:none;z-index:400}
+
+  /* ---- briefing link cards (reference content lives on briefing.html) ---- */
+  .brief-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .brief-card{display:flex;flex-direction:column;gap:2px;padding:16px 16px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--line);text-decoration:none;color:var(--ink);transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
+  .brief-card:hover{transform:translateY(-3px);border-color:var(--cyan-deep);box-shadow:0 10px 28px rgba(0,0,0,.32)}
+  .brief-card .bc-ic{font-size:22px;margin-bottom:6px;line-height:1}
+  .brief-card b{font-size:14.5px}
+  .brief-card small{color:var(--ink-soft);font-size:12px}
+  .brief-card.open-all{background:linear-gradient(135deg,rgba(95,215,255,.16),rgba(0,188,235,.05));border-color:var(--cyan-deep)}
+  @media (max-width:860px){ .brief-grid{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:520px){ .brief-grid{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
@@ -953,181 +964,28 @@
 
   <nav class="toc" aria-label="Contents">
     <span class="toc-lbl">Jump to</span>
-    <a href="#brief">Brief</a><a href="#environment">Environment</a><a href="#topology">Topology</a>
-    <a href="#objectives">Objectives</a><a href="#roles">Roles</a><a href="#methodology">Methodology</a>
-    <a href="#usecases">Use cases</a><a href="#sample">Sample</a><a href="#workspace">Workspace</a>
-    <span class="focus-note">Focus view · reference sections hidden</span>
+    <a href="briefing.html" target="_blank" rel="noopener">Briefing &#8599;</a>
+    <a href="#briefing">Briefing links</a><a href="#usecases">Use cases</a><a href="#workspace">Workspace</a>
+    <span class="focus-note">The briefing opens in its own tab</span>
   </nav>
 
 
-  <!-- ============ DESIGN CLINIC BRIEF ============ -->
-  <section class="sec" id="brief">
+  <!-- ============ BRIEFING (moved to briefing.html) ============ -->
+  <section class="sec" id="briefing">
     <div class="sec-head">
-      <span class="sec-no">DESIGN CLINIC</span>
-      <h2>A real enterprise, a real network, five problems to solve</h2>
+      <span class="sec-no">BRIEFING</span>
+      <h2>Read the briefing first</h2>
     </div>
-    <p class="sec-sub"><b>4 seats · 60 minutes · 5 use cases · complete as many as you can.</b> Diagnose what the customer actually needs, place the right Cisco platforms on the network, and earn the right to the next meeting.</p>
-    <div class="grid g2">
-      <div class="panel" style="border-top:4px solid var(--cyan)">
-        <h3>The customer</h3>
-        <p>A <b>distributed enterprise</b>: a corporate HQ and on-premises data centre, a fleet of remote branches on <b>SD-WAN</b>, a growing remote and hybrid workforce — some of them now running <b>AI agents</b> — and an application estate spread across <b>on-prem, AWS and Azure</b>. They've grown by acquisition, they're mid-flight into public cloud, and their security controls haven't kept pace with their footprint.</p>
-      </div>
-      <div class="panel" style="border-top:4px solid var(--amber)">
-        <h3>The ask</h3>
-        <p>They are <b>not</b> asking you to rip anything out. They're asking you to bring <b>Zero Trust</b> to an environment that already exists — to <b>segment it, see it, and keep enforcing policy</b> no matter where the user, the device, or the workload happens to be.</p>
-      </div>
-    </div>
-    <div class="callout" style="margin-top:16px">
-      <p style="margin:0">Welcome to the design clinic. In today's threat landscape, static network boundaries are no longer sufficient. To achieve a true Zero Trust posture we shift from reactive security to an <b>iterative, dynamic</b> approach. Your group will design a <b>SASE environment</b> to satisfy the five use cases using the ZT Access and Agentic Identity controls discussed earlier. By integrating <b>SD-WAN, Cisco ISE, policy controls, telemetry</b> and any tool in the Cisco toolbox, you'll move beyond simple connectivity to an intelligent, digitally resilient network.</p>
-    </div>
-  </section>
-
-  <!-- ============ CUSTOMER ENVIRONMENT ============ -->
-  <section class="sec" id="environment">
-    <div class="sec-head">
-      <span class="sec-no">ENVIRONMENT</span>
-      <h2>The customer environment</h2>
-    </div>
-    <p class="sec-sub">You're the Cisco team on point for <b>a large enterprise customer</b> running campus and branch networks with a mix of wired and wireless clients. Read the environment once as a group so everyone shares the same picture, then work the use cases in order.</p>
-    <div class="grid g2">
-      <div class="panel" style="border-top:4px solid var(--cyan)">
-        <h3>Network at a glance</h3>
-        <ul>
-          <li><b>Campus HQ</b> — access / distribution / core switching, wired desktops and wireless, a large IoT footprint.</li>
-          <li><b>Branches</b> — wired and wireless clients, connected back over SD-WAN.</li>
-          <li><b>Data center</b> — on-prem applications plus workloads extending into public cloud.</li>
-          <li><b>Wireless</b> — corporate SSIDs and a Guest SSID.</li>
-          <li><b>Identity &amp; policy</b> — the customer can run Cisco ISE for authentication, profiling and posture.</li>
-        </ul>
-      </div>
-      <div class="panel" style="border-top:4px solid var(--amber)">
-        <h3>Who's on the network</h3>
-        <ul>
-          <li><b>Employees &amp; trusted devices</b> — laptops, mobiles (Group = Employees).</li>
-          <li><b>IoT</b> — printers, cameras, badge readers (Group = IOT).</li>
-          <li><b>Deskside agents</b> — dedicated Mac-minis (Group = deskagents).</li>
-          <li><b>Guests</b> — Internet-only (Group = Guest).</li>
-          <li><b>Corporate PCs</b> — some behind on AntiVirus / OS updates.</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ REFERENCE TOPOLOGY ============ -->
-  <section class="sec" id="topology">
-    <div class="sec-head">
-      <span class="sec-no">REFERENCE</span>
-      <h2>Current customer architecture</h2>
-    </div>
-    <p class="sec-sub">The reference network you're designing for — everyone starts from the same picture. Your diagram for each use case is your version of this, with the products and policy you propose drawn on top.</p>
-    <div class="topo-wrap">
-      <img src="reference-network.jpg" alt="Current customer architecture reference network diagram: remote branches and Zero Trust Access users connect via SD-WAN and SSE to the corporate HQ head-end routers, the on-premises application environment, and apps in Azure and AWS via cloud-exchange peering; Microsoft Entra ID provides identity and SaaS/Internet are reached through SSE.">
-    </div>
-    <p class="sample-note">The reference network you're designing for — everyone starts from the same picture. Remote branches and Zero Trust Access users reach the enterprise through <b>SD-WAN</b> and <b>SSE</b>; the corporate HQ (on-prem head-end routers) connects to the on-premises application environment and to <b>Azure</b> and <b>AWS</b> over cloud-exchange peering, with identity from <b>Microsoft Entra ID</b>. Draw your solution for each use case on top of it.</p>
-  </section>
-
-  <!-- ============ BUSINESS OBJECTIVES ============ -->
-  <section class="sec" id="objectives">
-    <div class="sec-head">
-      <span class="sec-no">OBJECTIVES</span>
-      <h2>Business objectives</h2>
-    </div>
-    <p class="sec-sub">What success looks like for the customer — every solution you propose should ladder up to these.</p>
-    <div class="grid g3">
-      <div class="deliver"><div class="num">1</div><div><b>Secure, scalable segmentation</b><p>Put every device in the right group and control what each group can reach — without re-architecting VLANs and subnets.</p></div></div>
-      <div class="deliver"><div class="num">2</div><div><b>Pass compliance (PCI)</b><p>Demonstrate segmentation and control of the cardholder environment and keep passing audits.</p></div></div>
-      <div class="deliver"><div class="num">3</div><div><b>Cut operational toil</b><p>Stop hand-profiling every new device and manually chasing posture — automate it.</p></div></div>
-      <div class="deliver"><div class="num">4</div><div><b>Work within budget</b><p>Reuse the existing network for enforcement — no wave of new firewalls just to segment.</p></div></div>
-      <div class="deliver"><div class="num">5</div><div><b>Improve endpoint hygiene</b><p>Bring corporate PCs up to date on AV and OS before they get full access.</p></div></div>
-      <div class="deliver"><div class="num">6</div><div><b>Complete as many use cases as you can — to score more</b><p>Five use cases, in order. Each one you solve and submit adds to your team's score on the leaderboard, so bank as many as the clock allows.</p></div></div>
-    </div>
-  </section>
-
-  <!-- ============ ROLES ============ -->
-  <section class="sec" id="roles">
-    <div class="sec-head">
-      <span class="sec-no">ROLES</span>
-      <h2>Four roles, no passengers</h2>
-    </div>
-    <p class="sec-sub">Four seats at the table, one standing job each for the whole hour. Pick roles in the first two minutes. Teams of three or five adapt — the facilitator will say how. The Digital Resiliency Officer's job is to challenge decisions and spark dialogue — not to block.</p>
-    <div class="grid g4">
-      <div class="card role" style="--rc:var(--amber);--rc-ink:#a3640f">
-        <span class="rtag">Owns the pace</span>
-        <h3>IT Director</h3>
-        <div class="owns">Pace &amp; submissions</div>
-        <ul>
-          <li>Watches the clock and keeps the team moving through the use cases.</li>
-          <li>Calls time checks so the team banks as many use cases as it can.</li>
-          <li>Confirms each use case is submitted before moving to the next.</li>
-        </ul>
-        <div class="always"><b>Always:</b> watches the timer and says the time out loud at each checkpoint.</div>
-      </div>
-      <div class="card role" style="--rc:var(--red);--rc-ink:#b53636">
-        <span class="rtag">Owns the challenge</span>
-        <h3>Digital Resiliency Officer</h3>
-        <div class="owns">Challenge &amp; resilience</div>
-        <ul>
-          <li>Challenges each decision — "what would make this fail?" — to spark dialogue, not to block.</li>
-          <li>Surfaces the threat surface and how an attacker could move if a control is missing.</li>
-          <li>Makes the team justify choices and weigh trade-offs out loud.</li>
-        </ul>
-        <div class="always"><b>Always:</b> asks "what are we assuming, and what could break it?" at every step.</div>
-      </div>
-      <div class="card role" style="--rc:var(--cyan);--rc-ink:#0a7c8c">
-        <span class="rtag">Owns the design</span>
-        <h3>Network Architect</h3>
-        <div class="owns">The diagram</div>
-        <ul>
-          <li>Holds the pen, draws the topology, keeps it legible.</li>
-          <li>Ensures every product and control has a home on the diagram.</li>
-          <li>Decides component placement and trust boundaries.</li>
-        </ul>
-        <div class="always"><b>Always:</b> sketches the current idea so the team argues over a picture, not words.</div>
-      </div>
-      <div class="card role" style="--rc:var(--green);--rc-ink:#1f8a63">
-        <span class="rtag">Owns the write-up</span>
-        <h3>Network Security Engineer</h3>
-        <div class="owns">Mapping &amp; submit</div>
-        <ul>
-          <li>Captures every key decision the moment it's made.</li>
-          <li>Owns the pain-point → product mapping and the product write-up.</li>
-          <li>Runs the diagram upload and final submission with the IT Director.</li>
-        </ul>
-        <div class="always"><b>Always:</b> records the "why" behind each choice — that's what the rubric rewards.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ SEGMENTATION METHODOLOGY (reference) ============ -->
-  <section class="sec" id="methodology">
-    <div class="sec-head">
-      <span class="sec-no">REFERENCE</span>
-      <h2>Segmentation methodology — read before you start</h2>
-    </div>
-    <p class="sec-sub">A short primer on how modern segmentation works, so the whole team shares the vocabulary. This is reference material — not the answer. Apply it to each use case.</p>
-    <div class="grid g2">
-      <div class="panel"><h3>Why VLANs / subnets alone struggle</h3><ul>
-        <li>Segmentation tied to IP/VLAN means topology changes ripple everywhere — complex and tedious.</li>
-        <li>Access rules become long IP ACLs that are hard to read, audit and maintain.</li>
-        <li>Every new device type needs new subnets and rules; staff can't keep up.</li>
-      </ul></div>
-      <div class="panel"><h3>Identity-based (group) segmentation</h3><ul>
-        <li>Classify each user/device into a <b>group</b> at the point of access (authentication + profiling).</li>
-        <li>Carry the group as a tag with the traffic, independent of IP / VLAN / topology.</li>
-        <li>Write policy as <b>group-to-group</b> (who may talk to whom), enforced across the existing network.</li>
-      </ul></div>
-      <div class="panel"><h3>The building blocks</h3><ul>
-        <li><b>Authenticate &amp; profile</b> every endpoint (802.1X, MAB, web auth) and learn what it is.</li>
-        <li><b>Posture</b> — check endpoint health (AV, OS, patches) and remediate before granting full access.</li>
-        <li><b>Tag &amp; enforce</b> — assign a group tag; switches / routers / firewalls enforce group policy inline.</li>
-        <li><b>Share context</b> — feed identity/group to firewalls, data center, SD-WAN and threat tools for consistent policy and rapid containment.</li>
-      </ul></div>
-      <div class="panel"><h3>How to approach each use case</h3><ul>
-        <li><b>1 · Map pain &rarr; product.</b> For every customer pain point, name the product/feature that fixes it.</li>
-        <li><b>2 · Say how &amp; why.</b> For each product, one line on how it works and why it's the right fit (differentiators welcome).</li>
-        <li><b>3 · Read the task &amp; parameters.</b> Note the specific groups, access rules and constraints.</li>
-        <li><b>4 · Propose a diagram.</b> Draw the topology with your solution on it, then submit for scoring.</li>
-      </ul></div>
+    <p class="sec-sub">The customer story, the network, the reference architecture, the objectives, the four roles and the segmentation method live on a dedicated <b>Briefing</b> page &mdash; so this page stays focused on the work. Open it (new tab) and read it as a group before the clock starts.</p>
+    <div class="brief-grid">
+      <a class="brief-card" href="briefing.html#brief" target="_blank" rel="noopener"><span class="bc-ic">🏢</span><b>The customer &amp; the ask</b><small>Who they are, what they need</small></a>
+      <a class="brief-card" href="briefing.html#environment" target="_blank" rel="noopener"><span class="bc-ic">🌐</span><b>The environment</b><small>Network &amp; who's on it</small></a>
+      <a class="brief-card" href="briefing.html#topology" target="_blank" rel="noopener"><span class="bc-ic">🗺️</span><b>Reference architecture</b><small>The diagram you build on</small></a>
+      <a class="brief-card" href="briefing.html#objectives" target="_blank" rel="noopener"><span class="bc-ic">🎯</span><b>Business objectives</b><small>What success looks like</small></a>
+      <a class="brief-card" href="briefing.html#roles" target="_blank" rel="noopener"><span class="bc-ic">👥</span><b>The four roles</b><small>Who does what</small></a>
+      <a class="brief-card" href="briefing.html#methodology" target="_blank" rel="noopener"><span class="bc-ic">📐</span><b>Segmentation method</b><small>Shared vocabulary</small></a>
+      <a class="brief-card" href="briefing.html#sample" target="_blank" rel="noopener"><span class="bc-ic">⭐</span><b>What &ldquo;good&rdquo; looks like</b><small>A sample answer to calibrate</small></a>
+      <a class="brief-card open-all" href="briefing.html" target="_blank" rel="noopener"><span class="bc-ic">📖</span><b>Open the full briefing</b><small>All of it, one page &rarr;</small></a>
     </div>
   </section>
 
@@ -1145,30 +1003,6 @@
       <span class="rankchip" id="pgRank" hidden></span>
     </div>
     <div class="uc-list" id="ucList"><!-- tiles built by the interactive engine --></div>
-  </section>
-
-  <!-- ============ WHAT GOOD LOOKS LIKE (sample) ============ -->
-  <section class="sec" id="sample">
-    <div class="sec-head">
-      <span class="sec-no">SAMPLE</span>
-      <h2>What "good" looks like</h2>
-    </div>
-    <p class="sec-sub">A short, <b>illustrative</b> example on a <b>different</b> scenario — use it to calibrate depth and format, not to copy. Strong answers name a specific product, say <b>how</b> it works in one line, and say <b>why</b> it fits (a Cisco differentiator earns extra).</p>
-    <span class="sample-tag">Example scenario · not one of your use cases</span>
-    <p class="sample-note">Customer pain: <i>"Guests and IoT cameras share the same VLAN, so a compromised camera can reach guest laptops — and we've no budget for more firewalls."</i></p>
-    <div class="sample-grid">
-      <div class="uc-step-h" style="font-size:15px;margin-bottom:8px"><span class="uc-step-n">1</span>Pain point &rarr; product mapping</div>
-      <div class="uc-table-wrap"><table class="uctab"><thead><tr><th>Customer pain point</th><th>Proposed product(s)</th><th>How it addresses / why</th></tr></thead><tbody>
-        <tr><td class="pp">IoT and Guest share a VLAN; a hacked camera can reach guests</td><td>Cisco ISE + TrustSec SGTs</td><td>Profile each device at onboarding, tag <b>IOT</b> and <b>Guest</b> groups, and enforce an SGACL that denies IOT&#8596;Guest — on the existing switches.</td></tr>
-        <tr><td class="pp">No budget for more firewalls to segment</td><td>TrustSec SGACL enforcement</td><td>Group-to-group policy is enforced <b>inline</b> on the Catalyst switches you already own — no new firewall to buy or cable.</td></tr>
-      </tbody></table></div>
-      <div class="uc-step-h" style="font-size:15px;margin:18px 0 8px"><span class="uc-step-n">2</span>Products proposed</div>
-      <div class="uc-table-wrap"><table class="uctab"><thead><tr><th>Product / feature</th><th>Description / how</th><th>Why / differentiator</th></tr></thead><tbody>
-        <tr><td>Cisco ISE</td><td>802.1X / MAB authenticate and profile every endpoint, then assign a group (SGT).</td><td>One policy source of truth; scales without per-subnet ACLs.</td></tr>
-        <tr><td>TrustSec SGACL</td><td>Group-to-group allow/deny enforced inline on Catalyst switches.</td><td>Topology-independent; far fewer rules than IP ACLs (Cisco differentiator).</td></tr>
-      </tbody></table></div>
-      <div class="callout" style="margin-top:16px"><b>A strong diagram</b> labels every group, marks the <b>enforcement point</b> (where the SGACL/firewall sits), and traces <b>one flow end-to-end</b> (e.g. camera &rarr; denied &rarr; guest). Legible beats pretty.</div>
-    </div>
   </section>
 
   <!-- ============ WORKSPACE (active use case) ============ -->
@@ -2160,7 +1994,7 @@
 
   // ---------- focus / play view (hide reference sections during the hour) ----------
   // "live" sections stay; everything else is reference that teams don't need mid-hour.
-  var LIVE_SECTIONS = { environment:1, topology:1, usecases:1, workspace:1 };
+  var LIVE_SECTIONS = { usecases:1, workspace:1 };
   $$(".sec").forEach(function(sec){ if(sec.id && !LIVE_SECTIONS[sec.id]) sec.classList.add("ref-sec"); });
   $$(".toc a").forEach(function(a){ var id=(a.getAttribute("href")||"").replace("#",""); if(id && !LIVE_SECTIONS[id]) a.classList.add("ref-link"); });
   var focusBtn=$("#btnFocus"), focusLabel=$("#btnFocusLabel"), focusOn=false;

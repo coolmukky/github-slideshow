@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Briefing — Zero Trust Access Design Clinic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#0a1a33;
+    --surface:#102849;        /* dark card */
+    --surface-2:#0c2140;
+    --ink:#EAF3FD;
+    --ink-soft:#A7C3E2;
+    --ink-faint:#7793B6;
+    --line:#20406A;
+    --line-soft:#193658;
+    --navy:#0D274D;           /* Cisco midnight blue */
+    --navy-deep:#04142c;
+    --cyan:#00BCEB;           /* Cisco blue */
+    --cyan-deep:#5FD7FF;      /* bright cyan accent for dark bg */
+    --amber:#F0A63C;
+    --amber-soft:#3a2a12;
+    --red:#FF6B6B;
+    --red-soft:#3a1818;
+    --green:#3FD08A;
+    --green-soft:#123a2c;
+    --shadow:0 1px 0 rgba(0,0,0,.2), 0 24px 50px -30px rgba(0,0,0,.75);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:"IBM Plex Sans",system-ui,sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1100px 560px at 92% -8%, rgba(0,188,235,.12), transparent 60%),
+      radial-gradient(900px 520px at -5% 2%, rgba(13,63,115,.55), transparent 55%),
+      #071528;
+    background-attachment:fixed;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  h1,h2,h3,h4{font-family:"Chakra Petch",sans-serif;margin:0;line-height:1.08;letter-spacing:-.01em}
+  .mono{font-family:"IBM Plex Mono",monospace}
+  p{margin:0 0 .7em}
+  a{color:var(--cyan-deep)}
+
+  /* eyebrows */
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:11.5px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--cyan-deep);
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:radial-gradient(130% 150% at 86% -12%,#0a5a99 0%,#0d3f73 34%,var(--navy) 62%,var(--navy-deep) 100%);
+    color:#EAF1F8;border-radius:0 0 26px 26px;border-bottom:3px solid var(--cyan);
+    position:relative;overflow:hidden;
+  }
+  .hero::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+    background-size:34px 34px;mask-image:radial-gradient(70% 90% at 80% 0%,#000,transparent 75%);
+  }
+  .hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:1.5fr .8fr;gap:30px;align-items:center;padding:34px 0 40px}
+  .hero .eyebrow{color:#7FE2EF}
+  .hero h1{font-size:clamp(34px,5.6vw,60px);font-weight:700;margin:.28em 0 .35em;color:#fff}
+  .hero h1 span{color:var(--cyan)}
+  .hero .lede{color:#AEC4DC;font-size:16px;max-width:42ch;margin-bottom:18px}
+  .facts{display:flex;gap:10px;flex-wrap:wrap}
+  .fact{
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:11px;
+    padding:9px 13px;min-width:96px;
+  }
+  .fact b{font-family:"Chakra Petch";font-size:20px;display:block;color:#fff;line-height:1}
+  .fact small{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#8FA8C4}
+
+  /* clock dial */
+  .dial{display:flex;justify-content:center}
+  .dial svg{width:200px;height:200px;filter:drop-shadow(0 12px 26px rgba(0,0,0,.45))}
+
+  /* ---------- SECTION SHELL ---------- */
+  .sec{padding:46px 0 8px}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:20px;flex-wrap:wrap}
+  .sec-no{font-family:"IBM Plex Mono";font-size:12px;font-weight:600;color:var(--cyan-deep);border:1.5px solid var(--cyan);border-radius:7px;padding:3px 8px}
+  .sec-head h2{font-size:clamp(22px,3vw,30px);font-weight:700}
+  .sec-sub{color:var(--ink-soft);max-width:64ch;margin-top:-6px}
+
+  /* ---------- TIMELINE TRACK (signature) ---------- */
+  .track-card{
+    background:var(--navy);color:#fff;border-radius:18px;padding:26px 26px 22px;box-shadow:var(--shadow);
+    border:1px solid rgba(255,255,255,.08);
+  }
+  .track-card .eyebrow{color:#7FE2EF}
+  .track-scroll{overflow-x:auto;padding-bottom:6px}
+  .track{display:flex;gap:6px;min-width:680px;margin:18px 0 8px}
+  .stop{flex-grow:var(--g);flex-basis:0;min-width:92px;position:relative}
+  .stop .bar{height:13px;border-radius:5px;background:var(--c);position:relative;opacity:.92}
+  .stop .ph{font-family:"Chakra Petch";font-weight:700;font-size:13px;margin-top:11px;color:#fff;display:flex;align-items:center;gap:6px}
+  .stop .ph i{width:8px;height:8px;border-radius:50%;background:var(--c);display:inline-block}
+  .stop .nm{font-size:12px;color:#B8CCE2;line-height:1.3}
+  .stop .tc{font-family:"IBM Plex Mono";font-size:11px;color:#7FE2EF;margin-top:3px;letter-spacing:.04em}
+  .track-scale{display:flex;justify-content:space-between;font-family:"IBM Plex Mono";font-size:10.5px;color:#6F87A4;border-top:1px dashed rgba(255,255,255,.18);padding-top:8px;margin-top:6px}
+
+  /* ---------- generic cards/grids ---------- */
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px 18px;box-shadow:var(--shadow)}
+  .card h3{font-size:16px;font-weight:600;margin-bottom:6px}
+  .card p{font-size:14px;color:var(--ink-soft);margin-bottom:0}
+  .ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:11px}
+  .ic svg{width:17px;height:17px;stroke-width:1.8}
+
+  /* objective / deliverables */
+  .win{display:grid;grid-template-columns:1.2fr 1fr;gap:16px}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+  .panel.accent-cyan{border-top:4px solid var(--cyan)}
+  .panel.accent-green{border-top:4px solid var(--green)}
+  .panel h3{font-size:17px;margin-bottom:10px;display:flex;align-items:center;gap:9px}
+  .checklist{list-style:none;padding:0;margin:0}
+  .checklist li{position:relative;padding:7px 0 7px 28px;font-size:14px;color:var(--ink-soft);border-bottom:1px dashed var(--line-soft)}
+  .checklist li:last-child{border-bottom:none}
+  .checklist li::before{content:"";position:absolute;left:0;top:11px;width:15px;height:15px;border-radius:4px;border:2px solid var(--cyan)}
+  .deliver{display:flex;gap:13px;align-items:flex-start;padding:13px 0;border-bottom:1px dashed var(--line-soft)}
+  .deliver:last-child{border-bottom:none}
+  .deliver .num{font-family:"Chakra Petch";font-weight:700;font-size:15px;color:#fff;background:var(--green);min-width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+  .deliver b{font-size:14.5px}
+  .deliver p{font-size:13px;margin:2px 0 0;color:var(--ink-soft)}
+
+  /* role cards */
+  .role{position:relative;overflow:hidden}
+  .role::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:var(--rc)}
+  .role .rtag{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:var(--rc);display:inline-block;padding:3px 8px;border-radius:5px;margin:4px 0 9px}
+  .role h3{font-size:17px}
+  .role .owns{font-size:12px;font-family:"IBM Plex Mono";color:var(--ink-faint);margin:8px 0 9px;letter-spacing:.03em}
+  .role ul{margin:0;padding-left:17px;font-size:13.5px;color:var(--ink-soft)}
+  .role ul li{margin-bottom:5px}
+  .role .always{margin-top:11px;padding-top:10px;border-top:1px dashed var(--line-soft);font-size:12.5px}
+  .role .always b{color:var(--rc-ink)}
+
+  /* phase cards */
+  .phase{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:18px}
+  .phase-top{display:flex;align-items:stretch;gap:0;border-bottom:1px solid var(--line-soft)}
+  .phase-badge{background:var(--pc);color:#fff;padding:16px 18px;min-width:118px;display:flex;flex-direction:column;justify-content:center}
+  .phase-badge .pno{font-family:"IBM Plex Mono";font-size:11px;letter-spacing:.16em;opacity:.85}
+  .phase-badge .pnm{font-family:"Chakra Petch";font-weight:700;font-size:22px;line-height:1;margin-top:3px}
+  .phase-badge .pmin{font-family:"IBM Plex Mono";font-size:11px;margin-top:7px;opacity:.9}
+  .phase-meta{flex:1;padding:14px 18px;display:flex;flex-direction:column;justify-content:center;gap:9px}
+  .phase-meta .goal{font-size:14.5px;color:var(--ink);font-weight:500}
+  .minitrack{display:flex;gap:3px}
+  .minitrack span{height:7px;border-radius:3px;background:var(--line);flex:1}
+  .minitrack span.on{background:var(--pc)}
+  /* prominent per-phase progress tracker */
+  .progress{margin-top:6px}
+  .progress-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px;gap:10px}
+  .progress-head .pl{font-family:"IBM Plex Mono";font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)}
+  .progress-head .pr{font-family:"IBM Plex Mono";font-size:11.5px;font-weight:600;color:var(--pc);white-space:nowrap}
+  .ptrack{display:flex;gap:3px}
+  .pseg{flex-grow:var(--g);flex-basis:0;min-width:28px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;background:#E4EAF2;position:relative}
+  .pseg b{font-family:"IBM Plex Mono";font-size:9.5px;font-weight:600;color:#A6B3C5}
+  .pseg.done{background:#93A4B8}
+  .pseg.done b{color:#fff}
+  .pseg.now{background:var(--pc)}
+  .pseg.now b{color:#fff;font-weight:700}
+  .pseg.now::before{content:"";position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid var(--pc)}
+  .phase-body{padding:16px 18px 18px}
+  .phase-body > .lbl{font-family:"IBM Plex Mono";font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin:2px 0 9px}
+  .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin-bottom:6px}
+  .act{display:flex;gap:9px;font-size:13.5px;color:var(--ink-soft);padding:5px 0}
+  .act .chip{font-family:"IBM Plex Mono";font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#fff;border-radius:5px;padding:3px 6px;height:fit-content;white-space:normal;overflow-wrap:break-word;flex:0 0 auto;max-width:42%;margin-top:1px}
+  .chip.con{background:var(--amber)} .chip.thr{background:var(--red)} .chip.arc{background:var(--cyan)} .chip.scr{background:var(--green)} .chip.all{background:var(--navy)}
+  .timecheck{display:flex;align-items:center;gap:11px;background:var(--amber-soft);border:1px solid #F0CE97;border-radius:10px;padding:10px 14px;margin-top:13px}
+  .timecheck svg{width:18px;height:18px;color:var(--amber);flex-shrink:0}
+  .timecheck p{margin:0;font-size:13px;color:#8a560f}
+  .timecheck b{font-family:"IBM Plex Mono";color:#6e440a}
+  .exit{margin-top:11px;font-size:13px;color:var(--ink);background:var(--green-soft);border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:9px 13px}
+  .exit b{font-family:"Chakra Petch";font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--green);display:block;margin-bottom:2px}
+  .inj-flag{display:inline-flex;align-items:center;gap:7px;font-family:"IBM Plex Mono";font-size:11px;font-weight:600;color:#fff;background:var(--red);border-radius:6px;padding:4px 9px;margin-top:13px}
+  .inj-flag svg{width:13px;height:13px}
+
+  /* injection cards */
+  .inj{background:var(--surface);border:1px solid #F0C4C4;border-radius:14px;box-shadow:var(--shadow);overflow:hidden;position:relative}
+  .inj-head{background:var(--red);color:#fff;padding:13px 16px;display:flex;align-items:center;justify-content:space-between}
+  .inj-head .l{display:flex;align-items:center;gap:10px}
+  .inj-head svg{width:18px;height:18px}
+  .inj-head .tt{font-family:"Chakra Petch";font-weight:700;font-size:15px}
+  .inj-head .when{font-family:"IBM Plex Mono";font-size:11px;background:rgba(255,255,255,.18);padding:3px 8px;border-radius:6px}
+  .inj-body{padding:15px 16px}
+  .inj-body .scn{font-size:14px;color:var(--ink);margin-bottom:11px}
+  .inj-body .scn b{color:var(--red)}
+  .inj-body .dec{font-family:"IBM Plex Mono";font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:5px}
+  .inj-body .tests{font-size:12.5px;color:var(--ink-soft);background:#F7F9FC;border:1px solid var(--line-soft);border-radius:9px;padding:9px 12px}
+  .inj-body .tests b{color:var(--cyan-deep)}
+
+  /* scenario dossier */
+  .dossier{background:linear-gradient(160deg,var(--navy) 0%,var(--navy-deep) 100%);color:#E7EFF8;border-radius:18px;padding:0;overflow:hidden;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.08)}
+  .dossier-top{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.18)}
+  .dossier-top .eyebrow{color:#7FE2EF}
+  .dossier-top .stamp{font-family:"IBM Plex Mono";font-size:11px;border:1.5px solid var(--red);color:#ff9a9a;padding:4px 10px;border-radius:6px;letter-spacing:.14em;transform:rotate(-2deg)}
+  .dossier-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:0}
+  .dossier-main{padding:22px 24px}
+  .dossier-main h3{font-size:21px;color:#fff;margin-bottom:8px}
+  .dossier-main p{color:#B7CADF;font-size:14px}
+  .dossier-side{padding:22px 24px;background:rgba(0,0,0,.22);border-left:1px solid rgba(255,255,255,.1)}
+  .dossier-side h4{font-family:"IBM Plex Mono";font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#7FE2EF;margin-bottom:10px}
+  .painlist{list-style:none;margin:0;padding:0}
+  .painlist li{font-size:13px;color:#CBD9E8;padding:6px 0 6px 22px;position:relative;border-bottom:1px dashed rgba(255,255,255,.1)}
+  .painlist li:last-child{border-bottom:none}
+  .painlist li::before{content:"!";position:absolute;left:0;top:6px;width:15px;height:15px;border-radius:50%;background:var(--red);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:"Chakra Petch"}
+  .state-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .state{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);border-radius:9px;padding:9px 12px;flex:1;min-width:120px}
+  .state b{font-family:"Chakra Petch";font-size:12px;color:#fff;display:block}
+  .state span{font-size:12px;color:#9FB6CE}
+
+  /* templates */
+  .tmpl{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+  .tmpl-h{padding:13px 16px;border-bottom:1px solid var(--line-soft);display:flex;align-items:center;gap:10px}
+  .tmpl-h svg{width:18px;height:18px;color:var(--cyan-deep)}
+  .tmpl-h h3{font-size:15px}
+  .tmpl-b{padding:16px}
+  .canvas{border:2px dashed var(--line);border-radius:10px;height:150px;display:flex;align-items:center;justify-content:center;color:var(--ink-faint);font-size:13px;background:repeating-linear-gradient(45deg,#fbfcfe,#fbfcfe 12px,#f4f7fb 12px,#f4f7fb 24px);text-align:center;padding:14px}
+  .legend{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+  .legend span{font-family:"IBM Plex Mono";font-size:11px;color:var(--ink-soft);background:#F4F7FB;border:1px solid var(--line-soft);border-radius:20px;padding:4px 10px}
+  .sheet-field{border:1px solid var(--line-soft);border-radius:9px;padding:9px 12px;margin-bottom:9px}
+  .sheet-field .k{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan-deep);margin-bottom:3px}
+  .sheet-field .v{font-size:12.5px;color:var(--ink-faint);font-style:italic}
+
+  /* evaluation flow */
+  .flow{display:flex;gap:0;align-items:stretch;margin-top:6px}
+  .fstep{flex:1 1 0;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:15px 13px;text-align:center;position:relative;box-shadow:var(--shadow)}
+  .fstep .fn{font-family:"IBM Plex Mono";font-size:10px;color:var(--cyan-deep);letter-spacing:.12em}
+  .fstep .fic{width:38px;height:38px;border-radius:10px;background:var(--navy);display:flex;align-items:center;justify-content:center;margin:9px auto 10px}
+  .fstep .fic svg{width:19px;height:19px;color:#7FE2EF;stroke-width:1.7}
+  .fstep h4{font-size:13.5px;margin-bottom:4px}
+  .fstep p{font-size:11.5px;color:var(--ink-soft);margin:0}
+  .farrow{flex:0 0 auto;padding:0 5px;display:flex;align-items:center;justify-content:center;color:var(--cyan);font-weight:700;font-size:20px}
+  .proctor-note{display:flex;gap:12px;align-items:center;background:#EAF7F9;border:1px solid #B6E4EB;border-radius:12px;padding:13px 16px;margin-top:16px}
+  .proctor-note svg{width:22px;height:22px;color:var(--cyan-deep);flex-shrink:0}
+  .proctor-note p{margin:0;font-size:13px;color:#0a5560}
+
+  /* rubric */
+  .rubric{width:100%;border-collapse:collapse;background:var(--surface);border-radius:13px;overflow:hidden;box-shadow:var(--shadow);font-size:13.5px}
+  .rubric th{background:var(--navy);color:#fff;text-align:left;padding:12px 14px;font-family:"Chakra Petch";font-weight:600;font-size:12.5px;letter-spacing:.02em}
+  .rubric td{padding:11px 14px;border-bottom:1px solid var(--line-soft);color:var(--ink-soft);vertical-align:top}
+  .rubric tr:last-child td{border-bottom:none}
+  .rubric td b{color:var(--ink)}
+  .rubric .w{font-family:"IBM Plex Mono";font-weight:600;color:var(--cyan-deep);white-space:nowrap}
+  .levels{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
+  .lvl{border-radius:12px;padding:15px;color:#fff;position:relative;overflow:hidden}
+  .lvl .lr{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:.1em;opacity:.9}
+  .lvl h4{font-family:"Chakra Petch";font-size:18px;margin:4px 0 6px}
+  .lvl p{font-size:12px;margin:0;opacity:.95;line-height:1.4}
+  .lvl.l1{background:#8593A6} .lvl.l2{background:var(--cyan-deep)} .lvl.l3{background:#2a6fb0} .lvl.l4{background:var(--green)}
+
+  /* facilitator cues */
+  .cues{background:var(--navy-deep);border-radius:16px;padding:8px 6px;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.08)}
+  .cue{display:grid;grid-template-columns:78px 1fr;gap:14px;align-items:start;padding:11px 18px;border-bottom:1px solid rgba(255,255,255,.07)}
+  .cue:last-child{border-bottom:none}
+  .cue .t{font-family:"IBM Plex Mono";font-size:14px;font-weight:600;color:var(--amber)}
+  .cue .d{font-size:13.5px;color:#C8D6E6}
+  .cue .d b{color:#fff}
+  .cue.fire .t{color:#ff8a8a}
+  .cue.fire .d b{color:#ff8a8a}
+
+  /* start here / kickoff */
+  .kick{display:grid;grid-template-columns:1.32fr 1fr;gap:18px;align-items:start}
+  .steps{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+  .steps .sh{background:var(--amber);color:#fff;padding:13px 18px;display:flex;align-items:center;gap:10px}
+  .steps .sh svg{width:18px;height:18px}
+  .steps .sh b{font-family:"Chakra Petch";font-size:15px;letter-spacing:.01em}
+  .step{display:grid;grid-template-columns:42px 1fr;gap:14px;padding:15px 18px;border-bottom:1px solid var(--line-soft);align-items:start}
+  .step:last-child{border-bottom:none}
+  .step .sn{font-family:"Chakra Petch";font-weight:700;font-size:17px;color:#fff;background:var(--navy);width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+  .step h4{font-size:15px;margin-bottom:3px}
+  .step p{font-size:13.5px;color:var(--ink-soft);margin:0}
+  .step p b{color:var(--ink)}
+  .step .who{display:inline-block;font-family:"IBM Plex Mono";font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#fff;border-radius:5px;padding:2px 7px;margin-bottom:6px}
+  .who.con{background:var(--amber)} .who.all{background:var(--navy)}
+  .timehow{background:linear-gradient(165deg,var(--navy) 0%,var(--navy-deep) 100%);color:#E7EFF8;border-radius:16px;padding:20px;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.08)}
+  .timehow .eyebrow{color:#F6C476}
+  .timehow h3{font-size:18px;color:#fff;margin:7px 0 12px;display:flex;align-items:center;gap:9px}
+  .timehow h3 svg{width:20px;height:20px;color:var(--amber)}
+  .timehow ol{margin:0;padding-left:0;list-style:none;counter-reset:th}
+  .timehow li{counter-increment:th;position:relative;padding:8px 0 8px 30px;font-size:13px;color:#CBD9E8;border-bottom:1px dashed rgba(255,255,255,.1)}
+  .timehow li:last-child{border-bottom:none}
+  .timehow li::before{content:counter(th);position:absolute;left:0;top:8px;width:19px;height:19px;border-radius:50%;background:var(--amber);color:#3a2407;font-family:"IBM Plex Mono";font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center}
+  .timehow li b{color:#fff}
+  .pickbox{background:#F7F9FC;border:1px solid var(--line-soft);border-left:4px solid var(--cyan);border-radius:0 10px 10px 0;padding:12px 15px;margin-top:16px}
+  .pickbox b{font-family:"Chakra Petch";font-size:12px;letter-spacing:.03em;text-transform:uppercase;color:var(--cyan-deep);display:block;margin-bottom:5px}
+  .pickbox p{font-size:13px;color:var(--ink-soft);margin:0}
+
+  /* worked example */
+  .svgwrap{width:100%;overflow-x:auto;background:#fff}
+  .svgwrap svg{width:100%;min-width:720px;height:auto;display:block}
+  .excap{font-size:12.5px;color:var(--ink-soft);padding:12px 16px 2px;border-top:1px solid var(--line-soft)}
+  .excap b{color:var(--cyan-deep)}
+  .exgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+  .exf{border:1px solid var(--line-soft);border-radius:10px;padding:12px 14px;background:#fff}
+  .exf.full{grid-column:1 / -1}
+  .exf .k{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan-deep);margin-bottom:6px}
+  .exf .v{font-size:13px;color:var(--ink);margin:0}
+  .exf ul{margin:2px 0 0;padding-left:16px}
+  .exf li{font-size:12.5px;color:var(--ink);margin-bottom:5px}
+  .exf li b{color:var(--ink)}
+  .exf.inj .k{color:var(--red)}
+  .exf.refl{border-left:3px solid var(--cyan)}
+  .exf.refl .k{color:var(--cyan-deep)}
+  .lands{display:flex;gap:12px;align-items:center;background:var(--green-soft);border:1px solid #A9DEC9;border-radius:12px;padding:13px 16px;margin-top:14px}
+  .lands svg{width:20px;height:20px;color:#1f8a63;flex-shrink:0}
+  .lands p{margin:0;font-size:13px;color:#1f6e52}
+  .lands b{color:#155c43}
+
+  /* package / distribution */
+  .kit{list-style:none;margin:0;padding:0}
+  .kit li{display:flex;gap:11px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line-soft);font-size:13.5px;color:var(--ink-soft)}
+  .kit li:last-child{border-bottom:none}
+  .kit .qty{font-family:"IBM Plex Mono";font-size:10px;font-weight:600;color:#fff;background:var(--navy);border-radius:6px;padding:3px 7px;white-space:nowrap;margin-top:1px;min-width:54px;text-align:center}
+  .kit .qty.dig{background:var(--cyan-deep)}
+  .kit b{color:var(--ink)}
+  .kit small{display:block;font-size:12px;color:var(--ink-faint)}
+  .withhold{background:var(--red-soft);border:1px solid #F0C4C4;border-radius:11px;padding:13px 15px;margin-top:13px}
+  .withhold b{font-family:"Chakra Petch";font-size:12px;letter-spacing:.03em;text-transform:uppercase;color:var(--red);display:block;margin-bottom:4px}
+  .withhold p{font-size:13px;color:var(--ink-soft);margin:0}
+
+  /* player journey grid */
+  .jwrap{overflow-x:auto;border-radius:13px;box-shadow:var(--shadow)}
+  .jtable{width:100%;border-collapse:collapse;background:#fff;font-size:12px;min-width:780px}
+  .jtable th{padding:11px 11px;text-align:left;font-family:"Chakra Petch";font-weight:600;font-size:12px;color:#fff;vertical-align:middle}
+  .jtable th.ph{background:var(--navy-deep)}
+  .jtable th.hcon{background:var(--amber)} .jtable th.hthr{background:var(--red)} .jtable th.harc{background:var(--cyan)} .jtable th.hscr{background:var(--green)}
+  .jtable td{padding:9px 11px;border-bottom:1px solid var(--line-soft);border-right:1px solid var(--line-soft);vertical-align:top;color:var(--ink-soft);line-height:1.4}
+  .jtable td:last-child{border-right:none}
+  .jtable td.phc{background:#EEF3F9;font-weight:600;color:var(--ink);white-space:nowrap;font-size:11.5px}
+  .jtable td.phc small{display:block;font-family:"IBM Plex Mono";font-size:10px;color:var(--ink-faint);font-weight:400;margin-top:2px}
+  .jtable tr:last-child td{border-bottom:none}
+  .lead{display:inline-block;font-family:"IBM Plex Mono";font-size:8.5px;font-weight:700;letter-spacing:.07em;color:#fff;border-radius:4px;padding:1px 5px;margin-bottom:4px}
+  .lead.con{background:var(--amber)} .lead.thr{background:var(--red)} .lead.arc{background:var(--cyan)} .lead.scr{background:var(--green)}
+  .takeaways{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+  .ta{border-radius:11px;padding:13px 14px;border:1px solid var(--line);background:#fff;border-top:4px solid var(--tc)}
+  .ta h4{font-size:13.5px;margin-bottom:5px;color:var(--tc-ink)}
+  .ta p{font-size:12px;color:var(--ink-soft);margin:0}
+
+  /* table of contents nav */
+  .sec{scroll-margin-top:16px}
+  .toc{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:22px 0 2px;padding:13px 16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+  .toc-lbl{font-family:"IBM Plex Mono";font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin-right:4px}
+  .toc a{font-size:12.5px;color:var(--ink-soft);text-decoration:none;background:#EEF3F9;border:1px solid var(--line-soft);border-radius:20px;padding:5px 12px;transition:background .15s,color .15s}
+  .toc a:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+  /* design lifecycle hint */
+  .lifecycle{background:#EEF3F9;border:1px solid var(--line-soft);border-radius:10px;padding:11px 13px;margin-top:13px}
+  .lc-note{font-size:12.5px;color:var(--ink-soft);margin-bottom:9px}
+  .lc-note b{color:var(--ink)}
+  .lc-track{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+  .lc-step{font-family:"IBM Plex Mono";font-size:10.5px;font-weight:600;color:var(--ink-soft);background:#fff;border:1px solid var(--line);border-radius:7px;padding:5px 9px;display:inline-flex;flex-direction:column;line-height:1.25}
+  .lc-step small{font-family:"IBM Plex Sans";font-size:8.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--cyan-deep)}
+  .lc-step.now{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .lc-step.now small{color:#7FE2EF}
+  .lc-arr{color:var(--cyan);font-weight:700;font-size:13px}
+
+  /* footer */
+  .foot{margin:46px 0 30px;padding-top:22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;align-items:center}
+  .foot .eyebrow{color:var(--ink-faint)}
+  .foot .tag{font-family:"IBM Plex Mono";font-size:11px;color:var(--ink-faint)}
+
+  .anim{opacity:0;transform:translateY(10px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  @media (max-width:860px){
+    .hero-inner{grid-template-columns:1fr}.dial{justify-content:flex-start}
+    .win{grid-template-columns:1fr}.kick{grid-template-columns:1fr}.dossier-grid{grid-template-columns:1fr}.dossier-side{border-left:none;border-top:1px solid rgba(255,255,255,.1)}
+    .g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr}.flow{flex-direction:column}.farrow{transform:rotate(90deg);height:26px}.levels{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:560px){
+    .g4,.g2,.acts{grid-template-columns:1fr}.levels{grid-template-columns:1fr}.exgrid{grid-template-columns:1fr}.takeaways{grid-template-columns:1fr 1fr}
+    .phase-top{flex-direction:column}.phase-badge{min-width:0;flex-direction:row;gap:10px;align-items:center}.phase-badge .pmin{margin-top:0}
+  }
+  @media print{
+    body{background:#fff}
+    .hero{border-radius:0}
+    .anim{animation:none;opacity:1;transform:none}
+    *{box-shadow:none !important}
+    .toc{display:none}
+    .sec{padding:18px 0 4px}
+    .sec-head{break-inside:avoid;break-after:avoid}
+    h1,h2,h3,h4{break-after:avoid}
+    .sec-sub{break-after:avoid;break-inside:avoid}
+    .card,.panel,.phase,.inj,.tmpl,.fstep,.lvl,.cue,.step,.ta,.role,.deliver,.timehow,.dossier,.track-card,.steps,.flow{break-inside:avoid}
+    tr{break-inside:avoid}
+    .foot{break-before:avoid}
+  }
+  @media (prefers-reduced-motion:reduce){.anim{animation:none;opacity:1;transform:none}}
+
+  /* ====================================================================
+     INTERACTIVE LAYER — facilitator timer, sealed injections, toasts,
+     tickable checklists, fillable solution sheet
+     ==================================================================== */
+  body{padding-top:0}
+  body.has-bar{padding-top:62px}
+  .sec{scroll-margin-top:80px}
+
+  /* --- fixed facilitator control bar --- */
+  .facilbar{
+    position:fixed;top:0;left:0;right:0;z-index:200;
+    background:linear-gradient(180deg,#0c1d34,#0a1830);
+    border-bottom:2px solid var(--cyan);
+    color:#EAF1F8;display:flex;align-items:center;gap:14px;
+    padding:8px 18px;min-height:62px;
+    box-shadow:0 10px 30px -16px rgba(0,0,0,.7);
+    font-family:"IBM Plex Mono",monospace;
+  }
+  .facilbar .fb-clock{display:flex;align-items:baseline;gap:8px;flex-shrink:0}
+  .facilbar .fb-time{font-size:26px;font-weight:600;letter-spacing:.04em;color:#fff;font-variant-numeric:tabular-nums}
+  .facilbar .fb-total{font-size:12px;color:#7E93AE}
+  .facilbar .fb-phase{
+    display:flex;flex-direction:column;line-height:1.15;padding-left:14px;
+    border-left:1px solid rgba(255,255,255,.14);min-width:0;
+  }
+  .facilbar .fb-phase .fp-name{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:14px;color:var(--pc,#7FE2EF);white-space:nowrap}
+  .facilbar .fb-phase .fp-next{font-size:10.5px;color:#8FA8C4;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .facilbar .fb-spacer{flex:1}
+  .facilbar .fb-bar{flex:1;height:7px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden;min-width:60px;max-width:340px}
+  .facilbar .fb-bar i{display:block;height:100%;width:0;background:var(--pc,var(--cyan));transition:width .3s linear,background .3s}
+  .facilbar .fb-btns{display:flex;gap:7px;flex-shrink:0}
+  .fb-btn{
+    font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;letter-spacing:.05em;
+    color:#EAF1F8;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
+    border-radius:8px;padding:8px 13px;cursor:pointer;transition:background .15s,border-color .15s,transform .05s;
+    text-transform:uppercase;display:inline-flex;align-items:center;gap:6px;
+  }
+  .fb-btn:hover{background:rgba(255,255,255,.16)}
+  .fb-btn:active{transform:translateY(1px)}
+  .fb-btn.primary{background:var(--green);border-color:var(--green);color:#fff}
+  .fb-btn.primary:hover{background:#2cb583}
+  .fb-btn.warn{background:var(--amber);border-color:var(--amber);color:#fff}
+  .fb-btn.warn:hover{background:#ef9a3a}
+  .fb-btn.ghost{background:transparent}
+  .fb-btn svg{width:14px;height:14px;stroke-width:2.2}
+  .fb-btn.icon{padding:8px 10px}
+  .fb-btn[aria-pressed="false"]{opacity:.55}
+  .fb-btn:disabled{opacity:.5;cursor:not-allowed}
+  @media (max-width:880px){
+    .facilbar{flex-wrap:wrap;min-height:0;padding:8px 12px;gap:9px}
+    body.has-bar{padding-top:104px}
+    .facilbar .fb-bar{order:5;flex-basis:100%;max-width:none}
+    .facilbar .fb-spacer{display:none}
+  }
+  @media (max-width:560px){
+    .facilbar .fb-phase{display:none}
+    body.has-bar{padding-top:96px}
+  }
+
+  /* --- toast / announcement region --- */
+  .toast-wrap{position:fixed;top:74px;right:18px;z-index:210;display:flex;flex-direction:column;gap:10px;max-width:min(380px,90vw)}
+  .toast{
+    background:var(--navy);color:#EAF1F8;border-radius:12px;padding:13px 16px;
+    border-left:4px solid var(--cyan);box-shadow:0 18px 40px -16px rgba(0,0,0,.6);
+    transform:translateX(120%);opacity:0;transition:transform .4s cubic-bezier(.2,.8,.3,1),opacity .4s;
+  }
+  .toast.show{transform:none;opacity:1}
+  .toast .tt{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px;margin-bottom:3px}
+  .toast .tt .tk{font-family:"IBM Plex Mono",monospace;font-size:11px;background:rgba(255,255,255,.14);padding:2px 7px;border-radius:5px}
+  .toast .tb{font-size:13px;color:#C8D6E6;line-height:1.4}
+  .toast.fire{border-left-color:var(--red);background:#2a1320}
+  .toast.fire .tt{color:#ff9a9a}
+  .toast.phase{border-left-color:var(--green)}
+
+  /* --- sealed injection cards --- */
+  .inj.sealable{position:relative}
+  .inj.sealed .inj-body{filter:blur(7px);user-select:none;pointer-events:none}
+  .inj.sealed .inj-head .when{background:rgba(255,255,255,.28)}
+  .inj-seal{
+    position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+    background:linear-gradient(160deg,rgba(20,42,71,.92),rgba(10,24,48,.95));color:#EAF1F8;
+    border-radius:14px;text-align:center;padding:18px;
+  }
+  .inj-seal svg{width:30px;height:30px;color:#7FE2EF}
+  .inj-seal .sl-t{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:15px}
+  .inj-seal .sl-w{font-family:"IBM Plex Mono",monospace;font-size:12px;color:#8FA8C4}
+  .inj-seal .sl-cd{font-family:"IBM Plex Mono",monospace;font-size:22px;font-weight:600;color:#fff;letter-spacing:.04em}
+  .inj-seal .fb-btn{font-size:11px}
+  .inj.revealing{animation:injflash 1.1s ease}
+  @keyframes injflash{0%{box-shadow:0 0 0 0 rgba(219,74,74,.0)}20%{box-shadow:0 0 0 5px rgba(219,74,74,.55)}100%{box-shadow:0 0 0 0 rgba(219,74,74,0)}}
+
+  /* --- active phase highlighting --- */
+  .stop.active .bar{opacity:1;box-shadow:0 0 0 2px #fff, 0 0 14px 1px var(--c)}
+  .stop.active .ph{text-shadow:0 0 12px rgba(255,255,255,.35)}
+  .stop.done .bar{opacity:.45}
+  .phase.active{outline:3px solid var(--pc);outline-offset:2px;box-shadow:0 1px 0 rgba(14,26,43,.04),0 22px 48px -26px rgba(14,26,43,.7)}
+  .phase .live-flag{display:none}
+  .phase.active .live-flag{
+    display:inline-flex;align-items:center;gap:6px;margin-left:auto;
+    font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.12em;
+    color:#fff;background:var(--pc);border-radius:20px;padding:3px 10px;text-transform:uppercase;
+  }
+  .phase.active .live-flag::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:pulse 1.2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+  /* --- tickable checklists --- */
+  .checklist li.ck{cursor:pointer;transition:color .15s}
+  .checklist li.ck:hover::before{border-color:var(--cyan-deep)}
+  .checklist li.ck.checked{color:var(--ink-faint)}
+  .checklist li.ck.checked::before{background:var(--cyan);border-color:var(--cyan)}
+  .checklist li.ck.checked::after{
+    content:"";position:absolute;left:4.5px;top:13px;width:6px;height:9px;
+    border:solid #fff;border-width:0 2px 2px 0;transform:rotate(40deg);
+  }
+  .ck-progress{
+    font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:600;letter-spacing:.08em;
+    color:var(--cyan-deep);background:#EAF7F9;border:1px solid #B6E4EB;border-radius:20px;
+    padding:2px 9px;margin-left:8px;white-space:nowrap;vertical-align:middle;
+  }
+
+  /* --- fillable solution sheet --- */
+  .sheet-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:12px;border-bottom:1px dashed var(--line-soft)}
+  .sheet-tools .st-note{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-faint);margin-right:auto}
+  .sheet-tools .st-note b{color:var(--green)}
+  .st-btn.go{background:var(--green);border-color:var(--green);color:#fff}
+  .st-btn.go:hover{background:#2cb583;border-color:#2cb583}
+  .st-status{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--green);white-space:nowrap}
+  .diag-thumb{height:30px;width:44px;object-fit:cover;border-radius:6px;border:1px solid var(--line)}
+  .st-btn[data-diaglabel]{cursor:pointer}
+  .st-btn{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;letter-spacing:.04em;
+    color:var(--ink);background:#F4F7FB;border:1px solid var(--line);border-radius:8px;
+    padding:6px 11px;cursor:pointer;transition:background .15s,border-color .15s;display:inline-flex;align-items:center;gap:6px;
+  }
+  .st-btn:hover{background:#E8EEF6;border-color:var(--cyan)}
+  .st-btn svg{width:13px;height:13px;stroke-width:2}
+  .sheet-field textarea{
+    width:100%;border:none;background:transparent;resize:vertical;min-height:34px;
+    font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:13px;color:var(--ink);line-height:1.5;
+    padding:0;outline:none;
+  }
+  .sheet-field textarea::placeholder{color:var(--ink-faint);font-style:italic}
+  .sheet-field.filled{border-color:var(--cyan);background:#FAFEFF}
+  .sheet-field:focus-within{border-color:var(--cyan-deep);box-shadow:0 0 0 3px rgba(15,169,190,.12)}
+
+  /* --- design clinic brief / topology / sample --- */
+  .callout{background:#F0F8FA;border:1px solid #BEE3EA;border-left:4px solid var(--cyan-deep);border-radius:12px;padding:14px 18px;font-size:13.5px;color:#0a5560;line-height:1.6}
+  .topo-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:#fff;padding:10px}
+  .topo-wrap svg{display:block;min-width:760px;width:100%;height:auto}
+  .topo-wrap img{display:block;width:100%;min-width:720px;height:auto;border-radius:8px}
+  .topo-neon{background:#061530;border:1px solid #123156;padding:0;box-shadow:0 20px 50px -24px rgba(0,120,180,.5)}
+  .topo-neon svg{min-width:820px;border-radius:14px}
+  .topo-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;font-size:12px;color:var(--ink-soft)}
+  .topo-legend span{display:inline-flex;align-items:center;gap:6px}
+  .topo-legend i{width:14px;height:14px;border-radius:4px;display:inline-block}
+  .sample-note{font-size:12.5px;color:var(--ink-soft);margin:0 0 14px}
+  .sample-grid .uctab td{color:var(--ink)}
+  .sample-tag{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#166049;background:#E4F6EE;border:1px solid #A9DEC9;border-radius:20px;padding:3px 10px;margin-bottom:10px}
+
+  /* --- use-case hub + workspace --- */
+  .uc-list{display:flex;flex-direction:column;gap:10px}
+  .uc-card{display:flex;align-items:center;gap:14px;width:100%;text-align:left;cursor:pointer;
+    background:var(--surface,#fff);border:1px solid var(--line);border-left:5px solid var(--cyan);border-radius:12px;padding:13px 16px;transition:box-shadow .15s,border-color .15s}
+  .uc-card:hover{box-shadow:0 10px 24px -16px rgba(14,26,43,.5)}
+  .uc-card.sel{border-color:var(--cyan-deep);box-shadow:0 0 0 3px rgba(15,169,190,.14)}
+  .uc-card.done{border-left-color:var(--green)}
+  .uc-card.soon,.uc-card.locked{border-left-color:#C7D2DE;opacity:.72;cursor:not-allowed}
+  .uc-card .uc-n{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:20px;width:30px;text-align:center;color:var(--cyan-deep)}
+  .uc-card.done .uc-n{color:var(--green)}
+  .uc-card .uc-mid{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+  .uc-card .uc-t{font-weight:600;font-size:15px;color:var(--ink)}
+  .uc-card .uc-tag{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint)}
+  .uc-card .uc-state{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;color:var(--ink-soft);white-space:nowrap}
+  .uc-card.done .uc-state{color:var(--green)}
+  /* square image tiles */
+  .uc-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+  .uc-tile{position:relative;display:flex;flex-direction:column;text-align:left;padding:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface);cursor:pointer;box-shadow:var(--shadow);transition:transform .12s ease,box-shadow .15s}
+  .uc-tile:hover{transform:translateY(-3px);box-shadow:0 18px 36px -18px rgba(14,26,43,.55)}
+  .uc-tile.locked,.uc-tile.soon{cursor:not-allowed}
+  .uc-tile.open{border-color:var(--cyan)}
+  .ut-art{position:relative;aspect-ratio:16/10;display:flex;align-items:center;justify-content:center}
+  .ut-art svg{width:62px;height:62px;stroke:#fff;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:.96;filter:drop-shadow(0 4px 10px rgba(0,0,0,.25))}
+  .uc-tile.locked .ut-art,.uc-tile.soon .ut-art{filter:grayscale(.4) brightness(.92)}
+  .uc-tile.locked .ut-art svg,.uc-tile.soon .ut-art svg{opacity:.5}
+  .ut-lock,.ut-check{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px}
+  .ut-lock{background:rgba(6,20,44,.42);color:#fff}
+  .ut-check{background:var(--green);color:#fff;font-weight:800}
+  .ut-flag{position:absolute;top:10px;left:10px;font-family:"IBM Plex Mono",monospace;font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#062038;background:#8fe9ff;border-radius:20px;padding:3px 9px;box-shadow:0 3px 10px rgba(0,0,0,.28)}
+  .ut-body{padding:12px 14px 14px}
+  .ut-n{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan-deep)}
+  .uc-tile.done .ut-n{color:var(--green)}
+  .uc-tile.locked .ut-n,.uc-tile.soon .ut-n{color:var(--ink-faint)}
+  .ut-t{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:15px;color:var(--ink);margin:3px 0 6px;line-height:1.15}
+  .ut-state{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:600;color:var(--ink-soft);line-height:1.4}
+  .uc-tile.done .ut-state{color:var(--green)}
+  .uc-empty{padding:26px;text-align:center;color:var(--ink-soft);background:#F6F9FC;border:1px dashed var(--line);border-radius:12px}
+  .uc-empty h3{margin:0 0 6px;color:var(--ink)}
+  .uc-brief{background:#F7FAFD;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:18px}
+  .uc-brief-h{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .uc-badge{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--cyan-deep);border-radius:6px;padding:3px 8px}
+  .uc-brief-h h3{margin:0;font-size:18px}
+  .uc-intro{font-size:13.5px;color:var(--ink-soft);margin:0 0 14px}
+  .uc-col-h{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:7px}
+  .uc-col ul{margin:0;padding-left:18px}.uc-col li{font-size:12.5px;color:var(--ink);margin-bottom:5px;line-height:1.45}
+  .uc-col.red .uc-col-h{color:#b53636}.uc-col.cyan .uc-col-h{color:var(--cyan-deep)}
+  .uc-step{margin-top:20px}
+  .uc-step-h{display:flex;align-items:center;gap:10px;font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:16px;color:var(--ink)}
+  .uc-step-n{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--cyan-deep);color:#fff;font-size:13px}
+  .uc-step-sub{font-size:12.5px;color:var(--ink-soft);margin:5px 0 10px}
+  .uc-table-wrap{overflow-x:auto}
+  .uctab{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
+  .uctab th{text-align:left;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);padding:6px 10px;border-bottom:2px solid var(--line)}
+  .uctab td{vertical-align:top;padding:6px 10px;border-bottom:1px solid var(--line-soft)}
+  .uctab td.pp{font-size:12.5px;color:var(--ink);width:34%}
+  .uctab textarea{width:100%;border:1px solid var(--line);border-radius:8px;background:#fff;resize:vertical;min-height:34px;
+    font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:13px;color:var(--ink);line-height:1.45;padding:7px 9px;outline:none}
+  .uctab textarea:focus{border-color:var(--cyan-deep);box-shadow:0 0 0 3px rgba(15,169,190,.1)}
+  .uctab textarea::placeholder{color:var(--ink-faint);font-style:italic}
+  .uc-diagrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .uc-diagrow .diag-thumb{height:44px;width:66px}
+  .uc-submit{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:22px;padding-top:16px;border-top:1px dashed var(--line-soft)}
+  .uc-substatus{font-family:"IBM Plex Mono",monospace;font-size:11.5px;margin-right:auto}
+  #ucAddProd{margin-top:10px}
+  .uc-live{display:flex;align-items:center;gap:8px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-faint);margin:2px 0 16px}
+  .uc-live .ld{width:9px;height:9px;border-radius:50%;background:var(--ink-faint);flex-shrink:0}
+  .uc-live.on{color:var(--cyan-deep)}
+  .uc-live.on .ld{background:var(--green);box-shadow:0 0 0 3px rgba(39,162,118,.22);animation:ldpulse 1.5s infinite}
+  @keyframes ldpulse{0%,100%{opacity:1}50%{opacity:.35}}
+  /* full-screen use-case view */
+  .uc-view{position:fixed;inset:0;z-index:250;background:#F3F6FA;display:flex;flex-direction:column}
+  .uc-view[hidden]{display:none}
+  body.uc-view-open{overflow:hidden}
+  .uc-view-top{display:flex;align-items:center;gap:14px;padding:12px 18px;background:var(--navy);color:#fff;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+  .uc-back{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:9px;padding:8px 12px;font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;cursor:pointer}
+  .uc-back:hover{background:rgba(255,255,255,.22)}
+  .uc-back svg{width:15px;height:15px;stroke-width:2.4}
+  .uc-view-title{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:16px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .uc-pace{font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:600;color:#bfe9ff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:6px 12px;white-space:nowrap}
+  .uc-pace.behind{color:#ffd0a3;border-color:rgba(226,137,31,.6);background:rgba(226,137,31,.18)}
+  .uc-pace.good{color:#b6f0d8;border-color:rgba(39,162,118,.6);background:rgba(39,162,118,.18)}
+  .uc-view-scroll{flex:1;overflow-y:auto;padding:20px 0 64px}
+  .uc-allot{background:#EAF6FB;border:1px solid #BEE3EA;border-left:4px solid var(--cyan-deep);border-radius:10px;padding:10px 14px;font-size:13px;color:#0a5560;margin:14px 0}
+  .uc-playbook{margin:0 0 18px}
+  .pb-card{border:1px solid var(--line);border-top:3px solid var(--pc,#7E8CA1);border-radius:11px;padding:11px 13px;background:var(--surface,#fff)}
+  .pb-card.you{box-shadow:0 0 0 2px var(--pc);background:#fbffff}
+  .pb-name{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:13.5px;color:var(--ink);margin-bottom:5px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+  .pb-you{font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:700;letter-spacing:.06em;color:#fff;background:var(--pc);border-radius:12px;padding:2px 7px}
+  .pb-does{font-size:12px;color:var(--ink-soft);line-height:1.45}
+
+  /* --- persona "take your seat" login --- */
+  .persona-btn{
+    font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;letter-spacing:.04em;
+    color:#EAF1F8;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
+    border-radius:8px;padding:7px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+    transition:background .15s,border-color .15s;white-space:nowrap;
+  }
+  .persona-btn:hover{background:rgba(255,255,255,.16)}
+  .persona-btn .dot{width:10px;height:10px;border-radius:50%;background:var(--you,#7E8CA1);flex-shrink:0;box-shadow:0 0 0 2px rgba(255,255,255,.18)}
+  .persona-btn .pl{max-width:120px;overflow:hidden;text-overflow:ellipsis}
+
+  .persona-modal{position:fixed;inset:0;z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(8,18,34,.72);backdrop-filter:blur(3px)}
+  .persona-modal[hidden]{display:none}
+  .pm-card{
+    position:relative;width:min(560px,100%);max-height:90vh;overflow:auto;
+    background:var(--surface);border-radius:18px;padding:26px 26px 22px;box-shadow:0 30px 70px -20px rgba(0,0,0,.6);
+    border-top:4px solid var(--cyan);animation:rise .4s cubic-bezier(.2,.7,.3,1) both;
+  }
+  .pm-close{position:absolute;top:14px;right:16px;border:none;background:transparent;font-size:24px;line-height:1;color:var(--ink-faint);cursor:pointer}
+  .pm-close:hover{color:var(--ink)}
+  .pm-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan-deep)}
+  .pm-card h2{font-size:26px;font-weight:700;margin:6px 0 8px}
+  .pm-sub{font-size:13.5px;color:var(--ink-soft);margin-bottom:16px}
+  .pm-sub b{color:var(--ink)}
+  .pm-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+  .pm-field{display:flex;flex-direction:column;gap:4px}
+  .pm-field.pm-wide{grid-column:1 / -1}
+  .pm-field span{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
+  .pm-field input{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-family:"IBM Plex Sans",sans-serif;font-size:14px;color:var(--ink);outline:none}
+  .pm-field input:focus{border-color:var(--cyan-deep);box-shadow:0 0 0 3px rgba(15,169,190,.12)}
+  .pm-field input.bad{border-color:var(--red);box-shadow:0 0 0 3px rgba(219,74,74,.12)}
+  .pm-error{font-size:12.5px;color:var(--red);background:var(--red-soft);border:1px solid #F0C4C4;border-radius:9px;padding:8px 11px;margin:4px 0 2px}
+  .pm-error[hidden]{display:none}
+  .pm-teammode{display:flex;gap:8px;margin:12px 0 8px}
+  .pm-tab{flex:1;border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 12px;font-family:"IBM Plex Sans",sans-serif;font-size:13.5px;font-weight:600;color:var(--ink-soft);cursor:pointer}
+  .pm-tab.on{border-color:var(--cyan-deep);background:#EAF7F9;color:var(--cyan-deep);box-shadow:0 0 0 2px rgba(15,169,190,.12)}
+  .pm-teamsec{background:#F7F9FC;border:1px solid var(--line-soft);border-radius:10px;padding:11px 13px}
+  .pm-teamsec[hidden]{display:none}
+  .pm-hint{font-size:12.5px;color:var(--ink-soft);margin:0 0 9px}
+  .pm-hint b{color:var(--ink)}
+  #pmCode{text-transform:uppercase;letter-spacing:.14em;font-family:"IBM Plex Mono",monospace}
+  .teamcode-chip{font-family:"IBM Plex Mono",monospace;font-weight:700;letter-spacing:.14em;color:#fff;background:var(--cyan-deep);border-radius:6px;padding:2px 8px}
+  .pm-rolelbl{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:14px 0 8px}
+  .pm-roles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .pm-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:14px}
+  .pm-role{
+    text-align:left;border:1.5px solid var(--line);border-radius:12px;padding:13px 14px;cursor:pointer;
+    background:#fff;transition:border-color .15s,box-shadow .15s,transform .05s;border-top:4px solid var(--rc,var(--line));
+  }
+  .pm-role:hover{box-shadow:0 10px 24px -14px rgba(14,26,43,.5)}
+  .pm-role:active{transform:translateY(1px)}
+  .pm-role.facil{grid-column:1 / -1}
+  .pm-role b{font-family:"Chakra Petch",sans-serif;font-size:16px;display:block;color:var(--ink)}
+  .pm-role span{font-size:12px;color:var(--ink-soft)}
+  .pm-skip{border:none;background:transparent;color:var(--ink-faint);font-family:"IBM Plex Mono",monospace;font-size:12px;cursor:pointer;padding:6px 0}
+  .pm-skip:hover{color:var(--ink-soft);text-decoration:underline}
+
+  /* persona highlights across the page */
+  .you-act{font-weight:600;color:var(--ink);position:relative}
+  .you-act::after{content:"YOU";font-family:"IBM Plex Mono",monospace;font-size:8.5px;font-weight:700;letter-spacing:.08em;color:#fff;background:var(--you,#7E8CA1);border-radius:4px;padding:1px 5px;margin-left:7px;vertical-align:middle}
+  .role.you-role{outline:3px solid var(--you,#7E8CA1);outline-offset:3px}
+  .you-role-badge{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:9.5px;font-weight:700;letter-spacing:.1em;color:#fff;background:var(--you,#7E8CA1);border-radius:5px;padding:2px 8px;margin-left:8px;vertical-align:middle}
+  .jtable td.you-col{box-shadow:inset 3px 0 0 var(--you,#7E8CA1);background:#FAFCFF}
+  .jtable th.you-col{box-shadow:inset 0 -3px 0 #fff}
+
+  @media (max-width:520px){ .pm-roles{grid-template-columns:1fr} }
+
+  /* waiting-for-proctor overlay */
+  .wait-overlay{position:fixed;inset:0;z-index:450;display:flex;align-items:center;justify-content:center;padding:22px;background:linear-gradient(160deg,rgba(18,42,71,.97),rgba(10,24,48,.98));color:#EAF1F8;text-align:center}
+  .wait-overlay[hidden]{display:none}
+  .wo-card{max-width:460px}
+  .wo-card h2{font-size:26px;color:#fff;margin:8px 0 10px}
+  .wo-card p{font-size:14px;color:#AEC4DC;line-height:1.55}
+  .wo-card .pm-eyebrow{color:#7FE2EF}
+  .wo-card b{color:#fff}
+  .wo-spin{width:42px;height:42px;border-radius:50%;border:4px solid rgba(255,255,255,.18);border-top-color:var(--cyan);margin:0 auto 14px;animation:wospin 1s linear infinite}
+  @keyframes wospin{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){.wo-spin{animation:none}}
+  .wo-count{font-family:"IBM Plex Mono",monospace;font-size:30px;font-weight:600;color:#fff;margin-top:6px;letter-spacing:.04em}
+  .wo-codeform{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .wo-codeform input{border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#fff;border-radius:10px;padding:11px 14px;font-family:"IBM Plex Mono",monospace;font-size:16px;letter-spacing:.18em;text-transform:uppercase;text-align:center;width:180px;outline:none}
+  .wo-codeform input::placeholder{color:#7E93AE;letter-spacing:.12em}
+
+  /* --- focus / play view (hide reference sections during the hour) --- */
+  body.focus-mode .ref-sec{display:none}
+  body.focus-mode .toc a.ref-link{display:none}
+  #btnFocus[aria-pressed="false"]{opacity:1}
+  #btnFocus.on{background:var(--cyan);border-color:var(--cyan);color:#fff}
+  .toc .focus-note{display:none;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--cyan-deep);background:#EAF7F9;border:1px solid #B6E4EB;border-radius:20px;padding:4px 11px}
+  body.focus-mode .toc .focus-note{display:inline-flex;align-items:center;gap:6px}
+
+  @media print{
+    .facilbar,.toast-wrap,.inj-seal,.persona-modal{display:none !important}
+    body.focus-mode .ref-sec{display:block}
+    body.has-bar{padding-top:0}
+    .inj.sealed .inj-body{filter:none}
+    .sheet-tools{display:none}
+    .ck-progress{display:none}
+  }
+
+  /* ============================================================
+     MISSION-CONTROL DARK THEME + GAMIFICATION
+     ============================================================ */
+  h1,h2,h3,h4{color:var(--ink)}
+  a{color:var(--cyan-deep)}
+  .sec-sub,.uc-intro{color:var(--ink-soft)}
+  .sec-no{color:var(--cyan-deep);border-color:var(--line)}
+  /* nav */
+  .toc{background:rgba(16,40,73,.6);border:1px solid var(--line);backdrop-filter:blur(6px)}
+  .toc a{color:var(--ink-soft)} .toc a:hover{color:var(--cyan-deep)}
+  .toc .toc-lbl{color:var(--ink-faint)}
+  /* generic cards / panels */
+  .panel,.card,.deliver,.uc-brief,.uc-empty,.tmpl{background:var(--surface);border-color:var(--line);box-shadow:var(--shadow)}
+  .panel ul li,.card ul li{color:var(--ink-soft)}
+  .role .always{color:var(--ink-soft)}
+  .deliver .num{color:#fff}
+  .callout,.uc-allot{background:rgba(0,188,235,.08);border-color:#155b7e;color:#bfeaf7}
+  .callout b,.uc-allot b{color:#eafaff}
+  /* methodology / uc columns */
+  .uc-col li{color:var(--ink)}
+  .uc-brief{background:linear-gradient(180deg,#123152,#0e2340)}
+  /* persona playbook cards */
+  .pb-card{background:var(--surface-2);border-color:var(--line)}
+  .pb-card.you{background:#123457}
+  .pb-does{color:var(--ink-soft)}
+  /* tables (methodology sample + workspace) */
+  .uctab th{color:var(--ink-faint);border-bottom-color:var(--line)}
+  .uctab td{border-bottom-color:var(--line-soft)}
+  .uctab td,.uctab td.pp,.sample-grid .uctab td{color:var(--ink)}
+  .uctab td.empty{color:var(--ink-faint)}
+  .uctab textarea{background:#0a1f3b;border-color:var(--line);color:var(--ink)}
+  .uctab textarea::placeholder{color:var(--ink-faint)}
+  .sample-note{color:var(--ink-soft)}
+  /* use-case tiles */
+  .uc-tile{background:var(--surface);border-color:var(--line)}
+  .ut-body{background:transparent}
+  .ut-t{color:var(--ink)} .ut-state{color:var(--ink-soft)}
+  .uc-tile.open{border-color:var(--cyan);box-shadow:0 0 0 1px rgba(0,188,235,.4),0 18px 40px -22px rgba(0,188,235,.5)}
+  /* full-screen use-case view */
+  .uc-view{background:radial-gradient(1000px 500px at 90% -10%,rgba(0,188,235,.10),transparent 60%),#071528}
+  .uc-live{color:var(--ink-faint)}
+  /* buttons */
+  .st-btn{background:#153458;border-color:var(--line);color:var(--ink)}
+  .st-btn:hover{background:#1b4370;border-color:var(--cyan)}
+  /* persona modal + waiting overlay */
+  .pm-card,.wo-card{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+  .pm-sub,.pm-hint{color:var(--ink-soft)}
+  .pm-field span{color:var(--ink-faint)}
+  .pm-field input,#pmCode,#woCode{background:#0a1f3b;border-color:var(--line);color:var(--ink)}
+  .pm-field input::placeholder{color:var(--ink-faint)}
+  .pm-teammode .pm-tab{background:#0c2140;border-color:var(--line);color:var(--ink-soft)}
+  .pm-teammode .pm-tab.on{background:var(--cyan);color:#04182b;border-color:var(--cyan)}
+  .pm-role{background:var(--surface-2);border-color:var(--line)}
+  .pm-role b{color:var(--ink)} .pm-role span{color:var(--ink-soft)}
+  .pm-rolelbl{color:var(--ink-faint)}
+  .pm-skip{color:var(--ink-faint)}
+  .pm-close{color:var(--ink-faint)}
+  .wo-codeform input{background:#0a1f3b;border-color:var(--line);color:var(--ink)}
+  /* neon glow on tile art + hero accent */
+  .ut-art svg{filter:drop-shadow(0 3px 12px rgba(0,0,0,.4))}
+  .hero h1 span{text-shadow:0 0 26px rgba(0,188,235,.55)}
+
+  /* ---- gamification: progress bar ---- */
+  .uc-progress{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin:0 0 18px;box-shadow:var(--shadow)}
+  .uc-progress .pgnum{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:22px;color:var(--cyan-deep);white-space:nowrap}
+  .uc-progress .pgnum small{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-faint)}
+  .uc-progress .pgbar{flex:1;height:12px;border-radius:8px;background:#0a1f3b;overflow:hidden;border:1px solid var(--line)}
+  .uc-progress .pgbar i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,#0a86c9,#00BCEB,#5fd7ff);box-shadow:0 0 14px rgba(0,188,235,.6);transition:width .6s cubic-bezier(.2,.8,.2,1)}
+  .uc-progress .pgmeta{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-soft);white-space:nowrap}
+  .uc-progress .rankchip{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;color:#04182b;background:#8fe9ff;border-radius:20px;padding:4px 10px;white-space:nowrap}
+
+  /* ---- team identity badge (in the top bar persona button) ---- */
+  .team-badge{display:inline-flex;align-items:center;gap:6px;font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;color:#04182b;border-radius:20px;padding:3px 9px;margin-left:8px}
+
+  /* ---- scroll reveal ---- */
+  .sec.reveal{opacity:0;transform:translateY(18px)}
+  .sec.reveal.in{opacity:1;transform:none;transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
+  @media (prefers-reduced-motion:reduce){ .sec.reveal{opacity:1;transform:none} }
+
+  /* ---- confetti canvas ---- */
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:400}
+</style>
+</head>
+<body>
+
+<!-- ============ HERO (briefing) ============ -->
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="anim">
+        <span class="eyebrow">Zero Trust Access Design Clinic · The Briefing</span>
+        <h1>The Briefing<br><span>Read before you start</span></h1>
+        <p class="lede">Everything your team needs before the clock starts — the customer, the network, the reference architecture, the business objectives, the four roles and the segmentation method. Read it together as a group, then head back to the clinic and work the five use cases.</p>
+        <a class="st-btn go" href="zero-trust-design-sprint.html#usecases" style="font-size:14px;padding:11px 18px;text-decoration:none;display:inline-block">&larr; Back to the clinic &nbsp;·&nbsp; go to the use cases</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+  <div class="wrap">
+
+  <nav class="toc" aria-label="Contents">
+    <span class="toc-lbl">Jump to</span>
+    <a href="#brief">Brief</a><a href="#environment">Environment</a><a href="#topology">Topology</a>
+    <a href="#objectives">Objectives</a><a href="#roles">Roles</a><a href="#methodology">Methodology</a>
+    <a href="#sample">Sample</a>
+    <a href="zero-trust-design-sprint.html#usecases">Use cases &rarr;</a>
+  </nav>
+
+  <!-- ============ DESIGN CLINIC BRIEF ============ -->
+  <section class="sec" id="brief">
+    <div class="sec-head">
+      <span class="sec-no">DESIGN CLINIC</span>
+      <h2>A real enterprise, a real network, five problems to solve</h2>
+    </div>
+    <p class="sec-sub"><b>4 seats · 60 minutes · 5 use cases · complete as many as you can.</b> Diagnose what the customer actually needs, place the right Cisco platforms on the network, and earn the right to the next meeting.</p>
+    <div class="grid g2">
+      <div class="panel" style="border-top:4px solid var(--cyan)">
+        <h3>The customer</h3>
+        <p>A <b>distributed enterprise</b>: a corporate HQ and on-premises data centre, a fleet of remote branches on <b>SD-WAN</b>, a growing remote and hybrid workforce — some of them now running <b>AI agents</b> — and an application estate spread across <b>on-prem, AWS and Azure</b>. They've grown by acquisition, they're mid-flight into public cloud, and their security controls haven't kept pace with their footprint.</p>
+      </div>
+      <div class="panel" style="border-top:4px solid var(--amber)">
+        <h3>The ask</h3>
+        <p>They are <b>not</b> asking you to rip anything out. They're asking you to bring <b>Zero Trust</b> to an environment that already exists — to <b>segment it, see it, and keep enforcing policy</b> no matter where the user, the device, or the workload happens to be.</p>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:16px">
+      <p style="margin:0">Welcome to the design clinic. In today's threat landscape, static network boundaries are no longer sufficient. To achieve a true Zero Trust posture we shift from reactive security to an <b>iterative, dynamic</b> approach. Your group will design a <b>SASE environment</b> to satisfy the five use cases using the ZT Access and Agentic Identity controls discussed earlier. By integrating <b>SD-WAN, Cisco ISE, policy controls, telemetry</b> and any tool in the Cisco toolbox, you'll move beyond simple connectivity to an intelligent, digitally resilient network.</p>
+    </div>
+  </section>
+
+  <!-- ============ CUSTOMER ENVIRONMENT ============ -->
+  <section class="sec" id="environment">
+    <div class="sec-head">
+      <span class="sec-no">ENVIRONMENT</span>
+      <h2>The customer environment</h2>
+    </div>
+    <p class="sec-sub">You're the Cisco team on point for <b>a large enterprise customer</b> running campus and branch networks with a mix of wired and wireless clients. Read the environment once as a group so everyone shares the same picture, then work the use cases in order.</p>
+    <div class="grid g2">
+      <div class="panel" style="border-top:4px solid var(--cyan)">
+        <h3>Network at a glance</h3>
+        <ul>
+          <li><b>Campus HQ</b> — access / distribution / core switching, wired desktops and wireless, a large IoT footprint.</li>
+          <li><b>Branches</b> — wired and wireless clients, connected back over SD-WAN.</li>
+          <li><b>Data center</b> — on-prem applications plus workloads extending into public cloud.</li>
+          <li><b>Wireless</b> — corporate SSIDs and a Guest SSID.</li>
+          <li><b>Identity &amp; policy</b> — the customer can run Cisco ISE for authentication, profiling and posture.</li>
+        </ul>
+      </div>
+      <div class="panel" style="border-top:4px solid var(--amber)">
+        <h3>Who's on the network</h3>
+        <ul>
+          <li><b>Employees &amp; trusted devices</b> — laptops, mobiles (Group = Employees).</li>
+          <li><b>IoT</b> — printers, cameras, badge readers (Group = IOT).</li>
+          <li><b>Deskside agents</b> — dedicated Mac-minis (Group = deskagents).</li>
+          <li><b>Guests</b> — Internet-only (Group = Guest).</li>
+          <li><b>Corporate PCs</b> — some behind on AntiVirus / OS updates.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ REFERENCE TOPOLOGY ============ -->
+  <section class="sec" id="topology">
+    <div class="sec-head">
+      <span class="sec-no">REFERENCE</span>
+      <h2>Current customer architecture</h2>
+    </div>
+    <p class="sec-sub">The reference network you're designing for — everyone starts from the same picture. Your diagram for each use case is your version of this, with the products and policy you propose drawn on top.</p>
+    <div class="topo-wrap">
+      <img src="reference-network.jpg" alt="Current customer architecture reference network diagram: remote branches and Zero Trust Access users connect via SD-WAN and SSE to the corporate HQ head-end routers, the on-premises application environment, and apps in Azure and AWS via cloud-exchange peering; Microsoft Entra ID provides identity and SaaS/Internet are reached through SSE.">
+    </div>
+    <p class="sample-note">The reference network you're designing for — everyone starts from the same picture. Remote branches and Zero Trust Access users reach the enterprise through <b>SD-WAN</b> and <b>SSE</b>; the corporate HQ (on-prem head-end routers) connects to the on-premises application environment and to <b>Azure</b> and <b>AWS</b> over cloud-exchange peering, with identity from <b>Microsoft Entra ID</b>. Draw your solution for each use case on top of it.</p>
+  </section>
+
+  <!-- ============ BUSINESS OBJECTIVES ============ -->
+  <section class="sec" id="objectives">
+    <div class="sec-head">
+      <span class="sec-no">OBJECTIVES</span>
+      <h2>Business objectives</h2>
+    </div>
+    <p class="sec-sub">What success looks like for the customer — every solution you propose should ladder up to these.</p>
+    <div class="grid g3">
+      <div class="deliver"><div class="num">1</div><div><b>Secure, scalable segmentation</b><p>Put every device in the right group and control what each group can reach — without re-architecting VLANs and subnets.</p></div></div>
+      <div class="deliver"><div class="num">2</div><div><b>Pass compliance (PCI)</b><p>Demonstrate segmentation and control of the cardholder environment and keep passing audits.</p></div></div>
+      <div class="deliver"><div class="num">3</div><div><b>Cut operational toil</b><p>Stop hand-profiling every new device and manually chasing posture — automate it.</p></div></div>
+      <div class="deliver"><div class="num">4</div><div><b>Work within budget</b><p>Reuse the existing network for enforcement — no wave of new firewalls just to segment.</p></div></div>
+      <div class="deliver"><div class="num">5</div><div><b>Improve endpoint hygiene</b><p>Bring corporate PCs up to date on AV and OS before they get full access.</p></div></div>
+      <div class="deliver"><div class="num">6</div><div><b>Complete as many use cases as you can — to score more</b><p>Five use cases, in order. Each one you solve and submit adds to your team's score on the leaderboard, so bank as many as the clock allows.</p></div></div>
+    </div>
+  </section>
+
+  <!-- ============ ROLES ============ -->
+  <section class="sec" id="roles">
+    <div class="sec-head">
+      <span class="sec-no">ROLES</span>
+      <h2>Four roles, no passengers</h2>
+    </div>
+    <p class="sec-sub">Four seats at the table, one standing job each for the whole hour. Pick roles in the first two minutes. Teams of three or five adapt — the facilitator will say how. The Digital Resiliency Officer's job is to challenge decisions and spark dialogue — not to block.</p>
+    <div class="grid g4">
+      <div class="card role" style="--rc:var(--amber);--rc-ink:#a3640f">
+        <span class="rtag">Owns the pace</span>
+        <h3>IT Director</h3>
+        <div class="owns">Pace &amp; submissions</div>
+        <ul>
+          <li>Watches the clock and keeps the team moving through the use cases.</li>
+          <li>Calls time checks so the team banks as many use cases as it can.</li>
+          <li>Confirms each use case is submitted before moving to the next.</li>
+        </ul>
+        <div class="always"><b>Always:</b> watches the timer and says the time out loud at each checkpoint.</div>
+      </div>
+      <div class="card role" style="--rc:var(--red);--rc-ink:#b53636">
+        <span class="rtag">Owns the challenge</span>
+        <h3>Digital Resiliency Officer</h3>
+        <div class="owns">Challenge &amp; resilience</div>
+        <ul>
+          <li>Challenges each decision — "what would make this fail?" — to spark dialogue, not to block.</li>
+          <li>Surfaces the threat surface and how an attacker could move if a control is missing.</li>
+          <li>Makes the team justify choices and weigh trade-offs out loud.</li>
+        </ul>
+        <div class="always"><b>Always:</b> asks "what are we assuming, and what could break it?" at every step.</div>
+      </div>
+      <div class="card role" style="--rc:var(--cyan);--rc-ink:#0a7c8c">
+        <span class="rtag">Owns the design</span>
+        <h3>Network Architect</h3>
+        <div class="owns">The diagram</div>
+        <ul>
+          <li>Holds the pen, draws the topology, keeps it legible.</li>
+          <li>Ensures every product and control has a home on the diagram.</li>
+          <li>Decides component placement and trust boundaries.</li>
+        </ul>
+        <div class="always"><b>Always:</b> sketches the current idea so the team argues over a picture, not words.</div>
+      </div>
+      <div class="card role" style="--rc:var(--green);--rc-ink:#1f8a63">
+        <span class="rtag">Owns the write-up</span>
+        <h3>Network Security Engineer</h3>
+        <div class="owns">Mapping &amp; submit</div>
+        <ul>
+          <li>Captures every key decision the moment it's made.</li>
+          <li>Owns the pain-point → product mapping and the product write-up.</li>
+          <li>Runs the diagram upload and final submission with the IT Director.</li>
+        </ul>
+        <div class="always"><b>Always:</b> records the "why" behind each choice — that's what the rubric rewards.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SEGMENTATION METHODOLOGY (reference) ============ -->
+  <section class="sec" id="methodology">
+    <div class="sec-head">
+      <span class="sec-no">REFERENCE</span>
+      <h2>Segmentation methodology — read before you start</h2>
+    </div>
+    <p class="sec-sub">A short primer on how modern segmentation works, so the whole team shares the vocabulary. This is reference material — not the answer. Apply it to each use case.</p>
+    <div class="grid g2">
+      <div class="panel"><h3>Why VLANs / subnets alone struggle</h3><ul>
+        <li>Segmentation tied to IP/VLAN means topology changes ripple everywhere — complex and tedious.</li>
+        <li>Access rules become long IP ACLs that are hard to read, audit and maintain.</li>
+        <li>Every new device type needs new subnets and rules; staff can't keep up.</li>
+      </ul></div>
+      <div class="panel"><h3>Identity-based (group) segmentation</h3><ul>
+        <li>Classify each user/device into a <b>group</b> at the point of access (authentication + profiling).</li>
+        <li>Carry the group as a tag with the traffic, independent of IP / VLAN / topology.</li>
+        <li>Write policy as <b>group-to-group</b> (who may talk to whom), enforced across the existing network.</li>
+      </ul></div>
+      <div class="panel"><h3>The building blocks</h3><ul>
+        <li><b>Authenticate &amp; profile</b> every endpoint (802.1X, MAB, web auth) and learn what it is.</li>
+        <li><b>Posture</b> — check endpoint health (AV, OS, patches) and remediate before granting full access.</li>
+        <li><b>Tag &amp; enforce</b> — assign a group tag; switches / routers / firewalls enforce group policy inline.</li>
+        <li><b>Share context</b> — feed identity/group to firewalls, data center, SD-WAN and threat tools for consistent policy and rapid containment.</li>
+      </ul></div>
+      <div class="panel"><h3>How to approach each use case</h3><ul>
+        <li><b>1 · Map pain &rarr; product.</b> For every customer pain point, name the product/feature that fixes it.</li>
+        <li><b>2 · Say how &amp; why.</b> For each product, one line on how it works and why it's the right fit (differentiators welcome).</li>
+        <li><b>3 · Read the task &amp; parameters.</b> Note the specific groups, access rules and constraints.</li>
+        <li><b>4 · Propose a diagram.</b> Draw the topology with your solution on it, then submit for scoring.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <!-- ============ USE CASES (hub) ============ -->
+  <section class="sec" id="usecases">
+    <div class="sec-head">
+      <span class="sec-no">USE CASES</span>
+      <h2>Five use cases · solve in order</h2>
+    </div>
+    <p class="sec-sub"><b>Solve them in order — Use Case 1 first.</b> Tap a tile to open it. When you submit a use case, the next one <b>unlocks</b> (locked tiles show 🔒). Do as many as you can before the clock runs out — each is scored on the leaderboard.</p>
+    <div class="uc-progress" id="ucProgress">
+      <span class="pgnum"><b id="pgSolved">0</b><small>/5 solved</small></span>
+      <span class="pgbar"><i id="pgFill"></i></span>
+      <span class="pgmeta" id="pgMeta">Solve 3+ to be competitive</span>
+      <span class="rankchip" id="pgRank" hidden></span>
+    </div>
+    <div class="uc-list" id="ucList"><!-- tiles built by the interactive engine --></div>
+  </section>
+
+  <!-- ============ WHAT GOOD LOOKS LIKE (sample) ============ -->
+  <section class="sec" id="sample">
+    <div class="sec-head">
+      <span class="sec-no">SAMPLE</span>
+      <h2>What "good" looks like</h2>
+    </div>
+    <p class="sec-sub">A short, <b>illustrative</b> example on a <b>different</b> scenario — use it to calibrate depth and format, not to copy. Strong answers name a specific product, say <b>how</b> it works in one line, and say <b>why</b> it fits (a Cisco differentiator earns extra).</p>
+    <span class="sample-tag">Example scenario · not one of your use cases</span>
+    <p class="sample-note">Customer pain: <i>"Guests and IoT cameras share the same VLAN, so a compromised camera can reach guest laptops — and we've no budget for more firewalls."</i></p>
+    <div class="sample-grid">
+      <div class="uc-step-h" style="font-size:15px;margin-bottom:8px"><span class="uc-step-n">1</span>Pain point &rarr; product mapping</div>
+      <div class="uc-table-wrap"><table class="uctab"><thead><tr><th>Customer pain point</th><th>Proposed product(s)</th><th>How it addresses / why</th></tr></thead><tbody>
+        <tr><td class="pp">IoT and Guest share a VLAN; a hacked camera can reach guests</td><td>Cisco ISE + TrustSec SGTs</td><td>Profile each device at onboarding, tag <b>IOT</b> and <b>Guest</b> groups, and enforce an SGACL that denies IOT&#8596;Guest — on the existing switches.</td></tr>
+        <tr><td class="pp">No budget for more firewalls to segment</td><td>TrustSec SGACL enforcement</td><td>Group-to-group policy is enforced <b>inline</b> on the Catalyst switches you already own — no new firewall to buy or cable.</td></tr>
+      </tbody></table></div>
+      <div class="uc-step-h" style="font-size:15px;margin:18px 0 8px"><span class="uc-step-n">2</span>Products proposed</div>
+      <div class="uc-table-wrap"><table class="uctab"><thead><tr><th>Product / feature</th><th>Description / how</th><th>Why / differentiator</th></tr></thead><tbody>
+        <tr><td>Cisco ISE</td><td>802.1X / MAB authenticate and profile every endpoint, then assign a group (SGT).</td><td>One policy source of truth; scales without per-subnet ACLs.</td></tr>
+        <tr><td>TrustSec SGACL</td><td>Group-to-group allow/deny enforced inline on Catalyst switches.</td><td>Topology-independent; far fewer rules than IP ACLs (Cisco differentiator).</td></tr>
+      </tbody></table></div>
+      <div class="callout" style="margin-top:16px"><b>A strong diagram</b> labels every group, marks the <b>enforcement point</b> (where the SGACL/firewall sits), and traces <b>one flow end-to-end</b> (e.g. camera &rarr; denied &rarr; guest). Legible beats pretty.</div>
+    </div>
+  </section>
+
+  <!-- ============ BACK TO CLINIC ============ -->
+  <section class="sec" id="ready" style="text-align:center">
+    <div class="sec-head" style="justify-content:center">
+      <span class="sec-no">READY</span>
+      <h2>You've read the briefing</h2>
+    </div>
+    <p class="sec-sub" style="margin-left:auto;margin-right:auto">Head back to the clinic, take your seat, and solve the five use cases in order. Come back here any time — this briefing stays open in its own tab.</p>
+    <a class="st-btn go" href="zero-trust-design-sprint.html#usecases" style="font-size:15px;padding:13px 22px;text-decoration:none;display:inline-block">Start the use cases &rarr;</a>
+  </section>
+
+  </div>
+</body>
+</html>
