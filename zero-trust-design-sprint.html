@@ -352,8 +352,10 @@
   .sec{scroll-margin-top:16px}
   .toc{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:22px 0 2px;padding:13px 16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
   .toc-lbl{font-family:"IBM Plex Mono";font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin-right:4px}
-  .toc a{font-size:12.5px;color:var(--ink-soft);text-decoration:none;background:#EEF3F9;border:1px solid var(--line-soft);border-radius:20px;padding:5px 12px;transition:background .15s,color .15s}
-  .toc a:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .toc-btn{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--ink-soft);text-decoration:none;background:#EEF3F9;border:1px solid var(--line-soft);border-radius:10px;padding:7px 13px;transition:transform .12s,background .15s,color .15s,border-color .15s}
+  .toc-btn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;opacity:.9}
+  .toc-btn .tb-ext{font-size:11px;opacity:.7;margin-left:-2px}
+  .toc-btn:hover{transform:translateY(-2px);background:var(--navy);color:#fff;border-color:var(--navy)}
   /* design lifecycle hint */
   .lifecycle{background:#EEF3F9;border:1px solid var(--line-soft);border-radius:10px;padding:11px 13px;margin-top:13px}
   .lc-note{font-size:12.5px;color:var(--ink-soft);margin-bottom:9px}
@@ -588,6 +590,10 @@
   .ut-check{background:var(--green);color:#fff}
   .ut-flag{position:absolute;top:10px;left:10px;font-family:"IBM Plex Mono",monospace;font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#062038;background:#8fe9ff;border-radius:20px;padding:3px 9px;box-shadow:0 3px 10px rgba(0,0,0,.28)}
   .ut-body{padding:12px 14px 14px}
+  .ut-toprow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:1px}
+  .ut-tag{font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;border-radius:20px;padding:3px 8px;border:1px solid transparent;white-space:nowrap;flex:none}
+  .ut-tag.req{color:#8FE3B6;background:rgba(31,138,99,.16);border-color:rgba(31,138,99,.42)}
+  .ut-tag.bonus{color:#F0C078;background:rgba(240,166,60,.14);border-color:rgba(240,166,60,.42)}
   .ut-n{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan-deep)}
   .uc-tile.done .ut-n{color:var(--green)}
   .uc-tile.locked .ut-n,.uc-tile.soon .ut-n{color:var(--ink-faint)}
@@ -733,7 +739,7 @@
 
   /* --- focus / play view (hide reference sections during the hour) --- */
   body.focus-mode .ref-sec{display:none}
-  body.focus-mode .toc a.ref-link{display:none}
+  body.focus-mode .toc .ref-link{display:none}
   #btnFocus[aria-pressed="false"]{opacity:1}
   #btnFocus.on{background:var(--cyan);border-color:var(--cyan);color:#fff}
   .toc .focus-note{display:none;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--cyan-deep);background:#EAF7F9;border:1px solid #B6E4EB;border-radius:20px;padding:4px 11px}
@@ -757,7 +763,8 @@
   .sec-no{color:var(--cyan-deep);border-color:var(--line)}
   /* nav */
   .toc{background:rgba(16,40,73,.6);border:1px solid var(--line);backdrop-filter:blur(6px)}
-  .toc a{color:var(--ink-soft)} .toc a:hover{color:var(--cyan-deep)}
+  .toc-btn{background:var(--surface-2);border-color:var(--line);color:var(--ink-soft)}
+  .toc-btn:hover{background:var(--cyan);border-color:var(--cyan);color:#04182b}
   .toc .toc-lbl{color:var(--ink-faint)}
   /* generic cards / panels */
   .panel,.card,.deliver,.uc-brief,.uc-empty,.tmpl{background:var(--surface);border-color:var(--line);box-shadow:var(--shadow)}
@@ -956,8 +963,8 @@
         <div class="facts">
           <div class="fact"><b>4</b><small>Seats</small></div>
           <div class="fact"><b>60:00</b><small>On the clock</small></div>
-          <div class="fact"><b>5</b><small>Use cases</small></div>
-          <div class="fact"><b>∞</b><small>Solve as many as you can</small></div>
+          <div class="fact"><b>3</b><small>Required cases</small></div>
+          <div class="fact"><b>+2</b><small>Bonus cases</small></div>
         </div>
       </div>
       <div class="dial anim" aria-hidden="true">
@@ -989,10 +996,11 @@
 
   <div class="wrap">
 
-  <nav class="toc" aria-label="Contents">
+  <nav class="toc" aria-label="Jump to">
     <span class="toc-lbl">Jump to</span>
-    <a href="briefing.html" target="_blank" rel="noopener">Briefing &#8599;</a>
-    <a href="#briefing">Briefing links</a><a href="#usecases">Use cases</a><a href="#workspace">Workspace</a>
+    <a class="toc-btn" href="briefing.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 6.6C10.4 5.1 7.8 4.6 4 5.2v12.8c3.8-.6 6.4-.1 8 1.4 1.6-1.5 4.2-2 8-1.4V5.2c-3.8-.6-6.4-.1-8 1.4z"/><path d="M12 6.6v13.2"/></svg>Briefing<span class="tb-ext">↗</span></a>
+    <a class="toc-btn" href="#usecases"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>Use cases</a>
+    <a class="toc-btn" href="#workspace"><svg viewBox="0 0 24 24"><path d="M4 20h4L18.5 9.5a2 2 0 000-2.8l-1.2-1.2a2 2 0 00-2.8 0L4 16z"/><path d="M13.5 6.5l4 4"/></svg>Workspace</a>
     <span class="focus-note">The briefing opens in its own tab</span>
   </nav>
 
@@ -1019,9 +1027,9 @@
   <section class="sec" id="usecases">
     <div class="sec-head">
       <span class="sec-no">USE CASES</span>
-      <h2>Five use cases · solve in order</h2>
+      <h2>Five use cases · 3 required + 2 bonus</h2>
     </div>
-    <p class="sec-sub"><b>Solve them in order — Use Case 1 first.</b> Tap a tile to open it. When you submit a use case, the next one <b>unlocks</b> (locked tiles show 🔒). Do as many as you can before the clock runs out — each is scored on the leaderboard.</p>
+    <p class="sec-sub"><b>Use Cases 1–3 are required; 4 &amp; 5 are bonus.</b> Solve them in order — Use Case 1 first. Submitting one <b>unlocks</b> the next. Complete the three required cases, then bank the bonus rounds for extra points before the clock runs out — every case is scored on the leaderboard.</p>
     <div class="uc-progress" id="ucProgress">
       <span class="pgnum"><b id="pgSolved">0</b><small>/5 solved</small></span>
       <span class="pgbar"><i id="pgFill"></i></span>
@@ -1599,9 +1607,11 @@
       // each use case has its own signature colour so the grid reads as five distinct missions
       var SIG = {1:"#0a5a99,#00BCEB", 2:"#6D28A8,#B072E8", 3:"#0E7C63,#2FBF9B", 4:"#B5711A,#F0A63C", 5:"#B03A54,#E8607F"};
       var g = submitted ? "#1f8a63,#27A276" : (SIG[uc.n] || "#0a5a99,#00BCEB");
+      var mandatory = uc.n<=3;
+      var reqTag = mandatory ? '<span class="ut-tag req">Required</span>' : '<span class="ut-tag bonus">Bonus</span>';
       var stateCls = uc.locked ? "soon" : submitted ? "done" : unlocked ? "open" : "locked";
-      var badge = uc.locked ? "Coming soon" : submitted ? "Submitted" : unlocked ? "Open →" : "Locked";
-      var note = uc.locked ? "Added soon" : (!unlocked ? ("Submit Use Case "+(uc.n-1)+" first") : (submitted ? "Tap to review / re-submit" : "Tap to start"));
+      var badge = uc.locked ? "Coming soon" : submitted ? "Submitted" : unlocked ? "Open" : "Locked";
+      var note = uc.locked ? "Being built" : (!unlocked ? ("Submit Use Case "+(uc.n-1)+" first") : (submitted ? "Tap to review / re-submit" : "Tap to start"));
       var corner = submitted
         ? '<div class="ut-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 6.5"/></svg></div>'
         : ((!unlocked)?'<div class="ut-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></div>':'');
@@ -1612,7 +1622,7 @@
       tile.innerHTML =
         '<div class="ut-art" style="background:linear-gradient(135deg,'+g+')">'+ucArt(uc.n)+corner+flag+'</div>'+
         '<div class="ut-body">'+
-          '<div class="ut-n">Use Case '+uc.n+'</div>'+
+          '<div class="ut-toprow"><span class="ut-n">Use Case '+uc.n+'</span>'+reqTag+'</div>'+
           '<div class="ut-t">'+ucEsc(uc.title)+'</div>'+
           '<div class="ut-state">'+badge+' · '+note+'</div>'+
         '</div>';
@@ -1634,7 +1644,10 @@
     var solved=ucSubmittedCount(), pf=$("#pgFill"), ps=$("#pgSolved"), pm=$("#pgMeta");
     if(ps) ps.textContent=solved;
     if(pf) pf.style.width=Math.min(100,(solved/5)*100)+"%";
-    if(pm) pm.textContent = solved>=5 ? "All five solved — outstanding!" : (solved>=3 ? "Great pace — keep banking more" : "Solve 3+ to be competitive");
+    if(pm) pm.textContent = solved>=5 ? "All five solved — outstanding!"
+      : solved>=4 ? "One bonus done — go for the last!"
+      : solved>=3 ? "Required cases done — go for the bonus rounds!"
+      : (solved===2 ? "1 required case left" : (solved===1 ? "2 required cases left" : "Complete the 3 required cases first"));
   }
   var allScores=[];
   function onScores(docs){ allScores=docs||[]; renderRank(); }
@@ -1769,7 +1782,7 @@
           '<div class="uc-col cyan"><div class="uc-col-h">Your tasks</div><ul>'+li(uc.tasks)+'</ul></div>'+
         '</div>'+
       '</div>'+
-      '<div class="uc-allot">⏱ <b>Suggested ~'+ucMinutes(uc)+' min</b> for this use case — aim to bank <b>'+UC_TARGET+'+ of 5</b> before 60:00. Submitting unlocks the next; keep it moving.</div>'+
+      '<div class="uc-allot">⏱ <b>Suggested ~'+ucMinutes(uc)+' min</b> for this use case — clear the <b>'+UC_TARGET+' required cases</b> first, then bonus rounds, before 60:00. Submitting unlocks the next; keep it moving.</div>'+
       '<div class="uc-playbook"><div class="uc-col-h" style="margin-bottom:9px">Persona playbook — who does what</div><div class="grid g4">'+
         PLAYBOOK.map(function(pb){ var you=(persona&&persona.role===pb.role); return '<div class="pb-card'+(you?" you":"")+'" style="--pc:'+pb.color+'"><div class="pb-name">'+ucEsc(pb.name)+(you?' <span class="pb-you">YOU</span>':'')+'</div><div class="pb-does">'+ucEsc(pb.does)+'</div></div>'; }).join('')+
       '</div></div>'+
@@ -2152,7 +2165,7 @@
   // "live" sections stay; everything else is reference that teams don't need mid-hour.
   var LIVE_SECTIONS = { usecases:1, workspace:1 };
   $$(".sec").forEach(function(sec){ if(sec.id && !LIVE_SECTIONS[sec.id]) sec.classList.add("ref-sec"); });
-  $$(".toc a").forEach(function(a){ var id=(a.getAttribute("href")||"").replace("#",""); if(id && !LIVE_SECTIONS[id]) a.classList.add("ref-link"); });
+  $$(".toc a").forEach(function(a){ var href=a.getAttribute("href")||""; if(href.charAt(0)!=="#") return; var id=href.slice(1); if(id && !LIVE_SECTIONS[id]) a.classList.add("ref-link"); });
   var focusBtn=$("#btnFocus"), focusLabel=$("#btnFocusLabel"), focusOn=false;
   try{ focusOn = localStorage.getItem("ztds.focus")==="1"; }catch(e){}
   function applyFocus(){
