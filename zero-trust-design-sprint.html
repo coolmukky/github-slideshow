@@ -883,11 +883,11 @@
     <span class="dot"></span><span class="pl" id="personaLabel">Take your seat</span>
   </button>
   <div class="fb-btns">
-    <button class="fb-btn" id="btnFocus" aria-pressed="false" title="Focus view — hide reference sections so teams stay on task"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M3 12a9 9 0 0118 0 9 9 0 01-18 0z"/></svg><span id="btnFocusLabel">Focus</span></button>
-    <button class="fb-btn primary" id="btnStart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 4l14 8-14 8z"/></svg><span id="btnStartLabel">Start</span></button>
-    <button class="fb-btn warn icon" id="btnSkip" title="Jump to next phase" aria-label="Jump to next phase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 4l10 8-10 8z"/><path d="M19 4v16"/></svg></button>
-    <button class="fb-btn ghost icon" id="btnSound" aria-pressed="true" title="Toggle chimes" aria-label="Toggle chimes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 010 6"/></svg></button>
-    <button class="fb-btn ghost icon" id="btnReset" title="Reset session" aria-label="Reset session"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4v6h6"/><path d="M4 10a8 8 0 113 8"/></svg></button>
+    <button class="fb-btn" id="btnFocus" aria-pressed="false" title="Focus view — hide reference sections so teams stay on task"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.7"/></svg><span id="btnFocusLabel">Focus</span></button>
+    <button class="fb-btn primary" id="btnStart"><svg id="btnStartSvg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 5.4v13.2a1 1 0 001.52.86l10.6-6.6a1 1 0 000-1.72L8.52 4.54A1 1 0 007 5.4z" fill="currentColor" stroke="none"/></svg><span id="btnStartLabel">Start</span></button>
+    <button class="fb-btn warn icon" id="btnSkip" title="Jump to next phase" aria-label="Jump to next phase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 5l9.5 7L6 19z" fill="currentColor" stroke="none"/><path d="M18.5 5v14"/></svg></button>
+    <button class="fb-btn ghost icon" id="btnSound" aria-pressed="true" title="Toggle chimes" aria-label="Toggle chimes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 9.5v5h3.2L12 18.4V5.6L7.2 9.5z" fill="currentColor" stroke="none"/><path d="M15.4 9.2a4 4 0 010 5.6"/><path d="M17.8 6.8a7.4 7.4 0 010 10.4"/></svg></button>
+    <button class="fb-btn ghost icon" id="btnReset" title="Reset session" aria-label="Reset session"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 12a8 8 0 11-2.4-5.7"/><path d="M20 3.6V8h-4.4"/></svg></button>
   </div>
 </div>
 <div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
@@ -1362,6 +1362,15 @@
     if(running){ stop(); }
     else { if(elapsed===0) toast("Session started","60 minutes on the clock — solve as many use cases as you can.","phase","00:00"); startTimer(); }
   });
+  // keep the Start button's icon in sync with its label (play ⇄ pause) whenever the label changes
+  (function(){
+    var svg=$("#btnStartSvg"), lbl=$("#btnStartLabel"); if(!svg||!lbl) return;
+    var PLAY='<path d="M7 5.4v13.2a1 1 0 001.52.86l10.6-6.6a1 1 0 000-1.72L8.52 4.54A1 1 0 007 5.4z" fill="currentColor" stroke="none"/>';
+    var PAUSE='<rect x="7" y="5" width="3.4" height="14" rx="1" fill="currentColor" stroke="none"/><rect x="13.6" y="5" width="3.4" height="14" rx="1" fill="currentColor" stroke="none"/>';
+    function sync(){ var want=(lbl.textContent.trim()==="Pause")?PAUSE:PLAY; if(svg.innerHTML!==want) svg.innerHTML=want; }
+    sync();
+    try{ new MutationObserver(sync).observe(lbl,{childList:true,characterData:true,subtree:true}); }catch(e){}
+  })();
   $("#btnSkip").addEventListener("click", function(){
     if(managed) return;
     var idx=currentPhaseIndex();
@@ -1761,7 +1770,7 @@
         PLAYBOOK.map(function(pb){ var you=(persona&&persona.role===pb.role); return '<div class="pb-card'+(you?" you":"")+'" style="--pc:'+pb.color+'"><div class="pb-name">'+ucEsc(pb.name)+(you?' <span class="pb-you">YOU</span>':'')+'</div><div class="pb-does">'+ucEsc(pb.does)+'</div></div>'; }).join('')+
       '</div></div>'+
       '<div class="uc-live" id="ucLive"></div>'+
-      '<button type="button" class="st-btn sample-btn" id="ucSampleBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 00-3.8 10.6c.6.5 1 1.2 1.05 2H14.75c.05-.8.45-1.5 1.05-2A6 6 0 0012 3z"/></svg>See what &ldquo;good&rdquo; looks like</button>'+
+      '<button type="button" class="st-btn sample-btn" id="ucSampleBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9.6 18.2h4.8"/><path d="M10.4 20.8h3.2"/><path d="M12 3.4A5.6 5.6 0 008.3 13c.6.55 1.05 1.2 1.15 2h5.1c.1-.8.55-1.45 1.15-2A5.6 5.6 0 0012 3.4z"/></svg>See what &ldquo;good&rdquo; looks like</button>'+
       '<div class="uc-step"><div class="uc-step-h"><span class="uc-step-n">1</span>Pain point &rarr; product mapping</div>'+
         '<p class="uc-step-sub">For each customer pain point, name the product/feature you propose and how it addresses it.</p>'+
         '<div class="uc-table-wrap"><table class="uctab"><thead><tr><th>Customer pain point</th><th>Proposed product(s)</th><th>How it addresses / why</th></tr></thead><tbody>'+painRows+'</tbody></table></div>'+
@@ -1785,7 +1794,7 @@
       '</div>'+
       '<div class="uc-submit">'+
         '<span class="uc-substatus" id="ucSubStatus"></span>'+
-        '<button type="button" class="st-btn go" id="ucSubmit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg>Submit group response for Use Case '+uc.n+'</button>'+
+        '<button type="button" class="st-btn go" id="ucSubmit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21.4 3.6L2.9 10.3a.5.5 0 00.03.95l6.5 2 2 6.5a.5.5 0 00.95.03z"/><path d="M21.4 3.6L9.95 13.5"/></svg>Submit group response for Use Case '+uc.n+'</button>'+
       '</div>';
 
     // wire textareas — persist locally, autosize, and share the edit with the team
