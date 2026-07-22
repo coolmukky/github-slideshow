@@ -9,24 +9,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#E9EEF5;
-    --surface:#FFFFFF;
-    --ink:#0E1A2B;
-    --ink-soft:#46566E;
-    --ink-faint:#7E8CA1;
-    --line:#CBD5E3;
-    --line-soft:#E1E8F1;
-    --navy:#0D274D;        /* Cisco midnight blue */
-    --navy-deep:#041E42;
-    --cyan:#00BCEB;        /* Cisco blue */
-    --cyan-deep:#036C8F;   /* darker Cisco blue for text/links */
-    --amber:#E2891F;
-    --amber-soft:#FBEBD3;
-    --red:#DB4A4A;
-    --red-soft:#FBE2E2;
-    --green:#27A276;
-    --green-soft:#D7F0E6;
-    --shadow:0 1px 0 rgba(14,26,43,.04), 0 18px 40px -28px rgba(14,26,43,.55);
+    --paper:#0a1a33;
+    --surface:#102849;        /* dark card */
+    --surface-2:#0c2140;
+    --ink:#EAF3FD;
+    --ink-soft:#A7C3E2;
+    --ink-faint:#7793B6;
+    --line:#20406A;
+    --line-soft:#193658;
+    --navy:#0D274D;           /* Cisco midnight blue */
+    --navy-deep:#04142c;
+    --cyan:#00BCEB;           /* Cisco blue */
+    --cyan-deep:#5FD7FF;      /* bright cyan accent for dark bg */
+    --amber:#F0A63C;
+    --amber-soft:#3a2a12;
+    --red:#FF6B6B;
+    --red-soft:#3a1818;
+    --green:#3FD08A;
+    --green-soft:#123a2c;
+    --shadow:0 1px 0 rgba(0,0,0,.2), 0 24px 50px -30px rgba(0,0,0,.75);
     --radius:14px;
   }
   *{box-sizing:border-box}
@@ -35,7 +36,11 @@
     margin:0;
     font-family:"IBM Plex Sans",system-ui,sans-serif;
     color:var(--ink);
-    background:#F3F6FA;
+    background:
+      radial-gradient(1100px 560px at 92% -8%, rgba(0,188,235,.12), transparent 60%),
+      radial-gradient(900px 520px at -5% 2%, rgba(13,63,115,.55), transparent 55%),
+      #071528;
+    background-attachment:fixed;
     line-height:1.55;
     -webkit-font-smoothing:antialiased;
   }
@@ -741,6 +746,88 @@
     .sheet-tools{display:none}
     .ck-progress{display:none}
   }
+
+  /* ============================================================
+     MISSION-CONTROL DARK THEME + GAMIFICATION
+     ============================================================ */
+  h1,h2,h3,h4{color:var(--ink)}
+  a{color:var(--cyan-deep)}
+  .sec-sub,.uc-intro{color:var(--ink-soft)}
+  .sec-no{color:var(--cyan-deep);border-color:var(--line)}
+  /* nav */
+  .toc{background:rgba(16,40,73,.6);border:1px solid var(--line);backdrop-filter:blur(6px)}
+  .toc a{color:var(--ink-soft)} .toc a:hover{color:var(--cyan-deep)}
+  .toc .toc-lbl{color:var(--ink-faint)}
+  /* generic cards / panels */
+  .panel,.card,.deliver,.uc-brief,.uc-empty,.tmpl{background:var(--surface);border-color:var(--line);box-shadow:var(--shadow)}
+  .panel ul li,.card ul li{color:var(--ink-soft)}
+  .role .always{color:var(--ink-soft)}
+  .deliver .num{color:#fff}
+  .callout,.uc-allot{background:rgba(0,188,235,.08);border-color:#155b7e;color:#bfeaf7}
+  .callout b,.uc-allot b{color:#eafaff}
+  /* methodology / uc columns */
+  .uc-col li{color:var(--ink)}
+  .uc-brief{background:linear-gradient(180deg,#123152,#0e2340)}
+  /* persona playbook cards */
+  .pb-card{background:var(--surface-2);border-color:var(--line)}
+  .pb-card.you{background:#123457}
+  .pb-does{color:var(--ink-soft)}
+  /* tables (methodology sample + workspace) */
+  .uctab th{color:var(--ink-faint);border-bottom-color:var(--line)}
+  .uctab td{border-bottom-color:var(--line-soft)}
+  .uctab td,.uctab td.pp,.sample-grid .uctab td{color:var(--ink)}
+  .uctab td.empty{color:var(--ink-faint)}
+  .uctab textarea{background:#0a1f3b;border-color:var(--line);color:var(--ink)}
+  .uctab textarea::placeholder{color:var(--ink-faint)}
+  .sample-note{color:var(--ink-soft)}
+  /* use-case tiles */
+  .uc-tile{background:var(--surface);border-color:var(--line)}
+  .ut-body{background:transparent}
+  .ut-t{color:var(--ink)} .ut-state{color:var(--ink-soft)}
+  .uc-tile.open{border-color:var(--cyan);box-shadow:0 0 0 1px rgba(0,188,235,.4),0 18px 40px -22px rgba(0,188,235,.5)}
+  /* full-screen use-case view */
+  .uc-view{background:radial-gradient(1000px 500px at 90% -10%,rgba(0,188,235,.10),transparent 60%),#071528}
+  .uc-live{color:var(--ink-faint)}
+  /* buttons */
+  .st-btn{background:#153458;border-color:var(--line);color:var(--ink)}
+  .st-btn:hover{background:#1b4370;border-color:var(--cyan)}
+  /* persona modal + waiting overlay */
+  .pm-card,.wo-card{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+  .pm-sub,.pm-hint{color:var(--ink-soft)}
+  .pm-field span{color:var(--ink-faint)}
+  .pm-field input,#pmCode,#woCode{background:#0a1f3b;border-color:var(--line);color:var(--ink)}
+  .pm-field input::placeholder{color:var(--ink-faint)}
+  .pm-teammode .pm-tab{background:#0c2140;border-color:var(--line);color:var(--ink-soft)}
+  .pm-teammode .pm-tab.on{background:var(--cyan);color:#04182b;border-color:var(--cyan)}
+  .pm-role{background:var(--surface-2);border-color:var(--line)}
+  .pm-role b{color:var(--ink)} .pm-role span{color:var(--ink-soft)}
+  .pm-rolelbl{color:var(--ink-faint)}
+  .pm-skip{color:var(--ink-faint)}
+  .pm-close{color:var(--ink-faint)}
+  .wo-codeform input{background:#0a1f3b;border-color:var(--line);color:var(--ink)}
+  /* neon glow on tile art + hero accent */
+  .ut-art svg{filter:drop-shadow(0 3px 12px rgba(0,0,0,.4))}
+  .hero h1 span{text-shadow:0 0 26px rgba(0,188,235,.55)}
+
+  /* ---- gamification: progress bar ---- */
+  .uc-progress{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin:0 0 18px;box-shadow:var(--shadow)}
+  .uc-progress .pgnum{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:22px;color:var(--cyan-deep);white-space:nowrap}
+  .uc-progress .pgnum small{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-faint)}
+  .uc-progress .pgbar{flex:1;height:12px;border-radius:8px;background:#0a1f3b;overflow:hidden;border:1px solid var(--line)}
+  .uc-progress .pgbar i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,#0a86c9,#00BCEB,#5fd7ff);box-shadow:0 0 14px rgba(0,188,235,.6);transition:width .6s cubic-bezier(.2,.8,.2,1)}
+  .uc-progress .pgmeta{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-soft);white-space:nowrap}
+  .uc-progress .rankchip{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;color:#04182b;background:#8fe9ff;border-radius:20px;padding:4px 10px;white-space:nowrap}
+
+  /* ---- team identity badge (in the top bar persona button) ---- */
+  .team-badge{display:inline-flex;align-items:center;gap:6px;font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;color:#04182b;border-radius:20px;padding:3px 9px;margin-left:8px}
+
+  /* ---- scroll reveal ---- */
+  .sec.reveal{opacity:0;transform:translateY(18px)}
+  .sec.reveal.in{opacity:1;transform:none;transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
+  @media (prefers-reduced-motion:reduce){ .sec.reveal{opacity:1;transform:none} }
+
+  /* ---- confetti canvas ---- */
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:400}
 </style>
 </head>
 <body>
@@ -1051,6 +1138,12 @@
       <h2>Five use cases · solve in order</h2>
     </div>
     <p class="sec-sub"><b>Solve them in order — Use Case 1 first.</b> Tap a tile to open it. When you submit a use case, the next one <b>unlocks</b> (locked tiles show 🔒). Do as many as you can before the clock runs out — each is scored on the leaderboard.</p>
+    <div class="uc-progress" id="ucProgress">
+      <span class="pgnum"><b id="pgSolved">0</b><small>/5 solved</small></span>
+      <span class="pgbar"><i id="pgFill"></i></span>
+      <span class="pgmeta" id="pgMeta">Solve 3+ to be competitive</span>
+      <span class="rankchip" id="pgRank" hidden></span>
+    </div>
     <div class="uc-list" id="ucList"><!-- tiles built by the interactive engine --></div>
   </section>
 
@@ -1106,6 +1199,7 @@
     <div class="wrap"><div id="ucWorkspace"><!-- rendered per use case --></div></div>
   </div>
 </div>
+<canvas id="confetti" aria-hidden="true"></canvas>
 
 <!-- ============ INTERACTIVE ENGINE ============ -->
 <script src="firebase-config.js"></script>
@@ -1615,7 +1709,47 @@
       });
       list.appendChild(tile);
     });
+    renderProgress();
   }
+
+  // ---------- gamification: progress · team identity · rank · confetti · reveal ----------
+  var TEAM_EMOJI=["🚀","🛰️","⚡","🛡️","🔷","🌐","🧭","🔭","💠","🦾","🧠","🎯","🐝","🦅","🔥","❄️"];
+  function teamHash(s){ var h=2166136261; s=String(s||""); for(var i=0;i<s.length;i++){ h=(h^s.charCodeAt(i))*16777619>>>0; } return h; }
+  function teamStyle(){ var t=(persona&&(persona.teamCode||persona.team))||""; if(!t) return null; var h=teamHash(t); return { color:"hsl("+(h%360)+",72%,62%)", emoji:TEAM_EMOJI[h%TEAM_EMOJI.length] }; }
+  function renderProgress(){
+    var solved=ucSubmittedCount(), pf=$("#pgFill"), ps=$("#pgSolved"), pm=$("#pgMeta");
+    if(ps) ps.textContent=solved;
+    if(pf) pf.style.width=Math.min(100,(solved/5)*100)+"%";
+    if(pm) pm.textContent = solved>=5 ? "All five solved — outstanding!" : (solved>=3 ? "Great pace — keep banking more" : "Solve 3+ to be competitive");
+  }
+  var allScores=[];
+  function onScores(docs){ allScores=docs||[]; renderRank(); }
+  function renderRank(){
+    var chip=$("#pgRank"); if(!chip) return;
+    var tot={}; (allScores||[]).forEach(function(s){ if(!s||s.kind==="draft") return; var k=s.teamCode||(s.teamName||"").trim().toLowerCase(); tot[k]=(tot[k]||0)+(s.total||0); });
+    var tk=ucTeamKey(), mine=tot[tk];
+    if(mine==null){ chip.hidden=true; return; }
+    var arr=Object.keys(tot).map(function(k){ return tot[k]; }).sort(function(a,b){ return b-a; });
+    chip.hidden=false; chip.textContent="🏆 #"+(arr.indexOf(mine)+1)+" of "+arr.length+" · "+mine+" pts";
+  }
+  function confettiBurst(){
+    var c=$("#confetti"); if(!c || !c.getContext) return; var ctx=c.getContext("2d");
+    c.width=window.innerWidth; c.height=window.innerHeight;
+    var cols=["#00BCEB","#5fd7ff","#3FD08A","#F0A63C","#ffffff"], parts=[];
+    for(var i=0;i<140;i++){ parts.push({ x:window.innerWidth/2+(Math.random()-.5)*180, y:window.innerHeight*0.32, vx:(Math.random()-.5)*10, vy:Math.random()*-12-4, g:0.3+Math.random()*0.16, s:5+Math.random()*6, rot:Math.random()*6, vr:(Math.random()-.5)*0.4, col:cols[i%cols.length], life:70+Math.random()*40 }); }
+    function frame(){ ctx.clearRect(0,0,c.width,c.height); var alive=false;
+      for(var i=0;i<parts.length;i++){ var p=parts[i]; if(p.life<=0) continue; alive=true; p.life--; p.vy+=p.g; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr;
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.globalAlpha=Math.max(0,Math.min(1,p.life/40)); ctx.fillStyle=p.col; ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*0.62); ctx.restore(); }
+      if(alive) requestAnimationFrame(frame); else ctx.clearRect(0,0,c.width,c.height);
+    }
+    requestAnimationFrame(frame);
+  }
+  (function(){
+    if(!("IntersectionObserver" in window)) return;
+    var secs=$$(".sec"); secs.forEach(function(s){ s.classList.add("reveal"); });
+    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } }); }, { threshold:0.08 });
+    secs.forEach(function(s){ io.observe(s); });
+  })();
 
   // ----- image downscale (shared with submit) -----
   function ucLoadDiagram(file, cb){
@@ -1798,9 +1932,9 @@
                 diagram:diagUrl||"", painMap:painMap, products:products };
       try{ roster.write("solutions", doc); }catch(e){}
       ucSubmitted[uc.n]=true; ucSubmitInfo[uc.n]={ at:when, totalTimeSec:total, overtimeSec:over, late:late, by:persona.name||"" };
-      refreshSub(); renderUcHub();
+      refreshSub(); renderUcHub(); try{ confettiBurst(); }catch(e){}
       if(late) toast("Use Case "+uc.n+" submitted — marked late","Recorded at "+fmt(total)+" (+"+fmt(over)+" over 60:00). Next use case unlocked.","fire");
-      else toast("Use Case "+uc.n+" submitted","Sent to the proctor in "+fmt(total)+". Next use case unlocked — you can still edit and re-submit.","phase");
+      else toast("Use Case "+uc.n+" submitted 🎉","Sent to the proctor in "+fmt(total)+". Next use case unlocked — you can still edit and re-submit.","phase");
     });
   }
 
@@ -1868,6 +2002,7 @@
       try{ roster.watch("control", ROOM, function(d){ applyControlDocs(d||[]); }); }catch(e){}
       try{ roster.watch("players", ROOM, function(d){ onPlayers(d||[]); }); }catch(e){}
       try{ roster.watch("solutions", ROOM, function(d){ onSolutions(d||[]); }); }catch(e){}
+      try{ roster.watch("scores", ROOM, function(d){ onScores(d||[]); }); }catch(e){}
     });
   }
 
@@ -1930,7 +2065,8 @@
     if(persona && persona.role && ROLES[persona.role]){
       var r=ROLES[persona.role];
       document.body.style.setProperty("--you", r.color);
-      personaLabel.textContent = persona.name ? (persona.name+" · "+r.short) : ("You: "+r.short);
+      var ts=teamStyle();
+      personaLabel.textContent = (ts?ts.emoji+" ":"")+(persona.name ? (persona.name+" · "+r.short) : ("You: "+r.short));
       $("#btnPersona").querySelector(".dot").style.background=r.color;
       if(r.chip){
         // phase action lines led by this role
