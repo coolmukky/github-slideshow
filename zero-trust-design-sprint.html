@@ -595,6 +595,11 @@
   .uc-submit{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:22px;padding-top:16px;border-top:1px dashed var(--line-soft)}
   .uc-substatus{font-family:"IBM Plex Mono",monospace;font-size:11.5px;margin-right:auto}
   #ucAddProd{margin-top:10px}
+  .uc-live{display:flex;align-items:center;gap:8px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-faint);margin:2px 0 16px}
+  .uc-live .ld{width:9px;height:9px;border-radius:50%;background:var(--ink-faint);flex-shrink:0}
+  .uc-live.on{color:var(--cyan-deep)}
+  .uc-live.on .ld{background:var(--green);box-shadow:0 0 0 3px rgba(39,162,118,.22);animation:ldpulse 1.5s infinite}
+  @keyframes ldpulse{0%,100%{opacity:1}50%{opacity:.35}}
   /* full-screen use-case view */
   .uc-view{position:fixed;inset:0;z-index:250;background:#F3F6FA;display:flex;flex-direction:column}
   .uc-view[hidden]{display:none}
@@ -1492,6 +1497,29 @@
   var ucSubmitted = {};          // team-shared: {n:true} learned from the solutions store
   var ucSubmitInfo = {};         // {n:{at,totalTimeSec,overtimeSec,late,by}}
 
+  // ----- live shared draft (whole team co-authors one answer sheet per use case) -----
+  var ucDraftCache = {};         // n -> {fields:{}, diagram:"", rows, by, at}
+  var ucDraftTimer = {};         // n -> debounce timer
+  var ucLiveApply = null;        // set by renderUcWorkspace; applies an incoming draft to the open view
+  function ucDraftId(n){ return ROOM+"__"+ucTeamKey()+"__uc"+n+"__draft"; }
+  function ucCanSync(){ return !!(roster && ROOM && persona && persona.role && persona.role!=="facilitator"); }
+  function ucCollectFields(){ var out={}; $$('#ucWorkspace textarea[data-uc]').forEach(function(ta){ out[ta.getAttribute("data-uc")]=ta.value; }); return out; }
+  function ucProdRowCount(){ var b=$("#ucProdBody"); return b?b.querySelectorAll("tr").length:0; }
+  function ucDraftBase(n){ return { id:ucDraftId(n), room:ROOM, teamCode:(persona&&persona.teamCode)||"", teamName:(persona&&persona.team)||"", useCase:n, kind:"draft", updatedAt:Date.now(), updatedBy:(persona&&persona.name)||"" }; }
+  function pushDraftFields(n){                     // debounced: send the whole current field map (deep-merges)
+    if(!ucCanSync()) return;
+    if(ucDraftTimer[n]) clearTimeout(ucDraftTimer[n]);
+    ucDraftTimer[n]=setTimeout(function(){
+      var doc=ucDraftBase(n); doc.fields=ucCollectFields(); doc.rows=ucProdRowCount();
+      try{ roster.write("solutions", doc); }catch(e){}
+    }, 650);
+  }
+  function pushDraftDiagram(n, url){               // written on its own so it doesn't ride every keystroke
+    if(!ucCanSync()) return;
+    var doc=ucDraftBase(n); doc.diagram=url||"";
+    try{ roster.write("solutions", doc); }catch(e){}
+  }
+
   function ucIsSubmitted(n){ return !!ucSubmitted[n]; }
   function ucIsUnlocked(n){ if(n<=1) return true; return ucIsSubmitted(n-1); }   // sequential
 
@@ -1504,10 +1532,22 @@
       var dk = d.teamCode || (d.teamName||"").trim().toLowerCase();
       if(dk!==tk) return;
       var n = d.useCase || 0; if(!n) return;
+      if(d.kind==="draft"){                                   // live shared draft for this team
+        var prev=ucDraftCache[n]||{};
+        ucDraftCache[n]={
+          fields: d.fields || prev.fields || {},
+          diagram: (typeof d.diagram==="string") ? d.diagram : (prev.diagram||""),
+          rows: d.rows || prev.rows || 0,
+          by: d.updatedBy||prev.by||"", at: d.updatedAt||prev.at||0
+        };
+        return;
+      }
       ucSubmitted[n]=true;
       ucSubmitInfo[n]={ at:d.submittedAt, totalTimeSec:d.totalTimeSec, overtimeSec:d.overtimeSec, late:d.late, by:d.submittedByName };
     });
-    renderUcHub(); if(!ucByN(ucSelected) || true) renderUcWorkspace();
+    renderUcHub();
+    var v=$("#ucView");
+    if(v && !v.hidden && ucLiveApply) ucLiveApply();          // push shared changes onto the open sheet
   }
 
   // ----- hub (list of 5 use case cards) -----
@@ -1598,6 +1638,7 @@
       '<div class="uc-playbook"><div class="uc-col-h" style="margin-bottom:9px">Persona playbook — who does what</div><div class="grid g4">'+
         PLAYBOOK.map(function(pb){ var you=(persona&&persona.role===pb.role); return '<div class="pb-card'+(you?" you":"")+'" style="--pc:'+pb.color+'"><div class="pb-name">'+ucEsc(pb.name)+(you?' <span class="pb-you">YOU</span>':'')+'</div><div class="pb-does">'+ucEsc(pb.does)+'</div></div>'; }).join('')+
       '</div></div>'+
+      '<div class="uc-live" id="ucLive"></div>'+
       '<div class="uc-step"><div class="uc-step-h"><span class="uc-step-n">1</span>Pain point &rarr; product mapping</div>'+
         '<p class="uc-step-sub">For each customer pain point, name the product/feature you propose and how it addresses it.</p>'+
         '<div class="uc-table-wrap"><table class="uctab"><thead><tr><th>Customer pain point</th><th>Proposed product(s)</th><th>How it addresses / why</th></tr></thead><tbody>'+painRows+'</tbody></table></div>'+
@@ -1620,34 +1661,36 @@
         '<button type="button" class="st-btn go" id="ucSubmit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg>Submit group response for Use Case '+uc.n+'</button>'+
       '</div>';
 
-    // wire textareas (persist + autosize)
-    $$("#ucWorkspace textarea[data-uc]").forEach(function(ta){
-      var id=ta.getAttribute("data-uc");
-      ta.value=ucGet(uc.n, id);
-      function autosize(){ ta.style.height="auto"; ta.style.height=(ta.scrollHeight)+"px"; }
-      ta.addEventListener("input", function(){ ucSet(uc.n, id, ta.value); autosize(); });
-      setTimeout(autosize,0);
-    });
+    // wire textareas — persist locally, autosize, and share the edit with the team
+    function autosizeTa(ta){ ta.style.height="auto"; ta.style.height=(ta.scrollHeight)+"px"; }
+    function wireField(ta){
+      var id=ta.getAttribute("data-uc"), dr=ucDraftCache[uc.n];
+      ta.value = (dr && dr.fields && typeof dr.fields[id]==="string") ? dr.fields[id] : ucGet(uc.n, id);
+      ta.addEventListener("input", function(){ ucSet(uc.n, id, ta.value); autosizeTa(ta); pushDraftFields(uc.n); });
+      setTimeout(function(){ autosizeTa(ta); }, 0);
+    }
+    $$("#ucWorkspace textarea[data-uc]").forEach(wireField);
 
-    // add-product row
-    var addBtn=$("#ucAddProd");
-    if(addBtn) addBtn.addEventListener("click", function(){
-      var body=$("#ucProdBody"); if(!body) return;
+    // add-product row (row count is shared too, so a teammate's added row appears for everyone)
+    function addProdRow(){
+      var body=$("#ucProdBody"); if(!body) return null;
       var r=body.querySelectorAll("tr").length;
       var tr=document.createElement("tr");
       tr.innerHTML='<td><textarea data-uc="pr_name_'+r+'" rows="1" placeholder="Product / feature…"></textarea></td>'+
                    '<td><textarea data-uc="pr_how_'+r+'" rows="1" placeholder="Description / how it works…"></textarea></td>'+
                    '<td><textarea data-uc="pr_why_'+r+'" rows="1" placeholder="Why / differentiator…"></textarea></td>';
       body.appendChild(tr);
-      Array.prototype.slice.call(tr.querySelectorAll("textarea[data-uc]")).forEach(function(ta){
-        var id=ta.getAttribute("data-uc"); ta.value=ucGet(uc.n,id);
-        ta.addEventListener("input", function(){ ucSet(uc.n,id,ta.value); ta.style.height="auto"; ta.style.height=ta.scrollHeight+"px"; });
-      });
-    });
+      Array.prototype.slice.call(tr.querySelectorAll("textarea[data-uc]")).forEach(wireField);
+      return tr;
+    }
+    var addBtn=$("#ucAddProd");
+    if(addBtn) addBtn.addEventListener("click", function(){ addProdRow(); pushDraftFields(uc.n); });
 
-    // diagram (per use case)
+    // diagram (per use case) — shared with the team
     var diagKey="ztds.ucdiag."+uc.n+"."+ucTeamKey();
-    var diagUrl=null; try{ diagUrl=localStorage.getItem(diagKey)||null; }catch(e){}
+    var diagUrl=null, _dc=ucDraftCache[uc.n];
+    if(_dc && typeof _dc.diagram==="string" && _dc.diagram) diagUrl=_dc.diagram;
+    else { try{ diagUrl=localStorage.getItem(diagKey)||null; }catch(e){} }
     var diagInput=$("#ucDiag"), diagThumb=$("#ucDiagThumb"), diagClear=$("#ucDiagClear");
     function showDiag(){ if(diagUrl){ diagThumb.src=diagUrl; diagThumb.hidden=false; diagClear.hidden=false; } else { diagThumb.removeAttribute("src"); diagThumb.hidden=true; diagClear.hidden=true; } }
     diagInput.addEventListener("change", function(){
@@ -1655,12 +1698,33 @@
       ucLoadDiagram(f, function(url){
         if(!url){ toast("Couldn't read image","Try a different photo (JPG/PNG).","fire"); return; }
         diagUrl=url; try{ localStorage.setItem(diagKey,url); }catch(e){}
-        showDiag(); toast("Diagram attached","It'll be sent to the proctor with your submission.","phase");
+        showDiag(); pushDraftDiagram(uc.n, url); toast("Diagram attached","Shared with your team; sent to the proctor when you submit.","phase");
       });
       diagInput.value="";
     });
-    diagClear.addEventListener("click", function(){ diagUrl=null; try{ localStorage.removeItem(diagKey); }catch(e){} showDiag(); });
+    diagClear.addEventListener("click", function(){ diagUrl=null; try{ localStorage.removeItem(diagKey); }catch(e){} showDiag(); pushDraftDiagram(uc.n, ""); });
     showDiag();
+
+    // apply an incoming shared draft onto this open sheet (never touches the field being typed in)
+    function updateLiveBadge(){
+      var el=$("#ucLive"); if(!el) return; var d=ucDraftCache[uc.n];
+      if(ucCanSync()){ el.className="uc-live on"; el.innerHTML='<span class="ld"></span>Live team draft — your team is editing this together'+(d&&d.by?(' · last edit by '+ucEsc(d.by)):''); }
+      else { el.className="uc-live"; el.innerHTML='<span class="ld"></span>Saved in this browser'; }
+    }
+    function applyLive(){
+      var d=ucDraftCache[uc.n];
+      if(d){
+        var have=ucProdRowCount(); while(have<(d.rows||0)){ if(!addProdRow()) break; have++; }
+        var host2=$("#ucWorkspace");
+        Object.keys(d.fields||{}).forEach(function(id){
+          var ta=host2.querySelector('textarea[data-uc="'+id+'"]');
+          if(ta && ta!==document.activeElement && ta.value!==d.fields[id]){ ta.value=d.fields[id]; ucSet(uc.n,id,ta.value); autosizeTa(ta); }
+        });
+        if(typeof d.diagram==="string" && d.diagram!==(diagUrl||"")){ diagUrl=d.diagram||null; try{ if(diagUrl) localStorage.setItem(diagKey,diagUrl); else localStorage.removeItem(diagKey); }catch(e){} showDiag(); }
+      }
+      updateLiveBadge();
+    }
+    ucLiveApply=applyLive; applyLive();
 
     // submit
     var subStatus=$("#ucSubStatus");

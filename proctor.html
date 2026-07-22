@@ -965,7 +965,7 @@
       $("#statusText").textContent=live?"Live · Firebase":"Single-device (local)";
       $("#localNotice").hidden=live;
       adapter.watch("players", ROOM, function(d){ latest=d||[]; render(); });
-      adapter.watch("solutions", ROOM, function(d){ solutions={}; (d||[]).forEach(function(s){ var tk=s.teamCode||tkey(s.teamName), n=s.useCase||1; (solutions[tk]=solutions[tk]||{})[n]=s; }); render(); });
+      adapter.watch("solutions", ROOM, function(d){ solutions={}; (d||[]).forEach(function(s){ if(!s||s.kind==="draft") return; var tk=s.teamCode||tkey(s.teamName), n=s.useCase||1; (solutions[tk]=solutions[tk]||{})[n]=s; }); render(); });
       adapter.watch("scores", ROOM, function(d){ scores={}; (d||[]).forEach(function(s){ var tk=s.teamCode||tkey(s.teamName), n=s.useCase||1; (scores[tk]=scores[tk]||{})[n]=s; }); render(); });
       adapter.watch("control", ROOM, function(d){
         var docs=d||[]; eventDoc=docs.filter(function(x){ return x.id===ROOM; })[0]||null;
