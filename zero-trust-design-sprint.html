@@ -582,9 +582,10 @@
   .ut-art svg{width:66px;height:66px;stroke:#fff;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:.96;filter:drop-shadow(0 4px 10px rgba(0,0,0,.25))}
   .uc-tile.locked .ut-art,.uc-tile.soon .ut-art{filter:saturate(.85) brightness(.9)}
   .uc-tile.locked .ut-art svg,.uc-tile.soon .ut-art svg{opacity:.82}
-  .ut-lock,.ut-check{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px}
-  .ut-lock{background:rgba(6,20,44,.42);color:#fff}
-  .ut-check{background:var(--green);color:#fff;font-weight:800}
+  .ut-lock,.ut-check{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+  .ut-lock svg,.ut-check svg{width:15px;height:15px}
+  .ut-lock{background:rgba(6,20,44,.55);color:#fff;border:1px solid rgba(255,255,255,.18)}
+  .ut-check{background:var(--green);color:#fff}
   .ut-flag{position:absolute;top:10px;left:10px;font-family:"IBM Plex Mono",monospace;font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#062038;background:#8fe9ff;border-radius:20px;padding:3px 9px;box-shadow:0 3px 10px rgba(0,0,0,.28)}
   .ut-body{padding:12px 14px 14px}
   .ut-n{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan-deep)}
@@ -831,12 +832,14 @@
 
   /* ---- briefing link cards (reference content lives on briefing.html) ---- */
   .brief-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-  .brief-card{display:flex;flex-direction:column;gap:2px;padding:16px 16px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--line);text-decoration:none;color:var(--ink);transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
+  .brief-card{position:relative;display:flex;flex-direction:column;gap:2px;padding:16px 16px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--line);text-decoration:none;color:var(--ink);transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
   .brief-card:hover{transform:translateY(-3px);border-color:var(--cyan-deep);box-shadow:0 10px 28px rgba(0,0,0,.32)}
-  .brief-card .bc-ic{font-size:22px;margin-bottom:6px;line-height:1}
+  .brief-card .bc-no{position:absolute;top:12px;right:12px;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:700;color:var(--cyan-deep);background:var(--surface-2);border:1px solid var(--line)}
+  .brief-card .bc-ic{width:30px;height:30px;margin-bottom:8px;stroke:var(--cyan-deep);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
   .brief-card b{font-size:14.5px}
   .brief-card small{color:var(--ink-soft);font-size:12px}
   .brief-card.open-all{background:linear-gradient(135deg,rgba(95,215,255,.16),rgba(0,188,235,.05));border-color:var(--cyan-deep)}
+  .brief-card.open-all .bc-no{color:#04263a;background:var(--cyan);border-color:var(--cyan)}
   @media (max-width:860px){ .brief-grid{grid-template-columns:repeat(2,1fr)} }
   @media (max-width:520px){ .brief-grid{grid-template-columns:1fr} }
 
@@ -920,8 +923,8 @@
       <label class="pm-field"><span>Email</span><input id="pmEmail" type="email" placeholder="you@company.com" maxlength="120" autocomplete="email"></label>
     </div>
     <div class="pm-teammode">
-      <button type="button" class="pm-tab on" id="pmTabCreate">➕ Create a team</button>
-      <button type="button" class="pm-tab" id="pmTabJoin">🔑 Join a team</button>
+      <button type="button" class="pm-tab on" id="pmTabCreate"><svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round"><path d="M12 5v14M5 12h14"/></svg>Create a team</button>
+      <button type="button" class="pm-tab" id="pmTabJoin"><svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><circle cx="8" cy="15" r="4.2"/><path d="M10.9 12L20 2.9"/><path d="M17 6l3 3"/><path d="M15 8l2 2"/></svg>Join a team</button>
     </div>
     <div class="pm-teamsec" id="pmCreateSec">
       <p class="pm-hint">You're the <b>first on your team</b>. Name it — you'll get a <b>team code</b> to share with your 3 teammates. A team is <b>4 people, one per role</b> (IT Director, Digital Resiliency Officer, Network Architect, Network Security Engineer); your clock starts once all 4 roles are filled.</p>
@@ -994,22 +997,21 @@
   </nav>
 
 
-  <!-- ============ BRIEFING (moved to briefing.html) ============ -->
+  <!-- ============ BRIEFING (6-step flow on briefing.html) ============ -->
   <section class="sec" id="briefing">
     <div class="sec-head">
       <span class="sec-no">BRIEFING</span>
-      <h2>Read the briefing first</h2>
+      <h2>Read the briefing — a 6-step flow</h2>
     </div>
-    <p class="sec-sub">The customer story, the network, the reference architecture, the objectives, the four roles and the segmentation method live on a dedicated <b>Briefing</b> page &mdash; so this page stays focused on the work. Open it (new tab) and read it as a group before the clock starts.</p>
+    <p class="sec-sub">The customer, the environment, the objectives, your roles, the method and what good looks like — a short <b>guided flow</b>, one step at a time. Read it as a group before the clock starts. Start at step 1, or jump straight to any step.</p>
+    <a class="st-btn go" href="briefing.html?step=1" target="_blank" rel="noopener" style="font-size:14px;padding:11px 18px;text-decoration:none;display:inline-block;margin-bottom:16px">Start the briefing &rarr;</a>
     <div class="brief-grid">
-      <a class="brief-card" href="briefing.html#brief" target="_blank" rel="noopener"><span class="bc-ic">🏢</span><b>The customer &amp; the ask</b><small>Who they are, what they need</small></a>
-      <a class="brief-card" href="briefing.html#environment" target="_blank" rel="noopener"><span class="bc-ic">🌐</span><b>The environment</b><small>Network &amp; who's on it</small></a>
-      <a class="brief-card" href="briefing.html#topology" target="_blank" rel="noopener"><span class="bc-ic">🗺️</span><b>Reference architecture</b><small>The diagram you build on</small></a>
-      <a class="brief-card" href="briefing.html#objectives" target="_blank" rel="noopener"><span class="bc-ic">🎯</span><b>Business objectives</b><small>What success looks like</small></a>
-      <a class="brief-card" href="briefing.html#roles" target="_blank" rel="noopener"><span class="bc-ic">👥</span><b>The four roles</b><small>Who does what</small></a>
-      <a class="brief-card" href="briefing.html#methodology" target="_blank" rel="noopener"><span class="bc-ic">📐</span><b>Segmentation method</b><small>Shared vocabulary</small></a>
-      <a class="brief-card" href="briefing.html#sample" target="_blank" rel="noopener"><span class="bc-ic">⭐</span><b>What &ldquo;good&rdquo; looks like</b><small>A sample answer to calibrate</small></a>
-      <a class="brief-card open-all" href="briefing.html" target="_blank" rel="noopener"><span class="bc-ic">📖</span><b>Open the full briefing</b><small>All of it, one page &rarr;</small></a>
+      <a class="brief-card" href="briefing.html?step=1" target="_blank" rel="noopener"><span class="bc-no">1</span><svg class="bc-ic" viewBox="0 0 24 24"><path d="M4 21V5a1 1 0 011-1h8a1 1 0 011 1v16"/><path d="M14 21V9.5h4.5a1 1 0 011 1V21"/><path d="M2.5 21h19"/><path d="M6.5 8h2M10 8h1.5M6.5 12h2M10 12h1.5M6.5 16h2M10 16h1.5"/></svg><b>The customer &amp; the ask</b><small>Who they are, what they need</small></a>
+      <a class="brief-card" href="briefing.html?step=2" target="_blank" rel="noopener"><span class="bc-no">2</span><svg class="bc-ic" viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2.2"/><circle cx="5" cy="19.5" r="2.2"/><circle cx="12" cy="19.5" r="2.2"/><circle cx="19" cy="19.5" r="2.2"/><path d="M12 6.7v3.6"/><path d="M12 10.3L5.7 17.5"/><path d="M12 10.3l6.3 7.2"/><path d="M12 10.3v7"/></svg><b>Environment &amp; architecture</b><small>The network &amp; who's on it</small></a>
+      <a class="brief-card" href="briefing.html?step=3" target="_blank" rel="noopener"><span class="bc-no">3</span><svg class="bc-ic" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3a1 1 0 011-1h4a1 1 0 011 1v1"/><path d="M8.4 10l1.3 1.3L12.4 8.6"/><path d="M8.4 15.4l1.3 1.3L12.4 14"/><path d="M14.6 10.2h2.2M14.6 15.6h2.2"/></svg><b>Business objectives</b><small>What success looks like</small></a>
+      <a class="brief-card" href="briefing.html?step=4" target="_blank" rel="noopener"><span class="bc-no">4</span><svg class="bc-ic" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 19.5a5.5 5.5 0 0111 0"/><circle cx="17.2" cy="9.2" r="2.2"/><path d="M15.4 19.5a4.2 4.2 0 015.8-3.9"/></svg><b>Roles &amp; how to play</b><small>Who does what, how it runs</small></a>
+      <a class="brief-card" href="briefing.html?step=5" target="_blank" rel="noopener"><span class="bc-no">5</span><svg class="bc-ic" viewBox="0 0 24 24"><path d="M12 6.6C10.4 5.1 7.8 4.6 4 5.2v12.8c3.8-.6 6.4-.1 8 1.4 1.6-1.5 4.2-2 8-1.4V5.2c-3.8-.6-6.4-.1-8 1.4z"/><path d="M12 6.6v13.2"/></svg><b>Segmentation method</b><small>Knowledge to use</small></a>
+      <a class="brief-card open-all" href="briefing.html?step=6" target="_blank" rel="noopener"><span class="bc-no">6</span><svg class="bc-ic" viewBox="0 0 24 24"><path d="M12 3.2l2.6 5.7 6.2.8-4.6 4.2 1.2 6.1L12 17.1l-5.6 2.9 1.2-6.1L3 9.7l6.2-.8z"/></svg><b>What &ldquo;good&rdquo; looks like</b><small>A sample to calibrate</small></a>
     </div>
   </section>
 
@@ -1600,7 +1602,9 @@
       var stateCls = uc.locked ? "soon" : submitted ? "done" : unlocked ? "open" : "locked";
       var badge = uc.locked ? "Coming soon" : submitted ? "Submitted" : unlocked ? "Open →" : "Locked";
       var note = uc.locked ? "Added soon" : (!unlocked ? ("Submit Use Case "+(uc.n-1)+" first") : (submitted ? "Tap to review / re-submit" : "Tap to start"));
-      var corner = submitted ? '<div class="ut-check">✓</div>' : ((!unlocked)?'<div class="ut-lock">🔒</div>':'');
+      var corner = submitted
+        ? '<div class="ut-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 6.5"/></svg></div>'
+        : ((!unlocked)?'<div class="ut-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></div>':'');
       var flag = (uc.n===startN) ? '<div class="ut-flag">Start here</div>' : '';
       var tile=document.createElement("button");
       tile.type="button";

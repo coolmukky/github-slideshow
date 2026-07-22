@@ -579,9 +579,9 @@
   .uc-tile.locked,.uc-tile.soon{cursor:not-allowed}
   .uc-tile.open{border-color:var(--cyan)}
   .ut-art{position:relative;aspect-ratio:16/10;display:flex;align-items:center;justify-content:center}
-  .ut-art svg{width:62px;height:62px;stroke:#fff;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:.96;filter:drop-shadow(0 4px 10px rgba(0,0,0,.25))}
-  .uc-tile.locked .ut-art,.uc-tile.soon .ut-art{filter:grayscale(.4) brightness(.92)}
-  .uc-tile.locked .ut-art svg,.uc-tile.soon .ut-art svg{opacity:.5}
+  .ut-art svg{width:66px;height:66px;stroke:#fff;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:.96;filter:drop-shadow(0 4px 10px rgba(0,0,0,.25))}
+  .uc-tile.locked .ut-art,.uc-tile.soon .ut-art{filter:saturate(.85) brightness(.9)}
+  .uc-tile.locked .ut-art svg,.uc-tile.soon .ut-art svg{opacity:.82}
   .ut-lock,.ut-check{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px}
   .ut-lock{background:rgba(6,20,44,.42);color:#fff}
   .ut-check{background:var(--green);color:#fff;font-weight:800}
@@ -828,19 +828,83 @@
 
   /* ---- confetti canvas ---- */
   #confetti{position:fixed;inset:0;pointer-events:none;z-index:400}
+
+  /* ---- briefing link cards (reference content lives on briefing.html) ---- */
+  .brief-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .brief-card{display:flex;flex-direction:column;gap:2px;padding:16px 16px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--line);text-decoration:none;color:var(--ink);transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
+  .brief-card:hover{transform:translateY(-3px);border-color:var(--cyan-deep);box-shadow:0 10px 28px rgba(0,0,0,.32)}
+  .brief-card .bc-ic{font-size:22px;margin-bottom:6px;line-height:1}
+  .brief-card b{font-size:14.5px}
+  .brief-card small{color:var(--ink-soft);font-size:12px}
+  .brief-card.open-all{background:linear-gradient(135deg,rgba(95,215,255,.16),rgba(0,188,235,.05));border-color:var(--cyan-deep)}
+  @media (max-width:860px){ .brief-grid{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:520px){ .brief-grid{grid-template-columns:1fr} }
+
+  /* ---- shared team topology preview (everyone on the team sees the upload) ---- */
+  .diag-view{margin:12px 0 0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface-2);max-width:680px}
+  .diag-view .dv-frame{position:relative;cursor:zoom-in;background:#06172e}
+  .diag-view img{display:block;width:100%;max-height:440px;object-fit:contain;background:#06172e}
+  .diag-view .dv-zoom{position:absolute;top:8px;right:8px;background:rgba(6,23,46,.82);border:1px solid var(--line);color:var(--cyan-deep);font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:20px;padding:4px 9px;display:inline-flex;align-items:center;gap:5px}
+  .diag-view figcaption{display:flex;align-items:center;gap:8px;padding:9px 12px;font-size:12.5px;color:var(--ink-soft);border-top:1px solid var(--line)}
+  .diag-view figcaption b{color:var(--ink)}
+  .diag-view .dv-badge{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8FE3B6;background:rgba(31,138,99,.16);border:1px solid rgba(31,138,99,.4);border-radius:20px;padding:3px 9px}
+  .diag-empty{margin:12px 0 0;padding:14px 16px;border:1px dashed var(--line);border-radius:12px;background:rgba(255,255,255,.02);color:var(--ink-soft);font-size:13px;max-width:680px}
+  .diag-lightbox{position:fixed;inset:0;z-index:600;background:rgba(3,10,22,.94);display:flex;align-items:center;justify-content:center;padding:28px;cursor:zoom-out}
+  .diag-lightbox img{max-width:96vw;max-height:88vh;object-fit:contain;border-radius:8px;box-shadow:0 24px 70px rgba(0,0,0,.65)}
+  .diag-lightbox .dl-cap{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);color:var(--ink-soft);font-size:13px;background:rgba(6,23,46,.85);border:1px solid var(--line);border-radius:20px;padding:6px 14px;white-space:nowrap}
+  .diag-lightbox .dl-close{position:absolute;top:16px;right:20px;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:rgba(6,23,46,.85);color:var(--ink);font-size:22px;line-height:1;cursor:pointer}
+
+  /* ---- "What good looks like" sample button + modal ---- */
+  .sample-btn{border-color:rgba(240,166,60,.5) !important;color:var(--amber) !important}
+  .sample-btn:hover{background:rgba(240,166,60,.12) !important;border-color:var(--amber) !important}
+  .sample-modal{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(8,18,34,.78);backdrop-filter:blur(3px)}
+  .sample-modal .sm-card{position:relative;width:min(720px,100%);max-height:90vh;overflow:auto;background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--amber);border-radius:18px;padding:26px 26px 22px;box-shadow:0 30px 70px -20px rgba(0,0,0,.6);animation:rise .4s cubic-bezier(.2,.7,.3,1) both}
+  .sample-modal .sm-close{position:absolute;top:14px;right:16px;border:none;background:transparent;font-size:26px;line-height:1;color:var(--ink-faint);cursor:pointer}
+  .sample-modal .sm-close:hover{color:var(--ink)}
+  .sample-modal .sm-title{font-size:24px;font-weight:700;margin:6px 0 8px}
+  .sample-modal .sm-sub{font-size:13.5px;color:var(--ink-soft);margin-bottom:16px;line-height:1.6}
+
+  /* ===== briefing flow (numbered stepper) ===== */
+  .flow-hero{padding:34px 0 10px}
+  .stepper{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:0 0 8px;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);position:sticky;top:8px;z-index:30}
+  .stepper .step{display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border-radius:30px;border:1px solid transparent;background:transparent;color:var(--ink-soft);font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s,color .15s;white-space:nowrap}
+  .stepper .step .sdot{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line);font-size:12px;flex:none}
+  .stepper .step:hover{color:var(--ink)}
+  .stepper .step.on{background:linear-gradient(135deg,rgba(0,188,235,.18),rgba(95,215,255,.05));border-color:var(--cyan-deep);color:var(--ink)}
+  .stepper .step.on .sdot{background:var(--cyan);border-color:var(--cyan);color:#04263a}
+  .stepper .step.done .sdot{background:var(--green);border-color:var(--green);color:#04261a}
+  .stepper .step.done .sdot::after{content:"\2713"}
+  .stepper .step.done .sdot span{display:none}
+  .flow-track{height:4px;border-radius:4px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden;margin:0 0 22px}
+  .flow-track i{display:block;height:100%;background:linear-gradient(90deg,#00BCEB,#5FD7FF);transition:width .35s cubic-bezier(.2,.8,.2,1)}
+  .flowstep[hidden]{display:none}
+  .flowstep{animation:rise .35s ease both}
+  .flowstep-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:6px}
+  .flowstep-head .step-ic{width:40px;height:40px;flex:none;stroke:var(--cyan-deep);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 3px 8px rgba(0,0,0,.35))}
+  .flowstep-head .sec-no{color:var(--cyan-deep)}
+  .flowstep-head h2{margin:2px 0 0}
+  .flownav{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:34px 0 14px;padding-top:20px;border-top:1px solid var(--line)}
+  .flownav .fbtn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:11px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:13px;cursor:pointer;text-decoration:none;transition:transform .12s,border-color .15s}
+  .flownav .fbtn:hover:not(:disabled){transform:translateY(-2px);border-color:var(--cyan-deep)}
+  .flownav .fbtn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .flownav .fbtn.primary{background:linear-gradient(135deg,#00BCEB,#0a5a99);border-color:transparent;color:#fff}
+  .flownav .fbtn.go{background:linear-gradient(135deg,#27A276,#1f8a63);border-color:transparent;color:#fff}
+  .flownav .fbtn:disabled{opacity:.35;cursor:not-allowed}
+  .flownav .fcount{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-soft)}
+  @media (max-width:720px){ .stepper .step .slabel{display:none} .stepper{gap:6px} }
 </style>
 </head>
 <body>
 
-<!-- ============ HERO (briefing) ============ -->
-<header class="hero">
+<!-- ============ HERO (briefing flow) ============ -->
+<header class="hero flow-hero">
   <div class="wrap">
     <div class="hero-inner">
       <div class="anim">
         <span class="eyebrow">Zero Trust Access Design Clinic · The Briefing</span>
-        <h1>The Briefing<br><span>Read before you start</span></h1>
-        <p class="lede">Everything your team needs before the clock starts — the customer, the network, the reference architecture, the business objectives, the four roles and the segmentation method. Read it together as a group, then head back to the clinic and work the five use cases.</p>
-        <a class="st-btn go" href="zero-trust-design-sprint.html#usecases" style="font-size:14px;padding:11px 18px;text-decoration:none;display:inline-block">&larr; Back to the clinic &nbsp;·&nbsp; go to the use cases</a>
+        <h1>The Briefing<br><span>A 6-step flow</span></h1>
+        <p class="lede">Everything your team needs before the clock starts — read it as a group, one step at a time. Use <b>Next</b> to move through the flow, or jump to any step above. When you&rsquo;re done, head back and work the use cases.</p>
+        <a class="st-btn go" href="zero-trust-design-sprint.html#usecases" style="font-size:14px;padding:11px 18px;text-decoration:none;display:inline-block">&larr; Back to the clinic</a>
       </div>
     </div>
   </div>
@@ -848,20 +912,18 @@
 
   <div class="wrap">
 
-  <nav class="toc" aria-label="Contents">
-    <span class="toc-lbl">Jump to</span>
-    <a href="#brief">Brief</a><a href="#environment">Environment</a><a href="#topology">Topology</a>
-    <a href="#objectives">Objectives</a><a href="#roles">Roles</a><a href="#methodology">Methodology</a>
-    <a href="#sample">Sample</a>
-    <a href="zero-trust-design-sprint.html#usecases">Use cases &rarr;</a>
+  <nav class="stepper" id="stepper" aria-label="Briefing steps">
+    <button class="step on" type="button" data-step="1"><span class="sdot"><span>1</span></span><span class="slabel">Customer</span></button>
+    <button class="step" type="button" data-step="2"><span class="sdot"><span>2</span></span><span class="slabel">Environment</span></button>
+    <button class="step" type="button" data-step="3"><span class="sdot"><span>3</span></span><span class="slabel">Objectives</span></button>
+    <button class="step" type="button" data-step="4"><span class="sdot"><span>4</span></span><span class="slabel">Roles &amp; Play</span></button>
+    <button class="step" type="button" data-step="5"><span class="sdot"><span>5</span></span><span class="slabel">Methodology</span></button>
+    <button class="step" type="button" data-step="6"><span class="sdot"><span>6</span></span><span class="slabel">What good looks like</span></button>
   </nav>
+  <div class="flow-track" aria-hidden="true"><i id="flowFill" style="width:17%"></i></div>
 
-  <!-- ============ DESIGN CLINIC BRIEF ============ -->
-  <section class="sec" id="brief">
-    <div class="sec-head">
-      <span class="sec-no">DESIGN CLINIC</span>
-      <h2>A real enterprise, a real network, five problems to solve</h2>
-    </div>
+  <section class="flowstep" id="step1">
+    <div class="flowstep-head"><svg class="step-ic" viewBox="0 0 24 24"><path d="M4 21V5a1 1 0 011-1h8a1 1 0 011 1v16"/><path d="M14 21V9.5h4.5a1 1 0 011 1V21"/><path d="M2.5 21h19"/><path d="M6.5 8h2M10 8h1.5M6.5 12h2M10 12h1.5M6.5 16h2M10 16h1.5"/></svg><div><span class="sec-no">Step 1 of 6</span><h2>The customer &amp; the ask</h2></div></div>
     <p class="sec-sub"><b>4 seats · 60 minutes · 5 use cases · complete as many as you can.</b> Diagnose what the customer actually needs, place the right Cisco platforms on the network, and earn the right to the next meeting.</p>
     <div class="grid g2">
       <div class="panel" style="border-top:4px solid var(--cyan)">
@@ -877,13 +939,8 @@
       <p style="margin:0">Welcome to the design clinic. In today's threat landscape, static network boundaries are no longer sufficient. To achieve a true Zero Trust posture we shift from reactive security to an <b>iterative, dynamic</b> approach. Your group will design a <b>SASE environment</b> to satisfy the five use cases using the ZT Access and Agentic Identity controls discussed earlier. By integrating <b>SD-WAN, Cisco ISE, policy controls, telemetry</b> and any tool in the Cisco toolbox, you'll move beyond simple connectivity to an intelligent, digitally resilient network.</p>
     </div>
   </section>
-
-  <!-- ============ CUSTOMER ENVIRONMENT ============ -->
-  <section class="sec" id="environment">
-    <div class="sec-head">
-      <span class="sec-no">ENVIRONMENT</span>
-      <h2>The customer environment</h2>
-    </div>
+  <section class="flowstep" id="step2" hidden>
+    <div class="flowstep-head"><svg class="step-ic" viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2.2"/><circle cx="5" cy="19.5" r="2.2"/><circle cx="12" cy="19.5" r="2.2"/><circle cx="19" cy="19.5" r="2.2"/><path d="M12 6.7v3.6"/><path d="M12 10.3L5.7 17.5"/><path d="M12 10.3l6.3 7.2"/><path d="M12 10.3v7"/></svg><div><span class="sec-no">Step 2 of 6</span><h2>The environment &amp; reference architecture</h2></div></div>
     <p class="sec-sub">You're the Cisco team on point for <b>a large enterprise customer</b> running campus and branch networks with a mix of wired and wireless clients. Read the environment once as a group so everyone shares the same picture, then work the use cases in order.</p>
     <div class="grid g2">
       <div class="panel" style="border-top:4px solid var(--cyan)">
@@ -906,28 +963,14 @@
           <li><b>Corporate PCs</b> — some behind on AntiVirus / OS updates.</li>
         </ul>
       </div>
-    </div>
-  </section>
-
-  <!-- ============ REFERENCE TOPOLOGY ============ -->
-  <section class="sec" id="topology">
-    <div class="sec-head">
-      <span class="sec-no">REFERENCE</span>
-      <h2>Current customer architecture</h2>
-    </div>
-    <p class="sec-sub">The reference network you're designing for — everyone starts from the same picture. Your diagram for each use case is your version of this, with the products and policy you propose drawn on top.</p>
+    </div><p class="sec-sub">The reference network you're designing for — everyone starts from the same picture. Your diagram for each use case is your version of this, with the products and policy you propose drawn on top.</p>
     <div class="topo-wrap">
       <img src="reference-network.jpg" alt="Current customer architecture reference network diagram: remote branches and Zero Trust Access users connect via SD-WAN and SSE to the corporate HQ head-end routers, the on-premises application environment, and apps in Azure and AWS via cloud-exchange peering; Microsoft Entra ID provides identity and SaaS/Internet are reached through SSE.">
     </div>
     <p class="sample-note">The reference network you're designing for — everyone starts from the same picture. Remote branches and Zero Trust Access users reach the enterprise through <b>SD-WAN</b> and <b>SSE</b>; the corporate HQ (on-prem head-end routers) connects to the on-premises application environment and to <b>Azure</b> and <b>AWS</b> over cloud-exchange peering, with identity from <b>Microsoft Entra ID</b>. Draw your solution for each use case on top of it.</p>
   </section>
-
-  <!-- ============ BUSINESS OBJECTIVES ============ -->
-  <section class="sec" id="objectives">
-    <div class="sec-head">
-      <span class="sec-no">OBJECTIVES</span>
-      <h2>Business objectives</h2>
-    </div>
+  <section class="flowstep" id="step3" hidden>
+    <div class="flowstep-head"><svg class="step-ic" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3a1 1 0 011-1h4a1 1 0 011 1v1"/><path d="M8.4 10l1.3 1.3L12.4 8.6"/><path d="M8.4 15.4l1.3 1.3L12.4 14"/><path d="M14.6 10.2h2.2M14.6 15.6h2.2"/></svg><div><span class="sec-no">Step 3 of 6</span><h2>Business objectives</h2></div></div>
     <p class="sec-sub">What success looks like for the customer — every solution you propose should ladder up to these.</p>
     <div class="grid g3">
       <div class="deliver"><div class="num">1</div><div><b>Secure, scalable segmentation</b><p>Put every device in the right group and control what each group can reach — without re-architecting VLANs and subnets.</p></div></div>
@@ -938,14 +981,9 @@
       <div class="deliver"><div class="num">6</div><div><b>Complete as many use cases as you can — to score more</b><p>Five use cases, in order. Each one you solve and submit adds to your team's score on the leaderboard, so bank as many as the clock allows.</p></div></div>
     </div>
   </section>
-
-  <!-- ============ ROLES ============ -->
-  <section class="sec" id="roles">
-    <div class="sec-head">
-      <span class="sec-no">ROLES</span>
-      <h2>Four roles, no passengers</h2>
-    </div>
-    <p class="sec-sub">Four seats at the table, one standing job each for the whole hour. Pick roles in the first two minutes. Teams of three or five adapt — the facilitator will say how. The Digital Resiliency Officer's job is to challenge decisions and spark dialogue — not to block.</p>
+  <section class="flowstep" id="step4" hidden>
+    <div class="flowstep-head"><svg class="step-ic" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 19.5a5.5 5.5 0 0111 0"/><circle cx="17.2" cy="9.2" r="2.2"/><path d="M15.4 19.5a4.2 4.2 0 015.8-3.9"/></svg><div><span class="sec-no">Step 4 of 6</span><h2>Your roles &amp; how to play</h2></div></div>
+    <div class="panel" style="border-top:4px solid var(--cyan);margin:4px 0 16px"><h3>How the hour runs</h3><ul><li><b>Teams of 4</b> — one person per role. Your <b>60-minute clock</b> starts once all four seats are filled.</li><li><b>Five use cases, in order</b> — solve Use Case 1 first; submitting it <b>unlocks</b> the next.</li><li><b>Bank as many as you can</b> — each submitted use case is scored on the leaderboard. Aim for <b>3+ of 5</b>.</li><li><b>For each use case</b> — map pain&rarr;product, list products (how &amp; why), attach a topology diagram, then <b>submit as a team</b>.</li></ul></div><p class="sec-sub">Four seats at the table, one standing job each for the whole hour. Pick roles in the first two minutes. Teams of three or five adapt — the facilitator will say how. The Digital Resiliency Officer's job is to challenge decisions and spark dialogue — not to block.</p>
     <div class="grid g4">
       <div class="card role" style="--rc:var(--amber);--rc-ink:#a3640f">
         <span class="rtag">Owns the pace</span>
@@ -993,13 +1031,8 @@
       </div>
     </div>
   </section>
-
-  <!-- ============ SEGMENTATION METHODOLOGY (reference) ============ -->
-  <section class="sec" id="methodology">
-    <div class="sec-head">
-      <span class="sec-no">REFERENCE</span>
-      <h2>Segmentation methodology — read before you start</h2>
-    </div>
+  <section class="flowstep" id="step5" hidden>
+    <div class="flowstep-head"><svg class="step-ic" viewBox="0 0 24 24"><path d="M12 6.6C10.4 5.1 7.8 4.6 4 5.2v12.8c3.8-.6 6.4-.1 8 1.4 1.6-1.5 4.2-2 8-1.4V5.2c-3.8-.6-6.4-.1-8 1.4z"/><path d="M12 6.6v13.2"/></svg><div><span class="sec-no">Step 5 of 6</span><h2>Segmentation methodology</h2></div></div>
     <p class="sec-sub">A short primer on how modern segmentation works, so the whole team shares the vocabulary. This is reference material — not the answer. Apply it to each use case.</p>
     <div class="grid g2">
       <div class="panel"><h3>Why VLANs / subnets alone struggle</h3><ul>
@@ -1026,29 +1059,8 @@
       </ul></div>
     </div>
   </section>
-
-  <!-- ============ USE CASES (hub) ============ -->
-  <section class="sec" id="usecases">
-    <div class="sec-head">
-      <span class="sec-no">USE CASES</span>
-      <h2>Five use cases · solve in order</h2>
-    </div>
-    <p class="sec-sub"><b>Solve them in order — Use Case 1 first.</b> Tap a tile to open it. When you submit a use case, the next one <b>unlocks</b> (locked tiles show 🔒). Do as many as you can before the clock runs out — each is scored on the leaderboard.</p>
-    <div class="uc-progress" id="ucProgress">
-      <span class="pgnum"><b id="pgSolved">0</b><small>/5 solved</small></span>
-      <span class="pgbar"><i id="pgFill"></i></span>
-      <span class="pgmeta" id="pgMeta">Solve 3+ to be competitive</span>
-      <span class="rankchip" id="pgRank" hidden></span>
-    </div>
-    <div class="uc-list" id="ucList"><!-- tiles built by the interactive engine --></div>
-  </section>
-
-  <!-- ============ WHAT GOOD LOOKS LIKE (sample) ============ -->
-  <section class="sec" id="sample">
-    <div class="sec-head">
-      <span class="sec-no">SAMPLE</span>
-      <h2>What "good" looks like</h2>
-    </div>
+  <section class="flowstep" id="step6" hidden>
+    <div class="flowstep-head"><svg class="step-ic" viewBox="0 0 24 24"><path d="M12 3.2l2.6 5.7 6.2.8-4.6 4.2 1.2 6.1L12 17.1l-5.6 2.9 1.2-6.1L3 9.7l6.2-.8z"/></svg><div><span class="sec-no">Step 6 of 6</span><h2>What &ldquo;good&rdquo; looks like</h2></div></div>
     <p class="sec-sub">A short, <b>illustrative</b> example on a <b>different</b> scenario — use it to calibrate depth and format, not to copy. Strong answers name a specific product, say <b>how</b> it works in one line, and say <b>why</b> it fits (a Cisco differentiator earns extra).</p>
     <span class="sample-tag">Example scenario · not one of your use cases</span>
     <p class="sample-note">Customer pain: <i>"Guests and IoT cameras share the same VLAN, so a compromised camera can reach guest laptops — and we've no budget for more firewalls."</i></p>
@@ -1067,16 +1079,51 @@
     </div>
   </section>
 
-  <!-- ============ BACK TO CLINIC ============ -->
-  <section class="sec" id="ready" style="text-align:center">
-    <div class="sec-head" style="justify-content:center">
-      <span class="sec-no">READY</span>
-      <h2>You've read the briefing</h2>
-    </div>
-    <p class="sec-sub" style="margin-left:auto;margin-right:auto">Head back to the clinic, take your seat, and solve the five use cases in order. Come back here any time — this briefing stays open in its own tab.</p>
-    <a class="st-btn go" href="zero-trust-design-sprint.html#usecases" style="font-size:15px;padding:13px 22px;text-decoration:none;display:inline-block">Start the use cases &rarr;</a>
-  </section>
+  <div class="flownav">
+    <button class="fbtn" id="fPrev" type="button" disabled><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Previous</button>
+    <span class="fcount" id="fCount">Step 1 of 6</span>
+    <button class="fbtn primary" id="fNext" type="button">Next<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+  </div>
 
   </div>
+
+<script>
+(function(){
+  var TOTAL=6;
+  var steps=[].slice.call(document.querySelectorAll('.flowstep'));
+  var dots=[].slice.call(document.querySelectorAll('#stepper .step'));
+  var prev=document.getElementById('fPrev'), next=document.getElementById('fNext');
+  var count=document.getElementById('fCount'), fill=document.getElementById('flowFill');
+  var cur=1;
+  function clamp(n){ return Math.max(1, Math.min(TOTAL, n)); }
+  function show(n, push){
+    cur=clamp(n);
+    steps.forEach(function(s,i){ s.hidden = (i+1)!==cur; });
+    dots.forEach(function(d,i){ d.classList.toggle('on', i+1===cur); d.classList.toggle('done', i+1<cur); });
+    count.textContent='Step '+cur+' of '+TOTAL;
+    fill.style.width=Math.round(cur/TOTAL*100)+'%';
+    prev.disabled = cur===1;
+    if(cur===TOTAL){ next.className='fbtn go'; next.innerHTML='Start the use cases<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>'; }
+    else { next.className='fbtn primary'; next.innerHTML='Next<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>'; }
+    if(push!==false){ try{ history.replaceState(null,'','#step'+cur); }catch(e){} }
+    try{ document.querySelector('.stepper').scrollIntoView({block:'start',behavior:'smooth'}); }catch(e){ window.scrollTo(0,0); }
+  }
+  dots.forEach(function(d){ d.addEventListener('click', function(){ show(parseInt(d.getAttribute('data-step'),10)); }); });
+  prev.addEventListener('click', function(){ show(cur-1); });
+  next.addEventListener('click', function(){
+    if(cur===TOTAL){ location.href='zero-trust-design-sprint.html#usecases'; return; }
+    show(cur+1);
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+    if(e.key==='ArrowRight') next.click();
+    else if(e.key==='ArrowLeft'){ if(cur>1) show(cur-1); }
+  });
+  // deep link: ?step=N or #stepN
+  var q=(location.search.match(/[?&]step=(\d+)/)||[])[1];
+  var h=(location.hash.match(/step(\d+)/)||[])[1];
+  show(parseInt(q||h||1,10), false);
+})();
+</script>
 </body>
 </html>
