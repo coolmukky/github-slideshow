@@ -221,9 +221,36 @@
   .em-ai-note code{background:#E7EEF7;padding:1px 5px;border-radius:5px;font-size:11px}
   .ucbreak{font-family:monospace;font-size:11px;color:#46566E;margin:2px 0 6px}
   @media (max-width:720px){ .em-cols{grid-template-columns:1fr} }
+  /* passcode gate */
+  .gate{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(130% 150% at 86% -12%,#0a5a99 0%,#0d3f73 34%,var(--navy) 62%,var(--navy-deep) 100%)}
+  .gate[hidden]{display:none}
+  .gate-card{width:min(400px,100%);background:var(--surface);border-radius:16px;padding:26px 24px;box-shadow:0 30px 70px -20px rgba(0,0,0,.6);border-top:4px solid var(--cyan);text-align:center}
+  .gate-ico{font-size:30px;margin-bottom:4px}
+  .gate-card .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan-deep)}
+  .gate-card h2{font-size:22px;margin:4px 0 4px}
+  .gate-card p{font-size:13.5px;color:var(--ink-soft);margin:0 0 16px}
+  .gate-card form{display:flex;gap:8px}
+  .gate-card input{flex:1;border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:15px;outline:none}
+  .gate-card input:focus{border-color:var(--cyan-deep);box-shadow:0 0 0 3px rgba(0,188,235,.18)}
+  .gate-err{color:var(--red);font-size:12.5px;margin-top:12px;min-height:1em}
+  .gate-note{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-faint);margin-top:14px}
 </style>
 </head>
 <body>
+<div class="gate" id="gate" hidden>
+  <div class="gate-card">
+    <div class="gate-ico">🔒</div>
+    <div class="eyebrow">Proctor console</div>
+    <h2>Facilitator access</h2>
+    <p>Enter the proctor passcode to continue.</p>
+    <form id="gateForm" autocomplete="off">
+      <input type="password" id="gateInput" placeholder="Passcode" autocomplete="off" spellcheck="false">
+      <button class="btn primary" type="submit">Unlock</button>
+    </form>
+    <div class="gate-err" id="gateErr"></div>
+    <div class="gate-note">Facilitator access only · this device stays unlocked for the session.</div>
+  </div>
+</div>
 <header class="top">
   <div class="wrap top-in">
     <div>
@@ -245,6 +272,7 @@
     <span class="room">room:&nbsp;<input id="roomInput" type="text" spellcheck="false"><button class="btn" id="roomGo">Switch</button></span>
     <span class="filter">🔎&nbsp;<input id="filterInput" type="text" placeholder="Filter name / email / team / role" spellcheck="false"></span>
     <span class="spacer"></span>
+    <button class="btn" id="btnLock" title="Lock the console (require the passcode again)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>Lock</button>
     <button class="btn" id="btnAiKey" title="Use your own Anthropic key for AI scoring (stored only in this browser)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2L20 3m-4 0l3 3m-6 3l3 3"/></svg>AI key</button>
     <button class="btn" id="btnAiTest" title="Check AI evaluation works before a session"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3a9 9 0 100 18 9 9 0 000-18z"/><path d="M12 8v4l3 2"/></svg>Test AI</button>
     <button class="btn" id="btnRefresh" title="Reload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4v6h6"/><path d="M4 10a8 8 0 113 8"/></svg>Reload</button>
@@ -369,6 +397,29 @@
 (function(){
   "use strict";
   var $ = function(s){ return document.querySelector(s); };
+
+  // ---------- passcode gate (client-side deterrent; blocks casual access) ----------
+  (function(){
+    var need=(window.PROCTOR_PASSCODE_SHA256||"").trim(), gate=$("#gate");
+    var LKEY="ztds.proctorUnlocked";
+    if(!need){ if(gate) gate.hidden=true; return; }               // no passcode set -> open
+    try{ if(sessionStorage.getItem(LKEY)===need){ gate.hidden=true; return; } }catch(e){}
+    if(!gate) return;
+    gate.hidden=false;
+    function sha(s){ return crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)).then(function(b){ return Array.prototype.map.call(new Uint8Array(b), function(x){ return ("0"+x.toString(16)).slice(-2); }).join(""); }); }
+    $("#gateForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      var v=$("#gateInput").value||"", err=$("#gateErr");
+      if(!(window.crypto && crypto.subtle)){ err.textContent="This browser can't verify the passcode — open the page over HTTPS."; return; }
+      sha(v).then(function(h){
+        if(h===need){ try{ sessionStorage.setItem(LKEY, need); }catch(e){} gate.hidden=true; }
+        else { err.textContent="Incorrect passcode."; $("#gateInput").value=""; $("#gateInput").focus(); }
+      }).catch(function(){ err.textContent="Couldn't verify the passcode."; });
+    });
+    setTimeout(function(){ var i=$("#gateInput"); if(i) i.focus(); }, 60);
+  })();
+  function lockProctor(){ try{ sessionStorage.removeItem("ztds.proctorUnlocked"); }catch(e){} location.reload(); }
+
   var ROLE_COLORS = { conductor:"#E2891F", critic:"#DB4A4A", architect:"#0FA9BE", scribe:"#27A276", facilitator:"#7E8CA1" };
   var ROLE_ORDER = { conductor:0, critic:1, architect:2, scribe:3, facilitator:4 };
   var ROOM = (new URLSearchParams(location.search)).get("room"); if(ROOM) ROOM=ROOM.trim().toUpperCase();
@@ -538,6 +589,7 @@
     setTimeout(function(){ URL.revokeObjectURL(a.href); document.body.removeChild(a); }, 100);
   });
   $("#btnRefresh").addEventListener("click", function(){ location.reload(); });
+  (function(){ var lk=$("#btnLock"); if(!lk) return; if(!(window.PROCTOR_PASSCODE_SHA256||"").trim()){ lk.hidden=true; } else { lk.addEventListener("click", lockProctor); } })();
   $("#roomGo").addEventListener("click", function(){
     var v = ($("#roomInput").value||"").trim() || "default";
     location.search = "?room="+encodeURIComponent(v);

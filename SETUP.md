@@ -135,6 +135,19 @@ Troubleshooting:
 
 ---
 
+## 3b. Proctor passcode (facilitator access)
+
+`proctor.html` is gated by a **passcode** so people with the URL can't wander in and start/reset
+events. The default passcode is **`clinic2026`** — **change it.** Only the SHA-256 *hash* is stored
+(in `firebase-config.js` as `PROCTOR_PASSCODE_SHA256`), never the passcode itself. Once entered, the
+console stays unlocked on that device for the browser session; press **Lock** (top bar) to re-lock.
+
+To change the passcode: in your browser console run
+`crypto.subtle.digest('SHA-256', new TextEncoder().encode('YOUR-PASSCODE')).then(b=>console.log([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')))`,
+paste the printed hash into `PROCTOR_PASSCODE_SHA256`, commit, and push. (Set it to an empty string to
+disable the gate.) This is a **client-side deterrent**, not hardened auth — good enough to keep the
+wrong people out of a facilitated clinic; for real security, use Firebase sign-in.
+
 ## 4. Running a session
 
 - **Create an event:** on `proctor.html`, enter an **event name**, an optional **scheduled start**,
