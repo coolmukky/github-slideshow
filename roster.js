@@ -43,7 +43,9 @@
         var l = { coll: coll, room: room, cb: cb }; listeners.push(l);
         var iv = setInterval(function () { cb(readAll(coll, room)); }, 2000);
         return function () { clearInterval(iv); var idx = listeners.indexOf(l); if (idx >= 0) listeners.splice(idx, 1); };
-      }
+      },
+      // No object storage in single-device mode — callers fall back to inline base64.
+      uploadDiagram: function () { return Promise.reject(new Error("no storage in local mode")); }
     };
   }
 
@@ -58,6 +60,14 @@
           watch: function (coll, room, cb) {
             var q = fs.query(fs.collection(db, coll), fs.where("room", "==", room));
             return fs.onSnapshot(q, function (snap) { var d = []; snap.forEach(function (docSnap) { d.push(docSnap.data()); }); cb(d); });
+          },
+          // Upload a diagram (data URL) to Firebase Storage; resolves to a public download URL.
+          // Keeps the big image bytes OUT of Firestore — only the short URL is stored.
+          uploadDiagram: function (path, dataUrl) {
+            return import(SDK + "firebase-storage.js").then(function (st) {
+              var ref = st.ref(st.getStorage(app), path);
+              return st.uploadString(ref, dataUrl, "data_url").then(function () { return st.getDownloadURL(ref); });
+            });
           }
         };
       });

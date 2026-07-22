@@ -632,8 +632,9 @@
     $("#emMeta").style.color = (sol&&sol.late) ? "var(--red)" : "";
     // ----- team response -----
     var parts=[];
-    if(sol && typeof sol.diagram==="string" && sol.diagram.indexOf("data:image")===0){
-      parts.push('<div class="em-field"><div class="k">Proposed diagram</div><img class="em-diag" src="'+sol.diagram+'" alt="team diagram"></div>');
+    var dg=(sol&&typeof sol.diagram==="string")?sol.diagram:"";
+    if(dg && (dg.indexOf("data:image")===0 || dg.indexOf("http")===0)){
+      parts.push('<div class="em-field"><div class="k">Proposed diagram</div><img class="em-diag" src="'+esc(dg)+'" alt="team diagram"></div>');
     } else {
       parts.push('<div class="em-field"><div class="k">Proposed diagram</div><div class="v empty">— no diagram attached —</div></div>');
     }
@@ -696,14 +697,20 @@
     (resp.painMap||[]).forEach(function(x){ L.push("  - PAIN: "+(x.pain||"")+" | PRODUCT: "+(x.product||"—")+" | HOW/WHY: "+(x.note||"—")); });
     L.push("Products proposed (name / how / why):");
     (resp.products||[]).forEach(function(x){ L.push("  - "+(x.product||"—")+" | "+(x.how||"—")+" | "+(x.why||"—")); });
-    L.push("Diagram attached: "+(aiParseDataUrl(resp.diagram)?"yes (see image)":"no"),"");
+    L.push("Diagram attached: "+(aiImageBlock(resp.diagram)?"yes (see image)":"no"),"");
     L.push("Score the team's response against the reference using the rubric. Call submit_score.");
     return L.join("\n");
   }
+  function aiImageBlock(u){
+    if(typeof u!=="string") return null;
+    if(u.indexOf("http")===0) return {type:"image",source:{type:"url",url:u}};
+    var img=aiParseDataUrl(u);
+    return img ? {type:"image",source:{type:"base64",media_type:img.mime,data:img.data}} : null;
+  }
   function aiAnthropicBody(p){
     var r=aiRubric(p), content=[{type:"text",text:aiUserText(p)}];
-    var img=aiParseDataUrl(p.response&&p.response.diagram);
-    if(img) content.push({type:"image",source:{type:"base64",media_type:img.mime,data:img.data}});
+    var blk=aiImageBlock(p.response&&p.response.diagram);
+    if(blk) content.push(blk);
     var tool={ name:"submit_score", description:"Return the rubric scores and a short rationale.",
       input_schema:{ type:"object", properties:{
         c1:{type:"integer",minimum:0,maximum:r.c1.max}, c2:{type:"integer",minimum:0,maximum:r.c2.max},

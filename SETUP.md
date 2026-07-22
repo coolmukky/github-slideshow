@@ -85,7 +85,32 @@ Allows registering/submitting/scoring/controlling and reading; blocks client-sid
 add features you must re-publish this full block** — if an older version is live, submissions,
 scores, or the shared "Start event" clock will be rejected.
 
-### 2d. (Optional) Restrict the API key — defense-in-depth  ⬜
+### 2d. (Recommended for scale) Enable Storage for diagram photos  ⬜
+Diagrams are uploaded to **Firebase Storage** and only their short download URL is stored in
+Firestore — this keeps large images out of the database (important at ~300 participants). If
+Storage isn't enabled, the app **falls back** to embedding the image inline (still works, just
+heavier), so this step is optional but recommended.
+
+- Console → **Build → Storage → Get started** (accept the default bucket, same location as Firestore).
+- Storage → **Rules** tab → paste and **Publish**:
+
+```
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /diagrams/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.resource.size < 6 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+  }
+}
+```
+
+Allows uploading/reading diagram images (capped at 6 MB, images only) under `diagrams/…`;
+everything else stays locked. The `storageBucket` value is already in `firebase-config.js`.
+
+### 2e. (Optional) Restrict the API key — defense-in-depth  ⬜
 Google Cloud Console → **APIs & Services → Credentials** → project `design-clinic-58ad0` →
 open **"Browser key (auto created by Firebase)"**:
 
