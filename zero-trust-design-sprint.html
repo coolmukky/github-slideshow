@@ -839,6 +839,20 @@
   .brief-card.open-all{background:linear-gradient(135deg,rgba(95,215,255,.16),rgba(0,188,235,.05));border-color:var(--cyan-deep)}
   @media (max-width:860px){ .brief-grid{grid-template-columns:repeat(2,1fr)} }
   @media (max-width:520px){ .brief-grid{grid-template-columns:1fr} }
+
+  /* ---- shared team topology preview (everyone on the team sees the upload) ---- */
+  .diag-view{margin:12px 0 0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface-2);max-width:680px}
+  .diag-view .dv-frame{position:relative;cursor:zoom-in;background:#06172e}
+  .diag-view img{display:block;width:100%;max-height:440px;object-fit:contain;background:#06172e}
+  .diag-view .dv-zoom{position:absolute;top:8px;right:8px;background:rgba(6,23,46,.82);border:1px solid var(--line);color:var(--cyan-deep);font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:20px;padding:4px 9px;display:inline-flex;align-items:center;gap:5px}
+  .diag-view figcaption{display:flex;align-items:center;gap:8px;padding:9px 12px;font-size:12.5px;color:var(--ink-soft);border-top:1px solid var(--line)}
+  .diag-view figcaption b{color:var(--ink)}
+  .diag-view .dv-badge{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8FE3B6;background:rgba(31,138,99,.16);border:1px solid rgba(31,138,99,.4);border-radius:20px;padding:3px 9px}
+  .diag-empty{margin:12px 0 0;padding:14px 16px;border:1px dashed var(--line);border-radius:12px;background:rgba(255,255,255,.02);color:var(--ink-soft);font-size:13px;max-width:680px}
+  .diag-lightbox{position:fixed;inset:0;z-index:600;background:rgba(3,10,22,.94);display:flex;align-items:center;justify-content:center;padding:28px;cursor:zoom-out}
+  .diag-lightbox img{max-width:96vw;max-height:88vh;object-fit:contain;border-radius:8px;box-shadow:0 24px 70px rgba(0,0,0,.65)}
+  .diag-lightbox .dl-cap{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);color:var(--ink-soft);font-size:13px;background:rgba(6,23,46,.85);border:1px solid var(--line);border-radius:20px;padding:6px 14px;white-space:nowrap}
+  .diag-lightbox .dl-close{position:absolute;top:16px;right:20px;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:rgba(6,23,46,.85);color:var(--ink);font-size:22px;line-height:1;cursor:pointer}
 </style>
 </head>
 <body>
@@ -1463,9 +1477,11 @@
       try{ roster.write("solutions", doc); }catch(e){}
     }, 650);
   }
-  function pushDraftDiagram(n, url){               // written on its own so it doesn't ride every keystroke
+  function pushDraftDiagram(n, url, by, at){        // written on its own so it doesn't ride every keystroke
     if(!ucCanSync()) return;
     var doc=ucDraftBase(n); doc.diagram=url||"";
+    doc.diagramBy = url ? (by||(persona&&persona.name)||"") : "";
+    doc.diagramAt = url ? (at||Date.now()) : 0;
     try{ roster.write("solutions", doc); }catch(e){}
   }
 
@@ -1483,9 +1499,12 @@
       var n = d.useCase || 0; if(!n) return;
       if(d.kind==="draft"){                                   // live shared draft for this team
         var prev=ucDraftCache[n]||{};
+        var hasDiag = (typeof d.diagram==="string");
         ucDraftCache[n]={
           fields: d.fields || prev.fields || {},
-          diagram: (typeof d.diagram==="string") ? d.diagram : (prev.diagram||""),
+          diagram: hasDiag ? d.diagram : (prev.diagram||""),
+          diagramBy: hasDiag ? (d.diagramBy||"") : (prev.diagramBy||""),
+          diagramAt: hasDiag ? (d.diagramAt||0) : (prev.diagramAt||0),
           rows: d.rows || prev.rows || 0,
           by: d.updatedBy||prev.by||"", at: d.updatedAt||prev.at||0
         };
@@ -1606,6 +1625,20 @@
     reader.readAsDataURL(file);
   }
 
+  // ----- full-size topology viewer (click the shared team diagram to enlarge) -----
+  function openDiagLightbox(url, capHtml){
+    if(!url) return;
+    var lb=document.createElement("div"); lb.className="diag-lightbox"; lb.setAttribute("role","dialog"); lb.setAttribute("aria-label","Team topology diagram");
+    lb.innerHTML='<button class="dl-close" aria-label="Close">&times;</button><img alt="Team topology diagram"><div class="dl-cap"></div>';
+    lb.querySelector("img").src=url;
+    var cap=lb.querySelector(".dl-cap"); if(capHtml) cap.innerHTML=capHtml; else cap.parentNode.removeChild(cap);
+    function close(){ if(lb.parentNode) lb.parentNode.removeChild(lb); document.removeEventListener("keydown", onKey); }
+    function onKey(e){ if(e.key==="Escape") close(); }
+    lb.addEventListener("click", function(e){ if(e.target===lb || (e.target.classList && e.target.classList.contains("dl-close"))) close(); });
+    document.addEventListener("keydown", onKey);
+    document.body.appendChild(lb);
+  }
+
   // ----- workspace (active use case) -----
   function renderUcWorkspace(){
     var host=$("#ucWorkspace"); if(!host) return;
@@ -1660,12 +1693,16 @@
         '<button type="button" class="st-btn" id="ucAddProd">+ Add product</button>'+
       '</div>'+
       '<div class="uc-step"><div class="uc-step-h"><span class="uc-step-n">3</span>Proposed diagram</div>'+
-        '<p class="uc-step-sub">Draw the customer topology with your segmentation solution on it, photograph it, and attach.</p>'+
+        '<p class="uc-step-sub">Draw the customer topology with your segmentation solution on it, photograph it, and attach. It appears below for <b>everyone on your team</b> — tap it to view full size.</p>'+
         '<div class="uc-diagrow">'+
-          '<label class="st-btn" id="ucDiagLabel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M3 17l5-4 4 3 3-2 6 5"/></svg>Attach diagram<input type="file" accept="image/*" id="ucDiag" hidden></label>'+
-          '<img class="diag-thumb" id="ucDiagThumb" alt="diagram" hidden>'+
+          '<label class="st-btn" id="ucDiagLabel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M3 17l5-4 4 3 3-2 6 5"/></svg><span id="ucDiagLabelText">Attach diagram</span><input type="file" accept="image/*" id="ucDiag" hidden></label>'+
           '<button type="button" class="st-btn" id="ucDiagClear" hidden>✕ Remove</button>'+
         '</div>'+
+        '<p class="diag-empty" id="ucDiagEmpty">No topology attached yet — anyone on the team can attach one and it shows here for the whole team.</p>'+
+        '<figure class="diag-view" id="ucDiagView" hidden>'+
+          '<div class="dv-frame" id="ucDiagFrame"><img id="ucDiagImg" alt="Team topology diagram"><span class="dv-zoom"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>View</span></div>'+
+          '<figcaption><span class="dv-badge">Team topology</span><span id="ucDiagCap"></span></figcaption>'+
+        '</figure>'+
       '</div>'+
       '<div class="uc-submit">'+
         '<span class="uc-substatus" id="ucSubStatus"></span>'+
@@ -1697,20 +1734,39 @@
     var addBtn=$("#ucAddProd");
     if(addBtn) addBtn.addEventListener("click", function(){ addProdRow(); pushDraftFields(uc.n); });
 
-    // diagram (per use case) — shared with the team
+    // diagram (per use case) — shared with the whole team and viewable in the workspace
     var diagKey="ztds.ucdiag."+uc.n+"."+ucTeamKey();
     var diagUrl=null, _dc=ucDraftCache[uc.n];
+    var diagBy=(_dc&&_dc.diagramBy)||"", diagAt=(_dc&&_dc.diagramAt)||0;
     if(_dc && typeof _dc.diagram==="string" && _dc.diagram) diagUrl=_dc.diagram;
     else { try{ diagUrl=localStorage.getItem(diagKey)||null; }catch(e){} }
-    var diagInput=$("#ucDiag"), diagThumb=$("#ucDiagThumb"), diagClear=$("#ucDiagClear");
-    function showDiag(){ if(diagUrl){ diagThumb.src=diagUrl; diagThumb.hidden=false; diagClear.hidden=false; } else { diagThumb.removeAttribute("src"); diagThumb.hidden=true; diagClear.hidden=true; } }
-    function shareDiag(val){ diagUrl=val; try{ localStorage.setItem(diagKey,val); }catch(e){} showDiag(); pushDraftDiagram(uc.n, val); }
+    var diagInput=$("#ucDiag"), diagClear=$("#ucDiagClear");
+    var diagView=$("#ucDiagView"), diagImg=$("#ucDiagImg"), diagCap=$("#ucDiagCap"), diagEmpty=$("#ucDiagEmpty"), diagFrame=$("#ucDiagFrame");
+    function diagCaption(){
+      if(!diagUrl) return "";
+      var who = diagBy ? ucEsc(diagBy) : "a teammate";
+      var when = diagAt ? new Date(diagAt).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}) : "";
+      return "Attached by <b>"+who+"</b>"+(when?(" · "+when):"")+" — tap to view full size";
+    }
+    function showDiag(){
+      if(diagUrl){
+        diagImg.src=diagUrl; diagView.hidden=false; if(diagEmpty) diagEmpty.hidden=true; diagClear.hidden=false;
+        if(diagCap) diagCap.innerHTML=diagCaption();
+        var _lt=$("#ucDiagLabelText"); if(_lt) _lt.textContent="Replace diagram";
+      } else {
+        diagImg.removeAttribute("src"); diagView.hidden=true; if(diagEmpty) diagEmpty.hidden=false; diagClear.hidden=true;
+        var _lt=$("#ucDiagLabelText"); if(_lt) _lt.textContent="Attach diagram";
+      }
+    }
+    function shareDiag(val){ diagUrl=val; try{ if(val) localStorage.setItem(diagKey,val); else localStorage.removeItem(diagKey); }catch(e){} showDiag(); pushDraftDiagram(uc.n, val, diagBy, diagAt); }
+    if(diagFrame) diagFrame.addEventListener("click", function(){ openDiagLightbox(diagUrl, diagCaption()); });
     diagInput.addEventListener("change", function(){
       var f=diagInput.files && diagInput.files[0]; if(!f) return;
       ucLoadDiagram(f, function(url){
         if(!url){ toast("Couldn't read image","Try a different photo (JPG/PNG).","fire"); return; }
-        diagUrl=url; try{ localStorage.setItem(diagKey,url); }catch(e){}
-        showDiag(); toast("Diagram attached","Shared with your team; sent to the proctor when you submit.","phase");
+        diagUrl=url; diagBy=(persona&&persona.name)||"You"; diagAt=Date.now();
+        try{ localStorage.setItem(diagKey,url); }catch(e){}
+        showDiag(); toast("Topology shared with your team","Everyone on the team can view it now; the proctor gets it when you submit.","phase");
         // Move the bytes to Firebase Storage and share the short URL (keeps big images out of
         // Firestore). Falls back to the inline image if Storage isn't available.
         if(roster && roster.uploadDiagram && ROOM){
@@ -1720,7 +1776,7 @@
       });
       diagInput.value="";
     });
-    diagClear.addEventListener("click", function(){ diagUrl=null; try{ localStorage.removeItem(diagKey); }catch(e){} showDiag(); pushDraftDiagram(uc.n, ""); });
+    diagClear.addEventListener("click", function(){ diagUrl=null; diagBy=""; diagAt=0; try{ localStorage.removeItem(diagKey); }catch(e){} showDiag(); pushDraftDiagram(uc.n, "", "", 0); });
     showDiag();
 
     // apply an incoming shared draft onto this open sheet (never touches the field being typed in)
@@ -1738,7 +1794,11 @@
           var ta=host2.querySelector('textarea[data-uc="'+id+'"]');
           if(ta && ta!==document.activeElement && ta.value!==d.fields[id]){ ta.value=d.fields[id]; ucSet(uc.n,id,ta.value); autosizeTa(ta); }
         });
-        if(typeof d.diagram==="string" && d.diagram!==(diagUrl||"")){ diagUrl=d.diagram||null; try{ if(diagUrl) localStorage.setItem(diagKey,diagUrl); else localStorage.removeItem(diagKey); }catch(e){} showDiag(); }
+        if(typeof d.diagram==="string" && (d.diagram!==(diagUrl||"") || (d.diagramBy||"")!==diagBy)){
+          diagUrl=d.diagram||null; diagBy=d.diagramBy||""; diagAt=d.diagramAt||0;
+          try{ if(diagUrl) localStorage.setItem(diagKey,diagUrl); else localStorage.removeItem(diagKey); }catch(e){}
+          showDiag();
+        }
       }
       updateLiveBadge();
     }
