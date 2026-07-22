@@ -79,3 +79,17 @@ window.FIREBASE_CONFIG = {
    -------------------------------------------------------------------------- */
 window.AI_EVAL_ENDPOINT = "";   // e.g. "https://clinic-ai-eval.<you>.workers.dev"
 window.AI_EVAL_TOKEN = "";      // optional; matches the proxy's EVAL_SHARED_TOKEN
+
+/* ----------------------------------------------------------------------------
+   Proctor passcode gate (proctor.html). Blocks casual/accidental access to the
+   facilitator console. Store the SHA-256 *hash* of your passcode here (never the
+   passcode itself). Empty = no gate (console open to anyone with the URL).
+   Note: this is a client-side deterrent, not hardened auth — a determined,
+   technical person could bypass it. It stops the wrong people wandering in.
+   To change it: pick a passcode, hash it, and paste the hash below. Easiest —
+   in your browser console run:
+     crypto.subtle.digest('SHA-256', new TextEncoder().encode('YOUR-PASSCODE'))
+       .then(b=>console.log([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')))
+   Default passcode below is "clinic2026" — change it.
+   -------------------------------------------------------------------------- */
+window.PROCTOR_PASSCODE_SHA256 = "ec189984c5b36432f04401eb55b916a4801153d10b627bc4cc590382e27d1aa8";
