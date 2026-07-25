@@ -9,6 +9,11 @@ mode); Firebase only adds the shared, cross-device proctor roster.
 - **Proctor roster & evaluation:** `proctor.html`
 - **Leaderboard:** `leaderboard.html`
 - **Config file:** `firebase-config.js`
+- **Offline / printable materials:** `offline/` — self-contained HTML you can open with no internet and **Print / Save as PDF** to run the clinic on paper. Start at [`offline/index.html`](./offline/index.html):
+  - **ZTA Activity Guide** (`offline/activity-guide.html`) — customer, environment, reference architecture, objectives, roles, how-to-play, methodology, and each use-case brief. *Give to teams.*
+  - **ZTA Workbook** (`offline/workbook.html`) — team answer sheet: pain→product mapping, products (how/why) and a diagram space per use case (100 pts each). *Give to teams.*
+  - **ZTA Proctor Guide** (`offline/proctor-guide.html`) — reference answers (cheat sheet) **+** scoring rubric **+** score sheet for each use case, integrated. **Proctor only — do not show participants.**
+  - Use Case 1 is fully populated; 2–5 are blank templates until their content is added (1–3 required, 4–5 bonus).
 
 ---
 
