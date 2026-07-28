@@ -450,7 +450,7 @@
   // Proctor-only answer keys (cheat sheets) for manual evaluation — NOT shown to participants.
   var CHEATSHEETS = {
     1: {
-      title:"Managed Environment — Segmentation",
+      title:"Managed Environment \u2014 Segmentation",
       painResponse:[
         ["Prior segmentation failed. VLANs/IP subnets complex and tedious.", "Implement SGTs over VLAN/IP subnets."],
         ["Profiling labour-intensive; staff can't keep up with new devices.", "ISE cloud AI profiling."],
@@ -464,8 +464,83 @@
         ["ISE SGT ACL policy", "Granular access policy.", "SGACL more efficient than IP ACLs."],
         ["ISE pxGrid", "pxGrid / Rapid Threat Containment; shares context with the ecosystem.", "Cisco innovation, RFC8600; dynamically quarantines threat devices; integrates with ACI, FW, SNA, SD-WAN, CSW, switches, routers."],
         ["Catalyst SD-WAN", "pxGrid integration for unified security policy via C3 / Security Cloud Control.", "Consistent policy across the WAN fabric."],
-        ["FMC / SCC / FTD", "Threat detection/protection (NGIPS, malware, content filtering) and source/dest SGT policy enforcement.", "Integrates with ISE via pxGrid for Rapid Threat Containment; dynamic SGT-based enforcement (Cisco innovation)."],
+        ["FMC / SCC / FTD", "Threat detection/protection (NGIPS, malware, content filtering) and source/dest SGT policy enforcement.", "Integrates with ISE via pxGrid for Rapid Threat Containment; dynamic SGT-based enforcement."],
         ["Cisco Secure Workload", "App Dependency Mapping; profiles flows and builds app-segmentation policy; ingests NetFlow from FTD; pxGrid/ISE connector.", "Auto policy creation, validation and enforcement based on identity + posture from ISE/pxGrid."]
+      ]
+    },
+    2: {
+      title:"Remote Workers \u2014 Zero Trust Access",
+      painResponse:[
+        ["Full client VPN over-permissive; not Zero Trust.", "Cisco Secure Access (SSE) ZTNA \u2014 per-app, least-privilege access; retire broad VPN."],
+        ["Manual daily VPN; low user satisfaction.", "Cisco Secure Client with always-on / seamless ZTNA (transparent access)."],
+        ["Too many sign-ons per application.", "Single sign-on via Cisco Duo SSO (SAML/OIDC) across apps."],
+        ["Want to eliminate password logins / stolen credentials.", "Duo passwordless (FIDO2 / passkeys) and phishing-resistant MFA."],
+        ["Okta IdP too expensive.", "Use Duo as the SSO/IdP to reduce Okta reliance and cost."],
+        ["Controlled internet \u2014 block gambling and gaming.", "Secure Access SWG + DNS-layer security (Umbrella) content categories."],
+        ["Contractors need private-app access from unmanaged devices.", "Secure Access clientless ZTNA (browser-based RDP/VDI)."],
+        ["Modernize branches; reduce branch cost.", "Catalyst SD-WAN + Secure Access = SASE; converge networking and security."]
+      ],
+      products:[
+        ["Cisco Secure Access (SSE)", "ZTNA (client + clientless), SWG, DNS-layer security, CASB, FWaaS \u2014 one cloud, one agent.", "Per-app least-privilege replaces broad VPN; single converged SSE."],
+        ["Cisco Duo", "MFA, passwordless (FIDO2/passkeys), SSO; can act as IdP.", "Phishing-resistant; reduces sign-ons and Okta cost."],
+        ["Cisco Secure Client", "Unified agent: ZTNA + VPN + posture in one client.", "Seamless UX; always-on access, no manual VPN."],
+        ["Catalyst SD-WAN", "Branch fabric integrated with Secure Access for SASE.", "Modernizes branches and lowers cost."],
+        ["Umbrella / DNS security", "Content filtering (gambling/gaming) and DNS-layer protection (in Secure Access).", "Fast, category-based control everywhere."]
+      ]
+    },
+    3: {
+      title:"AI Access and Agent Controls",
+      painResponse:[
+        ["Shadow AI usage today.", "Cisco Secure Access CASB + app discovery \u2014 identify and report AI apps in use."],
+        ["Users granted rights equally; need fine-grained control.", "Identity-based policy (Duo/ISE groups) with Secure Access ZTNA per user/group."],
+        ["Only corporate ChatGPT tenant allowed.", "Secure Access SWG tenant restrictions (header injection) to force the corporate tenant; block personal logins."],
+        ["Users expose sensitive data to GenAI.", "Cisco AI Defense + Secure Access DLP inspect prompts/uploads to GenAI."],
+        ["Claude Desktop agents / local MCP agents on employee systems.", "Cisco AI Defense guardrails + Secure Access egress controls for agent traffic."],
+        ["Too many unknown MCP servers in private & public DCs.", "Cisco Secure Workload / Hypershield discover MCP flows; allow-list and enforce at runtime."],
+        ["Personal credentials for ChatGPT.", "Duo SSO + tenant restriction \u2014 block non-corporate identities."],
+        ["Downloading risky AI models.", "Secure Access SWG malware/file inspection + AI Defense model validation to block risky sources."]
+      ],
+      products:[
+        ["Cisco AI Defense", "Discovers AI usage, inspects prompts/responses, enforces guardrails, validates models.", "Purpose-built GenAI safety and agent guardrails."],
+        ["Cisco Secure Access (SSE)", "CASB (shadow-AI discovery), SWG tenant restrictions, DLP, egress control.", "One place to see and control AI access for remote users."],
+        ["Cisco Duo", "Identity for tenant restriction, blocks personal creds, SSO.", "Ties AI access to corporate identity."],
+        ["Cisco Secure Workload / Hypershield", "Discover and control MCP-server flows and agent egress; runtime enforcement.", "Sees and segments unknown agent/MCP traffic in the DCs."]
+      ]
+    },
+    4: {
+      title:"Merger & Acquisition \u2014 Extend Segmentation",
+      painResponse:[
+        ["Unsure how to extend segmentation to acquired company.", "Cisco TrustSec \u2014 propagate SGTs across sites (inline SGT / SXP over SD-WAN); consistent SGACL policy from ISE."],
+        ["Only selected branch users \u2192 restricted resource (Site 9951).", "SGT-based SGACL that permits only the selected group to the Site 9951 resource; enforced at FTD / switch."],
+        ["Not ready to add 100 staff to the corporate directory; use what they have.", "Federate the acquired Okta IdP to Cisco ISE / Duo (SAML) \u2014 keep Okta short-term, no re-provisioning."],
+        ["Minimize disruptive authentication during transition.", "Identity federation + SSO (Duo) \u2014 seamless access to corporate apps."],
+        ["Acquired company breached; still using passwords.", "Duo MFA + passwordless (FIDO2/passkeys) for acquired users immediately."]
+      ],
+      products:[
+        ["Cisco ISE", "Central identity + SGT policy; federate the acquired Okta IdP; posture.", "One policy source; reuses existing Okta."],
+        ["Cisco TrustSec (SGT)", "Extends segmentation across sites, topology-independent; SXP / inline SGT.", "Fast to extend; no re-subnetting."],
+        ["Cisco Secure Firewall (FTD)", "Enforces SGT policy at the acquired-site edge; restricts Site 9951 resource.", "Already on site; reuse for enforcement."],
+        ["Cisco Duo", "MFA / passwordless + SSO federation for acquired identities.", "Immediately hardens breached, password-based users."],
+        ["Catalyst SD-WAN", "Carries SGT / segmentation between the sites.", "Consistent policy over the WAN."]
+      ]
+    },
+    5: {
+      title:"Zero Trust across Multicloud Data Center",
+      painResponse:[
+        ["Minimal visibility of apps across multicloud.", "Cisco Secure Workload App Dependency Mapping \u2014 auto-discover apps and flows on-prem + AWS + Azure + Kubernetes."],
+        ["Lacking a segmentation strategy/plan.", "Secure Workload auto-generates and validates microsegmentation policy before enforce."],
+        ["Kubernetes latency and visibility issues.", "Cisco Hypershield (eBPF) for low-latency K8s workload visibility and enforcement."],
+        ["Need app run-time protection; minimize blast radius.", "Hypershield runtime protection + autonomous segmentation."],
+        ["Unable to patch IoT devices.", "Hypershield virtual patching / compensating controls; segment IoT."],
+        ["Too many disparate management interfaces.", "Cisco Security Cloud Control \u2014 unified policy across on-prem + multicloud enforcement points."],
+        ["Limited budget; leverage native features.", "Cisco Multicloud Defense \u2014 native cloud enforcement + virtual appliances (FTDv) where needed."]
+      ],
+      products:[
+        ["Cisco Secure Workload", "App Dependency Mapping + microsegmentation policy across on-prem, AWS, Azure and Kubernetes.", "Visibility-driven, validated policy; end-to-end segmentation."],
+        ["Cisco Hypershield", "eBPF runtime protection, autonomous segmentation and virtual patching (K8s and unpatched IoT).", "Low-latency, self-updating enforcement in the workload."],
+        ["Cisco Multicloud Defense", "Native multicloud enforcement with virtual appliances; consistent policy across AWS/Azure.", "Leverages native features; budget-friendly."],
+        ["Security Cloud Control (SCC)", "Single pane to manage policy across on-prem and multicloud enforcement points.", "Cuts disparate management interfaces / complexity."],
+        ["Secure Firewall (FTDv)", "Virtual firewall enforcement where L7 controls are needed.", "Reuse where native controls aren\u2019t enough."]
       ]
     }
   };
