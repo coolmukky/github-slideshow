@@ -1436,98 +1436,91 @@
   var USE_CASES = [
     {
       n:1, title:"Managed Environment \u2014 Segmentation", tag:"Segmentation",
-      intro:"The customer's policy is to segment campus & branch wired and wireless client devices (laptops, mobiles) into logical groups and control what each group can reach.",
+      intro:"The customer's policy is to segment campus & branch wired and wireless client devices (laptops, mobile devices) into logical groups.",
       requirements:[
-        "Segment campus & branch wired and wireless clients into logical groups: Employees, IOT, deskagents, Guest.",
-        "Employees = laptops, mobiles (Group=Employees). IoT = printers, cameras, badge readers (Group=IOT). Deskside = dedicated Mac-minis (Group=deskagents). Guest SSID = Internet only (Group=Guest).",
-        "IoT restricted from the other groups but needs data center and Internet access.",
-        "Guests get Internet access only.",
-        "Employees and IoT require controlled Internet and data center application access.",
-        "Deskside Mac-minis reach the on-prem data center only."
+        "Employee and trusted devices (Group=Employees).",
+        "IOT \u2014 printers, cameras, badge readers, etc. (Group=IOT).",
+        "Deskside agents \u2014 dedicated mac-minis (Group=deskagents).",
+        "Guest SSID for Internet only (Group=Guest).",
+        "IOT should be restricted from the other groups but need data center and Internet access.",
+        "Guests should have Internet access only.",
+        "Employee and IOT require controlled internet, and data center application access.",
+        "Deskside Mac-Minis have access to on-prem data center only."
       ],
       painpoints:[
-        "Prior segmentation failed \u2014 using VLANs/IP subnets is complex and tedious.",
-        "Profiling is labour-intensive; staff unable to keep up with constant new devices joining.",
+        "Prior segmentation failed. Using VLANS/IP subnets is complex and tedious.",
+        "Profiling is labor intensive and staff unable to keep up with constant new devices joining.",
         "Failing PCI audits.",
-        "Corporate PCs not running the latest AntiVirus and OS updates.",
+        "Corporate PCs not running latest AntiVirus and OS updates.",
         "No budget for buying more firewalls to do segmentation."
       ],
       tasks:[
-        "Draw a diagram of the customer's campus and branch wired/wireless networks.",
-        "Create your proposed segmentation solution; be ready to explain the product selected, how it works, and why (include Cisco differentiators if available).",
-        "Make sure your proposed solution addresses each customer requirement and pain point.",
-        "Attach the diagram and submit for SME review and scoring."
+        "Draw a diagram of the customer's campus and branch wired/wireless networks. Submit for SME review and scoring.",
+        "Create your proposed segmentation solution and be ready to explain the product selected, how it works, and why (include Cisco differentiators if available). Make sure your solution addresses each customer requirement and pain point."
       ],
       productRows:6, minutes:15
     },
     {
       n:2, title:"Remote Workers \u2014 Zero Trust Access", tag:"Zero Trust Access",
-      intro:"The customer is looking for an SSE solution to support remote workers and secure branch connectivity \u2014 moving from broad VPN to per-application Zero Trust Access, and modernizing branches with SASE.",
+      intro:"Customer looking for a SASE solution to support remote workers and secure branch connectivity.",
       requirements:[
-        "All corporate users can use full client VPN to access selected legacy private applications \u2014 but most prefer ZTNA for modern applications.",
+        "All corporate users can use full client VPN to access selected legacy private applications. But most prefer ZTNA for modern applications.",
         "All corporate users need controlled internet access (block gambling and gaming).",
         "Contractors can only access private applications via clientless RDP access.",
         "Improve user experience with minimal application sign-ons.",
-        "Customer wants to modernize branches with SASE."
+        "Customer wants a SASE solution for branches."
       ],
       painpoints:[
-        "Full client VPN has over-permissive privileges \u2014 not considered Zero Trust.",
+        "Full client VPN has over-permissive privileges. Not considered Zero Trust.",
         "User satisfaction is low due to manual VPN connection daily.",
-        "Too many sign-ons per application created user frustration.",
+        "Too many sign-ons per application. Low user satisfaction.",
         "Want to eliminate password logins to minimize stolen credentials.",
-        "Existing Okta IdP is getting too expensive.",
+        "Existing Okta IdP solution getting too expensive.",
         "CIO wants SASE to reduce branch costs."
       ],
       tasks:[
-        "Draw a diagram of your proposed architecture for this use case (products, controls and policy on the reference network).",
-        "Create your proposed solution; be ready to explain each product selected, how it works, and why (include Cisco differentiators).",
-        "Make sure your solution addresses each customer requirement and pain point.",
-        "Attach the diagram and submit for SME review and scoring."
+        "Expand the diagram from your previous use cases, if necessary. Submit for SME review and scoring.",
+        "Create your proposed solution and be ready to explain the product selected, how it works, and why (include Cisco differentiators if available). Make sure your solution addresses each customer requirement and pain point."
       ],
       productRows:6, minutes:15
     },
     {
       n:3, title:"AI Access and Agent Controls", tag:"AI Access & Agent Controls",
-      intro:"The customer is concerned about uncontrolled AI usage by remote employees (from Use Case 2). They want to report what\u2019s being used and build enforceable guardrails on what AI tools can do \u2014 controlling which AI tools are safe and validating information shared with approved AI sites.",
+      intro:"The customer is concerned about uncontrolled AI usage by users from Use Case 2. They want to report what\u2019s being used and build enforceable guardrails on what AI tools can do \u2014 controlling which AI tools are safe and validating information shared with approved AI sites.",
       requirements:[
-        "Users should not be granted rights to use tools equally \u2014 fine-grained control is needed.",
-        "Corporate users should only be able to log in to their organization\u2019s ChatGPT tenant.",
-        "Some remote users will be running Claude Desktop agents \u2014 include controls for those employee systems.",
-        "Users should not be able to expose sensitive data to Generative AI.",
-        "Some users will be integrating MCP servers to local agents like Claude Code \u2014 control those integrations."
+        "User agents should not be granted rights to use tools equally. Fine-grained control is needed.",
+        "Corporate users should only be able to login to their organization\u2019s ChatGPT tenant.",
+        "Some remote users will be running Claude Desktop agents. Ensure your design includes controls for those employee systems.",
+        "Some users will be integrating MCP servers to local agents like Claude Code."
       ],
       painpoints:[
         "Shadow AI usage is an issue today.",
-        "Too many unknown MCP servers for applications in both the private and public data centers.",
-        "Users using personal credentials for ChatGPT login.",
+        "Too many unknown MCP servers for applications in both the private and public DCs.",
+        "Users using personal credentials for non-enterprise ChatGPT login.",
         "Downloading of risky AI models."
       ],
       tasks:[
-        "Draw a diagram of your proposed architecture for this use case (products, controls and policy on the reference network).",
-        "Create your proposed solution; be ready to explain each product selected, how it works, and why (include Cisco differentiators).",
-        "Make sure your solution addresses each customer requirement and pain point.",
-        "Attach the diagram and submit for SME review and scoring."
+        "Expand the diagram from your previous use cases, if necessary. Submit for SME review and scoring.",
+        "Create your proposed agentic solution based on what was taught in the agentic AI design presentation, and be ready to explain the product selected, how it works, and why (include Cisco differentiators). Make sure your solution addresses each customer requirement and pain point."
       ],
       productRows:6, minutes:15
     },
     {
       n:4, title:"Merger & Acquisition \u2014 Extend Segmentation", tag:"Merger & Acquisition",
-      intro:"The customer recently acquired a small company (~100 staff) and needs to integrate it into the network quickly. The remote site has a Cisco FTD at its Internet edge and another segmenting the local AI cluster; the acquired company uses Okta as its IdP.",
+      intro:"The customer recently acquired a small company (~100 staff) and needs to integrate it into the network as quickly as possible. The remote location has a Cisco FTD as its Internet edge and another segmenting the local AI cluster; the acquired company uses Okta as its IdP.",
       requirements:[
         "CISO wants to extend segmentation to the acquired company using TrustSec.",
         "Only selected branch users can access a restricted resource at the recently acquired company (Site 9951)."
       ],
       painpoints:[
         "Unsure how to extend segmentation to the acquired company.",
-        "Parent company not ready to add 100 newly acquired staff into their corporate directory \u2014 is there a quick option using what they already have?",
-        "During transition, minimize disruptive user authentication to corporate apps and quickly secure the acquired company\u2019s apps and user population.",
-        "Acquired company suffered an identity breach previously and is still using passwords."
+        "Parent company is not ready to add 100 newly acquired staff into their corporate directory. Is there a quick option of using what they already have?",
+        "During transition, minimize disruptive user authentication experience to corporate apps and quickly secure the acquired company apps / user population.",
+        "Acquired company suffered an identity breach previously. Still using passwords."
       ],
       tasks:[
-        "Draw a diagram of your proposed architecture for this use case (products, controls and policy on the reference network).",
-        "Create your proposed solution; be ready to explain each product selected, how it works, and why (include Cisco differentiators).",
-        "Make sure your solution addresses each customer requirement and pain point.",
-        "Attach the diagram and submit for SME review and scoring."
+        "Expand the diagram from your previous use cases, if necessary. Submit for SME review and scoring.",
+        "Create your proposed solution and be ready to explain the product selected, how it works, and why (include Cisco differentiators if available). Make sure your solution addresses each customer requirement and pain point."
       ],
       productRows:6, minutes:12
     },
@@ -1535,22 +1528,20 @@
       n:5, title:"Zero Trust across Multicloud Data Center", tag:"Multicloud Data Center",
       intro:"The customer is challenged with application sprawl across on-prem, AWS and Azure data centers. Propose a strategy and design to identify their applications (including Kubernetes) and minimize the blast radius. A comprehensive segmentation solution including application run-time protection is highly desired.",
       requirements:[
-        "Limited budget \u2014 leverage native security features when practical; open to virtual appliances.",
-        "CIO is seeking an end-to-end segmentation solution.",
+        "Limited budget. Want to leverage native security features when practical. Open to virtual appliances.",
+        "CIO seeking an end-to-end segmentation solution.",
         "Minimize complexity."
       ],
       painpoints:[
         "Minimal visibility of applications across multicloud data centers.",
-        "Lacking a segmentation strategy and plan.",
+        "Lacking segmentation strategy and plan.",
         "Wide deployment of Kubernetes with latency and visibility issues.",
-        "Unable to patch IoT devices.",
+        "Unable to patch IOT devices.",
         "Too many disparate security management interfaces for on-prem and multicloud enforcement points."
       ],
       tasks:[
-        "Draw a diagram of your proposed architecture for this use case (products, controls and policy on the reference network).",
-        "Create your proposed solution; be ready to explain each product selected, how it works, and why (include Cisco differentiators).",
-        "Make sure your solution addresses each customer requirement and pain point.",
-        "Attach the diagram and submit for SME review and scoring."
+        "Expand the diagram from your previous use cases, if necessary. Submit for SME review and scoring.",
+        "Create your proposed solution and be ready to explain the product selected, how it works, and why (include Cisco differentiators if available). Make sure your solution addresses each customer requirement and pain point."
       ],
       productRows:6, minutes:12
     }
