@@ -1435,8 +1435,8 @@
   // Participant-facing use cases (no answer keys here — the cheat sheet lives on proctor.html).
   var USE_CASES = [
     {
-      n:1, title:"Managed Environment — Segmentation", tag:"Segmentation",
-      intro:"The customer wants to segment campus & branch wired/wireless client devices into logical groups and control what each group can reach.",
+      n:1, title:"Managed Environment \u2014 Segmentation", tag:"Segmentation",
+      intro:"The customer's policy is to segment campus & branch wired and wireless client devices (laptops, mobiles) into logical groups and control what each group can reach.",
       requirements:[
         "Segment campus & branch wired and wireless clients into logical groups: Employees, IOT, deskagents, Guest.",
         "Employees = laptops, mobiles (Group=Employees). IoT = printers, cameras, badge readers (Group=IOT). Deskside = dedicated Mac-minis (Group=deskagents). Guest SSID = Internet only (Group=Guest).",
@@ -1446,7 +1446,7 @@
         "Deskside Mac-minis reach the on-prem data center only."
       ],
       painpoints:[
-        "Prior segmentation failed — using VLANs/IP subnets is complex and tedious.",
+        "Prior segmentation failed \u2014 using VLANs/IP subnets is complex and tedious.",
         "Profiling is labour-intensive; staff unable to keep up with constant new devices joining.",
         "Failing PCI audits.",
         "Corporate PCs not running the latest AntiVirus and OS updates.",
@@ -1458,12 +1458,102 @@
         "Make sure your proposed solution addresses each customer requirement and pain point.",
         "Attach the diagram and submit for SME review and scoring."
       ],
-      productRows:6, minutes:18
+      productRows:6, minutes:15
     },
-    { n:2, title:"Use Case 2", locked:true },
-    { n:3, title:"Use Case 3", locked:true },
-    { n:4, title:"Use Case 4", locked:true },
-    { n:5, title:"Use Case 5", locked:true }
+    {
+      n:2, title:"Remote Workers \u2014 Zero Trust Access", tag:"Zero Trust Access",
+      intro:"The customer is looking for an SSE solution to support remote workers and secure branch connectivity \u2014 moving from broad VPN to per-application Zero Trust Access, and modernizing branches with SASE.",
+      requirements:[
+        "All corporate users can use full client VPN to access selected legacy private applications \u2014 but most prefer ZTNA for modern applications.",
+        "All corporate users need controlled internet access (block gambling and gaming).",
+        "Contractors can only access private applications via clientless RDP access.",
+        "Improve user experience with minimal application sign-ons.",
+        "Customer wants to modernize branches with SASE."
+      ],
+      painpoints:[
+        "Full client VPN has over-permissive privileges \u2014 not considered Zero Trust.",
+        "User satisfaction is low due to manual VPN connection daily.",
+        "Too many sign-ons per application created user frustration.",
+        "Want to eliminate password logins to minimize stolen credentials.",
+        "Existing Okta IdP is getting too expensive.",
+        "CIO wants SASE to reduce branch costs."
+      ],
+      tasks:[
+        "Draw a diagram of your proposed architecture for this use case (products, controls and policy on the reference network).",
+        "Create your proposed solution; be ready to explain each product selected, how it works, and why (include Cisco differentiators).",
+        "Make sure your solution addresses each customer requirement and pain point.",
+        "Attach the diagram and submit for SME review and scoring."
+      ],
+      productRows:6, minutes:15
+    },
+    {
+      n:3, title:"AI Access and Agent Controls", tag:"AI Access & Agent Controls",
+      intro:"The customer is concerned about uncontrolled AI usage by remote employees (from Use Case 2). They want to report what\u2019s being used and build enforceable guardrails on what AI tools can do \u2014 controlling which AI tools are safe and validating information shared with approved AI sites.",
+      requirements:[
+        "Users should not be granted rights to use tools equally \u2014 fine-grained control is needed.",
+        "Corporate users should only be able to log in to their organization\u2019s ChatGPT tenant.",
+        "Some remote users will be running Claude Desktop agents \u2014 include controls for those employee systems.",
+        "Users should not be able to expose sensitive data to Generative AI.",
+        "Some users will be integrating MCP servers to local agents like Claude Code \u2014 control those integrations."
+      ],
+      painpoints:[
+        "Shadow AI usage is an issue today.",
+        "Too many unknown MCP servers for applications in both the private and public data centers.",
+        "Users using personal credentials for ChatGPT login.",
+        "Downloading of risky AI models."
+      ],
+      tasks:[
+        "Draw a diagram of your proposed architecture for this use case (products, controls and policy on the reference network).",
+        "Create your proposed solution; be ready to explain each product selected, how it works, and why (include Cisco differentiators).",
+        "Make sure your solution addresses each customer requirement and pain point.",
+        "Attach the diagram and submit for SME review and scoring."
+      ],
+      productRows:6, minutes:15
+    },
+    {
+      n:4, title:"Merger & Acquisition \u2014 Extend Segmentation", tag:"Merger & Acquisition",
+      intro:"The customer recently acquired a small company (~100 staff) and needs to integrate it into the network quickly. The remote site has a Cisco FTD at its Internet edge and another segmenting the local AI cluster; the acquired company uses Okta as its IdP.",
+      requirements:[
+        "CISO wants to extend segmentation to the acquired company using TrustSec.",
+        "Only selected branch users can access a restricted resource at the recently acquired company (Site 9951)."
+      ],
+      painpoints:[
+        "Unsure how to extend segmentation to the acquired company.",
+        "Parent company not ready to add 100 newly acquired staff into their corporate directory \u2014 is there a quick option using what they already have?",
+        "During transition, minimize disruptive user authentication to corporate apps and quickly secure the acquired company\u2019s apps and user population.",
+        "Acquired company suffered an identity breach previously and is still using passwords."
+      ],
+      tasks:[
+        "Draw a diagram of your proposed architecture for this use case (products, controls and policy on the reference network).",
+        "Create your proposed solution; be ready to explain each product selected, how it works, and why (include Cisco differentiators).",
+        "Make sure your solution addresses each customer requirement and pain point.",
+        "Attach the diagram and submit for SME review and scoring."
+      ],
+      productRows:6, minutes:12
+    },
+    {
+      n:5, title:"Zero Trust across Multicloud Data Center", tag:"Multicloud Data Center",
+      intro:"The customer is challenged with application sprawl across on-prem, AWS and Azure data centers. Propose a strategy and design to identify their applications (including Kubernetes) and minimize the blast radius. A comprehensive segmentation solution including application run-time protection is highly desired.",
+      requirements:[
+        "Limited budget \u2014 leverage native security features when practical; open to virtual appliances.",
+        "CIO is seeking an end-to-end segmentation solution.",
+        "Minimize complexity."
+      ],
+      painpoints:[
+        "Minimal visibility of applications across multicloud data centers.",
+        "Lacking a segmentation strategy and plan.",
+        "Wide deployment of Kubernetes with latency and visibility issues.",
+        "Unable to patch IoT devices.",
+        "Too many disparate security management interfaces for on-prem and multicloud enforcement points."
+      ],
+      tasks:[
+        "Draw a diagram of your proposed architecture for this use case (products, controls and policy on the reference network).",
+        "Create your proposed solution; be ready to explain each product selected, how it works, and why (include Cisco differentiators).",
+        "Make sure your solution addresses each customer requirement and pain point.",
+        "Attach the diagram and submit for SME review and scoring."
+      ],
+      productRows:6, minutes:12
+    }
   ];
   // Pace: 60 minutes; aim to bank at least this many. ~18 min each lets a team land 3.
   var UC_ALLOT_MIN = 18, UC_TARGET = 3;
@@ -1569,26 +1659,27 @@
           '<path d="M8.5 14.9a6.5 6.5 0 001 4.6"/>'+
           '<path d="M15.7 16.2a7 7 0 001 2.9"/>'+
         '</svg>',
-      // 3 · Device trust & posture — a verified endpoint (screen with a health check)
+      // 3 · AI Access & Agent Controls — an AI/compute chip with guarded pins
       3:'<svg viewBox="0 0 24 24" stroke-width="1.5">'+
-          '<rect x="3.5" y="4.5" width="17" height="11.2" rx="1.6" '+f+'/>'+
-          '<path d="M8.3 9.9l2.4 2.4 5-5"/>'+
-          '<path d="M12 15.7v2.6"/><path d="M8.4 20h7.2"/>'+
+          '<rect x="6" y="6" width="12" height="12" rx="2.2" '+f+'/>'+
+          '<rect x="9.2" y="9.2" width="5.6" height="5.6" rx="1.2"/>'+
+          '<circle cx="12" cy="12" r="1.1" '+dot+'/>'+
+          '<path d="M9 3.2v2.8M15 3.2v2.8M9 18v2.8M15 18v2.8M3.2 9h2.8M3.2 15h2.8M18 9h2.8M18 15h2.8"/>'+
         '</svg>',
-      // 4 · Least-privilege access — a padlock guarding who gets in (access control / policy)
+      // 4 · Merger & Acquisition — two networks merging into one (extend segmentation)
       4:'<svg viewBox="0 0 24 24" stroke-width="1.5">'+
-          '<rect x="4.7" y="10.3" width="14.6" height="9.7" rx="2.2" '+f+'/>'+
-          '<path d="M7.7 10.3V7.7a4.3 4.3 0 018.6 0v2.6"/>'+
-          '<circle cx="12" cy="14.4" r="1.5" '+dot+'/>'+
-          '<path d="M12 15.7v2.2"/>'+
+          '<circle cx="5.5" cy="6" r="2.6" '+f+'/>'+
+          '<circle cx="5.5" cy="18" r="2.6" '+f+'/>'+
+          '<circle cx="18.5" cy="12" r="2.8" '+f+'/>'+
+          '<path d="M8 7.1L15.8 10.9"/><path d="M8 16.9L15.8 13.1"/>'+
         '</svg>',
-      // 5 · Continuous monitoring & threat response — a radar sweep picking up a blip
+      // 5 · Multicloud Data Center — a cloud fanning out to on-prem / cloud workloads
       5:'<svg viewBox="0 0 24 24" stroke-width="1.5">'+
-          '<circle cx="12" cy="12" r="8.5" '+f+'/>'+
-          '<circle cx="12" cy="12" r="4.7"/>'+
-          '<path d="M12 12l7-4"/>'+
-          '<circle cx="12" cy="12" r="1.4" '+dot+'/>'+
-          '<circle cx="15.8" cy="8.4" r="1.2" '+dot+'/>'+
+          '<path d="M8 12.8h7.6a3 3 0 00.5-5.95A4.5 4.5 0 007.3 6 3.1 3.1 0 007.7 12.8z" '+f+'/>'+
+          '<path d="M12 12.8v2.4"/><path d="M6 15.2h12"/><path d="M6 15.2v1.1M12 15.2v1.1M18 15.2v1.1"/>'+
+          '<rect x="4.3" y="16.5" width="3.4" height="3" rx=".6"/>'+
+          '<rect x="10.3" y="16.5" width="3.4" height="3" rx=".6"/>'+
+          '<rect x="16.3" y="16.5" width="3.4" height="3" rx=".6"/>'+
         '</svg>'
     };
     return art[n]||art[5];

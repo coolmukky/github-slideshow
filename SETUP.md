@@ -15,7 +15,7 @@ mode); Firebase only adds the shared, cross-device proctor roster.
   - **ZTA Proctor Guide** (`offline/proctor-guide.html`) — reference answers (cheat sheet) **+** scoring rubric **+** score sheet for each use case, integrated. **Proctor only — do not show participants.**
   - **Proctor Evaluation Cheat Sheet** (`offline/proctor-cheatsheet.html`) — a quick at-the-table scoring aid: tick-box "award marks" anchors per criterion, must-see Cisco building blocks, red flags, and a score bar for each use case. **Proctor only.**
   - PDFs for all of the above are in `offline/pdf/`.
-  - Use Case 1 is fully populated; 2–5 are blank templates until their content is added (1–3 required, 4–5 bonus).
+  - All five use cases are populated (1–3 required, 4–5 bonus).
 
 ---
 
@@ -177,7 +177,7 @@ wrong people out of a facilitated clinic; for real security, use Firebase sign-i
   (PDF-ready) participant summary with per-team completeness. Scales to ~300 participants.
 - **The activity — five use cases (3 required + 2 bonus):** each team works a customer environment
   with **5 sequential use cases** — **Use Cases 1–3 are required, 4 & 5 are bonus** (tiles are tagged
-  *Required* / *Bonus*). Use Case 1 = *Managed Environment; Segmentation*; 2–5 are placeholders for now.
+  *Required* / *Bonus*). The five: 1 *Managed Environment — Segmentation*, 2 *Remote Workers — Zero Trust Access*, 3 *AI Access and Agent Controls* (required), 4 *Merger & Acquisition — Extend Segmentation*, 5 *Zero Trust across Multicloud Data Center* (bonus).
   For each use case they fill a **pain-point → product mapping**, a **products (how / why)** table,
   attach a **diagram**, and **Submit group response for Use Case N**. Submitting unlocks the next use
   case; teams clear the required cases, then bank the bonus rounds before the clock ends.
