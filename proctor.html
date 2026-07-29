@@ -202,6 +202,11 @@
   .em-sol{flex-direction:column;align-items:stretch !important}
   .em-sol .r{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:5px}
   .em-total{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:18px;margin:6px 0 12px;padding-top:10px;border-top:1px dashed var(--line)}
+  .em-level{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:700;border-radius:20px;padding:3px 10px;margin-left:6px;vertical-align:2px;border:1px solid}
+  .em-level.a{color:#0a7c8c;background:#e9f6fa;border-color:#b6e0ea}
+  .em-level.p{color:#5a3aa8;background:#efe9fb;border-color:#d3c6f0}
+  .em-level.e{color:#a4650f;background:#fdf4e6;border-color:#e6cfa2}
+  .em-level.d{color:var(--ink-soft);background:#eef2f7;border-color:var(--line)}
   .em-notes{flex-direction:column;align-items:stretch !important}
   .em-notes textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px;font-family:"IBM Plex Sans",sans-serif;font-size:13px;min-height:56px;resize:vertical;outline:none;margin-top:5px}
   .em-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
@@ -339,7 +344,7 @@
     <p>Share the participant page and ask each person to <b>Take your seat</b> (name, email, team). They'll appear here automatically.</p>
   </div>
 
-  <div class="foot">Roster room: <b id="footRoom">default</b> · <a href="zero-trust-design-sprint.html">← Back to the participant page</a> · <a href="offline/proctor-cheatsheet.html" target="_blank" rel="noopener">Evaluation cheat sheet</a> · <a href="offline/proctor-guide.html" target="_blank" rel="noopener">Proctor guide</a> · <a href="offline/index.html" target="_blank" rel="noopener">All printable materials</a></div>
+  <div class="foot">Roster room: <b id="footRoom">default</b> · <a href="zero-trust-design-sprint.html">← Back to the participant page</a> · <a href="offline/proctor-grading.html" target="_blank" rel="noopener">Grading guide (levels)</a> · <a href="offline/proctor-cheatsheet.html" target="_blank" rel="noopener">Evaluation cheat sheet</a> · <a href="offline/proctor-guide.html" target="_blank" rel="noopener">Proctor guide</a> · <a href="offline/index.html" target="_blank" rel="noopener">All printable materials</a></div>
 </div>
 
 <!-- evaluate modal -->
@@ -356,7 +361,7 @@
         <label>Pain-point &rarr; product mapping <input type="number" min="0" max="40" step="1" id="emC1"> <span>/ 40</span></label>
         <label>Products — how &amp; why / differentiators <input type="number" min="0" max="30" step="1" id="emC2"> <span>/ 30</span></label>
         <label>Diagram &amp; overall solution <input type="number" min="0" max="30" step="1" id="emC3"> <span>/ 30</span></label>
-        <div class="em-total">Total: <span id="emTotal">0</span> / 100</div>
+        <div class="em-total">Total: <span id="emTotal">0</span> / 100 <span id="emLevel" class="em-level"></span></div>
         <div class="em-ai">
           <div class="em-ai-h">AI evaluation <span class="em-ai-tag">preview</span></div>
           <div class="em-ai-row">
@@ -784,9 +789,19 @@
   var adapterRef = null, evalKey = null;
   var evalModal=$("#evalModal");
   var evalTk=null, evalUc=null;
+  function scoreLevel(t){
+    if(t>=90) return {name:"Expert",cls:"e"};
+    if(t>=75) return {name:"Professional",cls:"p"};
+    if(t>=60) return {name:"Associate",cls:"a"};
+    return {name:"Developing",cls:"d"};
+  }
   function emUpdateTotal(){
+    var anyScored = ($("#emC1").value!=="")||($("#emC2").value!=="")||($("#emC3").value!=="");
     var t = clampNum($("#emC1").value,MAX_C1)+clampNum($("#emC2").value,MAX_C2)+clampNum($("#emC3").value,MAX_C3);
-    $("#emTotal").textContent = t; return t;
+    $("#emTotal").textContent = t;
+    var el=$("#emLevel");
+    if(el){ if(anyScored){ var lv=scoreLevel(t); el.textContent="· "+lv.name; el.className="em-level "+lv.cls; } else { el.textContent=""; el.className="em-level"; } }
+    return t;
   }
   ["emC1","emC2","emC3"].forEach(function(id){ $("#"+id).addEventListener("input", emUpdateTotal); });
   function cellsTable(head, rows){
