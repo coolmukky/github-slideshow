@@ -1,0 +1,65 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZTA Design Clinic — Integrated Package</title><style>
+:root{--ink:#13233b;--soft:#566579;--line:#d5dde7;--cyan:#00728f;--cyanbg:#e9f6fa;--amber:#a4650f;--amberbg:#fdf4e6;--green:#1c7d5a;--greenbg:#e8f6ef;--red:#b23a4e;--violet:#5a3aa8;--violetbg:#efe9fb;--paper:#fff}
+*{box-sizing:border-box}html,body{margin:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#eef1f5;line-height:1.5;font-size:13px}
+.page{max-width:880px;margin:20px auto;background:var(--paper);padding:40px 46px;box-shadow:0 8px 30px rgba(20,35,60,.12);border-radius:6px}
+h1{font-size:26px;margin:0 0 4px}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan)}
+.sub{color:var(--soft);margin:2px 0 0;font-size:13px}
+h2{font-size:18px;margin:26px 0 8px;padding-bottom:6px;border-bottom:2px solid var(--line)}
+h3{font-size:13.5px;margin:14px 0 5px}
+p{margin:6px 0}ul{margin:6px 0 6px 20px;padding:0}li{margin:3px 0}ol{margin:6px 0 6px 20px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px}
+.chip{font-size:11px;font-weight:700;border-radius:20px;padding:4px 11px;border:1px solid}
+.chip.req{color:var(--green);background:var(--greenbg);border-color:#a9dec9}
+.chip.bonus{color:var(--amber);background:var(--amberbg);border-color:#e6cfa2}
+.chip.pts{color:var(--cyan);background:var(--cyanbg);border-color:#b6e0ea}
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:12px}
+th{text-align:left;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--soft);border-bottom:2px solid var(--line);padding:6px 8px;vertical-align:bottom}
+td{border-bottom:1px solid var(--line);padding:7px 8px;vertical-align:top}
+td.k{font-weight:600;width:32%}
+.fill td{height:38px}
+.callout{background:var(--cyanbg);border:1px solid #bfe2ea;border-left:4px solid var(--cyan);border-radius:8px;padding:10px 14px;margin:12px 0}
+.warn{background:var(--amberbg);border:1px solid #e6cfa2;border-left:4px solid var(--amber);border-radius:8px;padding:9px 13px;margin:10px 0;font-size:12.5px}
+.recap{background:#f7f9fb;border:1px solid var(--line);border-radius:8px;padding:9px 13px;margin:8px 0;font-size:12px;color:var(--soft)}
+.card{border:1px solid var(--line);border-radius:10px;padding:12px 15px;margin:9px 0}
+.card .role-own{font-size:11px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.05em}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.refimg{width:100%;border:1px solid var(--line);border-radius:8px;margin:8px 0}
+.diagram-box{border:2px dashed #c3ccd8;border-radius:10px;height:280px;display:flex;align-items:center;justify-content:center;color:#98a4b3;font-size:13px;margin:10px 0}
+.note{color:var(--soft);font-size:12px}
+.lvlcards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:10px 0}
+.lvl{border:1px solid var(--line);border-top-width:4px;border-radius:10px;padding:12px 14px}
+.lvl.a{border-top-color:var(--cyan)}.lvl.p{border-top-color:var(--violet)}.lvl.e{border-top-color:var(--amber)}
+.lvl b{font-size:14px}.lvl .band{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--soft)}
+.lvltag{display:inline-block;font-size:10px;font-weight:700;border-radius:20px;padding:2px 9px;border:1px solid;text-transform:uppercase;letter-spacing:.04em}
+.lvltag.a{color:var(--cyan);background:var(--cyanbg);border-color:#b6e0ea}
+.lvltag.p{color:var(--violet);background:var(--violetbg);border-color:#d3c6f0}
+.lvltag.e{color:var(--amber);background:var(--amberbg);border-color:#e6cfa2}
+.lvltag.d{color:var(--soft);background:#eef2f7;border-color:var(--line)}
+.optbox{display:inline-block;width:12px;height:12px;border:1.5px solid var(--soft);border-radius:50%;vertical-align:-1px;margin:0 3px 0 7px}
+.ptbox{display:inline-block;border:1.4px solid var(--soft);border-radius:5px;width:54px;height:24px;vertical-align:-7px}
+.fbwrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:8px 0}
+.fb{border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+.fb .fbh{font-weight:700;font-size:12.5px;margin-bottom:6px}
+.fb.good .fbh{color:var(--green)}.fb.imp .fbh{color:var(--amber)}
+.lines div{border-bottom:1px solid #d9e0ea;height:22px}
+.foot{margin-top:26px;padding-top:12px;border-top:1px solid var(--line);color:var(--soft);font-size:11px}
+.printbar{position:sticky;top:0;background:#13233b;color:#fff;padding:9px 16px;text-align:center;font-size:12.5px}
+.printbar button{background:#00bceb;color:#04263a;border:none;border-radius:6px;padding:6px 14px;font-weight:700;cursor:pointer;font-size:12.5px}
+@media print{body{background:#fff;font-size:11pt}.page{max-width:none;margin:0;padding:0;box-shadow:none;border-radius:0}.noprint{display:none!important}.uc-block{break-inside:avoid}.pagebreak{break-before:page}a{color:inherit;text-decoration:none}}
+@page{margin:14mm}
+
+a.dcard{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:12px 0;box-shadow:0 6px 20px rgba(20,35,60,.06);transition:transform .12s,border-color .15s}
+a.dcard:hover{transform:translateY(-2px);border-color:var(--cyan)}a.dcard b{font-size:16px}a.dcard p{margin:4px 0 0;color:var(--soft);font-size:13px}
+.tag{font-size:10.5px;font-weight:700;border-radius:20px;padding:3px 9px;border:1px solid;margin-left:8px;vertical-align:2px}
+.tag.pub{color:var(--green);background:var(--greenbg);border-color:#a9dec9}.tag.conf{color:var(--amber);background:var(--amberbg);border-color:#e6cfa2}
+</style></head><body><div class="page">
+<span class="eyebrow">Zero Trust Access Design Clinic</span><h1>Integrated document package</h1>
+<p class="sub" style="margin-bottom:16px">The three core documents with the <b>Associate / Professional / Expert</b> grading framework woven in. Self-contained HTML — open offline and <b>Print / Save as PDF</b>. <a href="../index.html">← all printable materials</a></p>
+<p class="sub" style="margin:0 0 20px"><b>PDFs:</b> <a href="pdf/ZTA-Activity-Guide.pdf">Activity Guide</a> · <a href="pdf/ZTA-Workbook.pdf">Workbook</a> · <a href="pdf/ZTA-Solution-Guide.pdf">Solution &amp; Grading Guide</a></p>
+<a class="dcard" href="activity-guide.html"><b>ZTA Activity Guide</b><span class="tag pub">Give to teams</span><p>Customer, environment, roles, methodology, each use-case brief — <b>plus “How you’ll be scored”</b> (levels + rubric) so teams aim for Expert. No answer keys.</p></a>
+<a class="dcard" href="workbook.html"><b>ZTA Workbook</b><span class="tag pub">Give to teams</span><p>Team answer sheet with the grading rubric up front, then per use case the fill-in tables, diagram space, a <b>proctor score &amp; level grid</b>, and a <b>feedback</b> section.</p></a>
+<a class="dcard" href="solution-guide.html"><b>ZTA Solution &amp; Grading Guide</b><span class="tag conf">Proctor only</span><p>All-in-one: reference answers (pain / requirements / products) <b>+ expected answer by level + score grid + feedback</b> for each use case, with the levels, rubric and how-to-grade. Do not show participants.</p></a>
+</div></body></html>
