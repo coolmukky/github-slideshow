@@ -14,6 +14,7 @@ mode); Firebase only adds the shared, cross-device proctor roster.
   - **ZTA Workbook** (`offline/workbook.html`) — team answer sheet: pain→product mapping, products (how/why) and a diagram space per use case (100 pts each). *Give to teams.*
   - **ZTA Proctor Guide** (`offline/proctor-guide.html`) — reference answers (cheat sheet) **+** scoring rubric **+** score sheet for each use case, integrated. **Proctor only — do not show participants.**
   - **Proctor Evaluation Cheat Sheet** (`offline/proctor-cheatsheet.html`) — a quick at-the-table scoring aid: tick-box "award marks" anchors per criterion, must-see Cisco building blocks, red flags, and a score bar for each use case. **Proctor only.**
+  - **Proctor Grading Guide** (`offline/proctor-grading.html`) — level-based grading (**Associate / Professional / Expert**): a universal criteria×level rubric with point bands, per-use-case *expected answers at each level*, a fillable score grid, and a well/improve feedback section. The proctor scoring modal also shows the level live from the total. **Proctor only.**
   - PDFs for all of the above are in `offline/pdf/`.
   - All five use cases are populated (1–3 required, 4–5 bonus).
 
