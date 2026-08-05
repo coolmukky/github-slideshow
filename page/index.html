@@ -1,946 +1,471 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="The Kingdom of Cleartext — an interactive Zero Trust fable that decodes an old story into Cisco Zero Trust architecture.">
-<title>The Kingdom of Cleartext — A Zero Trust Fable</title>
-
-<!-- Type: Cinzel (display), EB Garamond (story serif), Inter (body/tech), Space Mono (codes/labels) -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Kingdom of Ultra Secure Collaboration — Interactive Storyboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-/* ============================ palette + type ============================ */
-:root{
-  --midnight:#07182D;
-  --gold:#FFB74A;
-  --cyan:#02C8FF;
-  --wax:#C8324B;
-  --bg:#05080F;
-  --ink:#020509;
-  --parch:#ECD9A8;
+  :root{
+    --midnight:#07182D; --deep:#040D1B; --panel:#0C2038; --panel-2:#0a1a30;
+    --stone:#2A3B57; --stone-2:#1E3B5C; --line:#20385a;
+    --parch:#e9d8ac; --parch-2:#dcc793; --ink:#2a2313; --ink-soft:#4a4024;
+    --gold:#FFB74A; --gold-lt:#ffd98a; --cyan:#37cffb; --cyan-dp:#02C8FF;
+    --wax:#C8324B; --magenta:#FF2F8F; --mist:#9fb4d0;
+    --fg:#eaf1fb; --fg-dim:#a9bdd8;
+    --serif:'EB Garamond',Georgia,'Times New Roman',serif;
+    --display:'Cinzel',var(--serif);
+    --sans:'Inter',system-ui,-apple-system,sans-serif;
+    --mono:'Space Mono',ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--deep); color:var(--fg); font-family:var(--sans);
+    overflow:hidden; -webkit-font-smoothing:antialiased;
+  }
+  #app{position:fixed; inset:0; display:flex; flex-direction:column}
 
-  --paper:#efdcac;
-  --paper-2:#e3ce97;
-  --paper-ink:#3a2f1c;
-  --text:#e8eef6;
-  --text-dim:#9fb0c4;
+  /* ambient blurred backdrop of current scene */
+  #bg{position:fixed; inset:-6% ; z-index:0; background-size:cover; background-position:center;
+      filter:blur(34px) brightness(.5) saturate(1.05); transform:scale(1.12);
+      transition:background-image .5s ease, opacity .5s ease; opacity:.9}
+  #bg::after{content:""; position:absolute; inset:0;
+      background:radial-gradient(120% 90% at 50% 30%, transparent 40%, rgba(4,10,20,.75) 100%), linear-gradient(180deg, rgba(4,13,27,.55), rgba(4,13,27,.85))}
 
-  --f-display:'Cinzel','Trajan Pro',Georgia,'Times New Roman',serif;
-  --f-serif:'EB Garamond',Georgia,'Times New Roman',serif;
-  --f-body:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
-  --f-mono:'Space Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+  /* ---------- top bar ---------- */
+  header{position:relative; z-index:5; display:flex; align-items:center; justify-content:space-between;
+    padding:16px 22px; gap:16px}
+  .mark{display:flex; align-items:center; gap:12px; min-width:0}
+  .crest{width:30px;height:30px;flex:0 0 auto}
+  .mark b{font-family:var(--display); font-weight:700; font-size:15px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--gold-lt); white-space:nowrap}
+  .mark span{font-family:var(--mono); font-size:11px; color:var(--fg-dim); letter-spacing:.05em}
+  .tools{display:flex; gap:8px; align-items:center}
+  button.tool{
+    font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--fg-dim); background:rgba(12,32,56,.55); border:1px solid var(--line);
+    padding:9px 13px; border-radius:999px; cursor:pointer; transition:.18s; backdrop-filter:blur(6px)}
+  button.tool:hover{color:var(--fg); border-color:var(--cyan); box-shadow:0 0 0 1px rgba(55,207,251,.25)}
+  button.tool[aria-pressed="true"]{color:var(--midnight); background:var(--cyan); border-color:var(--cyan)}
+  button.tool:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
 
-  --edge:rgba(255,183,74,.24);
-  --edge-cyan:rgba(2,200,255,.28);
-  --rail-h:78px;
-}
+  /* ---------- stage ---------- */
+  main{position:relative; z-index:4; flex:1 1 auto; min-height:0; display:flex; align-items:center; justify-content:center;
+    padding:6px 34px 4px}
+  .scene{width:min(1240px,100%); display:none}
+  .scene.on{display:block}
 
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:var(--f-body);
-  overflow:hidden;
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
-}
+  /* panel scene */
+  .panel{display:grid; grid-template-columns:1.42fr 1fr; gap:30px; align-items:center}
+  .frame{position:relative; border-radius:12px; overflow:hidden; border:1px solid var(--stone);
+    box-shadow:0 24px 60px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.03);
+    aspect-ratio:16/9; background:#0a1826}
+  .frame img{width:100%; height:100%; object-fit:cover; display:block; animation:kbn 16s ease-in-out infinite alternate}
+  @keyframes kbn{from{transform:scale(1.02)}to{transform:scale(1.08)}}
+  .code{position:absolute; left:14px; top:13px; font-family:var(--mono); font-size:12px; font-weight:700;
+    letter-spacing:.12em; color:var(--cyan); background:rgba(4,13,27,.72); border:1px solid rgba(55,207,251,.5);
+    padding:5px 10px; border-radius:7px; backdrop-filter:blur(4px)}
+  .corner{position:absolute; width:16px;height:16px; border:2px solid rgba(255,183,74,.6)}
+  .corner.tl{left:8px;top:8px;border-right:0;border-bottom:0}
+  .corner.tr{right:8px;top:8px;border-left:0;border-bottom:0}
+  .corner.bl{left:8px;bottom:8px;border-right:0;border-top:0}
+  .corner.br{right:8px;bottom:8px;border-left:0;border-top:0}
 
-/* ============================ ambient background ======================= */
-#ambient{
-  position:fixed; inset:-8%; z-index:-2;
-  background-size:cover; background-position:center;
-  filter:blur(46px) brightness(.42) saturate(1.15);
-  transform:scale(1.12);
-  opacity:.9;
-  transition:opacity .9s ease, background-image .3s ease;
-}
-#tint{
-  position:fixed; inset:0; z-index:-1; pointer-events:none;
-  background:
-    radial-gradient(120% 90% at 50% 8%, rgba(13,41,73,.55), transparent 60%),
-    radial-gradient(100% 80% at 50% 120%, rgba(2,200,255,.10), transparent 60%),
-    linear-gradient(180deg, rgba(5,8,15,.72), rgba(5,8,15,.86));
-}
+  .telling{max-width:440px}
+  .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--gold); margin-bottom:14px; display:flex; align-items:center; gap:9px}
+  .eyebrow .rn{color:var(--fg-dim)}
+  .story{position:relative; background:
+      linear-gradient(180deg,#efe0b8,#e3cf9d); color:var(--ink);
+    border-radius:10px; padding:22px 24px 24px; box-shadow:0 12px 34px rgba(0,0,0,.4);
+    border:1px solid #c7ab6b;}
+  .story::before{content:""; position:absolute; inset:0; border-radius:10px; pointer-events:none;
+    background:radial-gradient(140% 120% at 90% 0%, rgba(255,255,255,.35), transparent 40%),
+              radial-gradient(120% 120% at 0% 100%, rgba(120,90,40,.16), transparent 45%)}
+  .story .lab{font-family:var(--mono); font-size:10.5px; letter-spacing:.2em; text-transform:uppercase;
+    color:#8a6a2c; margin-bottom:9px}
+  .story p{font-family:var(--serif); font-size:22px; line-height:1.42; font-weight:500}
+  .seal{display:flex; align-items:center; gap:12px; margin:16px 2px 15px}
+  .seal .ln{height:1px; flex:1; background:linear-gradient(90deg,transparent,var(--line))}
+  .seal .ln.r{background:linear-gradient(90deg,var(--line),transparent)}
+  .seal svg{width:26px;height:26px;flex:0 0 auto;opacity:.9}
 
-/* ============================ shell layout ============================= */
-#app{position:relative; height:100%; display:flex; flex-direction:column}
-.topbar{
-  display:flex; align-items:center; justify-content:space-between; gap:16px;
-  padding:14px clamp(16px,3vw,34px);
-  z-index:5;
-}
-.brand{display:flex; align-items:baseline; gap:12px; min-width:0}
-.brand .mark{
-  font-family:var(--f-mono); font-size:11px; letter-spacing:.34em; text-transform:uppercase;
-  color:var(--cyan); white-space:nowrap;
-}
-.brand .name{
-  font-family:var(--f-display); font-weight:600; letter-spacing:.06em;
-  color:var(--gold); font-size:clamp(13px,1.6vw,17px);
-  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-}
-.legend{display:flex; gap:14px; font-family:var(--f-mono); font-size:11px; color:var(--text-dim)}
-.legend b{color:var(--gold); font-weight:700}
-.legend .k{
-  border:1px solid var(--edge); border-radius:5px; padding:1px 6px; color:var(--gold);
-  background:rgba(2,6,13,.5);
-}
+  .decoded{overflow:hidden; transition:max-height .5s ease, opacity .4s ease, transform .4s ease;
+    max-height:320px; opacity:1}
+  .decoded.hidden{max-height:0; opacity:0; transform:translateY(-6px)}
+  .tech{position:relative; background:linear-gradient(180deg,#0d2440,#0a1c33);
+    border:1px solid var(--stone-2); border-radius:10px; padding:16px 18px 17px;
+    box-shadow:0 12px 30px rgba(0,0,0,.4)}
+  .tech::before{content:""; position:absolute; left:0; top:12px; bottom:12px; width:3px; border-radius:3px;
+    background:linear-gradient(var(--cyan),var(--cyan-dp))}
+  .tech .lab{font-family:var(--mono); font-size:10.5px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--cyan); margin-bottom:8px; padding-left:10px}
+  .tech p{font-family:var(--sans); font-size:14.5px; line-height:1.5; color:#d6e6f8; padding-left:10px}
 
-.stage{position:relative; flex:1; overflow:hidden}
+  /* divider scene */
+  .divider{text-align:left; max-width:900px}
+  .divider .kicker{font-family:var(--mono); letter-spacing:.32em; text-transform:uppercase; font-size:13px;
+    color:var(--cyan); margin-bottom:16px}
+  .divider h2{font-family:var(--display); font-weight:800; font-size:clamp(34px,6vw,66px); line-height:1.02;
+    letter-spacing:.01em; text-shadow:0 6px 30px rgba(0,0,0,.6)}
+  .divider .tag{font-family:var(--serif); font-style:italic; font-size:clamp(17px,2.4vw,23px); color:var(--fg-dim);
+    margin-top:16px; max-width:720px}
+  .concept{display:inline-flex; align-items:center; gap:14px; margin-top:26px; padding:11px 18px;
+    background:rgba(8,20,36,.6); border:1px solid var(--line); border-radius:999px; backdrop-filter:blur(6px)}
+  .concept .c{font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--cyan)}
+  .concept .d{font-size:14px; color:var(--fg)}
+  .concept .ga{font-family:var(--mono); font-size:11px; color:var(--gold); letter-spacing:.06em;
+    border-left:1px solid var(--line); padding-left:14px}
 
-/* ============================ slides ================================== */
-.slide{
-  position:absolute; inset:0;
-  display:grid; place-items:center;
-  padding:14px clamp(18px,4vw,60px) calc(var(--rail-h) + 22px);
-  opacity:0; visibility:hidden; pointer-events:none;
-  transition:opacity .5s ease, transform .5s ease;
-  transform:translateY(10px) scale(.995);
-}
-.slide.active{opacity:1; visibility:visible; pointer-events:auto; transform:none}
-.slide-inner{width:100%; max-width:1180px}
+  /* title & recap */
+  .title-wrap{text-align:center; max-width:960px; margin:0 auto}
+  .title-wrap .a{font-family:var(--mono); letter-spacing:.5em; text-transform:uppercase; font-size:12px;
+    color:var(--cyan); margin-bottom:22px}
+  .title-wrap h1{font-family:var(--display); font-weight:800; font-size:clamp(38px,7.5vw,84px); line-height:.98;
+    letter-spacing:.015em; text-shadow:0 8px 40px rgba(0,0,0,.7)}
+  .title-wrap .sub{font-family:var(--serif); font-size:clamp(16px,2.3vw,21px); color:var(--fg-dim);
+    margin:22px auto 0; max-width:640px; line-height:1.5}
+  .enter{margin-top:34px; font-family:var(--mono); font-size:13px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--midnight); background:linear-gradient(180deg,var(--gold-lt),var(--gold)); border:0;
+    padding:15px 30px; border-radius:999px; cursor:pointer; box-shadow:0 10px 30px rgba(255,183,74,.28); transition:.2s}
+  .enter:hover{transform:translateY(-2px); box-shadow:0 16px 38px rgba(255,183,74,.4)}
+  .enter:focus-visible{outline:2px solid #fff; outline-offset:3px}
+  .hint{margin-top:18px; font-family:var(--mono); font-size:11px; color:var(--mist); letter-spacing:.05em}
+  .hint kbd{background:rgba(255,255,255,.08); border:1px solid var(--line); border-radius:5px; padding:2px 7px; color:var(--fg); font-family:var(--mono)}
 
-/* ---- title ---- */
-.title{text-align:center}
-.title .seal{margin:0 auto 22px}
-.title-kicker{
-  font-family:var(--f-mono); text-transform:uppercase; letter-spacing:.46em;
-  color:var(--cyan); font-size:clamp(11px,1.5vw,14px); margin-bottom:18px;
-}
-.title h1{
-  font-family:var(--f-display); font-weight:700; margin:0;
-  font-size:clamp(38px,8.4vw,104px); line-height:1.02; color:var(--gold);
-  text-shadow:0 0 44px rgba(255,183,74,.32), 0 2px 2px rgba(0,0,0,.6);
-  letter-spacing:.01em;
-}
-.title .sub{
-  font-family:var(--f-serif); font-size:clamp(17px,2.3vw,25px); line-height:1.55;
-  color:#d7e1ee; max-width:730px; margin:22px auto 0;
-}
-.title .hint{
-  margin-top:34px; font-family:var(--f-mono); font-size:12px; color:var(--text-dim);
-  letter-spacing:.06em;
-}
-.title .hint .k{border:1px solid var(--edge); border-radius:5px; padding:2px 7px; color:var(--gold); margin:0 2px}
+  .recap{max-width:820px; margin:0 auto; width:100%}
+  .recap h2{font-family:var(--display); font-weight:700; font-size:clamp(28px,5vw,44px); margin-bottom:8px; text-align:center}
+  .recap .lead{font-family:var(--serif); font-style:italic; color:var(--fg-dim); text-align:center; margin-bottom:26px}
+  .recap ol{list-style:none; display:flex; flex-direction:column; gap:11px}
+  .recap li{display:flex; gap:18px; align-items:center; background:rgba(12,32,56,.5); border:1px solid var(--line);
+    border-radius:12px; padding:15px 20px}
+  .recap .num{font-family:var(--display); font-weight:700; color:var(--cyan); font-size:20px; width:30px; flex:0 0 auto}
+  .recap .rt b{font-family:var(--sans); font-weight:600; display:block; font-size:15px; color:var(--fg)}
+  .recap .rt span{font-size:13.5px; color:var(--fg-dim)}
 
-/* ---- chapter divider ---- */
-.divider{position:relative; text-align:center; padding:20px}
-.divider .ghost{
-  position:absolute; inset:0; display:grid; place-items:center; pointer-events:none;
-  font-family:var(--f-display); font-weight:700;
-  font-size:clamp(160px,34vw,420px); line-height:1;
-  color:rgba(255,183,74,.06);
-  text-shadow:0 0 60px rgba(2,200,255,.06);
-}
-.divider .eyebrow{
-  position:relative; font-family:var(--f-mono); text-transform:uppercase; letter-spacing:.4em;
-  color:var(--cyan); font-size:13px; margin-bottom:14px;
-}
-.divider h2{
-  position:relative; font-family:var(--f-display); font-weight:700; color:var(--gold);
-  font-size:clamp(30px,6vw,62px); margin:0; line-height:1.06;
-  text-shadow:0 0 34px rgba(255,183,74,.28);
-}
-.divider .tag{
-  position:relative; font-family:var(--f-serif); font-style:italic; color:#d7e1ee;
-  font-size:clamp(17px,2.2vw,23px); max-width:640px; margin:18px auto 0;
-}
-.divider .theme{
-  position:relative; display:inline-block; margin-top:22px;
-  font-family:var(--f-mono); font-size:11px; letter-spacing:.24em; text-transform:uppercase;
-  color:var(--cyan); border:1px solid var(--edge-cyan); border-radius:999px; padding:6px 16px;
-  background:rgba(2,20,34,.5);
-}
+  /* ---------- rail ---------- */
+  footer{position:relative; z-index:5; display:flex; align-items:center; gap:16px; padding:12px 22px 16px}
+  .nav{display:flex; gap:8px}
+  .nav button{width:42px;height:42px;border-radius:50%; border:1px solid var(--line); background:rgba(12,32,56,.55);
+    color:var(--fg); cursor:pointer; font-size:17px; transition:.18s; display:grid; place-items:center; backdrop-filter:blur(6px)}
+  .nav button:hover:not(:disabled){border-color:var(--cyan); color:var(--cyan)}
+  .nav button:disabled{opacity:.32; cursor:default}
+  .nav button:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
+  .rail{flex:1 1 auto; display:flex; gap:10px; align-items:center}
+  .chseg{flex:1; display:flex; flex-direction:column; gap:6px; cursor:pointer; padding:6px 2px; border-radius:8px}
+  .chseg:hover .chname{color:var(--fg)}
+  .chseg .ticks{display:flex; gap:4px}
+  .chseg .tick{height:4px; flex:1; background:var(--stone); border-radius:3px; transition:.25s}
+  .chseg.active .tick{background:var(--stone-2)}
+  .chseg .tick.done{background:var(--gold)}
+  .chseg .tick.cur{background:var(--cyan); box-shadow:0 0 8px rgba(55,207,251,.7)}
+  .chname{font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--fg-dim);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; transition:.2s}
+  .counter{font-family:var(--mono); font-size:12px; color:var(--fg-dim); white-space:nowrap; min-width:74px; text-align:right}
+  .counter b{color:var(--gold)}
 
-/* ---- panel ---- */
-.panel{
-  display:grid; grid-template-columns:1.04fr .96fr; gap:clamp(22px,3.2vw,46px);
-  align-items:center; width:100%;
-}
-.frame-wrap{position:relative}
-.frame{
-  position:relative; aspect-ratio:16/9; border-radius:12px; overflow:hidden;
-  background:#02060d; border:1px solid var(--edge);
-  box-shadow:0 30px 70px -30px rgba(0,0,0,.9), inset 0 0 0 1px rgba(255,255,255,.02);
-}
-.frame img{width:100%; height:100%; object-fit:cover; display:block}
-.frame .scan{
-  position:absolute; inset:0; pointer-events:none;
-  background:linear-gradient(180deg, rgba(2,200,255,.05), transparent 22%, transparent 78%, rgba(7,24,45,.35));
-}
-.code-chip{
-  position:absolute; top:12px; left:12px;
-  font-family:var(--f-mono); font-size:12px; letter-spacing:.18em; color:var(--gold);
-  background:rgba(2,6,13,.72); border:1px solid var(--edge); border-radius:6px;
-  padding:5px 10px; backdrop-filter:blur(2px);
-}
-.cmark{position:absolute; width:18px; height:18px; border:2px solid var(--gold); opacity:.7}
-.cmark.tl{top:8px; left:8px; border-right:0; border-bottom:0}
-.cmark.tr{top:8px; right:8px; border-left:0; border-bottom:0}
-.cmark.bl{bottom:8px; left:8px; border-right:0; border-top:0}
-.cmark.br{bottom:8px; right:8px; border-left:0; border-top:0}
-.caption{
-  margin-top:12px; text-align:center; font-family:var(--f-mono); font-size:12px;
-  letter-spacing:.14em; text-transform:uppercase; color:var(--text-dim);
-}
+  /* ---------- cast overlay ---------- */
+  .overlay{position:fixed; inset:0; z-index:20; background:rgba(4,10,20,.82); backdrop-filter:blur(10px);
+    display:none; align-items:center; justify-content:center; padding:30px}
+  .overlay.on{display:flex; animation:fade .25s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .castbox{width:min(1080px,100%); max-height:88vh; overflow:auto; background:linear-gradient(180deg,#0b1f38,#08182c);
+    border:1px solid var(--stone-2); border-radius:18px; padding:26px 28px 30px; box-shadow:0 30px 80px rgba(0,0,0,.6)}
+  .castbox h3{font-family:var(--display); font-weight:700; font-size:26px; letter-spacing:.02em}
+  .castbox .sub{font-family:var(--serif); font-style:italic; color:var(--fg-dim); margin:4px 0 22px}
+  .castgrid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px}
+  .cc{background:rgba(7,24,45,.6); border:1px solid var(--line); border-radius:14px; overflow:hidden; text-align:center}
+  .cc img{width:100%; aspect-ratio:1; object-fit:cover; display:block}
+  .cc .nm{font-family:var(--display); font-weight:600; font-size:15px; color:var(--gold-lt); margin:12px 8px 3px}
+  .cc .rl{font-size:12px; color:var(--fg-dim); margin:0 10px 14px; line-height:1.35}
+  .close{position:absolute; top:22px; right:26px; z-index:21}
 
-.col-right{display:flex; flex-direction:column; min-width:0}
-
-/* parchment story card */
-.story-card{
-  position:relative; border-radius:10px; padding:clamp(18px,2.4vw,28px);
-  color:var(--paper-ink);
-  background:
-    radial-gradient(120% 140% at 0% 0%, #f6e7bf, transparent 55%),
-    radial-gradient(120% 140% at 100% 100%, #d9c489, transparent 55%),
-    linear-gradient(160deg, var(--paper), var(--paper-2));
-  box-shadow:0 20px 44px -22px rgba(0,0,0,.85), inset 0 0 0 1px rgba(120,90,40,.25),
-             inset 0 2px 24px rgba(120,90,40,.14);
-  border:1px solid rgba(120,90,40,.4);
-}
-.story-card::after{
-  content:""; position:absolute; inset:6px; border:1px solid rgba(120,90,40,.28);
-  border-radius:6px; pointer-events:none;
-}
-.story-eyebrow{
-  font-family:var(--f-mono); text-transform:uppercase; letter-spacing:.28em; font-size:11px;
-  color:#8a6a2e; margin-bottom:10px; display:flex; align-items:center; gap:9px;
-}
-.story-eyebrow::before{content:""; width:16px; height:1px; background:#8a6a2e; display:inline-block}
-.story-text{
-  font-family:var(--f-serif); font-size:clamp(16px,1.55vw,20px); line-height:1.62; margin:0;
-  letter-spacing:.005em;
-}
-.story-text .drop{
-  float:left; font-family:var(--f-display); font-weight:700; font-size:3.1em; line-height:.82;
-  padding:.06em .12em 0 0; color:#7a1f2c;
-}
-
-/* wax seal divider */
-.seal-divider{display:flex; align-items:center; gap:14px; margin:16px 2px}
-.seal-divider .ln{flex:1; height:1px; background:linear-gradient(90deg, transparent, rgba(200,50,75,.5), transparent)}
-.wax{
-  position:relative; width:44px; height:44px; border-radius:50%;
-  background:radial-gradient(circle at 38% 34%, #e0546c, var(--wax) 55%, #8e2035);
-  box-shadow:0 6px 16px -4px rgba(200,50,75,.6), inset 0 -3px 6px rgba(0,0,0,.35);
-  display:grid; place-items:center; color:#4e0e1a; flex:none;
-}
-.wax svg{width:24px; height:24px}
-.wax.small{width:34px; height:34px}
-.wax.small svg{width:18px; height:18px}
-
-/* decoder card */
-.decoder{
-  position:relative; border-radius:10px; overflow:hidden;
-  background:linear-gradient(165deg, #0a2137, #061423 60%, #050f1b);
-  border:1px solid var(--edge-cyan);
-  box-shadow:0 22px 50px -26px rgba(0,0,0,.9), inset 0 0 40px rgba(2,200,255,.05);
-  padding:clamp(16px,2.2vw,24px);
-}
-.decoder-head{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px}
-.decoder-label{
-  font-family:var(--f-mono); font-weight:700; text-transform:uppercase; letter-spacing:.22em;
-  font-size:clamp(12px,1.4vw,15px); color:var(--cyan);
-  display:flex; align-items:center; gap:10px; min-width:0;
-}
-.decoder-label svg{width:17px; height:17px; flex:none; filter:drop-shadow(0 0 6px rgba(2,200,255,.5))}
-.decoder-label .txt{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.decoder-hint{
-  font-family:var(--f-mono); font-size:11px; color:var(--text-dim); letter-spacing:.06em; flex:none;
-}
-.decoder-hint .k{border:1px solid var(--edge-cyan); border-radius:4px; padding:1px 6px; color:var(--cyan)}
-.decoder-body{
-  font-family:var(--f-body); font-size:clamp(14px,1.42vw,16px); line-height:1.62; color:#cfe6f5; margin:0;
-  transition:opacity .45s ease, filter .45s ease;
-}
-.decoder-tags{display:flex; flex-wrap:wrap; gap:8px; margin-top:14px}
-.decoder-tags span{
-  font-family:var(--f-mono); font-size:11px; letter-spacing:.06em; color:#bfe9fb;
-  border:1px solid var(--edge-cyan); border-radius:999px; padding:4px 11px; background:rgba(2,200,255,.06);
-}
-/* sealed state */
-.decoder .reveal{transition:opacity .4s ease}
-.decoder.sealed .decoder-body,
-.decoder.sealed .decoder-tags{opacity:0; filter:blur(7px); pointer-events:none}
-.decoder .seal-cover{
-  position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:12px; text-align:center; padding:16px;
-  background:linear-gradient(165deg, rgba(10,33,55,.78), rgba(5,15,27,.82));
-  backdrop-filter:blur(3px);
-  transition:opacity .4s ease, visibility .4s ease;
-}
-.decoder:not(.sealed) .seal-cover{opacity:0; visibility:hidden}
-.seal-cover .cta{font-family:var(--f-mono); font-size:12px; letter-spacing:.14em; color:#bfe9fb}
-.seal-cover .cta b{color:var(--gold)}
-.seal-cover .k{
-  display:inline-grid; place-items:center; min-width:26px; height:26px; padding:0 7px;
-  border:1px solid var(--gold); border-radius:6px; color:var(--gold); font-weight:700;
-  box-shadow:0 0 18px rgba(255,183,74,.28);
-}
-
-/* ---- recap ---- */
-.recap{text-align:center}
-.recap .eyebrow{font-family:var(--f-mono); text-transform:uppercase; letter-spacing:.4em; color:var(--cyan); font-size:12px; margin-bottom:10px}
-.recap h2{font-family:var(--f-display); font-weight:700; color:var(--gold); font-size:clamp(28px,5vw,52px); margin:0 0 6px; text-shadow:0 0 30px rgba(255,183,74,.25)}
-.recap .sub{font-family:var(--f-serif); font-style:italic; color:#d7e1ee; font-size:clamp(16px,2vw,21px); margin-bottom:26px}
-.laws{display:grid; gap:12px; text-align:left; max-width:900px; margin:0 auto}
-.law{
-  display:grid; grid-template-columns:56px 1fr; gap:16px; align-items:center;
-  border:1px solid var(--edge); border-radius:10px; padding:14px 18px;
-  background:linear-gradient(120deg, rgba(10,26,43,.6), rgba(5,15,27,.55));
-}
-.law .num{font-family:var(--f-display); font-weight:700; font-size:30px; color:var(--gold); text-align:center; opacity:.85}
-.law .fable{font-family:var(--f-serif); font-size:clamp(15px,1.6vw,19px); color:#eef3fa}
-.law .decode{font-family:var(--f-body); font-size:clamp(12.5px,1.3vw,14px); color:#9fd8ef; margin-top:3px}
-.law .decode b{color:var(--cyan); font-weight:600; font-family:var(--f-mono); font-size:.92em; letter-spacing:.04em}
-.recap .close{margin-top:26px; font-family:var(--f-display); font-weight:600; letter-spacing:.08em; color:var(--gold); font-size:clamp(16px,2.4vw,24px)}
-
-/* ============================ nav arrows ============================== */
-.nav-btn{
-  position:fixed; top:calc(50% - var(--rail-h)/2); transform:translateY(-50%);
-  width:52px; height:52px; border-radius:50%; z-index:6; cursor:pointer;
-  background:rgba(2,6,13,.5); border:1px solid var(--edge); color:var(--gold);
-  display:grid; place-items:center; backdrop-filter:blur(4px);
-  transition:background .2s, border-color .2s, transform .15s;
-}
-.nav-btn:hover{background:rgba(2,6,13,.8); border-color:var(--gold)}
-.nav-btn:active{transform:translateY(-50%) scale(.94)}
-.nav-btn svg{width:20px; height:20px}
-.nav-btn.prev{left:clamp(8px,1.6vw,20px)}
-.nav-btn.next{right:clamp(8px,1.6vw,20px)}
-
-/* ============================ progress rail ========================== */
-.rail{
-  position:fixed; left:0; right:0; bottom:0; height:var(--rail-h); z-index:6;
-  display:flex; align-items:center; justify-content:center;
-  padding:0 clamp(12px,3vw,34px);
-  background:linear-gradient(180deg, transparent, rgba(5,8,15,.9) 44%);
-}
-.rail-inner{display:flex; gap:clamp(6px,1vw,14px); width:100%; max-width:1120px}
-.rail-ch{
-  flex:1; display:flex; flex-direction:column; gap:7px; background:none; border:0; padding:6px 2px 4px;
-  cursor:pointer; color:inherit; text-align:left;
-}
-.rail-ch .lbl{
-  display:flex; align-items:baseline; gap:8px; font-family:var(--f-mono);
-  font-size:11px; letter-spacing:.1em; color:var(--text-dim); transition:color .25s;
-  overflow:hidden;
-}
-.rail-ch .lbl .rn{color:var(--gold); font-weight:700; opacity:.55; transition:opacity .25s}
-.rail-ch .lbl .nm{white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-transform:uppercase; font-size:10px}
-.rail-ch.active .lbl{color:#eaf3fb}
-.rail-ch.active .lbl .rn{opacity:1}
-.rail-ch.done .lbl .rn{opacity:.9}
-.rail-ticks{display:flex; gap:4px}
-.tick{
-  flex:1; height:4px; border-radius:3px; background:rgba(255,255,255,.13); border:0; padding:0; cursor:pointer;
-  transition:background .25s, box-shadow .25s, transform .15s;
-}
-.tick.filled{background:var(--gold)}
-.tick.current{background:var(--cyan); box-shadow:0 0 12px rgba(2,200,255,.7); transform:scaleY(1.6)}
-.tick:hover{transform:scaleY(1.7)}
-
-/* ============================ cast overlay =========================== */
-.overlay{
-  position:fixed; inset:0; z-index:20; display:none; place-items:center;
-  padding:clamp(16px,4vh,48px);
-  background:rgba(3,6,12,.82); backdrop-filter:blur(9px);
-}
-.overlay.open{display:grid}
-.cast-panel{width:100%; max-width:1180px; max-height:92vh; display:flex; flex-direction:column}
-.cast-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; gap:12px}
-.cast-head .ttl{font-family:var(--f-display); font-weight:700; color:var(--gold); font-size:clamp(20px,3vw,30px)}
-.cast-head .sub{font-family:var(--f-mono); font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--cyan); margin-top:4px}
-.cast-close{
-  width:44px; height:44px; border-radius:50%; flex:none; cursor:pointer;
-  background:rgba(2,6,13,.6); border:1px solid var(--edge); color:var(--gold);
-  display:grid; place-items:center;
-}
-.cast-close:hover{border-color:var(--gold)}
-.cast-grid{
-  display:grid; grid-template-columns:repeat(4,1fr); gap:14px; overflow:auto; padding:4px;
-}
-.cast-card{
-  border:1px solid var(--edge); border-radius:12px; overflow:hidden;
-  background:linear-gradient(180deg, rgba(10,26,43,.7), rgba(5,12,22,.7));
-  display:flex; flex-direction:column;
-}
-.cast-portrait{aspect-ratio:3/4; overflow:hidden; background:#02060d; border-bottom:1px solid var(--edge)}
-.cast-portrait img{width:100%; height:100%; object-fit:cover; display:block}
-.cast-info{padding:13px 14px 15px; display:flex; flex-direction:column; gap:5px}
-.cast-info .role{font-family:var(--f-mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--cyan)}
-.cast-info .name{font-family:var(--f-display); font-weight:600; color:var(--gold); font-size:18px; line-height:1.1}
-.cast-info .bio{font-family:var(--f-serif); font-size:14px; line-height:1.45; color:#dbe6f2}
-.cast-info .maps{
-  margin-top:4px; font-family:var(--f-body); font-size:12.5px; line-height:1.4; color:#bfe1f2;
-  border-top:1px dashed rgba(2,200,255,.25); padding-top:8px;
-}
-.cast-info .maps b{
-  display:block; font-family:var(--f-mono); font-size:9.5px; letter-spacing:.16em; text-transform:uppercase;
-  color:#7fd4f0; margin-bottom:3px; font-weight:700;
-}
-
-/* ============================ a11y + motion ========================== */
-.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
-:focus-visible{outline:2px solid var(--cyan); outline-offset:3px; border-radius:6px}
-.rail-ch:focus-visible, .tick:focus-visible{outline-offset:5px}
-
-@media (prefers-reduced-motion: reduce){
-  *{transition:none !important; animation:none !important}
-  #ambient{filter:blur(46px) brightness(.42)}
-}
-
-/* ============================ responsive ============================= */
-@media (max-width:880px){
-  .panel{grid-template-columns:1fr; gap:18px}
-  .legend{display:none}
-  .slide{padding:12px 16px calc(var(--rail-h) + 16px)}
-  .nav-btn{width:44px; height:44px}
-  .cast-grid{grid-template-columns:repeat(2,1fr)}
-  .rail-ch .lbl .nm{display:none}
-  .divider .ghost{font-size:44vw}
-}
-@media (max-width:560px){
-  .cast-grid{grid-template-columns:1fr 1fr}
-  .nav-btn.prev{left:6px} .nav-btn.next{right:6px}
-  .title h1{font-size:clamp(34px,11vw,60px)}
-}
-@media (max-height:640px){
-  :root{--rail-h:64px}
-  .title .hint{margin-top:18px}
-}
+  @media (max-width:860px){
+    main{padding:4px 16px}
+    .panel{grid-template-columns:1fr; gap:16px}
+    .telling{max-width:none}
+    .story p{font-size:19px}
+    .mark span{display:none}
+    .chname{display:none}
+    .castgrid{grid-template-columns:repeat(2,1fr)}
+    .rail{gap:6px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important; transition:none !important}
+  }
 </style>
 </head>
 <body>
-<div id="ambient" aria-hidden="true"></div>
-<div id="tint" aria-hidden="true"></div>
-
+<div id="bg"></div>
 <div id="app">
-  <header class="topbar">
-    <div class="brand">
-      <span class="mark">Zero&nbsp;Trust&nbsp;Fable</span>
-      <span class="name">The Kingdom of Cleartext</span>
+  <header>
+    <div class="mark">
+      <svg class="crest" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <path d="M16 2l3.4 3.2L24 3.6l.6 4.8 4.4 1.2-2 4.4 3 3.6-3.8 2.6.4 4.7-4.6-.6L16 30l-3.4-2.9-4.6.6.4-4.7L4.6 20l3-3.6-2-4.4 4.4-1.2L10.6 6 15 5.2 16 2z" fill="#0c2038" stroke="#FFB74A" stroke-width="1.1"/>
+        <rect x="12" y="11" width="8" height="9" rx="1" fill="#FFB74A"/><rect x="14.6" y="15" width="2.8" height="5" fill="#0c2038"/>
+        <rect x="11" y="9" width="2.3" height="3" fill="#FFB74A"/><rect x="18.7" y="9" width="2.3" height="3" fill="#FFB74A"/>
+      </svg>
+      <div><b>Ultra Secure Collaboration</b><br><span>An interactive storyboard</span></div>
     </div>
-    <nav class="legend" aria-label="keyboard shortcuts">
-      <span><span class="k">&larr;</span> <span class="k">&rarr;</span> move</span>
-      <span><b>D</b> decode</span>
-      <span><b>C</b> cast</span>
-      <span><b>F</b> full</span>
-      <span><b>Home</b> title</span>
-    </nav>
+    <div class="tools">
+      <button class="tool" id="btnCast" aria-haspopup="dialog">Cast</button>
+      <button class="tool" id="btnDecode" aria-pressed="true" title="Toggle the Cisco decoder (D)">Decoded</button>
+      <button class="tool" id="btnFull" title="Fullscreen (F)">Fullscreen</button>
+    </div>
   </header>
-  <main class="stage" id="stage" aria-live="off"></main>
+
+  <main id="stage"><!-- scenes injected --></main>
+
+  <footer>
+    <div class="nav">
+      <button id="prev" aria-label="Previous (left arrow)">‹</button>
+      <button id="next" aria-label="Next (right arrow)">›</button>
+    </div>
+    <div class="rail" id="rail"></div>
+    <div class="counter" id="counter"></div>
+  </footer>
 </div>
 
-<button class="nav-btn prev" id="prev" aria-label="Previous">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-</button>
-<button class="nav-btn next" id="next" aria-label="Next">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
-</button>
-
-<div class="rail" id="rail" aria-label="Chapter progress"></div>
-
-<div class="overlay" id="cast" role="dialog" aria-modal="true" aria-labelledby="castTitle">
-  <div class="cast-panel">
-    <div class="cast-head">
-      <div>
-        <div class="ttl" id="castTitle">The Cast of the Realm</div>
-        <div class="sub">Seven players &middot; and what each decodes to</div>
-      </div>
-      <button class="cast-close" id="castClose" aria-label="Close cast (Esc)">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-      </button>
-    </div>
-    <div class="cast-grid" id="castGrid"></div>
+<div class="overlay" id="castOverlay" role="dialog" aria-modal="true" aria-label="Cast of characters">
+  <button class="tool close" id="castClose">Close ✕</button>
+  <div class="castbox">
+    <h3>The Cast</h3>
+    <div class="sub">Who's who in the fable — and what each one really is.</div>
+    <div class="castgrid" id="castGrid"></div>
   </div>
 </div>
 
-<div class="sr" id="live" aria-live="polite"></div>
-
 <script>
-/* =====================================================================
-   STORY — single source of truth for all copy.
-   The story text and "In Cisco Terms" decoder copy below are mirrored,
-   verbatim, in deck/build_deck.js. Edit them together.
-   ===================================================================== */
-const STORY = {
-  meta:{
-    kicker:"A Zero Trust Fable",
-    title:"The Kingdom of Cleartext",
-    sub:"How a walled realm learned to trust no one — and everyone learned to prove themselves. A storyboard that decodes an old fable into Cisco Zero Trust architecture.",
-  },
-  chapters:[
-    {
-      numeral:"I", title:"The Crumbling Wall", theme:"Perimeter",
-      tagline:"Why a wall that trusts everyone within is no wall at all.",
-      panels:[
-        {code:"1.1", id:"p11", caption:"One wall, one moat",
-         story:"For a hundred years the realm slept behind a single great wall and a black moat. Within that ring no traveler was questioned — to stand inside the wall was to be trusted, and that was the whole of the law.",
-         cisco:"The classic perimeter model: a hardened edge — firewall and VPN — around a soft, flat interior. Whatever was already inside the network was implicitly trusted, and east–west traffic went largely uninspected.",
-         tags:["Perimeter","Implicit trust","Flat network"]},
-        {code:"1.2", id:"p12", caption:"A hundred gates, a thousand keys",
-         story:"But the great wall had a hundred small gates, and every gate had a key, and every key had been copied and copied again. A single borrowed key opened not one door but the whole realm behind it.",
-         cisco:"Shared credentials, broad VPN tunnels, and flat VLANs mean one stolen key unlocks everything. Password reuse and over-broad access turn a single secret into keys to the entire kingdom.",
-         tags:["Shared credentials","VPN sprawl","Over-broad access"]},
-        {code:"1.3", id:"p13", caption:"The thief who was never stopped",
-         story:"At dusk a thief slipped through a servant’s gate. No one barred the way, for he was already inside; unquestioned, he walked the length of the realm straight to the glittering treasury.",
-         cisco:"This is lateral movement. An attacker who phishes one account or breaches one host pivots freely across a flat, trusting network — from a low-value foothold to the crown-jewel assets.",
-         tags:["Lateral movement","Phishing","Blast radius"]},
-        {code:"1.4", id:"p14", caption:"The Sovereign’s reckoning",
-         story:"The Sovereign stood upon the cracked rampart and saw the truth at last: a wall that trusts all who stand within it is no wall at all. The old law would have to be unwritten.",
-         cisco:"The founding premise of Zero Trust: never trust, always verify. Remove trust granted purely by network location. “Inside” can no longer mean “safe.”",
-         tags:["Zero Trust","Never trust","Assume breach"]},
-      ]
-    },
-    {
-      numeral:"II", title:"Every Traveler Named", theme:"Identity",
-      tagline:"The name became the new gate — and a name alone was never enough.",
-      panels:[
-        {code:"2.1", id:"p21", caption:"No one passes unnamed",
-         story:"The Sovereign summoned the Herald and set a new decree upon every gate: none shall pass unnamed. Each traveler must first declare who they are and prove the claim before a single bolt is drawn.",
-         cisco:"Strong identity becomes the new perimeter. Every user, device, and workload must authenticate before access. Cisco ISE authenticates network access with 802.1X and RADIUS at the point of entry.",
-         tags:["Identity-first","Authentication","Cisco ISE"]},
-        {code:"2.2", id:"p22", caption:"A name and a second sign",
-         story:"A name alone could be borrowed, so the Herald demanded a second sign — a sigil the true bearer alone could show. A stolen name without its sigil opened nothing at all.",
-         cisco:"Multi-factor authentication (Cisco Duo): something you know plus something you have. A password by itself — even a correct one — is no longer enough to pass the gate.",
-         tags:["MFA","Cisco Duo","Phishing-resistant"]},
-        {code:"2.3", id:"p23", caption:"Proven, and proven whole",
-         story:"Even a proven name did not suffice. The Herald looked to each traveler’s bearing and health — their wounds, their fevers — and turned away any who might carry rot within the walls.",
-         cisco:"Device trust and posture: Duo Device Trust and ISE posture checks verify patch level, disk encryption, and management state. An identity on a sick or unmanaged device is granted less — or nothing.",
-         tags:["Device posture","Endpoint trust","Health check"]},
-        {code:"2.4", id:"p24", caption:"Named again at every door",
-         story:"And names were not checked once but at every threshold, for a traveler honest at dawn may be turned by dusk. Trust, the Herald wrote, is a question asked again and again.",
-         cisco:"Continuous authentication. Trust is re-evaluated at every access request, not granted once at login and left standing. Sessions are short-lived and constantly re-verified.",
-         tags:["Continuous auth","Re-verification","Session trust"]},
-      ]
-    },
-    {
-      numeral:"III", title:"Seals and Sigils", theme:"Least Privilege",
-      tagline:"A right the baker did not need was a right the baker was never given.",
-      panels:[
-        {code:"3.1", id:"p31", caption:"The realm, carved into wards",
-         story:"The realm was carved into many small wards, each ringed by its own low wall, and each traveler’s sigil named only the doors they were meant to open — no more.",
-         cisco:"Segmentation and least privilege. Cisco TrustSec assigns Security Group Tags (SGTs) that travel with identity, carving one flat network into many enforced segments.",
-         tags:["Segmentation","TrustSec","SGT"]},
-        {code:"3.2", id:"p32", caption:"The baker at the armory door",
-         story:"The baker’s sigil opened the granary and the mill, but never the armory. A right the baker did not need was a right the baker was never given.",
-         cisco:"Least-privilege, role-based policy. A Security Group ACL lets “Baker” reach “Granary” and denies “Armory” — enforced by role, not by IP address or where the traveler happens to stand.",
-         tags:["Least privilege","SGACL","Role-based"]},
-        {code:"3.3", id:"p33", caption:"A fire that could not spread",
-         story:"When fire took the middle ward, the inner gates held fast, and the flames found no road into the wards beside it. What burned, burned alone.",
-         cisco:"Micro- and macro-segmentation contain blast radius. East–west traffic between segments is inspected and filtered (Secure Firewall, SD-Access), so a breach in one zone cannot spill into the next.",
-         tags:["Blast radius","East–west","Containment"]},
-        {code:"3.4", id:"p34", caption:"One door, two verdicts",
-         story:"The same door judged each traveler differently, reading the role written in their sigil — the same threshold an open way for one and a barred one for the next.",
-         cisco:"Group-based policy: a single destination enforces different rules per source group. Policy follows identity, not topology — the answer depends on who is asking, not the wire they arrive by.",
-         tags:["Group policy","Identity-based","Context-aware"]},
-      ]
-    },
-    {
-      numeral:"IV", title:"The Watchful Eye", theme:"Continuous Verification",
-      tagline:"Not to punish, but to see — an eye that never closes.",
-      panels:[
-        {code:"4.1", id:"p41", caption:"The eye that never closes",
-         story:"The Sovereign raised the Sentinel, whose single eye never closed, to watch every road and every ward of the realm at once — not to punish, but to see.",
-         cisco:"Continuous monitoring and telemetry. Cisco Secure Network Analytics (Stealthwatch) watches all traffic and baselines what normal looks like across the whole environment.",
-         tags:["Monitoring","Telemetry","Secure Network Analytics"]},
-        {code:"4.2", id:"p42", caption:"The map that never sleeps",
-         story:"The Cartographer drew a living map that redrew itself as travelers moved, so that no journey through the realm went unseen or unrecorded.",
-         cisco:"Full visibility. NetFlow and telemetry build a live map of who talks to what, while Cisco Umbrella inspects and logs DNS as the very first hop of every connection.",
-         tags:["Visibility","NetFlow","Cisco Umbrella"]},
-        {code:"4.3", id:"p43", caption:"The path that bent wrong",
-         story:"When a courier’s path bent strangely — from the granary road toward the armory it had no cause to seek — the Sentinel marked it in the same breath.",
-         cisco:"Behavioral anomaly detection. A host that suddenly scans or reaches a segment it never touches raises an alert — Encrypted Traffic Analytics flags it from patterns alone, without decrypting the payload.",
-         tags:["Anomaly detection","Behavioral baseline","ETA"]},
-        {code:"4.4", id:"p44", caption:"Seen, and answered",
-         story:"What the eye saw, the gates obeyed. A traveler turned suspect had their sigil dimmed at once, their doors quietly closing before any harm was done.",
-         cisco:"Automated response. XDR / SecureX orchestration revokes access through ISE — Rapid Threat Containment — the moment risk rises, quarantining a host without waiting for a human hand.",
-         tags:["Automated response","Rapid Threat Containment","XDR"]},
-      ]
-    },
-    {
-      numeral:"V", title:"The Living Charter", theme:"Adaptive Policy",
-      tagline:"Trust was no longer a wall to stand behind, but a tide.",
-      panels:[
-        {code:"5.1", id:"p51", caption:"Laws that rewrite themselves",
-         story:"The old laws were carved in stone and never changed. The new Charter was written on living vellum, made to rewrite itself the moment the realm learned something new.",
-         cisco:"Policy as code and adaptive policy. Cisco SD-Access and Catalyst Center express intent centrally and push it everywhere automatically — no more hand-editing rules gate by gate.",
-         tags:["Policy as code","SD-Access","Intent-based"]},
-        {code:"5.2", id:"p52", caption:"One gate teaches all",
-         story:"When a single gate learned the face of a new deceiver at dawn, the Charter taught every other gate before nightfall. No lesson was learned twice.",
-         cisco:"Coordinated, automated response. A verdict from one control — Umbrella, Secure Firewall, or Duo — updates policy fleet-wide through XDR, so a threat seen once is blocked everywhere.",
-         tags:["Coordinated defense","Threat intel","XDR"]},
-        {code:"5.3", id:"p53", caption:"Trust became a tide",
-         story:"Trust was no longer a wall to stand behind but a tide — rising for the traveler who proved themselves true, falling for the one whose conduct turned strange.",
-         cisco:"Risk-based, continuous trust scoring. Each access decision weighs live signals — identity, posture, behavior, threat intelligence — so trust rises and falls per request rather than being fixed at login.",
-         tags:["Risk-based access","Continuous trust","Adaptive"]},
-        {code:"5.4", id:"p54", caption:"A realm that needed no wall",
-         story:"And so the kingdom let its great wall fall to points of light, for it no longer needed one. The whole realm had become watchful, and trust was a thing earned newly each day.",
-         cisco:"The mature Zero Trust end state: no implicit trust anywhere. Identity, context, and continuous verification replace the perimeter entirely — the network defends itself, everywhere, all the time.",
-         tags:["Zero Trust","No implicit trust","Defense in depth"]},
-      ]
-    },
-  ],
-  cast:[
-    {id:"cast_sovereign", name:"The Sovereign", role:"Policy Authority",
-     bio:"Rules not by whim but by charter, deciding who may pass and what each may touch.",
-     maps:"Cisco ISE — the central policy engine that authenticates and authorizes every request."},
-    {id:"cast_herald", name:"The Herald", role:"Keeper of Names",
-     bio:"Grants no passage to the unnamed; demands a name, a second sign, and proof of health.",
-     maps:"Cisco Duo — multi-factor authentication and device trust."},
-    {id:"cast_gatekeeper", name:"The Gatekeeper", role:"Warden of the Threshold",
-     bio:"Reads each sigil at every door and opens only what the bearer’s role allows.",
-     maps:"Cisco Secure Firewall — the policy enforcement point (PEP)."},
-    {id:"cast_cartographer", name:"The Cartographer", role:"Mapmaker of the Realm",
-     bio:"Draws a map that never sleeps, redrawing every road as travelers move.",
-     maps:"Cisco Secure Network Analytics — flow visibility and baselining."},
-    {id:"cast_sentinel", name:"The Sentinel", role:"The Unclosing Eye",
-     bio:"Watches every ward at once and marks the path that bends where it should not.",
-     maps:"Cisco Umbrella + Secure Network Analytics — continuous monitoring."},
-    {id:"cast_courier", name:"The Courier", role:"Bearer of Sealed Word",
-     bio:"Carries messages sealed so tightly that a thief who holds them learns nothing.",
-     maps:"Encrypted transport (TLS) and Cisco SD-WAN."},
-    {id:"cast_pretender", name:"The Pretender", role:"The Uninvited",
-     bio:"Wears a borrowed face and a copied key, trusting that the old wall still trusts whoever stands inside.",
-     maps:"The threat actor — stolen credentials, phishing, and lateral movement."},
-  ],
-  recap:{
-    title:"The Charter, in Five Laws",
-    sub:"What the realm learned — and what it maps to.",
-    laws:[
-      {num:"I",   fable:"A wall that trusts everyone within is no wall.",       decode:"Perimeter trust is dead — never trust by network location."},
-      {num:"II",  fable:"Let none pass unnamed, unproven, or unwell.",          decode:"Identity is the new perimeter — verify every user & device (ISE + Duo)."},
-      {num:"III", fable:"Give each sigil only the doors it needs.",             decode:"Least privilege by design — segment with TrustSec SGTs."},
-      {num:"IV",  fable:"Keep one eye that never closes.",                      decode:"Verify continuously — full visibility & anomaly detection."},
-      {num:"V",   fable:"Let the charter rewrite itself; let trust be a tide.", decode:"Adapt automatically — policy as code & orchestrated response."},
-    ],
-    close:"Never trust. Always verify. Earn it again tomorrow.",
+const A = './assets/';
+const CH = [
+  {n:1, num:'I',   src:15, title:'Independently Verified Identity', concept:'Zero-Trust Identity for every meeting', ga:'GA Q3 CY26', hero:'p14',
+   tagline:'Only independently verified individuals get in — and deepfakes don’t.'},
+  {n:2, num:'II',  src:16, title:'Zero-Trust End-to-End Encryption', concept:'Zero-Trust Encryption for all calls & meetings', ga:'GA Q3 CY26', hero:'p22',
+   tagline:'A shared secret only the participants hold — the provider can’t listen in.'},
+  {n:3, num:'III', src:17, title:'Adding Services into the Meeting', concept:'Fully-featured Zero-Trust Meetings — recording & AI', ga:'GA Q3 CY26', hero:'p31',
+   tagline:'Trusted scribes and advisors join under the same rules — records stay with the customer.'},
+  {n:4, num:'IV',  src:18, title:'Including Others — PSTN & Beyond', concept:'Bridging legacy & external audio into Zero-Trust meetings', ga:'GA Q4 CY26', hero:'p42',
+   tagline:'A controlled gateway lets the chamber speak to the outside world.'},
+  {n:5, num:'V',   src:19, title:'Adding External Participants', concept:'External participants via standard browser — C2B', ga:'GA Q3 CY26', hero:'p54',
+   tagline:'Guests join securely from anywhere with a temporary, time-bound identity.'},
+];
+const PANELS = {
+1:[
+ ['p11','1.1','Each Lord is issued with two forms of identity.','Every participant is provisioned two independent identity factors — no single token grants trust.'],
+ ['p12','1.2','A Medallion that marks them a Lord, used together with their voice.','Webex Identity (the medallion) is bound to a live voiceprint — mitigating impersonation and deepfakes.'],
+ ['p13','1.3','A “letters patent” — signed and sealed by the King.','A unique, per-user credential (individual identity) is cryptographically issued by the enterprise.'],
+ ['p14','1.4','To enter the chamber, participant Lords show their medallions to the guards, verify with their voice, and must be on the invite list.','Admission requires identity + voice verification + presence on the invite list — a true zero-trust join.'],
+ ['p15','1.5','Inside, the Lords show their letters patent to one another to prove who they say they are.','Participants mutually verify individual identities in-meeting — only verified individuals take part.'],
+],
+2:[
+ ['p21','2.1','All the Lords share their letters patent.','Every participant contributes their individual identity to establish the session.'],
+ ['p22','2.2','Combined, the letters patent create a “magic” book holding the code the Lords use to speak inside the chamber.','Their combination derives the shared meeting key used for end-to-end encryption.'],
+ ['p23','2.3','Each time a Lord enters or leaves, a new book is created and replaces the old — everyone uses the new one from then on.','The key is re-derived on every join and leave — giving forward and backward secrecy.'],
+ ['p24','2.4','A crow eavesdropping at the window has no book, so it cannot understand a word.','An eavesdropper without the key sees only ciphertext — even the SaaS provider cannot decrypt.'],
+],
+3:[
+ ['p31','3.1','The King employs Maesters — learned scholars, doctors and advisors — to serve as scribes in sensitive meetings.','Optional services — Video Mesh Node and on-prem AI — act as trusted scribes and advisors.'],
+ ['p32','3.2','The King issues the Maesters their own special letters patent, used just like a Lord’s.','Those services are issued their own verifiable identity and admitted like any other participant.'],
+ ['p33','3.3','The chairperson may ask a Maester to enter the room.','The meeting organizer explicitly invites the service into the session.'],
+ ['p34','3.4','The Maester shows their letters patent, a new book is generated, and they can then follow, document and advise.','On join the key rotates to include it; it can transcribe, record and advise inside the meeting.'],
+ ['p35','3.5','When done, all records go to the King’s secure vault — which the castle operator cannot open.','Records are stored under customer control; the SaaS provider holds no keys and has no access.'],
+],
+4:[
+ ['p41','4.1','Sometimes the Lords must speak to servants — to call for food and wine.','Some conversations must reach the outside world, e.g. PSTN or legacy endpoints.'],
+ ['p42','4.2','Via the Maester, the Chairman adds a special Babel Fish to translate between the coded conversation and the outside world.','A controlled gateway bridges the encrypted meeting and external audio, in both directions.'],
+],
+5:[
+ ['p51','5.1','Sometimes Lords bring in people on other systems to discuss alliances — the Kingdom of the Isles.','External parties on different platforms can be brought in for cross-org and C2B collaboration.'],
+ ['p52','5.2','These talks are sensitive and must stay protected — yet cannot be confined to the chamber.','The exchange stays protected even as it extends beyond the core meeting.'],
+ ['p53','5.3','The King issues a temporary letters patent, sent by Carrier Crow.','A temporary, time-bound identity is issued and delivered to the external participant.'],
+ ['p54','5.4','The envoy uses a Magic Mirror — standard across all kingdoms — to join remotely, presents the temporary patent, and a new book is shared.','They join via a standard browser; presenting the temp identity rotates the key to include them.'],
+],
+};
+const CAST = [
+ ['king','The King','Customer · Enterprise'],
+ ['lords','The Lords','Management team — the participants'],
+ ['castle','The Castle','Collaboration SaaS provider (Cisco)'],
+ ['chamber','Meeting Chamber','The meeting itself'],
+ ['maester','Maesters','Video Mesh Node & on-prem AI'],
+ ['medallion','Medallion','Webex identity + voiceprint'],
+ ['patent','Letters Patent','Individual, per-user identity'],
+];
+const RECAP = [
+ ['Verified Identity','Independently verified individuals — no deepfakes.'],
+ ['E2E Encryption','Rotating keys the provider can never hold.'],
+ ['Services','AI & recording join under the same trust — records stay yours.'],
+ ['Including Others','Controlled bridges to PSTN and the outside world.'],
+ ['External Guests','Secure browser access with temporary identities.'],
+];
+
+const SEAL = `<div class="seal"><span class="ln"></span>
+  <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="13" fill="#C8324B" stroke="#8e1e30" stroke-width="2"/>
+  <path d="M9 18l1.6-6 2.8 3L16 11l2.6 4 2.8-3L23 18z" fill="#8e1e30"/><circle cx="16" cy="20.5" r="1.6" fill="#8e1e30"/></svg>
+  <span class="ln r"></span></div>`;
+
+// build navigation sequence
+const SEQ = [{t:'title'}];
+CH.forEach(c=>{ SEQ.push({t:'divider', ch:c.n}); PANELS[c.n].forEach((p,i)=> SEQ.push({t:'panel', ch:c.n, pi:i})); });
+SEQ.push({t:'recap'});
+
+let idx = 0, decoded = true, revealTimer=null;
+const stage = document.getElementById('stage');
+const bg = document.getElementById('bg');
+const reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+function chOf(i){ return CH.find(c=>c.n===i); }
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+
+function sceneHTML(s){
+  if(s.t==='title'){
+    return `<div class="scene on"><div class="title-wrap">
+      <div class="a">A Visual Storyboard</div>
+      <h1>The Kingdom of<br>Ultra&nbsp;Secure&nbsp;Collaboration</h1>
+      <p class="sub">A medieval kingdom, told twice — the fable on parchment, the Cisco zero-trust meeting it stands for on the other side of every panel.</p>
+      <button class="enter" id="begin">Enter the kingdom →</button>
+      <div class="hint">Move with <kbd>←</kbd> <kbd>→</kbd> · decode with <kbd>D</kbd> · cast with <kbd>C</kbd></div>
+    </div></div>`;
   }
+  if(s.t==='divider'){
+    const c = chOf(s.ch);
+    return `<div class="scene on"><div class="divider">
+      <div class="kicker">Chapter ${c.num} · Story slide ${c.src}</div>
+      <h2>${esc(c.title)}</h2>
+      <div class="tag">${esc(c.tagline)}</div>
+      <div class="concept"><span class="c">In Cisco terms</span><span class="d">${esc(c.concept)}</span><span class="ga">${c.ga}</span></div>
+    </div></div>`;
+  }
+  if(s.t==='recap'){
+    return `<div class="scene on"><div class="recap">
+      <h2>Five chapters, one guarantee</h2>
+      <div class="lead">Meeting customers where they are — securely.</div>
+      <ol>${RECAP.map((r,i)=>`<li><span class="num">${i+1}</span><span class="rt"><b>${esc(r[0])}</b><span>${esc(r[1])}</span></span></li>`).join('')}</ol>
+    </div></div>`;
+  }
+  // panel
+  const c = chOf(s.ch); const [img,label,story,cisco] = PANELS[s.ch][s.pi];
+  return `<div class="scene on"><div class="panel">
+    <div class="frame">
+      <img src="${A}${img}.jpg" alt="${esc(story)}" />
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <span class="code">PANEL ${label}</span>
+    </div>
+    <div class="telling">
+      <div class="eyebrow">Chapter ${c.num}<span class="rn">— ${esc(c.title)}</span></div>
+      <div class="story"><div class="lab">The Story</div><p>${esc(story)}</p></div>
+      ${SEAL}
+      <div class="decoded${decoded?'':' hidden'}" id="dec">
+        <div class="tech"><div class="lab" id="techLab">In Cisco Terms</div><p>${esc(cisco)}</p></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function currentImg(s){
+  if(s.t==='title'||s.t==='recap') return 'title';
+  if(s.t==='divider') return chOf(s.ch).hero;
+  return PANELS[s.ch][s.pi][0];
+}
+
+function render(){
+  const s = SEQ[idx];
+  stage.innerHTML = sceneHTML(s);
+  bg.style.backgroundImage = `url('${A}${currentImg(s)}.jpg')`;
+  document.getElementById('prev').disabled = idx===0;
+  document.getElementById('next').disabled = idx===SEQ.length-1;
+  const b = document.getElementById('begin'); if(b) b.onclick = ()=>go(1);
+  buildRail();
+  // counter
+  const ct = document.getElementById('counter');
+  if(s.t==='panel'){ ct.innerHTML = `<b>${PANELS[s.ch][s.pi][1]}</b> · panel ${panelNumber(s)}/20`; }
+  else if(s.t==='divider'){ ct.textContent = `Chapter ${chOf(s.ch).num}`; }
+  else ct.textContent = s.t==='title' ? 'Start' : 'Fin';
+}
+function panelNumber(s){ let k=0; for(const it of SEQ){ if(it.t==='panel'){k++; if(it===s) return k;} } return k; }
+
+function buildRail(){
+  const rail = document.getElementById('rail'); rail.innerHTML='';
+  const s = SEQ[idx];
+  CH.forEach(c=>{
+    const seg = document.createElement('div'); seg.className='chseg';
+    const active = (s.ch===c.n); if(active) seg.classList.add('active');
+    const ticks = PANELS[c.n].map((p,i)=>{
+      let cls='tick';
+      if(s.t==='panel' && s.ch===c.n){ if(i<s.pi) cls+=' done'; else if(i===s.pi) cls+=' cur'; }
+      else if(c.n < (s.ch||0) || (s.t==='recap')) cls+=' done';
+      else if(s.t==='divider' && s.ch===c.n) cls+='';
+      return `<span class="${cls}"></span>`;
+    }).join('');
+    seg.innerHTML = `<div class="ticks">${ticks}</div><div class="chname">${c.num}. ${esc(c.title)}</div>`;
+    seg.onclick = ()=>{ const t=SEQ.findIndex(x=>x.t==='divider'&&x.ch===c.n); if(t>=0) goto(t); };
+    rail.appendChild(seg);
+  });
+}
+
+function goto(i){ idx = Math.max(0, Math.min(SEQ.length-1, i)); render(); }
+function go(d){ goto(idx+d); }
+
+// decode toggle
+const btnDecode = document.getElementById('btnDecode');
+function setDecode(v){
+  decoded = v; btnDecode.setAttribute('aria-pressed', v); btnDecode.textContent = v?'Decoded':'Story only';
+  const dec = document.getElementById('dec');
+  if(dec){ dec.classList.toggle('hidden', !v); if(v) cipherReveal(); }
+}
+btnDecode.onclick = ()=> setDecode(!decoded);
+
+function cipherReveal(){
+  if(reduce) return; const el = document.getElementById('techLab'); if(!el) return;
+  const target='In Cisco Terms'; const glyphs='ΔΞ#%×0110¬∎ø7@';
+  let f=0; clearInterval(revealTimer);
+  revealTimer = setInterval(()=>{
+    el.textContent = target.split('').map((ch,i)=> i< f? ch : (ch===' '?' ':glyphs[(Math.random()*glyphs.length)|0])).join('');
+    f += 0.7; if(f>=target.length){ clearInterval(revealTimer); el.textContent=target; }
+  }, 28);
+}
+
+// cast overlay
+const castOverlay = document.getElementById('castOverlay');
+document.getElementById('castGrid').innerHTML = CAST.map(c=>
+  `<div class="cc"><img src="${A}cast_${c[0]}.jpg" alt="${esc(c[1])}"><div class="nm">${esc(c[1])}</div><div class="rl">${esc(c[2])}</div></div>`).join('');
+function openCast(v){ castOverlay.classList.toggle('on', v); }
+document.getElementById('btnCast').onclick=()=>openCast(true);
+document.getElementById('castClose').onclick=()=>openCast(false);
+castOverlay.onclick=(e)=>{ if(e.target===castOverlay) openCast(false); };
+
+// fullscreen
+document.getElementById('btnFull').onclick=()=>{
+  if(!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+  else document.exitFullscreen?.();
 };
 
-/* image path helper (kept as a function so the embed build can swap it) */
-function asset(id){ return "assets/" + id + ".svg"; }
+// nav buttons
+document.getElementById('prev').onclick=()=>go(-1);
+document.getElementById('next').onclick=()=>go(1);
 
-/* ===================== inline glyphs ===================== */
-const SVG_STAR = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.6 6.5L21 9.2l-5 4.3L17.6 21 12 17.3 6.4 21 8 13.5l-5-4.3 6.4-.7z"/></svg>';
-const SVG_LOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.4" fill="currentColor" stroke="none"/></svg>';
-const SVG_KEY  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="4"/><path d="M11 11l8 8M16 16l2-2M19 19l2-2"/></svg>';
-
-/* ===================== build flat slide list ===================== */
-const slides = [];
-const dividerIndex = [];          // dividerIndex[ci] -> slide index
-const panelIndex = [];            // panelIndex[ci][pi] -> slide index
-slides.push({type:"title", img:"title"});
-STORY.chapters.forEach((ch,ci)=>{
-  dividerIndex[ci] = slides.length;
-  slides.push({type:"divider", ci, img:ch.panels[0].id});
-  panelIndex[ci] = [];
-  ch.panels.forEach((p,pi)=>{
-    panelIndex[ci][pi] = slides.length;
-    slides.push({type:"panel", ci, pi, img:p.id});
-  });
-});
-slides.push({type:"recap", img:"p54"});
-
-/* ===================== render slides into DOM ===================== */
-const stage = document.getElementById("stage");
-function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-
-function firstLetterSplit(text){
-  const first = text.charAt(0);
-  return '<span class="drop">'+esc(first)+'</span>'+esc(text.slice(1));
-}
-
-slides.forEach((s, idx)=>{
-  const el = document.createElement("section");
-  el.className = "slide";
-  el.dataset.index = idx;
-  el.setAttribute("role","group");
-  let html = '<div class="slide-inner">';
-
-  if(s.type==="title"){
-    el.setAttribute("aria-label","Title");
-    html += '<div class="title">'
-      + '<div class="wax seal" aria-hidden="true">'+SVG_STAR+'</div>'
-      + '<div class="title-kicker">'+esc(STORY.meta.kicker)+'</div>'
-      + '<h1>'+esc(STORY.meta.title)+'</h1>'
-      + '<p class="sub">'+esc(STORY.meta.sub)+'</p>'
-      + '<div class="hint"><span class="k">&rarr;</span> or <span class="k">Space</span> to begin'
-      + ' &middot; <span class="k">D</span> to decode &middot; <span class="k">C</span> for cast</div>'
-      + '</div>';
-  }
-  else if(s.type==="divider"){
-    const ch = STORY.chapters[s.ci];
-    el.setAttribute("aria-label","Chapter "+ch.numeral+", "+ch.title);
-    html += '<div class="divider">'
-      + '<div class="ghost" aria-hidden="true">'+esc(ch.numeral)+'</div>'
-      + '<div class="eyebrow">Chapter '+esc(ch.numeral)+'</div>'
-      + '<h2>'+esc(ch.title)+'</h2>'
-      + '<p class="tag">'+esc(ch.tagline)+'</p>'
-      + '<div class="theme">'+esc(ch.theme)+'</div>'
-      + '</div>';
-  }
-  else if(s.type==="panel"){
-    const ch = STORY.chapters[s.ci];
-    const p = ch.panels[s.pi];
-    el.setAttribute("aria-label","Panel "+p.code+", "+p.caption);
-    html += '<div class="panel">'
-      + '<div class="frame-wrap">'
-      +   '<figure class="frame">'
-      +     '<img src="'+asset(p.id)+'" alt="Panel '+esc(p.code)+' — '+esc(p.caption)+'" loading="lazy">'
-      +     '<div class="scan"></div>'
-      +     '<span class="cmark tl"></span><span class="cmark tr"></span><span class="cmark bl"></span><span class="cmark br"></span>'
-      +     '<span class="code-chip">PANEL '+esc(p.code)+'</span>'
-      +   '</figure>'
-      +   '<div class="caption">'+esc(p.caption)+'</div>'
-      + '</div>'
-      + '<div class="col-right">'
-      +   '<div class="story-card">'
-      +     '<div class="story-eyebrow">The Story</div>'
-      +     '<p class="story-text">'+firstLetterSplit(p.story)+'</p>'
-      +   '</div>'
-      +   '<div class="seal-divider" aria-hidden="true"><span class="ln"></span>'
-      +     '<span class="wax small">'+SVG_STAR+'</span><span class="ln"></span></div>'
-      +   '<div class="decoder sealed" data-panel="'+esc(p.id)+'">'
-      +     '<div class="decoder-head">'
-      +       '<div class="decoder-label">'+SVG_LOCK+'<span class="txt" data-final="In Cisco Terms">In Cisco Terms</span></div>'
-      +       '<div class="decoder-hint">press <span class="k">D</span></div>'
-      +     '</div>'
-      +     '<p class="decoder-body">'+esc(p.cisco)+'</p>'
-      +     '<div class="decoder-tags">'+p.tags.map(t=>'<span>'+esc(t)+'</span>').join('')+'</div>'
-      +     '<div class="seal-cover">'
-      +       '<span class="wax">'+SVG_STAR+'</span>'
-      +       '<div class="cta">The fable is told. Press <span class="k">D</span> to decode it.</div>'
-      +     '</div>'
-      +   '</div>'
-      + '</div>'
-      + '</div>';
-  }
-  else if(s.type==="recap"){
-    el.setAttribute("aria-label","Recap");
-    const r = STORY.recap;
-    html += '<div class="recap">'
-      + '<div class="eyebrow">Recap</div>'
-      + '<h2>'+esc(r.title)+'</h2>'
-      + '<div class="sub">'+esc(r.sub)+'</div>'
-      + '<div class="laws">'
-      + r.laws.map(l=>'<div class="law"><div class="num">'+esc(l.num)+'</div>'
-          + '<div><div class="fable">'+esc(l.fable)+'</div>'
-          + '<div class="decode"><b>In Cisco terms —</b> '+esc(l.decode)+'</div></div></div>').join('')
-      + '</div>'
-      + '<div class="close">'+esc(r.close)+'</div>'
-      + '</div>';
-  }
-
-  html += '</div>';
-  el.innerHTML = html;
-  stage.appendChild(el);
-});
-
-/* ===================== build progress rail ===================== */
-const rail = document.getElementById("rail");
-const railInner = document.createElement("div");
-railInner.className = "rail-inner";
-STORY.chapters.forEach((ch,ci)=>{
-  const chBtn = document.createElement("button");
-  chBtn.className = "rail-ch";
-  chBtn.type = "button";
-  chBtn.setAttribute("aria-label","Chapter "+ch.numeral+": "+ch.title);
-  chBtn.innerHTML = '<span class="lbl"><span class="rn">'+esc(ch.numeral)+'</span>'
-    + '<span class="nm">'+esc(ch.title)+'</span></span>'
-    + '<span class="rail-ticks"></span>';
-  chBtn.addEventListener("click", ()=> go(dividerIndex[ci]));
-  const ticks = chBtn.querySelector(".rail-ticks");
-  ch.panels.forEach((p,pi)=>{
-    const t = document.createElement("button");
-    t.className = "tick";
-    t.type = "button";
-    t.setAttribute("aria-label","Panel "+p.code+": "+p.caption);
-    t.addEventListener("click",(e)=>{ e.stopPropagation(); go(panelIndex[ci][pi]); });
-    ticks.appendChild(t);
-  });
-  railInner.appendChild(chBtn);
-});
-rail.appendChild(railInner);
-const railChs = [...railInner.querySelectorAll(".rail-ch")];
-
-/* ===================== build cast overlay ===================== */
-const castGrid = document.getElementById("castGrid");
-STORY.cast.forEach(c=>{
-  const card = document.createElement("article");
-  card.className = "cast-card";
-  card.innerHTML = '<div class="cast-portrait"><img src="'+asset(c.id)+'" alt="'+esc(c.name)+'" loading="lazy"></div>'
-    + '<div class="cast-info">'
-    +   '<div class="role">'+esc(c.role)+'</div>'
-    +   '<div class="name">'+esc(c.name)+'</div>'
-    +   '<div class="bio">'+esc(c.bio)+'</div>'
-    +   '<div class="maps"><b>In Cisco Terms</b>'+esc(c.maps)+'</div>'
-    + '</div>';
-  castGrid.appendChild(card);
-});
-
-/* ===================== state + navigation ===================== */
-const ambient = document.getElementById("ambient");
-const live = document.getElementById("live");
-const reduced = matchMedia("(prefers-reduced-motion: reduce)");
-let current = 0;
-const slideEls = [...stage.querySelectorAll(".slide")];
-
-function setAmbient(imgId){
-  ambient.style.backgroundImage = 'url("'+asset(imgId)+'")';
-}
-
-function updateRail(){
-  const s = slides[current];
-  let activeCh = -1, activePanel = -1;
-  if(s.type==="divider" || s.type==="panel") activeCh = s.ci;
-  if(s.type==="panel") activePanel = s.pi;
-  if(s.type==="recap") activeCh = STORY.chapters.length; // all done
-
-  railChs.forEach((chEl, ci)=>{
-    chEl.classList.toggle("active", ci===activeCh);
-    chEl.classList.toggle("done", ci<activeCh);
-    const ticks = [...chEl.querySelectorAll(".tick")];
-    ticks.forEach((t, pi)=>{
-      const filled = (ci<activeCh) || (ci===activeCh && pi<=activePanel);
-      const isCurrent = (ci===activeCh && pi===activePanel);
-      t.classList.toggle("filled", filled && !isCurrent);
-      t.classList.toggle("current", isCurrent);
-    });
-  });
-}
-
-function go(i){
-  i = Math.max(0, Math.min(slides.length-1, i));
-  if(i===current && slideEls[i].classList.contains("active")) return;
-  slideEls[current].classList.remove("active");
-  current = i;
-  const el = slideEls[current];
-  el.classList.add("active");
-  // re-seal any decoder on this slide so the fable is presented first
-  el.querySelectorAll(".decoder").forEach(d=> d.classList.add("sealed"));
-  setAmbient(slides[current].img);
-  updateRail();
-  announce();
-}
-function next(){ go(current+1); }
-function prev(){ go(current-1); }
-
-function announce(){
-  const s = slides[current];
-  let msg = "";
-  if(s.type==="title") msg = "Title. "+STORY.meta.title;
-  else if(s.type==="divider") msg = "Chapter "+STORY.chapters[s.ci].numeral+". "+STORY.chapters[s.ci].title;
-  else if(s.type==="panel"){ const p=STORY.chapters[s.ci].panels[s.pi]; msg="Panel "+p.code+". "+p.caption; }
-  else if(s.type==="recap") msg = "Recap. "+STORY.recap.title;
-  live.textContent = msg;
-}
-
-/* ===================== decoder reveal + cipher scramble ===================== */
-const CIPHER = "!<>-_\\/[]{}=+*^?#§€¥$0123456789ISCOCISCO";
-function scramble(el){
-  const finalText = el.dataset.final || el.textContent;
-  if(reduced.matches){ el.textContent = finalText; return; }
-  let frame = 0;
-  const total = finalText.length + 6;
-  clearInterval(el._sc);
-  el._sc = setInterval(()=>{
-    let out = "";
-    const settled = Math.floor((frame/total) * finalText.length);
-    for(let i=0;i<finalText.length;i++){
-      const ch = finalText[i];
-      if(ch===" "){ out+=" "; continue; }
-      if(i < settled){ out += ch; }
-      else { out += CIPHER[Math.floor(Math.random()*CIPHER.length)]; }
-    }
-    el.textContent = out;
-    frame++;
-    if(frame > total){ clearInterval(el._sc); el.textContent = finalText; }
-  }, 38);
-}
-
-function toggleDecoder(){
-  const s = slides[current];
-  if(s.type!=="panel") return;
-  const decoder = slideEls[current].querySelector(".decoder");
-  if(!decoder) return;
-  const wasSealed = decoder.classList.contains("sealed");
-  decoder.classList.toggle("sealed");
-  if(wasSealed){
-    // just revealed → run cipher on the label
-    scramble(decoder.querySelector(".decoder-label .txt"));
-  }
-}
-
-/* ===================== cast overlay ===================== */
-const castOverlay = document.getElementById("cast");
-const castClose = document.getElementById("castClose");
-let lastFocus = null;
-function openCast(){
-  lastFocus = document.activeElement;
-  castOverlay.classList.add("open");
-  castClose.focus();
-}
-function closeCast(){
-  castOverlay.classList.remove("open");
-  if(lastFocus && lastFocus.focus) lastFocus.focus();
-}
-function castOpen(){ return castOverlay.classList.contains("open"); }
-castClose.addEventListener("click", closeCast);
-castOverlay.addEventListener("click", (e)=>{ if(e.target===castOverlay) closeCast(); });
-
-/* ===================== fullscreen ===================== */
-function toggleFullscreen(){
-  if(!document.fullscreenElement){
-    (document.documentElement.requestFullscreen||function(){}).call(document.documentElement);
-  } else {
-    (document.exitFullscreen||function(){}).call(document);
-  }
-}
-
-/* ===================== keyboard ===================== */
-document.addEventListener("keydown",(e)=>{
-  const k = e.key;
-  if(castOpen()){
-    if(k==="Escape" || k==="c" || k==="C"){ e.preventDefault(); closeCast(); }
-    return;
-  }
-  switch(k){
-    case "ArrowRight": case "PageDown": e.preventDefault(); next(); break;
-    case "ArrowLeft": case "PageUp": e.preventDefault(); prev(); break;
-    case " ": case "Spacebar": e.preventDefault(); next(); break;
-    case "d": case "D": e.preventDefault(); toggleDecoder(); break;
-    case "c": case "C": e.preventDefault(); openCast(); break;
-    case "f": case "F": e.preventDefault(); toggleFullscreen(); break;
-    case "Home": e.preventDefault(); go(0); break;
-    case "End": e.preventDefault(); go(slides.length-1); break;
-    case "Escape":
-      if(document.fullscreenElement) document.exitFullscreen();
-      break;
+// keyboard
+window.addEventListener('keydown',(e)=>{
+  if(castOverlay.classList.contains('on')){ if(e.key==='Escape') openCast(false); return; }
+  switch(e.key){
+    case 'ArrowRight': case ' ': case 'PageDown': e.preventDefault(); go(1); break;
+    case 'ArrowLeft': case 'PageUp': e.preventDefault(); go(-1); break;
+    case 'Home': goto(0); break;
+    case 'End': goto(SEQ.length-1); break;
+    case 'd': case 'D': setDecode(!decoded); break;
+    case 'c': case 'C': openCast(true); break;
+    case 'f': case 'F': document.getElementById('btnFull').click(); break;
+    case 'Escape': goto(0); break;
   }
 });
 
-document.getElementById("prev").addEventListener("click", prev);
-document.getElementById("next").addEventListener("click", next);
+// preload
+[...Object.values(PANELS).flat().map(p=>p[0]),'title',...CAST.map(c=>'cast_'+c[0])]
+  .forEach(n=>{ const im=new Image(); im.src=A+n+'.jpg'; });
 
-/* click the illustration to toggle the decoder too (nice affordance) */
-stage.addEventListener("click",(e)=>{
-  const frame = e.target.closest(".frame");
-  const cover = e.target.closest(".seal-cover");
-  if(frame || cover) toggleDecoder();
-});
-
-/* ===================== init ===================== */
-setAmbient(slides[0].img);
-slideEls[0].classList.add("active");
-updateRail();
-announce();
+render();
 </script>
 </body>
 </html>

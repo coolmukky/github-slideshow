@@ -1,0 +1,12 @@
+{
+  "name": "kingdom-storyboard-deck",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Rebuilds the Ultra Secure Collaboration storyboard .pptx from page/assets images.",
+  "scripts": {
+    "build": "node build_deck.js"
+  },
+  "dependencies": {
+    "pptxgenjs": "^3.12.0"
+  }
+}
