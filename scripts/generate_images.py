@@ -74,38 +74,73 @@ CAST = {k for k in SCENES if k.startswith("cast_")}
 WEB = {"panel": (1280, 720), "cast": (640, 640)}
 
 
+def _session():
+    import requests
+    s = requests.Session()
+    ca = os.environ.get("REQUESTS_CA_BUNDLE") or os.environ.get("SSL_CERT_FILE")
+    if ca:
+        s.verify = ca            # trust the agent-proxy CA when running behind it
+    return s
+
+
 def call_image_api(prompt: str, negative: str, size: str) -> bytes:
     """
     RETURN raw image bytes (PNG/JPEG) for the given prompt.
-    `size` is either "1792x1024" (16:9) or "1024x1024" (1:1).
-    Implement ONE of the examples below for your provider, then delete the raise.
+    `size` is "1792x1024" (16:9) or "1024x1024" (1:1).
+
+    Provider is auto-detected from whichever API key is present in the env — set ONE:
+      OPENAI_API_KEY       -> OpenAI  gpt-image-1
+      REPLICATE_API_TOKEN  -> Replicate  black-forest-labs/flux-1.1-pro
+      STABILITY_KEY        -> Stability  stable-image/generate/core
+    Requires outbound egress to the provider's API host (api.openai.com, etc.).
     """
-    raise NotImplementedError(
-        "Wire up call_image_api() to your image model — see commented examples in this function."
+    is_wide = size.startswith("1792")
+
+    if os.environ.get("OPENAI_API_KEY"):
+        from openai import OpenAI
+        import base64
+        # gpt-image-1 supports 1024x1024 / 1536x1024 / 1024x1536 (not 1792x1024)
+        osize = "1536x1024" if is_wide else "1024x1024"
+        r = OpenAI().images.generate(model="gpt-image-1", prompt=prompt, size=osize, quality="high")
+        return base64.b64decode(r.data[0].b64_json)
+
+    if os.environ.get("REPLICATE_API_TOKEN"):
+        import replicate
+        out = replicate.run(
+            "black-forest-labs/flux-1.1-pro",
+            input={"prompt": prompt, "aspect_ratio": "16:9" if is_wide else "1:1",
+                   "output_format": "jpg", "safety_tolerance": 2},
+        )
+        url = out[0] if isinstance(out, list) else getattr(out, "url", out)
+        return _session().get(str(url), timeout=180).content
+
+    key = os.environ.get("STABILITY_KEY") or os.environ.get("STABILITY_API_KEY")
+    if key:
+        resp = _session().post(
+            "https://api.stability.ai/v2beta/stable-image/generate/core",
+            headers={"authorization": f"Bearer {key}", "accept": "image/*"},
+            files={"none": ""},
+            data={"prompt": prompt, "negative_prompt": negative,
+                  "aspect_ratio": "16:9" if is_wide else "1:1", "output_format": "jpeg"},
+            timeout=180,
+        )
+        resp.raise_for_status()
+        return resp.content
+
+    raise SystemExit(
+        "No image API key found. Set exactly one of: "
+        "OPENAI_API_KEY, REPLICATE_API_TOKEN, STABILITY_KEY."
     )
 
-    # --- Example: OpenAI Images (pip install openai; export OPENAI_API_KEY) ---
-    # from openai import OpenAI
-    # import base64
-    # client = OpenAI()
-    # r = client.images.generate(model="gpt-image-1", prompt=prompt, size=size, quality="high")
-    # return base64.b64decode(r.data[0].b64_json)
 
-    # --- Example: Replicate SDXL/Flux (pip install replicate; export REPLICATE_API_TOKEN) ---
-    # import replicate, requests
-    # w, h = size.split("x")
-    # out = replicate.run("black-forest-labs/flux-1.1-pro",
-    #                     input={"prompt": prompt, "width": int(w), "height": int(h)})
-    # url = out[0] if isinstance(out, list) else out
-    # return requests.get(url).content
-
-    # --- Example: Stability (pip install requests; export STABILITY_KEY) ---
-    # import requests
-    # resp = requests.post("https://api.stability.ai/v2beta/stable-image/generate/core",
-    #     headers={"authorization": f"Bearer {os.environ['STABILITY_KEY']}", "accept": "image/*"},
-    #     files={"none": ''}, data={"prompt": prompt, "negative_prompt": negative,
-    #     "aspect_ratio": "16:9" if size.startswith('1792') else "1:1", "output_format": "jpeg"})
-    # resp.raise_for_status(); return resp.content
+def _cover(im, tw, th):
+    """Scale to fill then centre-crop to exactly (tw, th) — no distortion, any source ratio."""
+    w, h = im.size
+    scale = max(tw / w, th / h)
+    nw, nh = round(w * scale), round(h * scale)
+    im = im.resize((nw, nh), Image.LANCZOS)
+    left, top = (nw - tw) // 2, (nh - th) // 2
+    return im.crop((left, top, left + tw, top + th))
 
 
 def render(name: str):
@@ -115,7 +150,8 @@ def render(name: str):
     prompt = STYLE + scene
     raw = call_image_api(prompt, NEGATIVE, size)
     im = Image.open(io.BytesIO(raw)).convert("RGB")
-    im = im.resize(WEB["cast" if is_cast else "panel"])
+    tw, th = WEB["cast" if is_cast else "panel"]
+    im = _cover(im, tw, th)
     out = ASSETS / f"{name}.jpg"
     im.save(out, quality=86, optimize=True)
     print("wrote", out.relative_to(ROOT))
