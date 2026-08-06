@@ -32,6 +32,9 @@
   #bg{position:fixed; inset:-6% ; z-index:0; background-size:cover; background-position:center;
       filter:blur(34px) brightness(.5) saturate(1.05); transform:scale(1.12);
       transition:background-image .5s ease, opacity .5s ease; opacity:.9}
+  /* title screen: let the cover art read as a hero instead of a blurred wallpaper */
+  #bg.hero{filter:blur(2px) brightness(.78) saturate(1.06); opacity:1}
+  #bg.hero::after{background:radial-gradient(120% 90% at 50% 34%, rgba(4,10,20,.18) 20%, rgba(4,10,20,.72) 100%), linear-gradient(180deg, rgba(4,13,27,.42), rgba(4,13,27,.80))}
   #bg::after{content:""; position:absolute; inset:0;
       background:radial-gradient(120% 90% at 50% 30%, transparent 40%, rgba(4,10,20,.75) 100%), linear-gradient(180deg, rgba(4,13,27,.55), rgba(4,13,27,.85))}
 
@@ -405,6 +408,7 @@ function render(){
   const s = SEQ[idx];
   stage.innerHTML = sceneHTML(s);
   bg.style.backgroundImage = `url('${U(currentImg(s))}')`;
+  bg.classList.toggle('hero', s.t==='title');
   document.getElementById('prev').disabled = idx===0;
   document.getElementById('next').disabled = idx===SEQ.length-1;
   const b = document.getElementById('begin'); if(b) b.onclick = ()=>go(1);
