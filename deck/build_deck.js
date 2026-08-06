@@ -21,8 +21,13 @@ function footer(s, left){
   s.addText("Ultra Secure Collaboration  ·  Cisco GSX 2026  ·  Cisco Confidential",
     { x:5.0, y:7.06, w:7.8, h:0.3, fontFace:BODY, fontSize:9, color:"6E7A8C", align:"right" });
 }
+const SLIDE_W = 13.333;
 function chip(s, x, y, txt, col){
-  s.addText(txt.toUpperCase(), { x, y, w:4.6, h:0.3, fontFace:HEAD, fontSize:11, bold:true,
+  // clamp to the slide: a fixed 4.6" width hangs off the right edge in the right-hand
+  // column (x=8.85). The label is short and left-aligned so nothing was visibly cut,
+  // but the box should not leave the canvas.
+  const w = Math.min(4.6, SLIDE_W - x - 0.25);
+  s.addText(txt.toUpperCase(), { x, y, w, h:0.3, fontFace:HEAD, fontSize:11, bold:true,
     color:col, charSpacing:2, align:"left" });
 }
 
@@ -73,14 +78,17 @@ const castCards = [
   ["cast_medallion.jpg","Medallion","Webex identity + voiceprint"],
   ["cast_patent.jpg","Letters Patent","Individual, per-user identity"],
 ];
-const cw=2.86, ch=2.62, gx=0.34, gy=0.34, startX=0.62, startY=1.72;
+// Card height and start are set so the second row clears the footer band at y=7.06.
+// At the previous 2.62 tall / 1.72 start the row ran to 7.30 and the footer printed
+// straight over the bottom of the cards.
+const cw=2.86, ch=2.44, gx=0.34, gy=0.34, startX=0.62, startY=1.66;
 castCards.forEach((c,i)=>{
   const col=i%4, row=Math.floor(i/4);
   const x=startX+col*(cw+gx), y=startY+row*(ch+gy);
   s.addShape(p.ShapeType.roundRect,{ x, y, w:cw, h:ch, rectRadius:0.12, fill:{ color:"0C2038" }, line:{ color:STEEL2, width:1 } });
-  s.addImage({ path:IMG(c[0]), x:x+(cw-1.72)/2, y:y+0.16, w:1.72, h:1.72 });
-  s.addText(c[1], { x:x+0.1, y:y+1.86, w:cw-0.2, h:0.3, fontFace:HEAD, fontSize:15, bold:true, color:CYAN, align:"center" });
-  s.addText(c[2], { x:x+0.14, y:y+2.16, w:cw-0.28, h:0.42, fontFace:BODY, fontSize:11, color:"CFE0F5", align:"center", valign:"top" });
+  s.addImage({ path:IMG(c[0]), x:x+(cw-1.62)/2, y:y+0.14, w:1.62, h:1.62 });
+  s.addText(c[1], { x:x+0.1, y:y+1.78, w:cw-0.2, h:0.28, fontFace:HEAD, fontSize:15, bold:true, color:CYAN, align:"center" });
+  s.addText(c[2], { x:x+0.14, y:y+2.04, w:cw-0.28, h:0.34, fontFace:BODY, fontSize:11, color:"CFE0F5", align:"center", valign:"top" });
 });
 footer(s, "Cast of characters · from story slide 13");
 
