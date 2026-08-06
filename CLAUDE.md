@@ -23,26 +23,26 @@ scripts/
 README.md                    # human setup + run steps
 ```
 
-## The single most useful thing you can do here
+## Art status — photoreal regeneration is DONE
 
-The delivered images are **code-painted watercolor** (no image generator was available when
-they were made). The brief is a **photoreal, "slide 12" cinematic look**. So the high-value task
-is: **regenerate the 21 panels + 7 cast images as photoreal renders**, then everything else
-(page + deck) rebuilds around them.
+All 28 images (`title`, `p11`…`p54`, and the 7 `cast_*`) are **photoreal cinematic renders**
+in the slide-12 style. The original code-painted watercolor set has been fully replaced; every
+previous version remains recoverable from git history.
 
-1. Read `prompts/image_prompts.md` — it has a global style block, negative prompt, consistency
-   anchors for the cast, and one prompt per panel (`p11`…`p54`), the `title`, and the 7 `cast_*`.
-2. Use `scripts/generate_images.py` as the driver. Fill in the `call_image_api()` function for
-   whatever image model the user has (OpenAI Images, Replicate, fal, Stability, a local SDXL/Flux,
-   etc.). Output **16:9** for panels/title and **1:1** for cast, written to `page/assets/<name>.jpg`
-   with these exact filenames:
-   `title, p11,p12,p13,p14,p15, p21,p22,p23,p24, p31,p32,p33,p34,p35, p41,p42, p51,p52,p53,p54,`
-   `cast_king, cast_lords, cast_castle, cast_chamber, cast_maester, cast_medallion, cast_patent`.
-3. Rebuild the single-file page:  `python scripts/build_embed.py`
-4. Rebuild the deck:  `cd deck && npm i && node build_deck.js`
+If you need to regenerate or replace any single image:
 
-Keep filenames identical — the page and deck reference images by these names, so new art drops
-straight in with no code changes.
+1. `prompts/image_prompts.md` holds the global style block, negative prompt, cast consistency
+   anchors, and one prompt per panel. In practice these worked best with `wide 16:9 cinematic
+   composition, full-bleed, no white border or frame` appended, and with the recurring cast
+   (King, Lords, Maester) generated first and reused as references.
+2. Drop the new file in with `python scripts/add_art.py <image> <slot>` — it trims any baked-in
+   white border, fits to the exact size the page and deck expect (`--anchor low|high` when the
+   subject sits off-centre), and rebuilds the page, the .pptx and the live build in one step.
+3. `scripts/generate_images.py` remains wired for API-driven generation (OpenAI / Replicate /
+   Stability, auto-detected from whichever key is set) if you have egress to an image host.
+
+Output sizes: **1280×720** for panels/title, **640×640** for cast. Keep filenames identical —
+the page and deck reference images by these names.
 
 ## Content model (don't drift from it)
 

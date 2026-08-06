@@ -34,9 +34,15 @@ node build_deck.js
 
 Outputs `Kingdom_of_Ultra_Secure_Collaboration_Storyboard.pptx` using the images in `page/assets`.
 
-## Regenerate the art as photoreal renders (the "slide 12" look)
+## The art
 
-The shipped images are stylised watercolor. To get a photoreal cinematic look:
+All 28 images are **photoreal cinematic renders** (the "slide 12" look). The original watercolor
+set has been replaced; earlier versions are recoverable from git history.
+
+To replace any single image: `python scripts/add_art.py <image> <slot>` — it sizes the file
+correctly and rebuilds the page, deck and live build together.
+
+To regenerate the whole set from scratch:
 
 1. Open `prompts/image_prompts.md` — global style, negative prompt, cast consistency anchors, and
    one prompt per panel.
@@ -60,5 +66,5 @@ scripts/ image-gen driver + single-file page builder
 - Fonts load from Google Fonts; offline they fall back to serif/sans/mono.
 - Story text and Cisco decoders were reviewed/approved — they live in both `page/index.html` and
   `deck/build_deck.js`; keep the two in sync if you edit copy.
-- `paintkit` (the watercolor engine that made the current art) is Apache-2.0; it isn't required to
-  run the page or deck. Ask if you want the watercolor render pipeline re-added to the repo.
+- `paintkit` (the watercolor engine behind the original art) is Apache-2.0 and is not required to
+  run the page or deck.
