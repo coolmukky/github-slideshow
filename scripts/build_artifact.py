@@ -41,8 +41,34 @@ FONTS_CSS_URL = (
 KEEP_SUBSETS = {"latin", "latin-ext"}   # skip cyrillic/greek/vietnamese to stay lean
 
 
+CACHE = Path(__file__).resolve().parent / "_fontcache" / "fontface.css"
+
+
+def _get(url: str, binary: bool, tries: int = 3):
+    """Fetch with a couple of retries — the egress proxy occasionally resets."""
+    last = None
+    for i in range(tries):
+        try:
+            r = requests.get(url, headers={"User-Agent": UA}, timeout=45)
+            r.raise_for_status()
+            return r.content if binary else r.text
+        except Exception as e:            # noqa: BLE001 - retry any transport error
+            last = e
+    raise last
+
+
 def build_fontface_css() -> str:
-    css = requests.get(FONTS_CSS_URL, headers={"User-Agent": UA}, timeout=30).text
+    """Inline the webfonts as data URIs, caching the result.
+
+    The fonts never change between runs, so the cache both speeds up repeat builds
+    and keeps them working when the network is briefly unavailable.
+    """
+    if CACHE.exists():
+        css = CACHE.read_text(encoding="utf-8")
+        print(f"  fonts from cache ({len(css)//1024} KB)")
+        return css
+
+    css = _get(FONTS_CSS_URL, binary=False)
     blocks = re.findall(r"/\*\s*([\w-]+)\s*\*/\s*(@font-face\s*\{.*?\})", css, re.S)
     out, n = [], 0
     for subset, block in blocks:
@@ -52,14 +78,17 @@ def build_fontface_css() -> str:
         if not m:
             continue
         url = m.group(1)
-        raw = requests.get(url, headers={"User-Agent": UA}, timeout=30).content
+        raw = _get(url, binary=True)
         uri = "data:font/woff2;base64," + base64.b64encode(raw).decode("ascii")
         out.append(block.replace(url, uri))
         n += 1
     if not out:
         sys.exit("no @font-face blocks captured — aborting (would ship fallback fonts)")
-    print(f"  inlined {n} font faces ({sum(len(b) for b in out)//1024} KB of css)")
-    return "\n".join(out)
+    result = "\n".join(out)
+    CACHE.parent.mkdir(parents=True, exist_ok=True)
+    CACHE.write_text(result, encoding="utf-8")
+    print(f"  inlined {n} font faces ({len(result)//1024} KB), cached for later builds")
+    return result
 
 
 def inline_images(html: str) -> str:
