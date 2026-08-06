@@ -161,6 +161,21 @@
     font-size:clamp(27px, 6.1vw, 76px); line-height:1.02; letter-spacing:.03em;
     text-wrap:balance;
     text-shadow:0 0 60px rgba(255,183,74,.26), 0 6px 28px rgba(0,0,0,.78)}
+
+  /* Engraved-gold title. Guarded by @supports because clipping a gradient to text
+     requires colour:transparent — without the guard, a browser lacking
+     background-clip:text would render the title invisible rather than merely flat.
+     The solid gold above stays as the fallback. */
+  @supports ((-webkit-background-clip:text) or (background-clip:text)){
+    .title-wrap h1{
+      color:transparent;
+      background-image:linear-gradient(177deg,#fff6e2 2%,#ffdf9c 30%,#FFB74A 62%,#cf8a31 100%);
+      -webkit-background-clip:text; background-clip:text;
+      /* text-shadow paints through clipped text and muddies it; drop-shadow wraps the glyphs */
+      text-shadow:none;
+      filter:drop-shadow(0 0 46px rgba(255,183,74,.26)) drop-shadow(0 5px 20px rgba(0,0,0,.85));
+    }
+  }
   /* the hard <br> is right on wide screens and wrong on narrow ones, where the line
      must be free to break wherever it fits */
   @media (max-width:700px){ .title-wrap h1 br{display:none} }

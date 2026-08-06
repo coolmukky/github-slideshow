@@ -153,6 +153,13 @@ const check = (c, n, d) => c ? ok(n, d) : bad(n, d);
     check(r.fits && !r.overlap && !r.pageOvf, `title layout @ ${w}px`,
           `${r.fits ? 'fits' : 'OVERFLOWS'}, header ${r.overlap ? 'OVERLAPS' : 'clear'}`);
     if (w === 360) check(/of Ultra/.test(r.text), 'title keeps the space when it rewraps', r.text);
+    if (w === 1440) {
+      const g = await page.evaluate(() => {
+        const cs = getComputedStyle(document.querySelector('.title-wrap h1'));
+        return { grad: /gradient/.test(cs.backgroundImage), clip: cs.webkitBackgroundClip || cs.backgroundClip };
+      });
+      check(g.grad && g.clip === 'text', 'title renders the engraved gradient', `clip=${g.clip}`);
+    }
   }
 
   console.log(`\n  ${pass} passed, ${fail} failed`);
