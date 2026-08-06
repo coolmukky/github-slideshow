@@ -34,6 +34,11 @@ html = html.replace("`url('${A}${currentImg(s)}.jpg')`", "`url('${U(currentImg(s
 html = html.replace('src="${A}cast_${c[0]}.jpg"', 'src="${U(\'cast_\'+c[0])}"')
 html = html.replace("im.src=A+n+'.jpg';", "im.src=U(n);")
 
+# the favicon points at assets/ too; inline it so the standalone file has no external refs
+if "cast_medallion" in assets:
+    html = html.replace('<link rel="icon" href="assets/cast_medallion.jpg">',
+                        f'<link rel="icon" href="{datauri(assets["cast_medallion"])}">')
+
 out = PAGE / "Storyboard_interactive.html"
 out.write_text(html)
 print(f"wrote {out.relative_to(ROOT)}  ({out.stat().st_size/1e6:.1f} MB, {len(assets)} images embedded)")
