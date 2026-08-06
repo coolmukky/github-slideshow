@@ -136,6 +136,32 @@ const check = (c, n, d) => c ? ok(n, d) : bad(n, d);
   });
   check(escOk === true || escOk === 'nofn', 'esc() hardened (or not exposed globally)', String(escOk));
 
+  // ---------- title fits, header doesn't collide, no sideways scroll ----------
+  for (const w of [1440, 1024, 768, 390, 360]) {
+    await page.setViewportSize({ width: w, height: 820 });
+    await page.goto(`${BASE}/index.html`, { waitUntil: 'domcontentloaded' });
+    await page.waitForTimeout(350);
+    const r = await page.evaluate(() => {
+      const h = document.querySelector('.title-wrap h1');
+      const a = document.querySelector('.mark').getBoundingClientRect();
+      const b = document.querySelector('.tools').getBoundingClientRect();
+      return { fits: h.scrollWidth <= h.clientWidth + 1,
+               overlap: a.right > b.left + 1,
+               pageOvf: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+               text: h.textContent.replace(/\s+/g, ' ').trim() };
+    });
+    check(r.fits && !r.overlap && !r.pageOvf, `title layout @ ${w}px`,
+          `${r.fits ? 'fits' : 'OVERFLOWS'}, header ${r.overlap ? 'OVERLAPS' : 'clear'}`);
+    if (w === 360) check(/of Ultra/.test(r.text), 'title keeps the space when it rewraps', r.text);
+    if (w === 1440) {
+      const g = await page.evaluate(() => {
+        const cs = getComputedStyle(document.querySelector('.title-wrap h1'));
+        return { grad: /gradient/.test(cs.backgroundImage), clip: cs.webkitBackgroundClip || cs.backgroundClip };
+      });
+      check(g.grad && g.clip === 'text', 'title renders the engraved gradient', `clip=${g.clip}`);
+    }
+  }
+
   console.log(`\n  ${pass} passed, ${fail} failed`);
   await browser.close();
   process.exit(fail ? 1 : 0);
