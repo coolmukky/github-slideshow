@@ -21,8 +21,13 @@ function footer(s, left){
   s.addText("Ultra Secure Collaboration  ·  Cisco GSX 2026  ·  Cisco Confidential",
     { x:5.0, y:7.06, w:7.8, h:0.3, fontFace:BODY, fontSize:9, color:"6E7A8C", align:"right" });
 }
+const SLIDE_W = 13.333;
 function chip(s, x, y, txt, col){
-  s.addText(txt.toUpperCase(), { x, y, w:4.6, h:0.3, fontFace:HEAD, fontSize:11, bold:true,
+  // clamp to the slide: a fixed 4.6" width hangs off the right edge in the right-hand
+  // column (x=8.85). The label is short and left-aligned so nothing was visibly cut,
+  // but the box should not leave the canvas.
+  const w = Math.min(4.6, SLIDE_W - x - 0.25);
+  s.addText(txt.toUpperCase(), { x, y, w, h:0.3, fontFace:HEAD, fontSize:11, bold:true,
     color:col, charSpacing:2, align:"left" });
 }
 
