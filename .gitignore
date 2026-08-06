@@ -6,3 +6,4 @@ node_modules/
 page/live_artifact.html
 __pycache__/
 *.pyc
+scripts/_replaced/

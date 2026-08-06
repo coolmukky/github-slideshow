@@ -11,7 +11,9 @@ What it does:
   1. trims any solid white border the generator baked in (common with some tools),
   2. scales + centre-crops to the exact size the page and deck expect
      (--anchor low|high shifts the crop window when the subject sits off-centre),
-  3. backs up the image being replaced into scripts/_replaced/,
+  3. backs up the image being replaced into scripts/_replaced/ (a local
+     convenience copy - it is gitignored, since git history already holds
+     every previous version of every asset),
   4. rebuilds page/Storyboard_interactive.html, the .pptx deck, and the
      CSP-clean page/live_artifact.html.
 
