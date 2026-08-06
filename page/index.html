@@ -4,6 +4,26 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>The Kingdom of Ultra Secure Collaboration — Interactive Storyboard</title>
+<meta name="description" content="Cisco's Ultra Secure Collaboration told as a medieval fable — the story on parchment, the zero-trust meaning decoded beside every panel. 20 illustrated panels across 5 chapters.">
+<link rel="canonical" href="https://coolmukky.github.io/github-slideshow/page/">
+<link rel="icon" href="assets/cast_medallion.jpg">
+
+<!-- link previews (Slack, Teams, LinkedIn, iMessage…) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Ultra Secure Collaboration">
+<meta property="og:title" content="The Kingdom of Ultra Secure Collaboration">
+<meta property="og:description" content="A medieval kingdom, told twice — the fable on parchment, the Cisco zero-trust meeting it stands for on the other side of every panel.">
+<meta property="og:url" content="https://coolmukky.github.io/github-slideshow/page/">
+<meta property="og:image" content="https://coolmukky.github.io/github-slideshow/page/assets/title.jpg">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="720">
+<meta property="og:image:alt" content="A moonlit castle on a crag, a cloaked figure with a glowing medallion on the path below.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Kingdom of Ultra Secure Collaboration">
+<meta name="twitter:description" content="Cisco's zero-trust meeting story, told as a medieval fable and decoded panel by panel.">
+<meta name="twitter:image" content="https://coolmukky.github.io/github-slideshow/page/assets/title.jpg">
+<meta name="theme-color" content="#040D1B">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -158,8 +178,10 @@
   .nav button:disabled{opacity:.32; cursor:default}
   .nav button:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
   .rail{flex:1 1 auto; display:flex; gap:10px; align-items:center}
-  .chseg{flex:1; display:flex; flex-direction:column; gap:6px; cursor:pointer; padding:6px 2px; border-radius:8px}
+  .chseg{flex:1; display:flex; flex-direction:column; gap:6px; cursor:pointer; padding:6px 2px; border-radius:8px;
+    background:none; border:0; font:inherit; color:inherit; text-align:left; -webkit-appearance:none}
   .chseg:hover .chname{color:var(--fg)}
+  .chseg:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
   .chseg .ticks{display:flex; gap:4px}
   .chseg .tick{height:4px; flex:1; background:var(--stone); border-radius:3px; transition:.25s}
   .chseg.active .tick{background:var(--stone-2)}
@@ -186,6 +208,27 @@
   .cc .rl{font-size:12px; color:var(--fg-dim); margin:0 10px 14px; line-height:1.35}
   .close{position:absolute; top:22px; right:26px; z-index:21}
 
+  /* skip link — first tab stop, lets keyboard users jump past the toolbar */
+  .skip{position:absolute; left:-9999px; top:0; z-index:40; background:var(--cyan); color:var(--midnight);
+    font-family:var(--mono); font-size:12px; padding:10px 16px; border-radius:0 0 8px 0; text-decoration:none}
+  .skip:focus{left:0}
+
+  /* visually hidden, still read aloud */
+  .sr-only{position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden;
+    clip:rect(0 0 0 0); white-space:nowrap; border:0}
+
+  /* an image that fails to load shouldn't leave a silent empty frame */
+  .frame img.err{opacity:0}
+  .frame.err::after{content:"illustration unavailable"; position:absolute; inset:0; display:grid; place-items:center;
+    font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--fg-dim)}
+
+  /* safety net: on very short viewports let the stage scroll instead of clipping */
+  @media (max-height:560px){
+    body{overflow:auto}
+    #app{position:relative; min-height:100%}
+    main{overflow-y:auto}
+  }
+
   @media (max-width:860px){
     main{padding:4px 16px}
     .panel{grid-template-columns:1fr; gap:16px}
@@ -203,6 +246,7 @@
 </head>
 <body>
 <div id="bg"></div>
+<a class="skip" href="#stage">Skip to the storyboard</a>
 <div id="app">
   <header>
     <div class="mark">
@@ -220,7 +264,8 @@
     </div>
   </header>
 
-  <main id="stage"><!-- scenes injected --></main>
+  <main id="stage" tabindex="-1" aria-label="Storyboard"><!-- scenes injected --></main>
+  <p id="liveNote" aria-live="polite" class="sr-only"></p>
 
   <footer>
     <div class="nav">
@@ -320,7 +365,10 @@ const bg = document.getElementById('bg');
 const reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 
 function chOf(i){ return CH.find(c=>c.n===i); }
-function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+// escape every character that is unsafe in element text OR inside a quoted attribute —
+// scene copy is interpolated into both (e.g. alt="${esc(story)}")
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+                                 .replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
 function sceneHTML(s){
   if(s.t==='title'){
@@ -373,6 +421,15 @@ function currentImg(s){
   return PANELS[s.ch][s.pi][0];
 }
 
+/* what a screen reader should hear when the scene changes */
+function sceneLabel(s){
+  if(s.t==='title') return 'Title. The Kingdom of Ultra Secure Collaboration.';
+  if(s.t==='recap') return 'Recap. Five chapters, one guarantee.';
+  if(s.t==='divider') return `Chapter ${chOf(s.ch).num}. ${chOf(s.ch).title}.`;
+  const [,label,story] = PANELS[s.ch][s.pi];
+  return `Panel ${label}, ${panelNumber(s)} of 20. ${story}`;
+}
+
 function render(){
   const s = SEQ[idx];
   stage.innerHTML = sceneHTML(s);
@@ -381,7 +438,16 @@ function render(){
   document.getElementById('prev').disabled = idx===0;
   document.getElementById('next').disabled = idx===SEQ.length-1;
   const b = document.getElementById('begin'); if(b) b.onclick = ()=>go(1);
+
+  // an illustration that fails to load should say so rather than sit blank
+  const fimg = stage.querySelector('.frame img');
+  if(fimg) fimg.addEventListener('error', ()=>{
+    fimg.classList.add('err'); fimg.closest('.frame').classList.add('err');
+  }, {once:true});
+
   buildRail();
+  warmAround(idx);
+  document.getElementById('liveNote').textContent = sceneLabel(s);
   // counter
   const ct = document.getElementById('counter');
   if(s.t==='panel'){ ct.innerHTML = `<b>${PANELS[s.ch][s.pi][1]}</b> · panel ${panelNumber(s)}/20`; }
@@ -390,26 +456,64 @@ function render(){
 }
 function panelNumber(s){ let k=0; for(const it of SEQ){ if(it.t==='panel'){k++; if(it===s) return k;} } return k; }
 
+/* The rail is built ONCE as real <button>s (keyboard-operable, announced to AT);
+   afterwards only the state classes are updated, so navigating never destroys focus. */
 function buildRail(){
-  const rail = document.getElementById('rail'); rail.innerHTML='';
+  const rail = document.getElementById('rail');
   const s = SEQ[idx];
-  CH.forEach(c=>{
-    const seg = document.createElement('div'); seg.className='chseg';
-    const active = (s.ch===c.n); if(active) seg.classList.add('active');
-    const ticks = PANELS[c.n].map((p,i)=>{
-      let cls='tick';
-      if(s.t==='panel' && s.ch===c.n){ if(i<s.pi) cls+=' done'; else if(i===s.pi) cls+=' cur'; }
-      else if(c.n < (s.ch||0) || (s.t==='recap')) cls+=' done';
-      else if(s.t==='divider' && s.ch===c.n) cls+='';
-      return `<span class="${cls}"></span>`;
-    }).join('');
-    seg.innerHTML = `<div class="ticks">${ticks}</div><div class="chname">${c.num}. ${esc(c.title)}</div>`;
-    seg.onclick = ()=>{ const t=SEQ.findIndex(x=>x.t==='divider'&&x.ch===c.n); if(t>=0) goto(t); };
-    rail.appendChild(seg);
+
+  if(!rail.childElementCount){
+    CH.forEach(c=>{
+      const seg = document.createElement('button');
+      seg.type = 'button';
+      seg.className = 'chseg';
+      seg.dataset.ch = c.n;
+      seg.setAttribute('aria-label', `Chapter ${c.num}: ${c.title}`);
+      seg.innerHTML = `<div class="ticks">${PANELS[c.n].map(()=>'<span class="tick"></span>').join('')}</div>`
+                    + `<div class="chname">${c.num}. ${esc(c.title)}</div>`;
+      seg.addEventListener('click', ()=>{
+        const t = SEQ.findIndex(x=>x.t==='divider' && x.ch===c.n);
+        if(t>=0) goto(t);
+      });
+      rail.appendChild(seg);
+    });
+  }
+
+  [...rail.children].forEach(seg=>{
+    const n = Number(seg.dataset.ch);
+    const active = (s.ch===n);
+    seg.classList.toggle('active', active);
+    seg.setAttribute('aria-current', active ? 'true' : 'false');
+    [...seg.querySelectorAll('.tick')].forEach((t,i)=>{
+      let done=false, cur=false;
+      if(s.t==='panel' && s.ch===n){ done = i<s.pi; cur = i===s.pi; }
+      else if(n < (s.ch||0) || s.t==='recap'){ done = true; }
+      t.classList.toggle('done', done);
+      t.classList.toggle('cur', cur);
+    });
   });
 }
 
-function goto(i){ idx = Math.max(0, Math.min(SEQ.length-1, i)); render(); }
+function goto(i, opts){
+  opts = opts || {};
+  idx = Math.max(0, Math.min(SEQ.length-1, i));
+  render();
+
+  // keep the URL in step so the current panel can be linked to and survives a refresh
+  const h = '#' + hashFor(SEQ[idx]);
+  if(!opts.fromHash && location.hash !== h){
+    try{ history[opts.replace ? 'replaceState' : 'pushState'](null, '', h); }
+    catch(_){ location.hash = h; }        // file:// in some browsers rejects pushState
+  }
+
+  // move focus to the new scene so keyboard users don't get dropped back to the body
+  if(!opts.initial) stage.focus({preventScroll:true});
+}
+// Back/Forward should step through the storyboard
+window.addEventListener('popstate', ()=>{
+  const i = indexFromHash();
+  if(i !== idx) goto(i, {fromHash:true});
+});
 function go(d){ goto(idx+d); }
 
 // decode toggle
@@ -434,11 +538,37 @@ function cipherReveal(){
 // cast overlay
 const castOverlay = document.getElementById('castOverlay');
 document.getElementById('castGrid').innerHTML = CAST.map(c=>
-  `<div class="cc"><img src="${A}cast_${c[0]}.jpg" alt="${esc(c[1])}"><div class="nm">${esc(c[1])}</div><div class="rl">${esc(c[2])}</div></div>`).join('');
-function openCast(v){ castOverlay.classList.toggle('on', v); }
+  // lazy + async: the dialog is display:none at load, so these 7 portraits are not
+  // fetched until it is actually opened
+  `<div class="cc"><img src="${A}cast_${c[0]}.jpg" alt="${esc(c[1])}" loading="lazy" decoding="async"><div class="nm">${esc(c[1])}</div><div class="rl">${esc(c[2])}</div></div>`).join('');
+let castOpener = null;
+function openCast(v){
+  const closeBtn = document.getElementById('castClose');
+  if(v){
+    warmCast();                                   // only fetch the 7 portraits when actually needed
+    castOpener = document.activeElement;
+    castOverlay.classList.add('on');
+    closeBtn.focus();
+  } else {
+    castOverlay.classList.remove('on');
+    if(castOpener && castOpener.focus) castOpener.focus();   // return focus where it came from
+    castOpener = null;
+  }
+}
 document.getElementById('btnCast').onclick=()=>openCast(true);
 document.getElementById('castClose').onclick=()=>openCast(false);
 castOverlay.onclick=(e)=>{ if(e.target===castOverlay) openCast(false); };
+
+// keep Tab inside the dialog while it is open
+castOverlay.addEventListener('keydown',(e)=>{
+  if(e.key!=='Tab') return;
+  const f=[...castOverlay.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')]
+          .filter(el=>el.offsetParent!==null);
+  if(!f.length) return;
+  const first=f[0], last=f[f.length-1];
+  if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+  else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+});
 
 // fullscreen
 document.getElementById('btnFull').onclick=()=>{
@@ -449,6 +579,24 @@ document.getElementById('btnFull').onclick=()=>{
 // nav buttons
 document.getElementById('prev').onclick=()=>go(-1);
 document.getElementById('next').onclick=()=>go(1);
+
+/* swipe on touch devices — horizontal only, so vertical scrolling still works */
+(function(){
+  let x0=null, y0=null, t0=0;
+  stage.addEventListener('touchstart',(e)=>{
+    if(e.touches.length!==1) return;
+    x0=e.touches[0].clientX; y0=e.touches[0].clientY; t0=e.timeStamp;
+  }, {passive:true});
+  stage.addEventListener('touchend',(e)=>{
+    if(x0===null) return;
+    const t=e.changedTouches[0];
+    const dx=t.clientX-x0, dy=t.clientY-y0;
+    x0=null;
+    if(e.timeStamp-t0 > 700) return;                 // too slow to be a swipe
+    if(Math.abs(dx) < 45 || Math.abs(dx) < Math.abs(dy)*1.5) return;
+    go(dx < 0 ? 1 : -1);
+  }, {passive:true});
+})();
 
 // keyboard
 window.addEventListener('keydown',(e)=>{
@@ -461,15 +609,57 @@ window.addEventListener('keydown',(e)=>{
     case 'd': case 'D': setDecode(!decoded); break;
     case 'c': case 'C': openCast(true); break;
     case 'f': case 'F': document.getElementById('btnFull').click(); break;
-    case 'Escape': goto(0); break;
+    // Escape cancels the thing you're in — it should not throw away your place in the story.
+    // (The cast overlay handles its own Escape above; Home still jumps to the title.)
+    case 'Escape':
+      if(document.fullscreenElement) document.exitFullscreen?.();
+      break;
   }
 });
 
-// preload
-[...Object.values(PANELS).flat().map(p=>p[0]),'title',...CAST.map(c=>'cast_'+c[0])]
-  .forEach(n=>{ const im=new Image(); im.src=A+n+'.jpg'; });
+/* ---------- images: fetch what's needed, not all 3.8 MB up front ----------
+   Previously every one of the 28 images was requested on load. Now we warm only
+   the scenes on either side of the current one, so a visitor who never leaves
+   chapter 1 never downloads chapter 5. */
+const warmed = new Set();
+function warm(name){
+  if(!name || warmed.has(name)) return;
+  warmed.add(name);
+  const im = new Image(); im.src = A + name + '.jpg';
+}
+function warmAround(i){
+  for(let k = i-1; k <= i+2; k++){
+    if(k >= 0 && k < SEQ.length) warm(currentImg(SEQ[k]));
+  }
+}
+// the cast overlay's 7 images are only needed if it is actually opened
+let castWarmed = false;
+function warmCast(){
+  if(castWarmed) return; castWarmed = true;
+  CAST.forEach(c => warm('cast_' + c[0]));
+}
 
-render();
+/* ---------- deep linking ----------
+   #title, #1.4, #recap — so a panel can be linked to directly and survives a refresh. */
+function hashFor(s){
+  if(s.t === 'title') return 'title';
+  if(s.t === 'recap') return 'recap';
+  if(s.t === 'divider') return 'ch' + s.ch;
+  return PANELS[s.ch][s.pi][1];              // e.g. "1.4"
+}
+function indexFromHash(){
+  const h = decodeURIComponent((location.hash || '').replace(/^#/, '')).trim().toLowerCase();
+  if(!h) return 0;
+  const found = SEQ.findIndex(s => hashFor(s).toLowerCase() === h);
+  return found >= 0 ? found : 0;
+}
+window.addEventListener('hashchange', ()=>{
+  const i = indexFromHash();
+  if(i !== idx) goto(i, {fromHash:true});
+});
+
+// initial: honour a #hash if present, without stealing focus or scrolling on load
+goto(indexFromHash(), {replace:true, initial:true});
 </script>
 </body>
 </html>
