@@ -1,5 +1,21 @@
 # Your GitHub Learning Lab Repository for Introducing GitHub
 
+## 🏰 The Kingdom of Ultra Secure Collaboration — interactive storyboard
+
+Cisco's Ultra Secure Collaboration (zero-trust meetings) retold as a medieval fable — the story on
+parchment, the Cisco meaning decoded beside every panel. 20 panels across 5 chapters, fully
+illustrated with photoreal art.
+
+- ➡️ **[Open the storyboard — `page/`](./page/)** — served at `/page/`. Move with `←` `→`,
+  press `D` to decode a panel, `C` for the cast, `F` for fullscreen.
+- 📦 **[Single-file version — `page/Storyboard_interactive.html`](./page/Storyboard_interactive.html)** —
+  every image embedded, so it works offline from anywhere (email it, drop it on a share).
+- 📊 The matching slide deck lives in [`deck/`](./deck/); rebuild it with `cd deck && npm install && node build_deck.js`.
+
+Project notes for contributors: [`STORYBOARD.md`](./STORYBOARD.md).
+
+---
+
 ## 🛡️ Zero Trust Agentic Design Sprint
 
 An interactive playbook for running the **Zero Trust Agentic Design Sprint** design-clinic group activity — a timed, four-person tabletop exercise. It adds a live 60-minute facilitator timer, auto-tracked phases, timed injection reveals, tickable checklists, a fillable solution sheet, a per-person **"take your seat" persona** view, and a live **team roster** for the proctor.
