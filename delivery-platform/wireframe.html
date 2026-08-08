@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tech Elevate — Delivery Platform Wireframe</title>
+<meta name="description" content="Clickable multi-layer wireframe for the Tech Elevate quarterly/monthly delivery platform.">
+</head>
+<body>
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  :root{
+    /* light = blueprint paper */
+    --paper:#E7EDF7; --surface:#FFFFFF; --surface-2:#F1F5FC; --inset:#EAF0FA;
+    --ink:#0B2545; --ink-2:#3D5578; --ink-3:#7789A6;
+    --line:#C6D3E6; --line-2:#9DB0CE; --grid:#D3DEF0;
+    --accent:#1E5FCC; --accent-ink:#fff; --accent-weak:#DCE8FC;
+    --anno:#DC4B23; --anno-weak:#FBE1D9;
+    --good:#1C8A55; --good-weak:#DBF0E4; --warn:#B67A10; --warn-weak:#F6EBCF;
+    --net:#1E5FCC; --sec:#7A3FD1; --ai:#0E8F8F; --cx:#C0417A;
+    --shadow:0 1px 2px rgba(11,37,69,.06),0 8px 24px -12px rgba(11,37,69,.18);
+    --r:6px; --r-lg:10px;
+    --font-head:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,Roboto,"Helvetica Neue",Arial,sans-serif;
+    --font-body:var(--font-head);
+    --mono:ui-monospace,"SF Mono","Cascadia Code","JetBrains Mono","Roboto Mono",Menlo,Consolas,monospace;
+  }
+  :root:not([data-theme="light"]){ }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#050F1C; --surface:#0C1E36; --surface-2:#0A1A30; --inset:#0A1626;
+      --ink:#DDE8F8; --ink-2:#9CB2D6; --ink-3:#5E7597;
+      --line:#1C3355; --line-2:#2B466E; --grid:#0F2340;
+      --accent:#4B9BFF; --accent-ink:#04101F; --accent-weak:#122C50;
+      --anno:#FF7B4D; --anno-weak:#3A2013;
+      --good:#3FB37F; --good-weak:#0F2A20; --warn:#E0A93B; --warn-weak:#33280F;
+      --net:#4B9BFF; --sec:#B58BFF; --ai:#3FC2C2; --cx:#FF7FB0;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 30px -14px rgba(0,0,0,.7);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#050F1C; --surface:#0C1E36; --surface-2:#0A1A30; --inset:#0A1626;
+    --ink:#DDE8F8; --ink-2:#9CB2D6; --ink-3:#5E7597;
+    --line:#1C3355; --line-2:#2B466E; --grid:#0F2340;
+    --accent:#4B9BFF; --accent-ink:#04101F; --accent-weak:#122C50;
+    --anno:#FF7B4D; --anno-weak:#3A2013;
+    --good:#3FB37F; --good-weak:#0F2A20; --warn:#E0A93B; --warn-weak:#33280F;
+    --net:#4B9BFF; --sec:#B58BFF; --ai:#3FC2C2; --cx:#FF7FB0;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 30px -14px rgba(0,0,0,.7);
+  }
+
+  body{
+    margin:0; font-family:var(--font-body); color:var(--ink);
+    background-color:var(--paper);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:26px 26px; background-position:-1px -1px;
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  h1,h2,h3,h4,p{margin:0}
+  button{font-family:inherit}
+  a{color:inherit}
+  ::selection{background:var(--accent-weak)}
+
+  .mono{font-family:var(--mono)}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+
+  /* ---------- app frame ---------- */
+  .app{max-width:1320px;margin:0 auto;padding:14px;min-height:100vh}
+  .topbar{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+    padding:10px 14px;box-shadow:var(--shadow);position:sticky;top:14px;z-index:40
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.01em}
+  .logo{width:26px;height:26px;border-radius:6px;background:var(--accent);position:relative;flex:none;
+    box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--accent) 70%,#000)}
+  .logo::before,.logo::after{content:"";position:absolute;background:var(--accent-ink);border-radius:1px}
+  .logo::before{left:6px;right:6px;top:8px;height:2px;box-shadow:0 5px 0 var(--accent-ink),0 10px 0 var(--accent-ink)}
+  .logo::after{display:none}
+  .brand small{display:block;font-weight:500;color:var(--ink-3);font-size:11px;letter-spacing:.04em;font-family:var(--mono)}
+  .wf-badge{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--anno);border:1px dashed var(--anno);background:var(--anno-weak);padding:3px 7px;border-radius:5px}
+  .crumb{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--ink-2);flex:1;min-width:180px}
+  .crumb .sep{color:var(--ink-3);opacity:.6}
+  .crumb b{color:var(--ink);font-weight:700}
+  .topbar-right{display:flex;align-items:center;gap:8px;margin-left:auto}
+
+  .seg{display:inline-flex;background:var(--inset);border:1px solid var(--line);border-radius:8px;padding:3px}
+  .seg button{border:0;background:transparent;color:var(--ink-2);font-family:var(--mono);font-size:12px;
+    padding:5px 11px;border-radius:6px;cursor:pointer;letter-spacing:.02em}
+  .seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow);font-weight:600}
+  .icon-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:var(--surface-2);
+    color:var(--ink-2);cursor:pointer;font-size:15px;display:grid;place-items:center}
+  .icon-btn:hover{color:var(--ink);border-color:var(--line-2)}
+  .avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--sec));
+    color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+
+  /* ---------- stage: layer rail + screens ---------- */
+  .stage{display:grid;grid-template-columns:210px 1fr;gap:14px;margin-top:14px;align-items:start}
+  .rail{position:sticky;top:70px}
+  .rail h4{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:2px 4px 8px}
+  .layers{display:flex;flex-direction:column;gap:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:8px;box-shadow:var(--shadow)}
+  .layer{display:flex;gap:10px;align-items:flex-start;text-align:left;border:0;background:transparent;cursor:pointer;
+    padding:9px 8px;border-radius:8px;color:var(--ink-2);position:relative;width:100%}
+  .layer:hover{background:var(--surface-2)}
+  .layer[aria-current="true"]{background:var(--accent-weak)}
+  .layer[aria-current="true"] .lname{color:var(--ink)}
+  .lchip{font-family:var(--mono);font-size:10px;font-weight:700;width:30px;height:22px;flex:none;display:grid;place-items:center;
+    border-radius:5px;background:var(--inset);border:1px solid var(--line);color:var(--ink-2);letter-spacing:.02em}
+  .layer[aria-current="true"] .lchip{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .lname{font-size:13px;font-weight:600;color:var(--ink-2);line-height:1.25}
+  .lname small{display:block;font-weight:500;font-size:11px;color:var(--ink-3);font-family:var(--mono);letter-spacing:.01em;margin-top:1px}
+  .rail-connect{height:10px;width:2px;background:var(--line);margin-left:22px}
+
+  .screens{min-width:0}
+  section[data-screen]{display:none;animation:fade .28s ease}
+  section[data-screen].on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+  /* ---------- generic cards / bits ---------- */
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow)}
+  .pad{padding:16px}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .grid{display:grid;gap:12px}
+  .screen-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+  .screen-head h2{font-size:clamp(20px,2.4vw,27px);letter-spacing:-.02em;text-wrap:balance}
+  .screen-head p{color:var(--ink-2);font-size:13.5px;max-width:60ch;margin-top:4px}
+  .btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);
+    font-weight:600;font-size:13px;padding:9px 15px;border-radius:8px;cursor:pointer;font-family:var(--font-head)}
+  .btn:hover{filter:brightness(1.06)}
+  .btn.ghost{background:var(--surface-2);color:var(--ink);border-color:var(--line)}
+  .btn.ghost:hover{border-color:var(--line-2)}
+  .btn.sm{padding:6px 11px;font-size:12px}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .pill{font-family:var(--mono);font-size:11px;letter-spacing:.03em;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--ink-2);background:var(--surface-2);white-space:nowrap}
+  .pill.dot::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;margin-right:6px;vertical-align:1px}
+  .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:5px;font-weight:600}
+  .ph{background:repeating-linear-gradient(45deg,var(--inset),var(--inset) 9px,transparent 9px,transparent 18px);
+    border:1px dashed var(--line-2);border-radius:var(--r);display:grid;place-items:center;color:var(--ink-3);
+    font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .kpi{font-variant-numeric:tabular-nums;font-weight:800;font-size:26px;letter-spacing:-.02em}
+
+  /* annotations */
+  body:not(.notes) .anno{display:none!important}
+  .anno{display:flex;gap:8px;align-items:flex-start;font-family:var(--mono);font-size:11.5px;line-height:1.45;
+    color:var(--anno);background:var(--anno-weak);border:1px dashed var(--anno);border-radius:7px;padding:8px 10px;margin-top:10px}
+  .anno b{font-weight:700}
+  .anno .n{flex:none;font-weight:700;border:1px solid var(--anno);border-radius:5px;width:20px;height:18px;display:grid;place-items:center;font-size:10px}
+
+  /* ---------- SITEMAP screen ---------- */
+  .map-hero{display:grid;grid-template-columns:1.3fr 1fr;gap:14px}
+  @media(max-width:820px){.map-hero{grid-template-columns:1fr}}
+  .flow{display:flex;flex-direction:column;gap:0}
+  .flow-node{display:grid;grid-template-columns:52px 1fr auto;gap:14px;align-items:center;
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:13px 14px;box-shadow:var(--shadow);cursor:pointer;text-align:left;width:100%}
+  .flow-node:hover{border-color:var(--accent)}
+  .flow-node .num{font-family:var(--mono);font-weight:800;font-size:15px;width:52px;height:44px;display:grid;place-items:center;
+    background:var(--accent-weak);color:var(--accent);border-radius:8px}
+  .flow-node h4{font-size:15px;letter-spacing:-.01em}
+  .flow-node p{font-size:12px;color:var(--ink-2);font-family:var(--mono);margin-top:2px}
+  .flow-arrow{height:16px;width:2px;background:var(--line-2);margin:0 auto;position:relative}
+  .flow-arrow::after{content:"";position:absolute;left:-3px;bottom:-1px;border:4px solid transparent;border-top-color:var(--line-2)}
+  .legend-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .legend-grid .li{display:flex;gap:8px;align-items:center;font-size:12px;padding:8px;border:1px solid var(--line);border-radius:7px;background:var(--surface-2)}
+  .legend-grid .li b{font-weight:600}
+  .legend-grid .li .ic{width:26px;height:26px;flex:none;border-radius:6px;display:grid;place-items:center;font-size:14px;background:var(--inset);border:1px solid var(--line)}
+
+  /* ---------- PORTAL ---------- */
+  .arch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:900px){.arch-grid{grid-template-columns:1fr}}
+  .arch{position:relative;overflow:hidden;cursor:pointer;text-align:left;width:100%;border:1px solid var(--line);background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:0}
+  .arch:hover{border-color:var(--pc)}
+  .arch .band{height:6px;background:var(--pc)}
+  .arch .body{padding:16px}
+  .arch .no{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.1em}
+  .arch h3{font-size:18px;letter-spacing:-.01em;margin-top:6px}
+  .arch .sub{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+  .arch .sub .tag{background:color-mix(in srgb,var(--pc) 14%,transparent);color:var(--pc)}
+  .arch .thumb{margin-top:14px;height:74px}
+  .arch .meta{display:flex;justify-content:space-between;margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+  .arch .go{position:absolute;right:14px;top:14px;color:var(--pc);font-size:18px}
+
+  .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  @media(max-width:760px){.stat-row{grid-template-columns:repeat(2,1fr)}}
+  .stat .eyebrow{margin-bottom:6px}
+  .cad-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
+  .cad-strip .q{padding:12px 14px;border-right:1px solid var(--line);background:var(--surface)}
+  .cad-strip .q:last-child{border-right:0}
+  .cad-strip .q.now{background:var(--accent-weak)}
+  .cad-strip .q .qh{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--ink-2)}
+  .cad-strip .q ul{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+  .cad-strip .q li{font-size:12px;display:flex;gap:7px;align-items:center;color:var(--ink-2)}
+  .cad-strip .q li::before{content:"";width:6px;height:6px;border-radius:2px;background:var(--pc,var(--accent));flex:none}
+
+  /* month calendar */
+  .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+  .cal .dow{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);text-align:center;padding-bottom:2px}
+  .cal .day{min-height:64px;border:1px solid var(--line);border-radius:7px;background:var(--surface-2);padding:6px}
+  .cal .day .dn{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+  .cal .day.mut{opacity:.4}
+  .cal .ev{font-size:10.5px;font-family:var(--mono);margin-top:4px;padding:2px 5px;border-radius:4px;color:#fff;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  /* ---------- TRACK / calendar ---------- */
+  .track-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+  .subtabs{display:inline-flex;gap:4px}
+  .subtabs button{border:1px solid var(--line);background:var(--surface);color:var(--ink-2);font-family:var(--mono);font-size:12px;
+    padding:7px 13px;border-radius:8px;cursor:pointer}
+  .subtabs button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .timeline{display:flex;flex-direction:column;gap:10px}
+  .ev-card{display:grid;grid-template-columns:78px 1fr auto;gap:14px;align-items:center;cursor:pointer;text-align:left;width:100%;
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:12px 14px;box-shadow:var(--shadow)}
+  .ev-card:hover{border-color:var(--accent)}
+  .ev-date{text-align:center;font-family:var(--mono);border-right:1px solid var(--line);padding-right:12px}
+  .ev-date .d{font-size:22px;font-weight:800;line-height:1}
+  .ev-date .m{font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em}
+  .ev-main h4{font-size:15px;letter-spacing:-.01em}
+  .ev-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+  .ev-side{text-align:right;font-family:var(--mono);font-size:11px;color:var(--ink-3);display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+
+  /* ---------- CREATE (form) ---------- */
+  .form-grid{display:grid;grid-template-columns:1fr 320px;gap:14px;align-items:start}
+  @media(max-width:900px){.form-grid{grid-template-columns:1fr}}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px}
+  .inp{width:100%;border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:10px 12px;font-family:var(--font-body);font-size:13.5px;color:var(--ink)}
+  .inp::placeholder{color:var(--ink-3)}
+  .inp:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+  select.inp{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--ink-3) 50%),linear-gradient(135deg,var(--ink-3) 50%,transparent 50%);background-position:calc(100% - 16px) 17px,calc(100% - 11px) 17px;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{border:1px solid var(--line);background:var(--surface-2);color:var(--ink-2);font-size:12.5px;padding:8px 11px;border-radius:8px;cursor:pointer;display:inline-flex;gap:7px;align-items:center;font-family:var(--font-body)}
+  .chip .ci{font-size:14px}
+  .chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-weak);color:var(--ink);font-weight:600}
+  .chip[aria-pressed="true"]::after{content:"✓";font-family:var(--mono);color:var(--accent);font-size:11px}
+  .matlist{display:flex;flex-direction:column;gap:8px}
+  .matrow{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:9px 11px;background:var(--surface-2)}
+  .matrow .ic{width:28px;height:28px;border-radius:6px;background:var(--inset);display:grid;place-items:center;flex:none}
+  .matrow .mt{font-size:12.5px;font-weight:600}
+  .matrow .ms{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+  .toggle{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);margin-bottom:8px}
+  .toggle .ti{display:flex;gap:10px;align-items:center}
+  .toggle .ic{width:30px;height:30px;border-radius:7px;display:grid;place-items:center;flex:none;font-size:15px}
+  .sw{width:42px;height:24px;border-radius:999px;border:1px solid var(--line-2);background:var(--inset);position:relative;cursor:pointer;flex:none;transition:.2s}
+  .sw::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.3);transition:.2s}
+  .sw[aria-pressed="true"]{background:var(--accent);border-color:var(--accent)}
+  .sw[aria-pressed="true"]::after{left:20px}
+  .side-preview{position:sticky;top:70px}
+
+  /* QR */
+  .qr-wrap{display:grid;place-items:center;gap:10px;text-align:center;padding:16px;border:1px dashed var(--line-2);border-radius:var(--r-lg);background:var(--surface-2)}
+  svg.qr{width:150px;height:150px;background:#fff;border-radius:8px;padding:8px;box-shadow:var(--shadow)}
+  .qr-wrap .lk{font-family:var(--mono);font-size:11px;color:var(--accent);word-break:break-all}
+
+  /* ---------- EVENT (participant / phone) ---------- */
+  .event-wrap{display:grid;grid-template-columns:330px 1fr;gap:18px;align-items:start}
+  @media(max-width:860px){.event-wrap{grid-template-columns:1fr}}
+  .phone{margin:0 auto;width:320px;max-width:100%;border:10px solid var(--ink);border-radius:34px;background:var(--surface);overflow:hidden;box-shadow:var(--shadow)}
+  :root[data-theme="dark"] .phone,:root:not([data-theme="light"]) .phone{border-color:#050b14}
+  .phone .notch{height:26px;background:var(--ink);position:relative}
+  .phone .notch::after{content:"";position:absolute;left:50%;transform:translateX(-50%);top:7px;width:80px;height:6px;border-radius:99px;background:#333c4a}
+  .phone-body{padding:14px}
+  .phone .hero{height:96px;border-radius:10px;margin-bottom:12px;position:relative;overflow:hidden}
+  .phone .hero .tag{position:absolute;left:10px;top:10px}
+  .reg-box{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--surface-2);margin-top:12px}
+  .agenda{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+  .ag{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;font-size:12.5px;border:1px solid var(--line);border-radius:8px;padding:9px 10px;background:var(--surface)}
+  .ag .t{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+  .ag .ic{width:26px;height:26px;border-radius:6px;display:grid;place-items:center;background:var(--inset);font-size:13px}
+
+  /* ---------- ACTIVITY workspace ---------- */
+  .ws{display:grid;grid-template-columns:200px 1fr 300px;gap:14px;align-items:start}
+  @media(max-width:1080px){.ws{grid-template-columns:1fr}}
+  .act-rail{display:flex;flex-direction:column;gap:4px;position:sticky;top:70px}
+  @media(max-width:1080px){.act-rail{flex-direction:row;overflow-x:auto;position:static}}
+  .act-btn{display:flex;gap:9px;align-items:center;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);
+    padding:9px 11px;border-radius:8px;cursor:pointer;font-size:12.5px;text-align:left;white-space:nowrap;font-family:var(--font-body)}
+  .act-btn .ic{font-size:14px}
+  .act-btn[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-weak);color:var(--ink);font-weight:600}
+  .ws-main{min-width:0;min-height:360px}
+  .act-panel{display:none}
+  .act-panel.on{display:block;animation:fade .22s ease}
+  .stage-ph{height:230px}
+  .playbar{display:flex;align-items:center;gap:12px;margin-top:12px;font-family:var(--mono);font-size:12px;color:var(--ink-2)}
+  .playbar .bar{flex:1;height:5px;border-radius:99px;background:var(--inset);overflow:hidden}
+  .playbar .bar i{display:block;height:100%;width:38%;background:var(--accent)}
+
+  .lab-steps{display:flex;flex-direction:column;gap:8px}
+  .lab-step{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--surface)}
+  .lab-step .ck{width:20px;height:20px;border-radius:5px;border:1px solid var(--line-2);flex:none;display:grid;place-items:center;cursor:pointer;font-size:12px;color:transparent}
+  .lab-step.done .ck{background:var(--good);border-color:var(--good);color:#fff}
+  .lab-step.done .lt{text-decoration:line-through;color:var(--ink-3)}
+  .lt{font-size:13px;font-weight:600}
+  .ls{font-size:12px;color:var(--ink-2)}
+  .term{background:#06101d;color:#c8e6ff;border-radius:8px;padding:12px;font-family:var(--mono);font-size:12px;line-height:1.6;overflow-x:auto;border:1px solid #12365e}
+  .term .p{color:#3fb37f}.term .c{color:#7fd0ff}.term .m{color:#8aa2c4}
+
+  .ctf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:620px){.ctf-grid{grid-template-columns:1fr}}
+  .ctf{border:1px solid var(--line);border-radius:9px;padding:12px;background:var(--surface)}
+  .ctf.solved{border-color:var(--good);background:var(--good-weak)}
+  .ctf .pts{font-family:var(--mono);font-size:11px;color:var(--accent)}
+  .flag-row{display:flex;gap:8px;margin-top:10px}
+  .lb{display:flex;flex-direction:column;gap:6px}
+  .lb .r{display:grid;grid-template-columns:22px 1fr auto;gap:10px;font-family:var(--mono);font-size:12px;padding:6px 8px;border-radius:6px;background:var(--surface-2)}
+  .lb .r.me{background:var(--accent-weak);color:var(--ink)}
+
+  .esc{display:flex;flex-direction:column;gap:8px}
+  .esc .st{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--surface)}
+  .esc .st.locked{opacity:.55}
+  .esc .st.open{border-color:var(--good)}
+  .esc .lockic{font-size:15px}
+
+  canvas.wb{width:100%;height:230px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);touch-action:none;display:block;cursor:crosshair}
+  .wb-tools{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .swatch{width:24px;height:24px;border-radius:6px;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line);cursor:pointer}
+  .swatch[aria-pressed="true"]{box-shadow:0 0 0 2px var(--ink)}
+
+  .clinic{display:flex;flex-direction:column;gap:8px}
+  .slot{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--surface)}
+  .slot.booked{opacity:.5}
+
+  /* right rail panels */
+  .ws-side{display:flex;flex-direction:column;gap:14px;position:sticky;top:70px}
+  @media(max-width:1080px){.ws-side{position:static}}
+  .panel-h{display:flex;align-items:center;gap:9px;padding:11px 13px;border-bottom:1px solid var(--line)}
+  .panel-h .dotlive{width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 0 3px var(--good-weak)}
+  .panel-h h4{font-size:13px}
+  .panel-h .brandtag{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--ink-3);border:1px solid var(--line);padding:2px 6px;border-radius:5px}
+  .wbx-tiles{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:12px}
+  .wbx-tiles .t{aspect-ratio:16/10;border-radius:7px;background:var(--inset);position:relative;border:1px solid var(--line);overflow:hidden}
+  .wbx-tiles .t span{position:absolute;left:5px;bottom:4px;font-family:var(--mono);font-size:9px;color:var(--ink-2);background:var(--surface);padding:1px 4px;border-radius:3px}
+  .wbx-tiles .t.spk{outline:2px solid var(--good);outline-offset:-2px}
+  .wbx-ctrl{display:flex;gap:7px;justify-content:center;padding:0 12px 12px;flex-wrap:wrap}
+  .wbx-ctrl .b{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface-2);display:grid;place-items:center;font-size:14px;cursor:pointer}
+  .wbx-ctrl .b.rec{border-color:var(--anno);color:var(--anno)}
+  .wbx-ctrl .b.end{background:#d1364b;border-color:#d1364b;color:#fff}
+
+  .chatlog{display:flex;flex-direction:column;gap:9px;padding:12px;max-height:250px;overflow:auto}
+  .msg{font-size:12.5px;line-height:1.5;padding:9px 11px;border-radius:10px;max-width:92%}
+  .msg.ai{background:var(--surface-2);border:1px solid var(--line);border-bottom-left-radius:3px}
+  .msg.ai .who{font-family:var(--mono);font-size:10px;color:var(--ai);letter-spacing:.05em;margin-bottom:3px;display:block}
+  .msg.me{background:var(--accent);color:var(--accent-ink);align-self:flex-end;border-bottom-right-radius:3px}
+  .chatbox{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
+  .chatbox .inp{padding:8px 10px;font-size:12.5px}
+  .circuit-cta{margin:0 12px 12px;display:flex;gap:8px}
+
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;
+    background:var(--ink);color:var(--paper);font-size:13px;padding:11px 16px;border-radius:10px;box-shadow:var(--shadow);z-index:99;transition:.25s;font-weight:500}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .footer-note{margin-top:18px;padding:14px;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-align:center;line-height:1.7}
+
+  @media(max-width:760px){
+    .stage{grid-template-columns:1fr}
+    .rail{position:static}
+    .layers{flex-direction:row;overflow-x:auto}
+    .rail-connect{display:none}
+    .layer{min-width:150px}
+    .arch-grid{grid-template-columns:1fr}
+    .stat-row{grid-template-columns:1fr 1fr}
+    .cad-strip{grid-template-columns:1fr}
+    .cad-strip .q{border-right:0;border-bottom:1px solid var(--line)}
+  }
+</style>
+
+<div class="app">
+  <!-- ============ TOP BAR ============ -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true"></span>
+      <span>Tech&nbsp;Elevate<small>Delivery&nbsp;Platform</small></span>
+    </div>
+    <span class="wf-badge" title="This is a wireframe">◳ Wireframe</span>
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <div class="topbar-right">
+      <div class="seg" role="group" aria-label="Delivery cadence">
+        <button id="cadQ" aria-pressed="true" onclick="setCadence('Q')">Quarterly</button>
+        <button id="cadM" aria-pressed="false" onclick="setCadence('M')">Monthly</button>
+      </div>
+      <button class="icon-btn" id="notesBtn" title="Toggle spec annotations" onclick="toggleNotes()">✎</button>
+      <button class="icon-btn" id="themeBtn" title="Toggle theme" onclick="toggleTheme()">◑</button>
+      <div class="avatar" title="Delivery team member">TE</div>
+    </div>
+  </header>
+
+  <div class="stage">
+    <!-- ============ LAYER MAP RAIL ============ -->
+    <aside class="rail">
+      <div class="layers" aria-label="UI layers">
+        <h4>UI Layers</h4>
+        <button class="layer" data-go="map"><span class="lchip">MAP</span><span class="lname">Sitemap<small>the whole idea</small></span></button>
+        <div class="rail-connect"></div>
+        <button class="layer" data-go="portal"><span class="lchip">L0</span><span class="lname">Portal<small>3 architectures</small></span></button>
+        <div class="rail-connect"></div>
+        <button class="layer" data-go="track"><span class="lchip">L1</span><span class="lname">Delivery Calendar<small>quarterly · monthly</small></span></button>
+        <div class="rail-connect"></div>
+        <button class="layer" data-go="create"><span class="lchip">L2</span><span class="lname">Create Event<small>producer view</small></span></button>
+        <div class="rail-connect"></div>
+        <button class="layer" data-go="event"><span class="lchip">L3</span><span class="lname">Event / QR Signup<small>participant view</small></span></button>
+        <div class="rail-connect"></div>
+        <button class="layer" data-go="activity"><span class="lchip">L4</span><span class="lname">Activity Workspace<small>+ Circuit · Webex</small></span></button>
+      </div>
+    </aside>
+
+    <!-- ============ SCREENS ============ -->
+    <main class="screens">
+
+      <!-- ---------- SITEMAP ---------- -->
+      <section data-screen="map" class="on">
+        <div class="screen-head">
+          <div>
+            <div class="eyebrow">Concept map · click any node to explore</div>
+            <h2>A multi-layer platform for Tech Elevate delivery</h2>
+            <p>One place for the three architecture tracks to publish sessions, and for participants to scan in and run the activity — from a lecture to a capture-the-flag — with Circuit AI and Webex wired into the room.</p>
+          </div>
+          <button class="btn" onclick="go('portal')">Enter the platform →</button>
+        </div>
+
+        <div class="map-hero">
+          <div class="flow">
+            <button class="flow-node" onclick="go('portal')"><span class="num">L0</span><div><h4>Portal</h4><p>Pick an architecture · quarterly + monthly view</p></div><span class="flow-arrow" style="visibility:hidden"></span></button>
+            <span class="flow-arrow"></span>
+            <button class="flow-node" onclick="go('track')"><span class="num">L1</span><div><h4>Delivery Calendar</h4><p>Track roadmap · sessions by cadence</p></div></button>
+            <span class="flow-arrow"></span>
+            <button class="flow-node" onclick="go('create')"><span class="num">L2</span><div><h4>Create Event</h4><p>Formats · materials · QR · integrations</p></div></button>
+            <span class="flow-arrow"></span>
+            <button class="flow-node" onclick="go('event')"><span class="num">L3</span><div><h4>Event &amp; QR Signup</h4><p>Scan → register → agenda</p></div></button>
+            <span class="flow-arrow"></span>
+            <button class="flow-node" onclick="go('activity')"><span class="num">L4</span><div><h4>Activity Workspace</h4><p>Run the activity · Circuit + Webex</p></div></button>
+          </div>
+
+          <div class="grid" style="gap:14px">
+            <div class="card pad">
+              <div class="eyebrow" style="margin-bottom:10px">Three architectures</div>
+              <div class="grid" style="gap:8px">
+                <div class="li" style="display:flex;gap:10px;align-items:center"><span class="tag" style="background:color-mix(in srgb,var(--net) 15%,transparent);color:var(--net)">Secure Networking</span><span class="mono" style="font-size:11px;color:var(--ink-3)">Networking · Security</span></div>
+                <div class="li" style="display:flex;gap:10px;align-items:center"><span class="tag" style="background:color-mix(in srgb,var(--ai) 15%,transparent);color:var(--ai)">Full-Stack AI Infra</span><span class="mono" style="font-size:11px;color:var(--ink-3)">I&amp;MI · CAI</span></div>
+                <div class="li" style="display:flex;gap:10px;align-items:center"><span class="tag" style="background:color-mix(in srgb,var(--cx) 15%,transparent);color:var(--cx)">Workplace Experience</span><span class="mono" style="font-size:11px;color:var(--ink-3)">Collaboration</span></div>
+              </div>
+            </div>
+            <div class="card pad">
+              <div class="eyebrow" style="margin-bottom:10px">Eight activity formats</div>
+              <div class="legend-grid">
+                <div class="li"><span class="ic">▤</span><b>Lecture</b></div>
+                <div class="li"><span class="ic">⌨</span><b>Hands-on Lab</b></div>
+                <div class="li"><span class="ic">◎</span><b>BOF Discussion</b></div>
+                <div class="li"><span class="ic">⚑</span><b>Capture the Flag</b></div>
+                <div class="li"><span class="ic">⧉</span><b>Escape Room</b></div>
+                <div class="li"><span class="ic">✎</span><b>Whiteboarding</b></div>
+                <div class="li"><span class="ic">◈</span><b>POC</b></div>
+                <div class="li"><span class="ic">✚</span><b>Design Clinic</b></div>
+              </div>
+            </div>
+            <div class="card pad">
+              <div class="eyebrow" style="margin-bottom:10px">Wired into the room</div>
+              <div class="row">
+                <span class="pill dot" style="color:var(--ai)">Circuit AI — voice/AI calls</span>
+                <span class="pill dot" style="color:var(--accent)">Webex — manage interaction</span>
+                <span class="pill dot" style="color:var(--good)">QR check-in</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="anno"><span class="n">i</span><div>This sitemap is the wireframe's <b>navigation model</b>. The left rail mirrors it on every screen so the "layers" are always visible. Turn these orange notes off with the ✎ button in the top bar.</div></div>
+      </section>
+
+      <!-- ---------- L0 PORTAL ---------- -->
+      <section data-screen="portal">
+        <div class="screen-head">
+          <div>
+            <div class="eyebrow">Layer 0 · Portal home</div>
+            <h2>Choose an architecture track</h2>
+            <p>The landing layer. Delivery leads and participants both start here; the cadence toggle in the top bar reframes everything below as a quarter or a single month.</p>
+          </div>
+        </div>
+
+        <div class="arch-grid" style="margin-bottom:14px">
+          <button class="arch" style="--pc:var(--net)" onclick="go('track','Secure Networking')">
+            <span class="band"></span><span class="go">→</span>
+            <div class="body">
+              <div class="no">TRACK 01</div>
+              <h3>Secure Networking</h3>
+              <div class="sub"><span class="tag">Networking</span><span class="tag">Security</span></div>
+              <div class="ph thumb">network fabric · schematic</div>
+              <div class="meta"><span>6 sessions this quarter</span><span>next: Aug 14</span></div>
+            </div>
+          </button>
+          <button class="arch" style="--pc:var(--ai)" onclick="go('track','Full-Stack AI Infrastructure')">
+            <span class="band"></span><span class="go">→</span>
+            <div class="body">
+              <div class="no">TRACK 02</div>
+              <h3>Full-Stack AI Infrastructure</h3>
+              <div class="sub"><span class="tag">I&amp;MI</span><span class="tag">CAI</span></div>
+              <div class="ph thumb">GPU fabric · schematic</div>
+              <div class="meta"><span>5 sessions this quarter</span><span>next: Aug 21</span></div>
+            </div>
+          </button>
+          <button class="arch" style="--pc:var(--cx)" onclick="go('track','Workplace Experience')">
+            <span class="band"></span><span class="go">→</span>
+            <div class="body">
+              <div class="no">TRACK 03</div>
+              <h3>Workplace Experience</h3>
+              <div class="sub"><span class="tag">Collaboration</span></div>
+              <div class="ph thumb">collaboration room · schematic</div>
+              <div class="meta"><span>4 sessions this quarter</span><span>next: Aug 12</span></div>
+            </div>
+          </button>
+        </div>
+
+        <div class="row" style="margin-bottom:14px">
+          <div class="card pad stat" style="flex:1;min-width:150px"><div class="eyebrow">Upcoming sessions</div><div class="kpi">15</div></div>
+          <div class="card pad stat" style="flex:1;min-width:150px"><div class="eyebrow">Registered</div><div class="kpi">842</div></div>
+          <div class="card pad stat" style="flex:1;min-width:150px"><div class="eyebrow">Labs live now</div><div class="kpi" style="color:var(--good)">3</div></div>
+          <div class="card pad stat" style="flex:1;min-width:150px"><div class="eyebrow">Avg. NPS</div><div class="kpi">72</div></div>
+        </div>
+
+        <div class="card pad">
+          <div class="track-toolbar" style="margin-bottom:12px">
+            <h3 style="font-size:15px" id="cadTitle">This quarter · Q3 CY26</h3>
+            <span class="pill mono" id="cadHint">Quarterly roadmap</span>
+          </div>
+          <div id="cadBody"></div>
+        </div>
+        <div class="anno"><span class="n">1</span><div><b>Entry point.</b> Three cards = the three architectures you named. Each opens that track's delivery calendar (L1). The quarterly/monthly toggle is global chrome so the same control works on every layer.</div></div>
+      </section>
+
+      <!-- ---------- L1 TRACK ---------- -->
+      <section data-screen="track">
+        <div class="screen-head">
+          <div>
+            <div class="eyebrow">Layer 1 · <span id="trackEyebrow">Secure Networking</span> · delivery calendar</div>
+            <h2 id="trackTitle">Secure Networking — delivery calendar</h2>
+            <p>Everything scheduled for this track, at the cadence chosen in the top bar. Delivery teams publish here; participants browse and tap through to an event.</p>
+          </div>
+          <button class="btn" onclick="go('create')">+ Create event</button>
+        </div>
+
+        <div class="card pad" style="margin-bottom:12px">
+          <div class="track-toolbar">
+            <div class="subtabs" role="group" aria-label="Sub-domain">
+              <button id="sdAll" aria-pressed="true" onclick="setSub(this,'All domains')">All</button>
+              <button id="sdA" aria-pressed="false" onclick="setSub(this,'Networking')">Networking</button>
+              <button id="sdB" aria-pressed="false" onclick="setSub(this,'Security')">Security</button>
+            </div>
+            <span class="pill mono" id="trackCad">Quarterly · 6 sessions</span>
+          </div>
+        </div>
+
+        <div class="timeline" id="timeline"></div>
+        <div class="anno"><span class="n">2</span><div><b>Two reads of the same data.</b> Toggle <b>Quarterly</b> for the roadmap of milestones; <b>Monthly</b> for a dated calendar. Sub-domain tabs (Networking / Security, or I&amp;MI / CAI on Track 02) filter the list. Each row → the event page.</div></div>
+      </section>
+
+      <!-- ---------- L2 CREATE ---------- -->
+      <section data-screen="create">
+        <div class="screen-head">
+          <div>
+            <div class="eyebrow">Layer 2 · Producer view</div>
+            <h2>Create a delivery event</h2>
+            <p>What a delivery team fills in to stand up a session: the format(s), the material, and the integrations. Publishing mints the QR code and the participant page (L3).</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div>
+            <div class="card pad" style="margin-bottom:14px">
+              <div class="eyebrow" style="margin-bottom:12px">Event basics</div>
+              <div class="field"><label>Event title</label><input class="inp" value="Zero-Trust Meetings — Lab Day" aria-label="Event title"></div>
+              <div class="two">
+                <div class="field"><label>Architecture track</label>
+                  <select class="inp"><option>Secure Networking</option><option>Full-Stack AI Infrastructure</option><option>Workplace Experience</option></select></div>
+                <div class="field"><label>Sub-domain</label>
+                  <select class="inp"><option>Security</option><option>Networking</option></select></div>
+              </div>
+              <div class="two">
+                <div class="field"><label>Date &amp; time</label><input class="inp" value="Aug 14, 2026 · 10:00 PT" aria-label="Date and time"></div>
+                <div class="field"><label>Cadence</label>
+                  <select class="inp"><option>Monthly session</option><option>Quarterly flagship</option></select></div>
+              </div>
+            </div>
+
+            <div class="card pad" style="margin-bottom:14px">
+              <div class="eyebrow" style="margin-bottom:10px">Delivery format · choose one or more</div>
+              <div class="chips" id="fmtChips">
+                <button class="chip" aria-pressed="true" onclick="toggleChip(this)"><span class="ci">▤</span>Lecture</button>
+                <button class="chip" aria-pressed="true" onclick="toggleChip(this)"><span class="ci">⌨</span>Hands-on Lab</button>
+                <button class="chip" aria-pressed="false" onclick="toggleChip(this)"><span class="ci">◎</span>BOF Discussion</button>
+                <button class="chip" aria-pressed="false" onclick="toggleChip(this)"><span class="ci">⚑</span>Capture the Flag</button>
+                <button class="chip" aria-pressed="false" onclick="toggleChip(this)"><span class="ci">⧉</span>Escape Room</button>
+                <button class="chip" aria-pressed="false" onclick="toggleChip(this)"><span class="ci">✎</span>Whiteboarding</button>
+                <button class="chip" aria-pressed="false" onclick="toggleChip(this)"><span class="ci">◈</span>POC</button>
+                <button class="chip" aria-pressed="false" onclick="toggleChip(this)"><span class="ci">✚</span>Design Clinic</button>
+              </div>
+            </div>
+
+            <div class="card pad" style="margin-bottom:14px">
+              <div class="eyebrow" style="margin-bottom:10px">Delivery material · link or upload</div>
+              <div class="matlist">
+                <div class="matrow"><span class="ic">▤</span><div style="flex:1"><div class="mt">Zero-Trust deck</div><div class="ms">slides · linked from SharePoint</div></div><span class="pill">Linked</span></div>
+                <div class="matrow"><span class="ic">⌨</span><div style="flex:1"><div class="mt">Lab guide + sandbox</div><div class="ms">dcloud://ztna-lab-042</div></div><span class="pill">Linked</span></div>
+                <div class="matrow"><span class="ic">◈</span><div style="flex:1"><div class="mt">Reference topology</div><div class="ms">repo · /designs/ztna</div></div><span class="pill">Linked</span></div>
+                <button class="btn ghost sm" style="align-self:flex-start" onclick="toast('Wireframe: opens a material picker (deck / lab / repo / dataset / video)')">+ Add material</button>
+              </div>
+            </div>
+
+            <div class="card pad">
+              <div class="eyebrow" style="margin-bottom:10px">Integrations</div>
+              <div class="toggle"><div class="ti"><span class="ic" style="background:color-mix(in srgb,var(--ai) 16%,transparent);color:var(--ai)">◉</span><div><div class="mt" style="font-size:13px;font-weight:600">Circuit AI calls</div><div class="ms">Let participants make voice/AI calls to Circuit inside an activity</div></div></div><button class="sw" aria-pressed="true" onclick="toggleSw(this)" aria-label="Circuit AI"></button></div>
+              <div class="toggle"><div class="ti"><span class="ic" style="background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)">▣</span><div><div class="mt" style="font-size:13px;font-weight:600">Webex session</div><div class="ms">Manage participants, breakouts &amp; recording from the workspace</div></div></div><button class="sw" aria-pressed="true" onclick="toggleSw(this)" aria-label="Webex"></button></div>
+              <div class="toggle"><div class="ti"><span class="ic" style="background:color-mix(in srgb,var(--good) 16%,transparent);color:var(--good)">▦</span><div><div class="mt" style="font-size:13px;font-weight:600">QR check-in &amp; signup</div><div class="ms">Auto-generate a QR that opens the participant page</div></div></div><button class="sw" aria-pressed="true" onclick="toggleSw(this)" aria-label="QR"></button></div>
+            </div>
+          </div>
+
+          <!-- live preview -->
+          <div class="side-preview">
+            <div class="card pad">
+              <div class="eyebrow" style="margin-bottom:10px">Publishes as</div>
+              <div class="qr-wrap">
+                <svg class="qr" id="qrCreate" viewBox="0 0 100 100" role="img" aria-label="Event QR code (placeholder)"></svg>
+                <div>
+                  <div style="font-weight:700;font-size:13px">Scan to join</div>
+                  <div class="lk">elevate.cisco/e/ztna-aug14</div>
+                </div>
+              </div>
+              <div class="grid" style="gap:7px;margin-top:12px">
+                <div class="row" style="justify-content:space-between"><span class="mono" style="font-size:11px;color:var(--ink-3)">FORMATS</span><span id="fmtCount" class="mono" style="font-size:11px">2 selected</span></div>
+                <div class="row" style="justify-content:space-between"><span class="mono" style="font-size:11px;color:var(--ink-3)">CAPACITY</span><span class="mono" style="font-size:11px">60 seats</span></div>
+                <div class="row" style="justify-content:space-between"><span class="mono" style="font-size:11px;color:var(--ink-3)">INTEGRATIONS</span><span class="mono" style="font-size:11px">Circuit · Webex</span></div>
+              </div>
+              <button class="btn" style="width:100%;justify-content:center;margin-top:14px" onclick="go('event')">Publish event →</button>
+            </div>
+            <div class="anno"><span class="n">3</span><div>Publishing is where the <b>QR code</b> and the participant page get generated. Everything a participant can do downstream is switched on here.</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- L3 EVENT (participant) ---------- -->
+      <section data-screen="event">
+        <div class="screen-head">
+          <div>
+            <div class="eyebrow">Layer 3 · Participant view (what the QR opens)</div>
+            <h2>Zero-Trust Meetings — Lab Day</h2>
+            <p>The mobile-first page a participant lands on after scanning the QR: register, see the agenda, grab the material, then enter the live workspace.</p>
+          </div>
+          <button class="btn ghost" onclick="go('activity')">Skip to workspace →</button>
+        </div>
+
+        <div class="event-wrap">
+          <div>
+            <div class="phone">
+              <div class="notch"></div>
+              <div class="phone-body">
+                <div class="hero ph" style="background:color-mix(in srgb,var(--net) 22%,var(--surface))"><span class="tag" style="background:var(--net);color:#fff">Secure Networking</span></div>
+                <h3 style="font-size:16px;letter-spacing:-.01em">Zero-Trust Meetings — Lab Day</h3>
+                <div class="mono" style="font-size:11px;color:var(--ink-3);margin-top:4px">Aug 14 · 10:00 PT · Maester A. Rivera</div>
+                <div class="row" style="gap:6px;margin-top:10px"><span class="tag" style="background:var(--accent-weak);color:var(--accent)">Lecture</span><span class="tag" style="background:var(--accent-weak);color:var(--accent)">Hands-on Lab</span></div>
+
+                <div class="reg-box" id="regBox">
+                  <div class="mono" style="font-size:11px;color:var(--ink-3)">STEP 1 · SECURE YOUR SEAT</div>
+                  <div style="font-size:12.5px;color:var(--ink-2);margin:6px 0 10px">54 of 60 seats left · signup closes at start</div>
+                  <button class="btn" id="regBtn" style="width:100%;justify-content:center" onclick="signup()">Sign up for this event</button>
+                </div>
+
+                <div class="mono" style="font-size:11px;color:var(--ink-3);margin-top:14px">AGENDA</div>
+                <div class="agenda">
+                  <div class="ag"><span class="ic">▤</span><div><div style="font-weight:600">Zero-trust primer</div><div class="t">lecture · 20 min</div></div><span class="t">10:00</span></div>
+                  <div class="ag"><span class="ic">⌨</span><div><div style="font-weight:600">Build a ZTNA policy</div><div class="t">hands-on lab · 40 min</div></div><span class="t">10:20</span></div>
+                  <div class="ag"><span class="ic">⚑</span><div><div style="font-weight:600">Break the tunnel</div><div class="t">capture the flag · 25 min</div></div><span class="t">11:00</span></div>
+                </div>
+                <button class="btn" style="width:100%;justify-content:center;margin-top:12px" id="enterBtn" onclick="go('activity')">Enter session workspace →</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid" style="gap:14px">
+            <div class="card pad">
+              <div class="eyebrow" style="margin-bottom:12px">How access works</div>
+              <div class="grid" style="gap:12px">
+                <div class="row" style="align-items:center;gap:12px"><div class="ph" style="width:56px;height:56px;flex:none">1</div><div><b>Scan the QR</b><div style="font-size:12.5px;color:var(--ink-2)">Printed on-site or shared in Webex — opens this page, no app install.</div></div></div>
+                <div class="row" style="align-items:center;gap:12px"><div class="ph" style="width:56px;height:56px;flex:none">2</div><div><b>Sign up</b><div style="font-size:12.5px;color:var(--ink-2)">SSO check-in reserves a seat and unlocks the material.</div></div></div>
+                <div class="row" style="align-items:center;gap:12px"><div class="ph" style="width:56px;height:56px;flex:none">3</div><div><b>Enter the workspace</b><div style="font-size:12.5px;color:var(--ink-2)">Runs the activity live with Circuit AI + Webex attached.</div></div></div>
+              </div>
+            </div>
+            <div class="card pad">
+              <div class="eyebrow" style="margin-bottom:10px">Materials (unlock after signup)</div>
+              <div class="matlist" id="matLock" style="opacity:.5">
+                <div class="matrow"><span class="ic">▤</span><div style="flex:1"><div class="mt">Zero-Trust deck</div><div class="ms">32 slides</div></div><span class="pill" id="lock1">🔒 Locked</span></div>
+                <div class="matrow"><span class="ic">⌨</span><div style="flex:1"><div class="mt">Lab guide + sandbox</div><div class="ms">dcloud reservation</div></div><span class="pill" id="lock2">🔒 Locked</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="anno"><span class="n">4</span><div><b>QR → signup → activity.</b> The whole participant journey you described lives on one responsive page. Try the <b>Sign up</b> button — it flips the state and unlocks the materials.</div></div>
+      </section>
+
+      <!-- ---------- L4 ACTIVITY WORKSPACE ---------- -->
+      <section data-screen="activity">
+        <div class="screen-head">
+          <div>
+            <div class="eyebrow">Layer 4 · Live workspace</div>
+            <h2 id="wsTitle">Activity workspace</h2>
+            <p>The deepest layer — where the work actually happens. Switch formats on the left; Circuit AI and Webex ride along on the right for every one.</p>
+          </div>
+        </div>
+
+        <div class="ws">
+          <!-- activity switcher -->
+          <div class="act-rail" role="group" aria-label="Activity">
+            <button class="act-btn" data-act="lecture" aria-pressed="true" onclick="setAct(this)"><span class="ic">▤</span>Lecture</button>
+            <button class="act-btn" data-act="lab" aria-pressed="false" onclick="setAct(this)"><span class="ic">⌨</span>Hands-on Lab</button>
+            <button class="act-btn" data-act="bof" aria-pressed="false" onclick="setAct(this)"><span class="ic">◎</span>BOF Discussion</button>
+            <button class="act-btn" data-act="ctf" aria-pressed="false" onclick="setAct(this)"><span class="ic">⚑</span>Capture the Flag</button>
+            <button class="act-btn" data-act="escape" aria-pressed="false" onclick="setAct(this)"><span class="ic">⧉</span>Escape Room</button>
+            <button class="act-btn" data-act="wb" aria-pressed="false" onclick="setAct(this)"><span class="ic">✎</span>Whiteboarding</button>
+            <button class="act-btn" data-act="poc" aria-pressed="false" onclick="setAct(this)"><span class="ic">◈</span>POC</button>
+            <button class="act-btn" data-act="clinic" aria-pressed="false" onclick="setAct(this)"><span class="ic">✚</span>Design Clinic</button>
+          </div>
+
+          <!-- main work area -->
+          <div class="ws-main card pad">
+            <!-- lecture -->
+            <div class="act-panel on" data-panel="lecture">
+              <div class="ph stage-ph">▶ slide / video stage</div>
+              <div class="playbar"><span>▶</span><div class="bar"><i></i></div><span>12:04 / 20:00</span><button class="btn ghost sm" onclick="toast('Wireframe: raises hand in Webex')">✋ Raise hand</button></div>
+              <div class="row" style="margin-top:14px;gap:8px"><span class="pill">Slide 8 / 32</span><span class="pill">Live captions on</span><span class="pill dot" style="color:var(--good)">Recording</span></div>
+            </div>
+            <!-- lab -->
+            <div class="act-panel" data-panel="lab">
+              <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:10px"><b>Build a ZTNA policy</b><span class="pill mono" id="labProg">1 / 4 steps</span></div>
+              <div class="lab-steps" id="labSteps">
+                <div class="lab-step done"><button class="ck" onclick="toggleStep(this)" aria-label="toggle">✓</button><div><div class="lt">Reserve the sandbox</div><div class="ls">dcloud pod ztna-042 is warm and assigned to you.</div></div></div>
+                <div class="lab-step"><button class="ck" onclick="toggleStep(this)" aria-label="toggle">✓</button><div><div class="lt">Define the identity group</div><div class="ls">Create <span class="mono">contractors</span> and map it to the posture profile.</div></div></div>
+                <div class="lab-step"><button class="ck" onclick="toggleStep(this)" aria-label="toggle">✓</button><div><div class="lt">Write the access policy</div><div class="ls">Least-privilege rule to the meeting app only.</div></div></div>
+                <div class="lab-step"><button class="ck" onclick="toggleStep(this)" aria-label="toggle">✓</button><div><div class="lt">Verify &amp; capture evidence</div><div class="ls">Run the probe; paste the allow/deny result.</div></div></div>
+              </div>
+              <div class="term" style="margin-top:12px"><span class="p">lab@ztna-042</span>:<span class="c">~</span>$ verify-policy --user contractor01<br><span class="m"># posture: compliant · tunnel: allowed → meetings.app</span><br><span class="p">lab@ztna-042</span>:<span class="c">~</span>$ <span style="opacity:.6">▋</span></div>
+            </div>
+            <!-- bof -->
+            <div class="act-panel" data-panel="bof">
+              <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:10px"><b>Birds of a Feather · "Where does zero-trust break down?"</b><span class="pill mono">18 in room</span></div>
+              <div class="grid" style="gap:8px">
+                <div class="card pad" style="box-shadow:none"><div class="mono" style="font-size:11px;color:var(--ink-3)">R. Okafor · 2m</div><div style="font-size:13px;margin-top:3px">Posture checks add latency on BYOD — how are folks handling the trade-off?</div><div class="row" style="gap:6px;margin-top:8px"><span class="pill">▲ 7</span><span class="pill">4 replies</span></div></div>
+                <div class="card pad" style="box-shadow:none"><div class="mono" style="font-size:11px;color:var(--ink-3)">S. Lindqvist · 5m</div><div style="font-size:13px;margin-top:3px">We moved policy to the edge — happy to share the topology in the POC tab.</div><div class="row" style="gap:6px;margin-top:8px"><span class="pill">▲ 12</span><span class="pill">pinned</span></div></div>
+              </div>
+              <div class="flag-row"><input class="inp" placeholder="Add to the discussion…" aria-label="Discussion post"><button class="btn" onclick="toast('Wireframe: posts to the BOF thread')">Post</button></div>
+            </div>
+            <!-- ctf -->
+            <div class="act-panel" data-panel="ctf">
+              <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:10px"><b>Capture the Flag · Break the tunnel</b><span class="pill mono" id="ctfScore">Your score: 200</span></div>
+              <div class="ctf-grid">
+                <div class="ctf solved"><div class="row" style="justify-content:space-between"><b style="font-size:13px">Recon the fabric</b><span class="pts">✓ 100</span></div><div style="font-size:12px;color:var(--ink-2);margin-top:6px">Find the misconfigured segment.</div></div>
+                <div class="ctf solved"><div class="row" style="justify-content:space-between"><b style="font-size:13px">Enumerate identities</b><span class="pts">✓ 100</span></div><div style="font-size:12px;color:var(--ink-2);margin-top:6px">List over-privileged groups.</div></div>
+                <div class="ctf" id="ctf3"><div class="row" style="justify-content:space-between"><b style="font-size:13px">Bypass the policy</b><span class="pts">300 pts</span></div><div style="font-size:12px;color:var(--ink-2);margin-top:6px">Submit the flag from the denied tunnel.</div>
+                  <div class="flag-row"><input class="inp mono" id="flagIn" placeholder="flag{…}" aria-label="Flag"><button class="btn" onclick="submitFlag()">Submit</button></div>
+                </div>
+                <div class="ctf" style="opacity:.6"><div class="row" style="justify-content:space-between"><b style="font-size:13px">Root the controller</b><span class="pts">🔒 locked</span></div><div style="font-size:12px;color:var(--ink-2);margin-top:6px">Unlocks at 400 pts.</div></div>
+              </div>
+              <div style="margin-top:14px"><div class="eyebrow" style="margin-bottom:8px">Live leaderboard</div>
+                <div class="lb">
+                  <div class="r"><span>1</span><span>team-fabric</span><span>500</span></div>
+                  <div class="r me"><span>2</span><span>you · team-mesh</span><span id="lbMe">200</span></div>
+                  <div class="r"><span>3</span><span>team-edge</span><span>200</span></div>
+                </div>
+              </div>
+            </div>
+            <!-- escape -->
+            <div class="act-panel" data-panel="escape">
+              <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:10px"><b>Escape Room · The locked datacenter</b><span class="pill mono" id="escTime">⏱ 18:22</span></div>
+              <div class="esc" id="escList">
+                <div class="st open"><span class="lockic">🔓</span><div><b style="font-size:13px">Stage 1 · The badge reader</b><div style="font-size:12px;color:var(--ink-2)">Solved — you cloned the access badge.</div></div><span class="pill" style="color:var(--good)">Open</span></div>
+                <div class="st" id="esc2"><span class="lockic">🔐</span><div style="flex:1"><b style="font-size:13px">Stage 2 · The firewall riddle</b><div style="font-size:12px;color:var(--ink-2)">Enter the port that should never have been open.</div><div class="flag-row"><input class="inp mono" id="escIn" placeholder="e.g. 23" aria-label="code"><button class="btn" onclick="unlockEsc()">Unlock</button></div></div></div>
+                <div class="st locked"><span class="lockic">🔒</span><div><b style="font-size:13px">Stage 3 · The vault</b><div style="font-size:12px;color:var(--ink-2)">Locked</div></div></div>
+              </div>
+            </div>
+            <!-- whiteboard -->
+            <div class="act-panel" data-panel="wb">
+              <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:10px"><b>Whiteboarding · sketch the trust boundary</b><span class="pill mono">3 collaborators</span></div>
+              <canvas class="wb" id="wbCanvas" aria-label="Whiteboard canvas — draw with the mouse"></canvas>
+              <div class="wb-tools">
+                <button class="swatch" style="background:var(--ink)" aria-pressed="true" onclick="setPen(this,'var(--ink)')" aria-label="ink pen"></button>
+                <button class="swatch" style="background:var(--accent)" aria-pressed="false" onclick="setPen(this,'#1E5FCC')" aria-label="blue pen"></button>
+                <button class="swatch" style="background:var(--anno)" aria-pressed="false" onclick="setPen(this,'#DC4B23')" aria-label="red pen"></button>
+                <button class="swatch" style="background:var(--good)" aria-pressed="false" onclick="setPen(this,'#1C8A55')" aria-label="green pen"></button>
+                <button class="btn ghost sm" onclick="clearWB()">Clear</button>
+                <span class="pill mono" style="margin-left:auto">✎ draw on the canvas</span>
+              </div>
+            </div>
+            <!-- poc -->
+            <div class="act-panel" data-panel="poc">
+              <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:10px"><b>Proof of Concept · sandbox topology</b><span class="pill dot" style="color:var(--good)">pod running</span></div>
+              <div class="ph stage-ph">◈ live topology · drag nodes to model the design</div>
+              <div class="row" style="margin-top:12px;gap:8px"><button class="btn ghost sm" onclick="toast('Wireframe: spins up a dCloud sandbox pod')">▶ Launch pod</button><button class="btn ghost sm" onclick="toast('Wireframe: opens SSH/console to the pod')">⌨ Console</button><button class="btn ghost sm" onclick="toast('Wireframe: saves the POC as reusable template')">⤓ Save template</button></div>
+            </div>
+            <!-- clinic -->
+            <div class="act-panel" data-panel="clinic">
+              <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:10px"><b>Design Clinic · book time with an architect</b><span class="pill mono">4 experts online</span></div>
+              <div class="clinic">
+                <div class="slot"><span class="mono" style="font-size:12px">11:15</span><div><b style="font-size:13px">ZTNA design review</b><div style="font-size:12px;color:var(--ink-2)">with Maester A. Rivera · 20 min</div></div><button class="btn sm" onclick="bookSlot(this)">Book</button></div>
+                <div class="slot"><span class="mono" style="font-size:12px">11:40</span><div><b style="font-size:13px">Segmentation deep-dive</b><div style="font-size:12px;color:var(--ink-2)">with S. Lindqvist · 20 min</div></div><button class="btn sm" onclick="bookSlot(this)">Book</button></div>
+                <div class="slot booked"><span class="mono" style="font-size:12px">12:05</span><div><b style="font-size:13px">Posture &amp; compliance</b><div style="font-size:12px;color:var(--ink-2)">booked</div></div><span class="pill">Full</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- right rail: Circuit + Webex -->
+          <div class="ws-side">
+            <div class="card" style="overflow:hidden">
+              <div class="panel-h"><span class="dotlive"></span><h4>Circuit AI</h4><span class="brandtag">CIRCUIT</span></div>
+              <div class="chatlog" id="circuitLog">
+                <div class="msg ai"><span class="who">CIRCUIT AI</span>I'm on the call for this activity. Ask me to explain a step, generate a policy, or grade your CTF flag.</div>
+                <div class="msg me">What does least-privilege mean for the lab?</div>
+                <div class="msg ai"><span class="who">CIRCUIT AI</span>Grant the contractor group access to the meetings app only — nothing else on the segment. Want me to draft that rule?</div>
+              </div>
+              <div class="circuit-cta"><button class="btn" style="flex:1;justify-content:center" onclick="circuitCall()">◉ Start Circuit call</button></div>
+              <div class="chatbox"><input class="inp" id="circuitIn" placeholder="Ask Circuit…" aria-label="Ask Circuit" onkeydown="if(event.key==='Enter')circuitSend()"><button class="btn sm" onclick="circuitSend()">↑</button></div>
+            </div>
+
+            <div class="card" style="overflow:hidden">
+              <div class="panel-h"><span class="dotlive"></span><h4>Webex</h4><span class="brandtag">WEBEX</span></div>
+              <div class="wbx-tiles">
+                <div class="t spk"><span>A. Rivera · host</span></div>
+                <div class="t"><span>You</span></div>
+                <div class="t"><span>R. Okafor</span></div>
+                <div class="t"><span>+15</span></div>
+              </div>
+              <div class="wbx-ctrl">
+                <button class="b" title="mute" onclick="toast('Wireframe: toggles mic in Webex')">🎤</button>
+                <button class="b" title="video" onclick="toast('Wireframe: toggles camera in Webex')">📷</button>
+                <button class="b" title="share" onclick="toast('Wireframe: shares screen to the room')">⧉</button>
+                <button class="b" title="breakouts" onclick="toast('Wireframe: opens Webex breakout rooms')">◫</button>
+                <button class="b rec" title="record" onclick="toast('Wireframe: starts Webex recording')">●</button>
+                <button class="b end" title="leave" onclick="toast('Wireframe: leaves the Webex session')">⤫</button>
+              </div>
+            </div>
+            <div class="anno"><span class="n">5</span><div><b>Always-on companions.</b> Circuit AI (make a call, ask, auto-grade) and Webex (roster, breakouts, recording) stay docked no matter which activity is open. Try <b>Start Circuit call</b> and the chat box.</div></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="footer-note">
+        Tech Elevate — Delivery Platform · interactive wireframe / concept prototype<br>
+        Placeholder content · not a production build · toggle ✎ for spec notes, ◑ for theme
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  "use strict";
+  var root=document.documentElement, body=document.body;
+
+  /* ---- theme ---- */
+  window.toggleTheme=function(){
+    var cur=root.getAttribute('data-theme');
+    var next = cur==='dark' ? 'light' : (cur==='light' ? 'dark' :
+      (window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches?'light':'dark'));
+    root.setAttribute('data-theme',next);
+  };
+
+  /* ---- annotations ---- */
+  body.classList.add('notes');
+  window.toggleNotes=function(){ body.classList.toggle('notes'); var b=document.getElementById('notesBtn'); b.style.color = body.classList.contains('notes')?'var(--anno)':''; };
+  document.getElementById('notesBtn').style.color='var(--anno)';
+
+  /* ---- toast ---- */
+  var tEl=document.getElementById('toast'), tTimer;
+  window.toast=function(m){ tEl.textContent=m; tEl.classList.add('show'); clearTimeout(tTimer); tTimer=setTimeout(function(){tEl.classList.remove('show');},2600); };
+
+  /* ---- navigation ---- */
+  var CRUMB={
+    map:['Sitemap'], portal:['Portal'],
+    track:['Portal','#ARCH','Delivery calendar'],
+    create:['Portal','#ARCH','Create event'],
+    event:['Portal','#ARCH','Zero-Trust Lab Day'],
+    activity:['Portal','#ARCH','Zero-Trust Lab Day','Workspace']
+  };
+  var curArch='Secure Networking';
+  function renderCrumb(id){
+    var parts=CRUMB[id]||['Sitemap'];
+    var html=parts.map(function(p,i){
+      var label=p==='#ARCH'?curArch:p;
+      var last=i===parts.length-1;
+      return (last?'<b>'+label+'</b>':label)+(last?'':' <span class="sep">/</span> ');
+    }).join('');
+    document.getElementById('crumb').innerHTML=html;
+  }
+  window.go=function(id,arch){
+    if(arch){curArch=arch;}
+    document.querySelectorAll('section[data-screen]').forEach(function(s){ s.classList.toggle('on', s.getAttribute('data-screen')===id); });
+    document.querySelectorAll('.layer').forEach(function(l){ l.setAttribute('aria-current', l.getAttribute('data-go')===id ? 'true':'false'); });
+    renderCrumb(id);
+    if(id==='track'){ syncTrack(); }
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+  document.querySelectorAll('.layer').forEach(function(l){ l.addEventListener('click',function(){ go(l.getAttribute('data-go')); }); });
+
+  /* ---- cadence ---- */
+  var cadence='Q';
+  window.setCadence=function(c){
+    cadence=c;
+    document.getElementById('cadQ').setAttribute('aria-pressed', c==='Q');
+    document.getElementById('cadM').setAttribute('aria-pressed', c==='M');
+    renderCad(); syncTrack();
+  };
+  function renderCad(){
+    var t=document.getElementById('cadTitle'), h=document.getElementById('cadHint'), b=document.getElementById('cadBody');
+    if(!b) return;
+    if(cadence==='Q'){
+      t.textContent='This quarter · Q3 CY26'; h.textContent='Quarterly roadmap';
+      b.innerHTML=''
+      +'<div class="cad-strip">'
+      +' <div class="q now" style="--pc:var(--net)"><div class="qh"><span>JUL</span><span>wk 1–4</span></div><ul><li>Zero-trust primer</li><li>Segmentation lab</li></ul></div>'
+      +' <div class="q" style="--pc:var(--ai)"><div class="qh"><span>AUG</span><span>wk 5–8</span></div><ul><li>ZTNA lab day</li><li>AI infra BOF</li><li>Collab CTF</li></ul></div>'
+      +' <div class="q" style="--pc:var(--cx)"><div class="qh"><span>SEP</span><span>wk 9–12</span></div><ul><li>Design clinic week</li><li>Escape room finale</li></ul></div>'
+      +' <div class="q"><div class="qh"><span>Q4</span><span>preview</span></div><ul><li>PSTN &amp; external audio</li><li>Guest-in-browser</li></ul></div>'
+      +'</div>';
+    } else {
+      t.textContent='This month · August CY26'; h.textContent='Monthly calendar';
+      b.innerHTML=buildMonth();
+    }
+  }
+  function buildMonth(){
+    var dows=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    var html='<div class="cal">'+dows.map(function(d){return '<div class="dow">'+d+'</div>';}).join('');
+    var events={12:['var(--cx)','Collab'],14:['var(--net)','ZTNA Lab'],21:['var(--ai)','AI BOF'],27:['var(--net)','CTF']};
+    // Aug 2026 starts on a Saturday (day 1 = Sat)
+    var lead=5; // Mon-based index for Saturday
+    for(var i=0;i<lead;i++){ html+='<div class="day mut"></div>'; }
+    for(var d=1;d<=31;d++){
+      var ev = events[d] ? '<div class="ev" style="background:'+events[d][0]+'" onclick="event.stopPropagation();go(\'event\')">'+events[d][1]+'</div>':'';
+      html+='<div class="day"><div class="dn">'+d+'</div>'+ev+'</div>';
+    }
+    html+='</div>';
+    return html;
+  }
+
+  /* ---- track (L1) ---- */
+  var EVENTS=[
+    {d:'14',m:'AUG',t:'Zero-Trust Meetings — Lab Day',dom:'Security',fmts:['Lecture','Hands-on Lab','Capture the Flag'],who:'A. Rivera',seats:'54/60'},
+    {d:'21',m:'AUG',t:'Fabric Segmentation Deep-Dive',dom:'Networking',fmts:['Lecture','POC'],who:'S. Lindqvist',seats:'40/50'},
+    {d:'27',m:'AUG',t:'Break the Tunnel — CTF Night',dom:'Security',fmts:['Capture the Flag','Escape Room'],who:'R. Okafor',seats:'28/40'},
+    {d:'04',m:'SEP',t:'Design Clinic — Zero-Trust Rollout',dom:'Networking',fmts:['Design Clinic','Whiteboarding'],who:'A. Rivera',seats:'12/16'},
+    {d:'11',m:'SEP',t:'BOF — Where Zero-Trust Breaks',dom:'Security',fmts:['BOF Discussion'],who:'Community',seats:'open'},
+    {d:'18',m:'SEP',t:'ZTNA Reference Build',dom:'Networking',fmts:['Hands-on Lab','POC'],who:'S. Lindqvist',seats:'33/50'}
+  ];
+  var subFilter='All domains';
+  window.setSub=function(btn,name){
+    subFilter=name;
+    btn.parentNode.querySelectorAll('button').forEach(function(b){b.setAttribute('aria-pressed', b===btn);});
+    renderTimeline();
+  };
+  var FCOLOR={'Lecture':'var(--accent)','Hands-on Lab':'var(--accent)','BOF Discussion':'var(--ai)','Capture the Flag':'var(--anno)','Escape Room':'var(--sec)','Whiteboarding':'var(--good)','POC':'var(--ai)','Design Clinic':'var(--cx)'};
+  function renderTimeline(){
+    var wrap=document.getElementById('timeline'); if(!wrap) return;
+    var list=EVENTS.filter(function(e){ return subFilter==='All domains'||e.dom===subFilter; });
+    if(cadence==='M'){ list=list.filter(function(e){return e.m==='AUG';}); }
+    wrap.innerHTML=list.map(function(e){
+      var tags=e.fmts.map(function(f){ return '<span class="tag" style="background:color-mix(in srgb,'+(FCOLOR[f]||'var(--accent)')+' 15%,transparent);color:'+(FCOLOR[f]||'var(--accent)')+'">'+f+'</span>'; }).join('');
+      return '<button class="ev-card" onclick="go(\'event\')">'
+        +'<div class="ev-date"><div class="d">'+e.d+'</div><div class="m">'+e.m+'</div></div>'
+        +'<div class="ev-main"><h4>'+e.t+'</h4><div class="ev-tags">'+tags+'</div></div>'
+        +'<div class="ev-side"><span>'+e.who+'</span><span class="pill">'+e.seats+'</span></div>'
+        +'</button>';
+    }).join('') || '<div class="ph" style="height:80px">no sessions match this filter</div>';
+  }
+  function syncTrack(){
+    var eb=document.getElementById('trackEyebrow'), tt=document.getElementById('trackTitle'), tc=document.getElementById('trackCad');
+    if(eb) eb.textContent=curArch;
+    if(tt) tt.textContent=curArch+' — delivery calendar';
+    // sub-domain labels depend on arch
+    var a=document.getElementById('sdA'), b=document.getElementById('sdB');
+    if(curArch==='Full-Stack AI Infrastructure'){ a.textContent='I&MI'; b.textContent='CAI'; }
+    else if(curArch==='Workplace Experience'){ a.textContent='Collaboration'; b.textContent='Experience'; }
+    else { a.textContent='Networking'; b.textContent='Security'; }
+    if(tc) tc.textContent = (cadence==='Q'?'Quarterly':'Monthly')+' · '+EVENTS.filter(function(e){return cadence==='Q'||e.m==='AUG';}).length+' sessions';
+    renderTimeline();
+  }
+
+  /* ---- create (L2) ---- */
+  window.toggleChip=function(b){ b.setAttribute('aria-pressed', b.getAttribute('aria-pressed')!=='true'); updateFmtCount(); };
+  window.toggleSw=function(b){ b.setAttribute('aria-pressed', b.getAttribute('aria-pressed')!=='true'); };
+  function updateFmtCount(){ var n=document.querySelectorAll('#fmtChips .chip[aria-pressed="true"]').length; var el=document.getElementById('fmtCount'); if(el) el.textContent=n+' selected'; }
+
+  /* ---- event (L3) ---- */
+  window.signup=function(){
+    var box=document.getElementById('regBox');
+    box.innerHTML='<div class="mono" style="font-size:11px;color:var(--good)">✓ REGISTERED · SEAT 7</div>'
+      +'<div style="font-size:12.5px;color:var(--ink-2);margin:6px 0 10px">You\'re in. Materials unlocked below. Calendar hold sent.</div>'
+      +'<button class="btn" style="width:100%;justify-content:center" onclick="go(\'activity\')">Enter session workspace →</button>';
+    document.getElementById('matLock').style.opacity='1';
+    document.getElementById('lock1').outerHTML='<span class="pill" style="color:var(--good)">✓ Open</span>';
+    document.getElementById('lock2').outerHTML='<span class="pill" style="color:var(--good)">✓ Open</span>';
+    toast('Registered — materials unlocked');
+  };
+
+  /* ---- activity (L4) ---- */
+  var ACTNAME={lecture:'Lecture',lab:'Hands-on Lab',bof:'BOF Discussion',ctf:'Capture the Flag',escape:'Escape Room',wb:'Whiteboarding',poc:'Proof of Concept',clinic:'Design Clinic'};
+  window.setAct=function(btn){
+    var a=btn.getAttribute('data-act');
+    document.querySelectorAll('.act-btn').forEach(function(b){b.setAttribute('aria-pressed', b===btn);});
+    document.querySelectorAll('.act-panel').forEach(function(p){p.classList.toggle('on', p.getAttribute('data-panel')===a);});
+    document.getElementById('wsTitle').textContent=ACTNAME[a]+' · workspace';
+    if(a==='wb'){ setTimeout(initWB,50); }
+  };
+  window.toggleStep=function(ck){
+    var step=ck.closest('.lab-step'); step.classList.toggle('done');
+    var n=document.querySelectorAll('#labSteps .lab-step.done').length;
+    document.getElementById('labProg').textContent=n+' / 4 steps';
+  };
+  var flagged=false;
+  window.submitFlag=function(){
+    var v=(document.getElementById('flagIn').value||'').trim();
+    if(!v){ toast('Enter a flag first'); return; }
+    if(flagged){ toast('Already solved'); return; }
+    flagged=true;
+    var c=document.getElementById('ctf3'); c.classList.add('solved');
+    document.getElementById('ctfScore').textContent='Your score: 500';
+    document.getElementById('lbMe').textContent='500';
+    toast('✓ Flag accepted · +300 · you took the lead');
+  };
+  window.unlockEsc=function(){
+    var v=(document.getElementById('escIn').value||'').trim();
+    if(v==='23'||v.toLowerCase()==='telnet'){
+      var s=document.getElementById('esc2'); s.classList.remove(); s.classList.add('st','open'); s.querySelector('.lockic').textContent='🔓';
+      var vault=document.querySelector('#escList .st.locked'); if(vault){vault.classList.remove('locked'); vault.querySelector('.lockic').textContent='🔐';}
+      toast('✓ Stage 2 unlocked — vault is now reachable');
+    } else { toast('Not quite — think legacy remote access'); }
+  };
+  window.bookSlot=function(b){ var s=b.closest('.slot'); s.classList.add('booked'); b.outerHTML='<span class="pill" style="color:var(--good)">✓ Booked</span>'; toast('Design-clinic slot booked · Webex invite sent'); };
+
+  /* ---- Circuit ---- */
+  function addMsg(txt,who){
+    var log=document.getElementById('circuitLog');
+    var d=document.createElement('div');
+    if(who==='me'){ d.className='msg me'; d.textContent=txt; }
+    else { d.className='msg ai'; d.innerHTML='<span class="who">CIRCUIT AI</span>'+txt; }
+    log.appendChild(d); log.scrollTop=log.scrollHeight;
+  }
+  window.circuitSend=function(){
+    var i=document.getElementById('circuitIn'); var v=(i.value||'').trim(); if(!v) return;
+    addMsg(v,'me'); i.value='';
+    setTimeout(function(){ addMsg('Good question — in this wireframe Circuit would answer against the linked lab material and can act (draft a policy, grade a flag, summarise the BOF).','ai'); },600);
+  };
+  window.circuitCall=function(){
+    addMsg('◉ Connecting a Circuit call…','ai');
+    setTimeout(function(){ addMsg('On the call. I can hear the room via Webex — say "explain this step" or "check my flag" and I\'ll respond live.','ai'); toast('Circuit call connected (wireframe)'); },800);
+  };
+
+  /* ---- whiteboard ---- */
+  var wbInit=false, pen='var(--ink)', penHex='#0B2545';
+  function initWB(){
+    var c=document.getElementById('wbCanvas'); if(!c) return;
+    if(!wbInit){
+      var r=c.getBoundingClientRect(); c.width=r.width; c.height=r.height; wbInit=true;
+      var ctx=c.getContext('2d'), drawing=false;
+      function pos(e){ var b=c.getBoundingClientRect(); var t=e.touches?e.touches[0]:e; return {x:t.clientX-b.left,y:t.clientY-b.top}; }
+      function start(e){ drawing=true; var p=pos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); e.preventDefault(); }
+      function move(e){ if(!drawing)return; var p=pos(e); ctx.strokeStyle=penHex; ctx.lineWidth=2.5; ctx.lineCap='round'; ctx.lineTo(p.x,p.y); ctx.stroke(); e.preventDefault(); }
+      function end(){ drawing=false; }
+      c.addEventListener('mousedown',start); c.addEventListener('mousemove',move); window.addEventListener('mouseup',end);
+      c.addEventListener('touchstart',start,{passive:false}); c.addEventListener('touchmove',move,{passive:false}); c.addEventListener('touchend',end);
+      c._ctx=ctx;
+    }
+  }
+  window.setPen=function(b,hex){ document.querySelectorAll('.wb-tools .swatch').forEach(function(s){s.setAttribute('aria-pressed', s===b);}); penHex=hex; };
+  window.clearWB=function(){ var c=document.getElementById('wbCanvas'); if(c&&c._ctx){ c._ctx.clearRect(0,0,c.width,c.height);} };
+
+  /* ---- faux QR ---- */
+  function makeQR(svg){
+    if(!svg) return;
+    var N=25, s=100/N, out='';
+    function finder(ox,oy){
+      out+='<rect x="'+(ox*s)+'" y="'+(oy*s)+'" width="'+(7*s)+'" height="'+(7*s)+'" fill="#0B2545"/>';
+      out+='<rect x="'+((ox+1)*s)+'" y="'+((oy+1)*s)+'" width="'+(5*s)+'" height="'+(5*s)+'" fill="#fff"/>';
+      out+='<rect x="'+((ox+2)*s)+'" y="'+((oy+2)*s)+'" width="'+(3*s)+'" height="'+(3*s)+'" fill="#0B2545"/>';
+    }
+    function inFinder(x,y){ return (x<8&&y<8)||(x>N-9&&y<8)||(x<8&&y>N-9); }
+    var seed=7;
+    function rnd(){ seed=(seed*1103515245+12345)&0x7fffffff; return (seed>>16)/32768; }
+    for(var y=0;y<N;y++){ for(var x=0;x<N;x++){ if(inFinder(x,y))continue; if(rnd()>0.55){ out+='<rect x="'+(x*s)+'" y="'+(y*s)+'" width="'+s+'" height="'+s+'" fill="#0B2545"/>'; } } }
+    finder(0,0); finder(N-7,0); finder(0,N-7);
+    svg.innerHTML=out;
+  }
+
+  /* ---- init ---- */
+  makeQR(document.getElementById('qrCreate'));
+  updateFmtCount(); renderCad(); renderTimeline(); renderCrumb('map');
+})();
+</script>
+
+</body>
+</html>
