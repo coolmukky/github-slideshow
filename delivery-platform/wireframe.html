@@ -348,6 +348,89 @@
     background:var(--ink);color:var(--paper);font-size:13px;padding:11px 16px;border-radius:10px;box-shadow:var(--shadow);z-index:99;transition:.25s;font-weight:500}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+  /* ---- role switcher + rail groups ---- */
+  .viewas{display:flex;align-items:center;gap:8px;padding:4px 4px 10px;border-bottom:1px solid var(--line);margin-bottom:4px}
+  .viewas span{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);flex:none}
+  .viewas select{flex:1;min-width:0;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:7px;padding:6px 8px;font-family:var(--mono);font-size:12px;cursor:pointer}
+  .layers h4{margin-top:10px}
+  .layers h4:first-of-type{margin-top:2px}
+  body.rolefocus .layer[data-dim="1"]{opacity:.38}
+  .shell-note{margin-top:12px;font-family:var(--mono);font-size:10.5px;line-height:1.55;color:var(--ink-2);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:7px;padding:9px 10px;background:var(--surface);box-shadow:var(--shadow)}
+  .shell-note b{color:var(--accent);font-weight:700}
+
+  /* ---- webex embedded context bar ---- */
+  .webex-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:9px;padding:8px 12px;margin-bottom:12px;font-size:12px;box-shadow:var(--shadow)}
+  .webex-bar .wx{font-family:var(--mono);font-weight:700;color:var(--accent);letter-spacing:.02em;white-space:nowrap}
+  .webex-bar .mt{color:var(--ink-2)}
+  .webex-bar .spacer{flex:1;min-width:8px}
+  .webex-bar .mini{display:flex;gap:6px}
+  .webex-bar .mini .b{width:28px;height:28px;border-radius:6px;border:1px solid var(--line);background:var(--surface-2);display:grid;place-items:center;font-size:12px;cursor:pointer}
+  .webex-bar .mini .b:hover{border-color:var(--line-2)}
+
+  /* ---- dashboards (facilitator + admin) ---- */
+  .dash-kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+  @media(max-width:960px){.dash-kpis{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:520px){.dash-kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi-tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:12px;box-shadow:var(--shadow)}
+  .kpi-tile .lab{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+  .kpi-tile .val{font-variant-numeric:tabular-nums;font-weight:800;font-size:23px;letter-spacing:-.02em;margin-top:4px}
+  .kpi-tile .sub{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin-top:2px}
+  .kpi-tile .val.g{color:var(--good)}.kpi-tile .val.w{color:var(--warn)}.kpi-tile .val.a{color:var(--anno)}
+  .dash-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;margin-top:14px;align-items:start}
+  @media(max-width:960px){.dash-grid{grid-template-columns:1fr}}
+  .block-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+  .block-h h3{font-size:14px;letter-spacing:-.01em}
+  .brandtag{font-family:var(--mono);font-size:10px;color:var(--ink-3);border:1px solid var(--line);padding:2px 6px;border-radius:5px}
+
+  .ros .step{display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+  .ros .step+.step{margin-top:8px}
+  .ros .step.now{border-color:var(--accent);background:var(--accent-weak)}
+  .ros .step.done{opacity:.55}
+  .ros .t{font-family:var(--mono);font-size:11px;color:var(--ink-3);text-align:center}
+  .ros .st{font-weight:600;font-size:13px}
+  .ros .badge{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:5px;border:1px solid var(--line);color:var(--ink-2);display:inline-block;margin-top:4px}
+  .ros .step.now .badge:last-child{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);margin-top:0}
+
+  .roster{display:flex;flex-direction:column;gap:6px;max-height:230px;overflow:auto}
+  .roster .p{display:grid;grid-template-columns:26px 1fr auto;gap:9px;align-items:center;font-size:12.5px;padding:6px 8px;border-radius:7px;background:var(--surface-2)}
+  .roster .av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--sec));color:#fff;display:grid;place-items:center;font-size:10px;font-weight:700}
+  .roster .p .stt{font-family:var(--mono);font-size:10px;white-space:nowrap}
+  .stt.in{color:var(--good)}.stt.help{color:var(--anno)}.stt.late{color:var(--warn)}
+
+  .hbar{display:grid;grid-template-columns:96px 1fr 34px;gap:10px;align-items:center;font-size:12px;margin-bottom:9px}
+  .hbar .track{height:8px;border-radius:99px;background:var(--inset);overflow:hidden}
+  .hbar .track i{display:block;height:100%;background:var(--accent);border-radius:99px}
+  .hbar .n{font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:11px;text-align:right;color:var(--ink-2)}
+  .hbar .lab{color:var(--ink-2)}
+
+  .cmp{display:flex;flex-direction:column;gap:11px}
+  .cmp .r{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:center}
+  @media(max-width:520px){.cmp .r{grid-template-columns:1fr}}
+  .cmp .lab{font-size:12.5px;display:flex;align-items:center;gap:7px}
+  .cmp .lab .sw{width:9px;height:9px;border-radius:2px;flex:none}
+  .cmp .barrow{display:flex;align-items:center;gap:9px}
+  .cmp .bar{height:20px;border-radius:5px;min-width:2px}
+  .cmp .v{font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:12px;color:var(--ink-2);white-space:nowrap}
+
+  .fmt-eng{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px}
+  @media(max-width:520px){.fmt-eng{grid-template-columns:1fr}}
+  .fmt-eng .fe .top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+  .fmt-eng .fe .top .v{font-family:var(--mono);color:var(--ink-2)}
+  .fmt-eng .fe .track{height:6px;border-radius:99px;background:var(--inset);overflow:hidden}
+  .fmt-eng .fe .track i{display:block;height:100%;background:var(--accent)}
+
+  .alerts{display:flex;flex-direction:column;gap:8px}
+  .alert{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;font-size:12.5px;border:1px solid var(--line);border-left:3px solid var(--warn);border-radius:8px;padding:9px 11px;background:var(--surface)}
+  .alert.crit{border-left-color:var(--anno)}
+  .alert .ic{font-size:15px}
+
+  .heat{display:grid;grid-template-columns:120px repeat(6,1fr);gap:5px;font-size:11px;overflow-x:auto}
+  .heat .hc{font-family:var(--mono);font-size:10px;color:var(--ink-3);display:grid;place-items:center;text-align:center}
+  .heat .rl{font-size:12px;display:flex;align-items:center;gap:6px}
+  .heat .cell{height:30px;border-radius:5px;display:grid;place-items:center;font-family:var(--mono);font-size:10px;border:1px solid var(--line);color:#fff}
+  .heat .cell.plan{background:var(--surface-2);color:var(--ink-3)}
+  .heat .cell.gap{background:var(--anno-weak);color:var(--anno);border-color:var(--anno);border-style:dashed}
+
   .footer-note{margin-top:18px;padding:14px;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-align:center;line-height:1.7}
 
   @media(max-width:760px){
@@ -386,20 +469,31 @@
   <div class="stage">
     <!-- ============ LAYER MAP RAIL ============ -->
     <aside class="rail">
-      <div class="layers" aria-label="UI layers">
-        <h4>UI Layers</h4>
-        <button class="layer" data-go="map"><span class="lchip">MAP</span><span class="lname">Sitemap<small>the whole idea</small></span></button>
-        <div class="rail-connect"></div>
-        <button class="layer" data-go="portal"><span class="lchip">L0</span><span class="lname">Portal<small>3 architectures</small></span></button>
-        <div class="rail-connect"></div>
-        <button class="layer" data-go="track"><span class="lchip">L1</span><span class="lname">Delivery Calendar<small>quarterly · monthly</small></span></button>
-        <div class="rail-connect"></div>
-        <button class="layer" data-go="create"><span class="lchip">L2</span><span class="lname">Create Event<small>producer view</small></span></button>
-        <div class="rail-connect"></div>
-        <button class="layer" data-go="event"><span class="lchip">L3</span><span class="lname">Event / QR Signup<small>participant view</small></span></button>
-        <div class="rail-connect"></div>
-        <button class="layer" data-go="activity"><span class="lchip">L4</span><span class="lname">Activity Workspace<small>+ Circuit · Webex</small></span></button>
+      <div class="layers" aria-label="UI layers and roles">
+        <label class="viewas"><span>View as</span>
+          <select id="roleSel" aria-label="View as role" onchange="setRole(this.value)">
+            <option value="attendee">Attendee</option>
+            <option value="facilitator">Facilitator</option>
+            <option value="producer">Producer</option>
+            <option value="admin">Program lead</option>
+          </select>
+        </label>
+
+        <h4>Overview</h4>
+        <button class="layer" data-go="map" data-role="all"><span class="lchip">MAP</span><span class="lname">Sitemap<small>the whole idea</small></span></button>
+
+        <h4>Delivery spine</h4>
+        <button class="layer" data-go="portal" data-role="attendee"><span class="lchip">L0</span><span class="lname">Portal<small>3 architectures</small></span></button>
+        <button class="layer" data-go="track" data-role="attendee"><span class="lchip">L1</span><span class="lname">Delivery Calendar<small>quarterly · monthly</small></span></button>
+        <button class="layer" data-go="create" data-role="producer"><span class="lchip">L2</span><span class="lname">Create Event<small>producer view</small></span></button>
+        <button class="layer" data-go="event" data-role="attendee"><span class="lchip">L3</span><span class="lname">Event / QR Signup<small>participant view</small></span></button>
+        <button class="layer" data-go="activity" data-role="attendee"><span class="lchip">L4</span><span class="lname">Activity Workspace<small>+ Circuit · Webex</small></span></button>
+
+        <h4>Operate</h4>
+        <button class="layer" data-go="facilitator" data-role="facilitator"><span class="lchip" style="background:var(--warn-weak);color:var(--warn);border-color:var(--warn)">FAC</span><span class="lname">Facilitator Console<small>run-of-show · proctor</small></span></button>
+        <button class="layer" data-go="admin" data-role="admin"><span class="lchip" style="background:var(--good-weak);color:var(--good);border-color:var(--good)">ADM</span><span class="lname">Admin &amp; Analytics<small>program dashboard</small></span></button>
       </div>
+      <div class="shell-note"><b>▣ Webex Embedded App</b><br>The platform runs as a tab inside the meeting. Portal + QR signup also work standalone in a browser for async / self-paced.</div>
     </aside>
 
     <!-- ============ SCREENS ============ -->
@@ -482,7 +576,7 @@
               <h3>Secure Networking</h3>
               <div class="sub"><span class="tag">Networking</span><span class="tag">Security</span></div>
               <div class="ph thumb">network fabric · schematic</div>
-              <div class="meta"><span>6 sessions this quarter</span><span>next: Aug 14</span></div>
+              <div class="meta"><span>5 sessions this quarter</span><span>next: Aug 14</span></div>
             </div>
           </button>
           <button class="arch" style="--pc:var(--ai)" onclick="go('track','Full-Stack AI Infrastructure')">
@@ -492,7 +586,7 @@
               <h3>Full-Stack AI Infrastructure</h3>
               <div class="sub"><span class="tag">I&amp;MI</span><span class="tag">CAI</span></div>
               <div class="ph thumb">GPU fabric · schematic</div>
-              <div class="meta"><span>5 sessions this quarter</span><span>next: Aug 21</span></div>
+              <div class="meta"><span>3 sessions this quarter</span><span>next: Aug 19</span></div>
             </div>
           </button>
           <button class="arch" style="--pc:var(--cx)" onclick="go('track','Workplace Experience')">
@@ -502,7 +596,7 @@
               <h3>Workplace Experience</h3>
               <div class="sub"><span class="tag">Collaboration</span></div>
               <div class="ph thumb">collaboration room · schematic</div>
-              <div class="meta"><span>4 sessions this quarter</span><span>next: Aug 12</span></div>
+              <div class="meta"><span>3 sessions this quarter</span><span>next: Aug 12</span></div>
             </div>
           </button>
         </div>
@@ -538,9 +632,9 @@
         <div class="card pad" style="margin-bottom:12px">
           <div class="track-toolbar">
             <div class="subtabs" role="group" aria-label="Sub-domain">
-              <button id="sdAll" aria-pressed="true" onclick="setSub(this,'All domains')">All</button>
-              <button id="sdA" aria-pressed="false" onclick="setSub(this,'Networking')">Networking</button>
-              <button id="sdB" aria-pressed="false" onclick="setSub(this,'Security')">Security</button>
+              <button id="sdAll" aria-pressed="true" onclick="setSub(this)">All</button>
+              <button id="sdA" aria-pressed="false" onclick="setSub(this)">Networking</button>
+              <button id="sdB" aria-pressed="false" onclick="setSub(this)">Security</button>
             </div>
             <span class="pill mono" id="trackCad">Quarterly · 6 sessions</span>
           </div>
@@ -638,7 +732,7 @@
         <div class="screen-head">
           <div>
             <div class="eyebrow">Layer 3 · Participant view (what the QR opens)</div>
-            <h2>Zero-Trust Meetings — Lab Day</h2>
+            <h2 id="eventTitleHead">Zero-Trust Meetings — Lab Day</h2>
             <p>The mobile-first page a participant lands on after scanning the QR: register, see the agenda, grab the material, then enter the live workspace.</p>
           </div>
           <button class="btn ghost" onclick="go('activity')">Skip to workspace →</button>
@@ -649,10 +743,10 @@
             <div class="phone">
               <div class="notch"></div>
               <div class="phone-body">
-                <div class="hero ph" style="background:color-mix(in srgb,var(--net) 22%,var(--surface))"><span class="tag" style="background:var(--net);color:#fff">Secure Networking</span></div>
-                <h3 style="font-size:16px;letter-spacing:-.01em">Zero-Trust Meetings — Lab Day</h3>
-                <div class="mono" style="font-size:11px;color:var(--ink-3);margin-top:4px">Aug 14 · 10:00 PT · Maester A. Rivera</div>
-                <div class="row" style="gap:6px;margin-top:10px"><span class="tag" style="background:var(--accent-weak);color:var(--accent)">Lecture</span><span class="tag" style="background:var(--accent-weak);color:var(--accent)">Hands-on Lab</span></div>
+                <div class="hero ph" id="eventHero" style="background:color-mix(in srgb,var(--net) 22%,var(--surface))"><span class="tag" id="eventTrackTag" style="background:var(--net);color:#fff">Secure Networking</span></div>
+                <h3 id="eventTitlePhone" style="font-size:16px;letter-spacing:-.01em">Zero-Trust Meetings — Lab Day</h3>
+                <div class="mono" id="eventMeta" style="font-size:11px;color:var(--ink-3);margin-top:4px">Aug 14 · 10:00 PT · A. Rivera</div>
+                <div class="row" id="eventFmtTags" style="gap:6px;margin-top:10px"><span class="tag" style="background:var(--accent-weak);color:var(--accent)">Lecture</span><span class="tag" style="background:var(--accent-weak);color:var(--accent)">Hands-on Lab</span></div>
 
                 <div class="reg-box" id="regBox">
                   <div class="mono" style="font-size:11px;color:var(--ink-3)">STEP 1 · SECURE YOUR SEAT</div>
@@ -661,7 +755,7 @@
                 </div>
 
                 <div class="mono" style="font-size:11px;color:var(--ink-3);margin-top:14px">AGENDA</div>
-                <div class="agenda">
+                <div class="agenda" id="eventAgenda">
                   <div class="ag"><span class="ic">▤</span><div><div style="font-weight:600">Zero-trust primer</div><div class="t">lecture · 20 min</div></div><span class="t">10:00</span></div>
                   <div class="ag"><span class="ic">⌨</span><div><div style="font-weight:600">Build a ZTNA policy</div><div class="t">hands-on lab · 40 min</div></div><span class="t">10:20</span></div>
                   <div class="ag"><span class="ic">⚑</span><div><div style="font-weight:600">Break the tunnel</div><div class="t">capture the flag · 25 min</div></div><span class="t">11:00</span></div>
@@ -700,6 +794,12 @@
             <h2 id="wsTitle">Activity workspace</h2>
             <p>The deepest layer — where the work actually happens. Switch formats on the left; Circuit AI and Webex ride along on the right for every one.</p>
           </div>
+        </div>
+
+        <div class="webex-bar">
+          <span class="wx">▣ Webex Embedded App</span><span class="mt">This workspace is a tab inside the Webex meeting — no separate app to install</span>
+          <span class="spacer"></span>
+          <span class="pill dot" style="color:var(--good)">● 18 in meeting</span>
         </div>
 
         <div class="ws">
@@ -836,6 +936,167 @@
         </div>
       </section>
 
+      <!-- ---------- FACILITATOR / PROCTOR CONSOLE ---------- -->
+      <section data-screen="facilitator">
+        <div class="screen-head">
+          <div>
+            <div class="eyebrow">Operate · Facilitator &amp; proctor console</div>
+            <h2>Run of show — Zero-Trust Lab Day</h2>
+            <p>The live control surface for whoever is running the room: drive the agenda, watch check-ins and lab health, and act on people who are stuck — all from inside the Webex meeting.</p>
+          </div>
+          <span class="pill dot" style="color:var(--good)">● Live · 00:42:10</span>
+        </div>
+
+        <div class="webex-bar">
+          <span class="wx">▣ Webex Embedded App</span><span class="mt">Meeting: Zero-Trust Lab Day · host controls active</span>
+          <span class="spacer"></span>
+          <div class="mini"><button class="b" title="Mute all" onclick="toast('Wireframe: mutes the room in Webex')">🔇</button><button class="b" title="Breakouts" onclick="toast('Wireframe: opens Webex breakout rooms')">◫</button><button class="b" title="Record" onclick="toast('Wireframe: recording to Webex cloud')">●</button></div>
+        </div>
+
+        <div class="dash-kpis">
+          <div class="kpi-tile"><div class="lab">Checked in</div><div class="val">52<span style="font-size:13px;color:var(--ink-3)">/60</span></div><div class="sub">via QR</div></div>
+          <div class="kpi-tile"><div class="lab">Active now</div><div class="val g">48</div><div class="sub">in workspace</div></div>
+          <div class="kpi-tile"><div class="lab">Lab complete</div><div class="val">31</div><div class="sub">of 4 steps</div></div>
+          <div class="kpi-tile"><div class="lab">Need help</div><div class="val a">4</div><div class="sub">raised hand</div></div>
+          <div class="kpi-tile"><div class="lab">Pods healthy</div><div class="val g">59</div><div class="sub">1 rebuilding</div></div>
+          <div class="kpi-tile"><div class="lab">Pace</div><div class="val">+3m</div><div class="sub">vs plan</div></div>
+        </div>
+
+        <div class="dash-grid">
+          <div class="card pad">
+            <div class="block-h"><h3>Run of show</h3><button class="btn sm" onclick="advanceRos()">Advance room →</button></div>
+            <div class="ros" id="rosList">
+              <div class="step done"><span class="t">10:00</span><div><div class="st">Zero-trust primer</div><span class="badge">Lecture · 20m</span></div><span class="badge">done</span></div>
+              <div class="step now"><span class="t">10:20</span><div><div class="st">Build a ZTNA policy</div><span class="badge">Hands-on Lab · 40m</span></div><span class="badge">LIVE</span></div>
+              <div class="step"><span class="t">11:00</span><div><div class="st">Break the tunnel</div><span class="badge">Capture the Flag · 25m</span></div><span class="badge">next</span></div>
+              <div class="step"><span class="t">11:25</span><div><div class="st">Debrief &amp; design clinic</div><span class="badge">Design Clinic · 20m</span></div><span class="badge">queued</span></div>
+            </div>
+            <div class="anno"><span class="n">i</span><div><b>Facilitator drives the flow.</b> "Advance room" moves everyone to the next activity in their L4 workspace — resolving the agenda-vs-free-navigation ambiguity from the review.</div></div>
+          </div>
+
+          <div class="grid" style="gap:14px">
+            <div class="card pad">
+              <div class="block-h"><h3>Live roster</h3><span class="pill mono">52 in</span></div>
+              <div class="roster">
+                <div class="p"><span class="av">AR</span><span>A. Rivera <span style="color:var(--ink-3)">· host</span></span><span class="stt in">● in</span></div>
+                <div class="p"><span class="av">RO</span><span>R. Okafor</span><span class="stt help">✋ help</span></div>
+                <div class="p"><span class="av">SL</span><span>S. Lindqvist</span><span class="stt in">● in</span></div>
+                <div class="p"><span class="av">JT</span><span>J. Tanaka</span><span class="stt in">● in</span></div>
+                <div class="p"><span class="av">MP</span><span>M. Pereira</span><span class="stt late">◷ late</span></div>
+                <div class="p"><span class="av">KD</span><span>K. Devi</span><span class="stt help">✋ help</span></div>
+              </div>
+              <button class="btn ghost sm" style="width:100%;justify-content:center;margin-top:10px" onclick="toast('Wireframe: broadcasts a nudge to the whole room')">Nudge the room</button>
+            </div>
+
+            <div class="card pad">
+              <div class="block-h"><h3>Activity health</h3></div>
+              <div class="hbar"><span class="lab">Lab step 1</span><div class="track"><i style="width:98%"></i></div><span class="n">59</span></div>
+              <div class="hbar"><span class="lab">Lab step 2</span><div class="track"><i style="width:80%"></i></div><span class="n">48</span></div>
+              <div class="hbar"><span class="lab">Lab step 3</span><div class="track"><i style="width:62%"></i></div><span class="n">37</span></div>
+              <div class="hbar"><span class="lab">Lab step 4</span><div class="track"><i style="width:52%;background:var(--warn)"></i></div><span class="n">31</span></div>
+              <div class="hbar"><span class="lab">CTF flags</span><div class="track"><i style="width:34%;background:var(--anno)"></i></div><span class="n">20</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-grid" style="grid-template-columns:1fr 1fr">
+          <div class="card pad">
+            <div class="block-h"><h3>Needs attention</h3><span class="pill" style="color:var(--anno)">2 open</span></div>
+            <div class="alerts">
+              <div class="alert crit"><span class="ic">⚑</span><div><b>K. Devi</b> stuck on lab step 3 for 8 min</div><button class="btn sm" onclick="resolveAlert(this)">Assist</button></div>
+              <div class="alert crit"><span class="ic">✋</span><div><b>R. Okafor</b> raised hand in the BOF thread</div><button class="btn sm" onclick="resolveAlert(this)">Reply</button></div>
+              <div class="alert"><span class="ic">◈</span><div>Pod <span class="mono">ztna-058</span> is rebuilding (~2m)</div><span class="pill mono">auto</span></div>
+            </div>
+          </div>
+          <div class="card pad">
+            <div class="block-h"><h3>Circuit AI co-pilot</h3><span class="brandtag">CIRCUIT</span></div>
+            <div class="grid" style="gap:8px">
+              <button class="btn ghost sm" style="justify-content:flex-start" onclick="toast('Wireframe: Circuit summarizes room progress live')">▸ Summarize where the room is</button>
+              <button class="btn ghost sm" style="justify-content:flex-start" onclick="toast('Wireframe: Circuit lists who is stuck and why')">▸ Who is stuck, and on what?</button>
+              <button class="btn ghost sm" style="justify-content:flex-start" onclick="toast('Wireframe: Circuit auto-grades CTF submissions')">▸ Auto-grade CTF submissions</button>
+              <button class="btn ghost sm" style="justify-content:flex-start" onclick="toast('Wireframe: Circuit drafts the post-session recap')">▸ Draft the post-session recap</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- ADMIN & ANALYTICS ---------- -->
+      <section data-screen="admin">
+        <div class="screen-head">
+          <div>
+            <div class="eyebrow">Manage · Program lead dashboard</div>
+            <h2 id="adminTitle">Program overview — Q3 CY26</h2>
+            <p>The cross-track view: delivery against the roadmap, which formats land, and where coverage gaps sit for next quarter. Follows the quarterly / monthly toggle in the top bar.</p>
+          </div>
+          <button class="btn ghost" onclick="toast('Wireframe: exports the program report as PDF/CSV')">⤓ Export report</button>
+        </div>
+
+        <div class="dash-kpis">
+          <div class="kpi-tile"><div class="lab">Sessions delivered</div><div class="val">15<span style="font-size:13px;color:var(--ink-3)">/18</span></div><div class="sub">vs planned</div></div>
+          <div class="kpi-tile"><div class="lab">Unique attendees</div><div class="val">842</div><div class="sub">+18% QoQ</div></div>
+          <div class="kpi-tile"><div class="lab">Completion</div><div class="val g">86%</div><div class="sub">activities</div></div>
+          <div class="kpi-tile"><div class="lab">Avg. NPS</div><div class="val">72</div><div class="sub">↑ 6 pts</div></div>
+          <div class="kpi-tile"><div class="lab">Badges issued</div><div class="val">613</div><div class="sub">skill + cert</div></div>
+          <div class="kpi-tile"><div class="lab">Roadmap gaps</div><div class="val a">3</div><div class="sub">unscheduled</div></div>
+        </div>
+
+        <div class="dash-grid">
+          <div class="card pad">
+            <div class="block-h"><h3>Delivery by architecture</h3><span class="pill mono">sessions · attendees · NPS</span></div>
+            <div class="cmp">
+              <div class="r"><span class="lab"><span class="sw" style="background:var(--net)"></span>Secure Networking</span><div class="barrow"><span class="bar" style="width:78%;background:var(--net)"></span><span class="v">6 · 348 · 74</span></div></div>
+              <div class="r"><span class="lab"><span class="sw" style="background:var(--ai)"></span>Full-Stack AI Infra</span><div class="barrow"><span class="bar" style="width:64%;background:var(--ai)"></span><span class="v">5 · 291 · 71</span></div></div>
+              <div class="r"><span class="lab"><span class="sw" style="background:var(--cx)"></span>Workplace Experience</span><div class="barrow"><span class="bar" style="width:46%;background:var(--cx)"></span><span class="v">4 · 203 · 70</span></div></div>
+            </div>
+            <div style="height:1px;background:var(--line);margin:16px 0"></div>
+            <div class="block-h"><h3>Engagement by format</h3><span class="pill mono">avg. active time</span></div>
+            <div class="fmt-eng">
+              <div class="fe"><div class="top"><span>Hands-on Lab</span><span class="v">92%</span></div><div class="track"><i style="width:92%"></i></div></div>
+              <div class="fe"><div class="top"><span>Capture the Flag</span><span class="v">88%</span></div><div class="track"><i style="width:88%;background:var(--anno)"></i></div></div>
+              <div class="fe"><div class="top"><span>Escape Room</span><span class="v">85%</span></div><div class="track"><i style="width:85%;background:var(--sec)"></i></div></div>
+              <div class="fe"><div class="top"><span>Design Clinic</span><span class="v">79%</span></div><div class="track"><i style="width:79%;background:var(--cx)"></i></div></div>
+              <div class="fe"><div class="top"><span>POC</span><span class="v">74%</span></div><div class="track"><i style="width:74%;background:var(--ai)"></i></div></div>
+              <div class="fe"><div class="top"><span>BOF Discussion</span><span class="v">68%</span></div><div class="track"><i style="width:68%;background:var(--ai)"></i></div></div>
+              <div class="fe"><div class="top"><span>Whiteboarding</span><span class="v">64%</span></div><div class="track"><i style="width:64%;background:var(--good)"></i></div></div>
+              <div class="fe"><div class="top"><span>Lecture</span><span class="v">57%</span></div><div class="track"><i style="width:57%"></i></div></div>
+            </div>
+          </div>
+
+          <div class="grid" style="gap:14px">
+            <div class="card pad">
+              <div class="block-h"><h3>Enablement outcomes</h3></div>
+              <div class="hbar"><span class="lab">Cert-ready</span><div class="track"><i style="width:71%;background:var(--good)"></i></div><span class="n">71%</span></div>
+              <div class="hbar"><span class="lab">Skill badges</span><div class="track"><i style="width:83%;background:var(--good)"></i></div><span class="n">83%</span></div>
+              <div class="hbar"><span class="lab">Follow-up POC</span><div class="track"><i style="width:29%"></i></div><span class="n">29%</span></div>
+              <div class="hbar"><span class="lab">Survey back</span><div class="track"><i style="width:64%"></i></div><span class="n">64%</span></div>
+            </div>
+            <div class="card pad">
+              <div class="block-h"><h3>Delivery teams</h3><span class="pill mono">coverage</span></div>
+              <div class="roster">
+                <div class="p"><span class="av">AR</span><span>A. Rivera <span style="color:var(--ink-3)">· Security</span></span><span class="stt in">4 sessions</span></div>
+                <div class="p"><span class="av">SL</span><span>S. Lindqvist <span style="color:var(--ink-3)">· Networking</span></span><span class="stt in">3 sessions</span></div>
+                <div class="p"><span class="av">RO</span><span>R. Okafor <span style="color:var(--ink-3)">· CAI</span></span><span class="stt late">1 session</span></div>
+                <div class="p"><span class="av">+</span><span>Workplace Experience</span><span class="stt help">needs owner</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card pad" style="margin-top:14px">
+          <div class="block-h"><h3>Roadmap coverage</h3><span class="pill mono">by track × month · dashed = gap</span></div>
+          <div class="heat">
+            <div class="hc"></div><div class="hc">JUL</div><div class="hc">AUG</div><div class="hc">SEP</div><div class="hc">OCT</div><div class="hc">NOV</div><div class="hc">DEC</div>
+            <div class="rl"><span style="width:9px;height:9px;border-radius:2px;background:var(--net);display:inline-block"></span>Secure Net</div>
+            <div class="cell" style="background:var(--net)">2</div><div class="cell" style="background:var(--net)">3</div><div class="cell" style="background:var(--net)">1</div><div class="cell plan">plan</div><div class="cell plan">plan</div><div class="cell gap">gap</div>
+            <div class="rl"><span style="width:9px;height:9px;border-radius:2px;background:var(--ai);display:inline-block"></span>AI Infra</div>
+            <div class="cell" style="background:var(--ai)">1</div><div class="cell" style="background:var(--ai)">3</div><div class="cell" style="background:var(--ai)">1</div><div class="cell plan">plan</div><div class="cell gap">gap</div><div class="cell plan">plan</div>
+            <div class="rl"><span style="width:9px;height:9px;border-radius:2px;background:var(--cx);display:inline-block"></span>Workplace</div>
+            <div class="cell" style="background:var(--cx)">1</div><div class="cell" style="background:var(--cx)">2</div><div class="cell" style="background:var(--cx)">1</div><div class="cell gap">gap</div><div class="cell plan">plan</div><div class="cell plan">plan</div>
+          </div>
+          <div class="anno"><span class="n">i</span><div>Dashed <b>gap</b> cells are unscheduled slots in the cadence — the program lead's cue to assign a delivery team before the quarter opens.</div></div>
+        </div>
+      </section>
+
       <div class="footer-note">
         Tech Elevate — Delivery Platform · interactive wireframe / concept prototype<br>
         Placeholder content · not a production build · toggle ✎ for spec notes, ◑ for theme
@@ -873,14 +1134,17 @@
     map:['Sitemap'], portal:['Portal'],
     track:['Portal','#ARCH','Delivery calendar'],
     create:['Portal','#ARCH','Create event'],
-    event:['Portal','#ARCH','Zero-Trust Lab Day'],
-    activity:['Portal','#ARCH','Zero-Trust Lab Day','Workspace']
+    event:['Portal','#ARCH','#EVENT'],
+    activity:['Portal','#ARCH','#EVENT','Workspace'],
+    facilitator:['Operate','#EVENT','Run of show'],
+    admin:['Manage','Program dashboard']
   };
   var curArch='Secure Networking';
+  var curEvent={t:'Zero-Trust Meetings — Lab Day',track:'Secure Networking',date:'Aug 14 · 10:00 PT',who:'A. Rivera',fmts:['Lecture','Hands-on Lab']};
   function renderCrumb(id){
     var parts=CRUMB[id]||['Sitemap'];
     var html=parts.map(function(p,i){
-      var label=p==='#ARCH'?curArch:p;
+      var label=p==='#ARCH'?curArch:(p==='#EVENT'?curEvent.t:p);
       var last=i===parts.length-1;
       return (last?'<b>'+label+'</b>':label)+(last?'':' <span class="sep">/</span> ');
     }).join('');
@@ -896,13 +1160,25 @@
   };
   document.querySelectorAll('.layer').forEach(function(l){ l.addEventListener('click',function(){ go(l.getAttribute('data-go')); }); });
 
+  /* ---- roles ---- */
+  var ROLEHOME={attendee:'portal',facilitator:'facilitator',producer:'create',admin:'admin'};
+  window.setRole=function(r){
+    document.body.classList.add('rolefocus');
+    document.querySelectorAll('.layer').forEach(function(l){
+      var lr=l.getAttribute('data-role');
+      l.setAttribute('data-dim',(lr==='all'||lr===r)?'0':'1');
+    });
+    var sel=document.getElementById('roleSel'); if(sel&&sel.value!==r) sel.value=r;
+    if(ROLEHOME[r]) go(ROLEHOME[r]);
+  };
+
   /* ---- cadence ---- */
   var cadence='Q';
   window.setCadence=function(c){
     cadence=c;
     document.getElementById('cadQ').setAttribute('aria-pressed', c==='Q');
     document.getElementById('cadM').setAttribute('aria-pressed', c==='M');
-    renderCad(); syncTrack();
+    renderCad(); syncTrack(); updateAdmin();
   };
   function renderCad(){
     var t=document.getElementById('cadTitle'), h=document.getElementById('cadHint'), b=document.getElementById('cadBody');
@@ -924,12 +1200,12 @@
   function buildMonth(){
     var dows=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
     var html='<div class="cal">'+dows.map(function(d){return '<div class="dow">'+d+'</div>';}).join('');
-    var events={12:['var(--cx)','Collab'],14:['var(--net)','ZTNA Lab'],21:['var(--ai)','AI BOF'],27:['var(--net)','CTF']};
+    var events={12:{c:'var(--cx)',l:'Escape',i:8},14:{c:'var(--net)',l:'ZTNA Lab',i:0},19:{c:'var(--ai)',l:'GPU Lab',i:5},21:{c:'var(--net)',l:'Segment',i:1},27:{c:'var(--net)',l:'CTF',i:2}};
     // Aug 2026 starts on a Saturday (day 1 = Sat)
     var lead=5; // Mon-based index for Saturday
     for(var i=0;i<lead;i++){ html+='<div class="day mut"></div>'; }
     for(var d=1;d<=31;d++){
-      var ev = events[d] ? '<div class="ev" style="background:'+events[d][0]+'" onclick="event.stopPropagation();go(\'event\')">'+events[d][1]+'</div>':'';
+      var ev = events[d] ? '<div class="ev" style="background:'+events[d].c+'" onclick="event.stopPropagation();openEventIdx('+events[d].i+')">'+events[d].l+'</div>':'';
       html+='<div class="day"><div class="dn">'+d+'</div>'+ev+'</div>';
     }
     html+='</div>';
@@ -938,43 +1214,72 @@
 
   /* ---- track (L1) ---- */
   var EVENTS=[
-    {d:'14',m:'AUG',t:'Zero-Trust Meetings — Lab Day',dom:'Security',fmts:['Lecture','Hands-on Lab','Capture the Flag'],who:'A. Rivera',seats:'54/60'},
-    {d:'21',m:'AUG',t:'Fabric Segmentation Deep-Dive',dom:'Networking',fmts:['Lecture','POC'],who:'S. Lindqvist',seats:'40/50'},
-    {d:'27',m:'AUG',t:'Break the Tunnel — CTF Night',dom:'Security',fmts:['Capture the Flag','Escape Room'],who:'R. Okafor',seats:'28/40'},
-    {d:'04',m:'SEP',t:'Design Clinic — Zero-Trust Rollout',dom:'Networking',fmts:['Design Clinic','Whiteboarding'],who:'A. Rivera',seats:'12/16'},
-    {d:'11',m:'SEP',t:'BOF — Where Zero-Trust Breaks',dom:'Security',fmts:['BOF Discussion'],who:'Community',seats:'open'},
-    {d:'18',m:'SEP',t:'ZTNA Reference Build',dom:'Networking',fmts:['Hands-on Lab','POC'],who:'S. Lindqvist',seats:'33/50'}
+    {track:'Secure Networking',d:'14',m:'AUG',t:'Zero-Trust Meetings — Lab Day',dom:'Security',fmts:['Lecture','Hands-on Lab','Capture the Flag'],who:'A. Rivera',seats:'54/60'},
+    {track:'Secure Networking',d:'21',m:'AUG',t:'Fabric Segmentation Deep-Dive',dom:'Networking',fmts:['Lecture','POC'],who:'S. Lindqvist',seats:'40/50'},
+    {track:'Secure Networking',d:'27',m:'AUG',t:'Break the Tunnel — CTF Night',dom:'Security',fmts:['Capture the Flag','Escape Room'],who:'R. Okafor',seats:'28/40'},
+    {track:'Secure Networking',d:'04',m:'SEP',t:'Design Clinic — Zero-Trust Rollout',dom:'Networking',fmts:['Design Clinic','Whiteboarding'],who:'A. Rivera',seats:'12/16'},
+    {track:'Secure Networking',d:'11',m:'SEP',t:'BOF — Where Zero-Trust Breaks',dom:'Security',fmts:['BOF Discussion'],who:'Community',seats:'open'},
+    {track:'Full-Stack AI Infrastructure',d:'19',m:'AUG',t:'GPU Fabric for Inference — Lab',dom:'I&MI',fmts:['Lecture','Hands-on Lab'],who:'R. Okafor',seats:'44/50'},
+    {track:'Full-Stack AI Infrastructure',d:'26',m:'AUG',t:'Agentic AI Patterns — BOF',dom:'CAI',fmts:['BOF Discussion','Whiteboarding'],who:'Community',seats:'open'},
+    {track:'Full-Stack AI Infrastructure',d:'09',m:'SEP',t:'Build a RAG Pipeline — POC',dom:'CAI',fmts:['POC','Hands-on Lab'],who:'J. Tanaka',seats:'30/40'},
+    {track:'Workplace Experience',d:'12',m:'AUG',t:'Hybrid Rooms — Escape Room',dom:'Collaboration',fmts:['Escape Room','Capture the Flag'],who:'M. Pereira',seats:'22/32'},
+    {track:'Workplace Experience',d:'20',m:'AUG',t:'Webex Devices — Hands-on',dom:'Collaboration',fmts:['Lecture','Hands-on Lab'],who:'K. Devi',seats:'36/48'},
+    {track:'Workplace Experience',d:'03',m:'SEP',t:'Meeting Equity — Design Clinic',dom:'Collaboration',fmts:['Design Clinic'],who:'M. Pereira',seats:'10/16'}
   ];
-  var subFilter='All domains';
-  window.setSub=function(btn,name){
-    subFilter=name;
+  var DOMS={'Secure Networking':['Networking','Security'],'Full-Stack AI Infrastructure':['I&MI','CAI'],'Workplace Experience':['Collaboration']};
+  var subFilter='All domains', _tl=[];
+  window.setSub=function(btn){
+    subFilter = btn.id==='sdAll' ? 'All domains' : btn.textContent.trim();
     btn.parentNode.querySelectorAll('button').forEach(function(b){b.setAttribute('aria-pressed', b===btn);});
     renderTimeline();
   };
   var FCOLOR={'Lecture':'var(--accent)','Hands-on Lab':'var(--accent)','BOF Discussion':'var(--ai)','Capture the Flag':'var(--anno)','Escape Room':'var(--sec)','Whiteboarding':'var(--good)','POC':'var(--ai)','Design Clinic':'var(--cx)'};
+  var TRACKCOLOR={'Secure Networking':'var(--net)','Full-Stack AI Infrastructure':'var(--ai)','Workplace Experience':'var(--cx)'};
+  var FICON={'Lecture':'▤','Hands-on Lab':'⌨','BOF Discussion':'◎','Capture the Flag':'⚑','Escape Room':'⧉','Whiteboarding':'✎','POC':'◈','Design Clinic':'✚'};
+  var FDUR={'Lecture':20,'Hands-on Lab':40,'BOF Discussion':30,'Capture the Flag':25,'Escape Room':30,'Whiteboarding':20,'POC':35,'Design Clinic':20};
   function renderTimeline(){
     var wrap=document.getElementById('timeline'); if(!wrap) return;
-    var list=EVENTS.filter(function(e){ return subFilter==='All domains'||e.dom===subFilter; });
+    var list=EVENTS.filter(function(e){ return e.track===curArch && (subFilter==='All domains'||e.dom===subFilter); });
     if(cadence==='M'){ list=list.filter(function(e){return e.m==='AUG';}); }
-    wrap.innerHTML=list.map(function(e){
+    _tl=list;
+    wrap.innerHTML=list.map(function(e,i){
       var tags=e.fmts.map(function(f){ return '<span class="tag" style="background:color-mix(in srgb,'+(FCOLOR[f]||'var(--accent)')+' 15%,transparent);color:'+(FCOLOR[f]||'var(--accent)')+'">'+f+'</span>'; }).join('');
-      return '<button class="ev-card" onclick="go(\'event\')">'
+      return '<button class="ev-card" onclick="openEventTL('+i+')">'
         +'<div class="ev-date"><div class="d">'+e.d+'</div><div class="m">'+e.m+'</div></div>'
         +'<div class="ev-main"><h4>'+e.t+'</h4><div class="ev-tags">'+tags+'</div></div>'
         +'<div class="ev-side"><span>'+e.who+'</span><span class="pill">'+e.seats+'</span></div>'
         +'</button>';
     }).join('') || '<div class="ph" style="height:80px">no sessions match this filter</div>';
   }
+  window.openEvent=function(ev){
+    curEvent=ev;
+    var col=TRACKCOLOR[ev.track]||'var(--net)';
+    var set=function(id,fn){var el=document.getElementById(id); if(el)fn(el);};
+    set('eventTitleHead',function(el){el.textContent=ev.t;});
+    set('eventTitlePhone',function(el){el.textContent=ev.t;});
+    set('eventMeta',function(el){el.textContent=ev.date+' · '+ev.who;});
+    set('eventHero',function(el){el.style.background='color-mix(in srgb,'+col+' 22%,var(--surface))';});
+    set('eventTrackTag',function(el){el.textContent=ev.track; el.style.background=col;});
+    set('eventFmtTags',function(el){el.innerHTML=ev.fmts.map(function(f){var c=FCOLOR[f]||'var(--accent)';return '<span class="tag" style="background:color-mix(in srgb,'+c+' 16%,transparent);color:'+c+'">'+f+'</span>';}).join('');});
+    set('eventAgenda',function(el){var t0=600; el.innerHTML=ev.fmts.map(function(f){var hh=Math.floor(t0/60),mm=t0%60; t0+=(FDUR[f]||20); return '<div class="ag"><span class="ic">'+(FICON[f]||'▤')+'</span><div><div style="font-weight:600">'+f+'</div><div class="t">'+(FDUR[f]||20)+' min</div></div><span class="t">'+hh+':'+(mm<10?'0':'')+mm+'</span></div>';}).join('');});
+    resetSignup();
+    go('event');
+  };
+  window.openEventTL=function(i){ var e=_tl[i]; if(!e)return; openEvent({t:e.t,track:curArch,date:e.m+' '+e.d+' · 10:00 PT',who:e.who,fmts:e.fmts}); };
+  window.openEventIdx=function(i){ var e=EVENTS[i]; if(!e)return; curArch=e.track; openEvent({t:e.t,track:e.track,date:e.m+' '+e.d+' · 10:00 PT',who:e.who,fmts:e.fmts}); };
   function syncTrack(){
     var eb=document.getElementById('trackEyebrow'), tt=document.getElementById('trackTitle'), tc=document.getElementById('trackCad');
     if(eb) eb.textContent=curArch;
     if(tt) tt.textContent=curArch+' — delivery calendar';
-    // sub-domain labels depend on arch
-    var a=document.getElementById('sdA'), b=document.getElementById('sdB');
-    if(curArch==='Full-Stack AI Infrastructure'){ a.textContent='I&MI'; b.textContent='CAI'; }
-    else if(curArch==='Workplace Experience'){ a.textContent='Collaboration'; b.textContent='Experience'; }
-    else { a.textContent='Networking'; b.textContent='Security'; }
-    if(tc) tc.textContent = (cadence==='Q'?'Quarterly':'Monthly')+' · '+EVENTS.filter(function(e){return cadence==='Q'||e.m==='AUG';}).length+' sessions';
+    var a=document.getElementById('sdA'), b=document.getElementById('sdB'), all=document.getElementById('sdAll');
+    var doms=DOMS[curArch]||['Networking','Security'];
+    a.textContent=doms[0];
+    if(doms[1]){ b.textContent=doms[1]; b.style.display=''; } else { b.style.display='none'; }
+    if(subFilter!=='All domains' && doms.indexOf(subFilter)<0){
+      subFilter='All domains';
+      all.setAttribute('aria-pressed','true'); a.setAttribute('aria-pressed','false'); b.setAttribute('aria-pressed','false');
+    }
+    if(tc) tc.textContent = (cadence==='Q'?'Quarterly':'Monthly')+' · '+EVENTS.filter(function(e){return e.track===curArch && (cadence==='Q'||e.m==='AUG');}).length+' sessions';
     renderTimeline();
   }
 
@@ -984,6 +1289,11 @@
   function updateFmtCount(){ var n=document.querySelectorAll('#fmtChips .chip[aria-pressed="true"]').length; var el=document.getElementById('fmtCount'); if(el) el.textContent=n+' selected'; }
 
   /* ---- event (L3) ---- */
+  var REGHTML='', MATLOCKHTML='';
+  function resetSignup(){
+    var b=document.getElementById('regBox'); if(b&&REGHTML) b.innerHTML=REGHTML;
+    var ml=document.getElementById('matLock'); if(ml){ if(MATLOCKHTML) ml.innerHTML=MATLOCKHTML; ml.style.opacity='.5'; }
+  }
   window.signup=function(){
     var box=document.getElementById('regBox');
     box.innerHTML='<div class="mono" style="font-size:11px;color:var(--good)">✓ REGISTERED · SEAT 7</div>'
@@ -1029,6 +1339,25 @@
     } else { toast('Not quite — think legacy remote access'); }
   };
   window.bookSlot=function(b){ var s=b.closest('.slot'); s.classList.add('booked'); b.outerHTML='<span class="pill" style="color:var(--good)">✓ Booked</span>'; toast('Design-clinic slot booked · Webex invite sent'); };
+
+  /* ---- facilitator + admin ---- */
+  window.advanceRos=function(){
+    var steps=document.querySelectorAll('#rosList .step');
+    for(var i=0;i<steps.length;i++){
+      if(steps[i].classList.contains('now')){
+        steps[i].classList.remove('now'); steps[i].classList.add('done');
+        var badges=steps[i].querySelectorAll('.badge'); if(badges.length) badges[badges.length-1].textContent='done';
+        if(i+1<steps.length){
+          steps[i+1].classList.add('now');
+          var nb=steps[i+1].querySelectorAll('.badge'); if(nb.length) nb[nb.length-1].textContent='LIVE';
+          toast('Advanced the room → '+steps[i+1].querySelector('.st').textContent);
+        } else { toast('Session complete — Circuit is drafting the recap'); }
+        return;
+      }
+    }
+  };
+  window.resolveAlert=function(btn){ var a=btn.closest('.alert'); a.style.opacity='.55'; btn.outerHTML='<span class="pill" style="color:var(--good)">✓ handled</span>'; toast('Marked as handled'); };
+  function updateAdmin(){ var t=document.getElementById('adminTitle'); if(t) t.textContent='Program overview — '+(cadence==='Q'?'Q3 CY26':'August CY26'); }
 
   /* ---- Circuit ---- */
   function addMsg(txt,who){
@@ -1085,8 +1414,10 @@
   }
 
   /* ---- init ---- */
+  var _reg=document.getElementById('regBox'); if(_reg) REGHTML=_reg.innerHTML;
+  var _ml=document.getElementById('matLock'); if(_ml) MATLOCKHTML=_ml.innerHTML;
   makeQR(document.getElementById('qrCreate'));
-  updateFmtCount(); renderCad(); renderTimeline(); renderCrumb('map');
+  updateFmtCount(); renderCad(); renderTimeline(); renderCrumb('map'); updateAdmin();
 })();
 </script>
 

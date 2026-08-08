@@ -20,18 +20,33 @@ more — on a **quarterly and monthly** cadence across the three architecture tr
 | **Full-Stack AI Infrastructure** | I&MI · CAI |
 | **Workplace Experience** | Collaboration |
 
+## Roles
+
+A **View as** switcher (top of the left rail) reframes the platform for four roles:
+**Attendee**, **Facilitator**, **Producer**, and **Program lead**. The rail groups screens
+into *Delivery spine* (the L0–L4 journey) and *Operate* (the two console surfaces).
+
+## Webex model (design decision)
+
+The platform is designed to run as a **Webex Embedded App** — it opens as a *tab inside the
+meeting* rather than embedding Webex inside itself. The Portal and QR signup also work
+standalone in a browser for async / self-paced access. This is surfaced as a context bar on
+the workspace and facilitator console, and as a note in the rail.
+
 ## The multi-layer UI
 
 The left rail mirrors the sitemap on every screen, so the "layers" are always visible.
 
-| Layer | Screen | What happens there |
-| --- | --- | --- |
-| **MAP** | Sitemap | The whole idea at a glance; click any node to jump in. |
-| **L0** | Portal | Pick an architecture track; global quarterly/monthly view + KPIs. |
-| **L1** | Delivery Calendar | Track roadmap (quarterly) or dated calendar (monthly); sub-domain filters; sessions list. |
-| **L2** | Create Event | Producer view — pick format(s), link material, flip integrations; publishing mints the QR + participant page. |
-| **L3** | Event & QR Signup | Mobile-first participant page the QR opens: register → unlock materials → enter workspace. |
-| **L4** | Activity Workspace | Run the activity, with **Circuit AI** and **Webex** docked on the right for every format. |
+| Layer | Screen | Role | What happens there |
+| --- | --- | --- | --- |
+| **MAP** | Sitemap | all | The whole idea at a glance; click any node to jump in. |
+| **L0** | Portal | attendee | Pick an architecture track; global quarterly/monthly view + KPIs. |
+| **L1** | Delivery Calendar | attendee | Track roadmap (quarterly) or dated calendar (monthly); sub-domain filters; sessions list. |
+| **L2** | Create Event | producer | Pick format(s), link material, flip integrations; publishing mints the QR + participant page. |
+| **L3** | Event & QR Signup | attendee | Mobile-first participant page the QR opens: register → unlock materials → enter workspace. |
+| **L4** | Activity Workspace | attendee | Run the activity, with **Circuit AI** and **Webex** docked on the right for every format. |
+| **FAC** | Facilitator Console | facilitator | Live run-of-show + proctor: drive the agenda ("Advance room"), watch check-ins & lab health, act on people who are stuck, Circuit AI co-pilot. |
+| **ADM** | Admin & Analytics | program lead | Cross-track program dashboard: delivery vs plan, engagement by format, enablement outcomes, and a roadmap-coverage heatmap that flags scheduling gaps. |
 
 ## Eight activity formats (all in the L4 workspace)
 
