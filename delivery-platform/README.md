@@ -45,8 +45,19 @@ The left rail mirrors the sitemap on every screen, so the "layers" are always vi
 | **L2** | Create Event | producer | Pick format(s), link material, flip integrations; publishing mints the QR + participant page. |
 | **L3** | Event & QR Signup | attendee | Mobile-first participant page the QR opens: register → unlock materials → enter workspace. |
 | **L4** | Activity Workspace | attendee | Run the activity, with **Circuit AI** and **Webex** docked on the right for every format. |
+| **L5** | After the Session | attendee | Post-event: recording + chapters, Circuit AI summary, badges/points earned, feedback survey, and a "what's next" nudge. |
+| **LIB** | Content Library | producer | Session **templates** (start a new event from a proven pattern) + a reusable **material catalog** — so a monthly/quarterly cadence isn't rebuilt each time. |
 | **FAC** | Facilitator Console | facilitator | Live run-of-show + proctor: drive the agenda ("Advance room"), watch check-ins & lab health, act on people who are stuck, Circuit AI co-pilot. |
 | **ADM** | Admin & Analytics | program lead | Cross-track program dashboard: delivery vs plan, engagement by format, enablement outcomes, and a roadmap-coverage heatmap that flags scheduling gaps. |
+
+## Engagement & flow
+
+- **Facilitator-led vs self-paced** — the L4 workspace has a mode toggle. In *facilitator-led* the activity switcher follows the room (the facilitator's "Advance room" pushes everyone to the next activity); *self-paced* unlocks every activity.
+- **Points & badges spine** — a persistent progress strip in L4 accrues points and badges across the hands-on lab, CTF, and escape room, and those earned badges + points resurface on the L5 recap.
+
+## Accessibility & craft
+
+Single inline-SVG icon set (a `<symbol>` sprite + a `paintIcons()` helper), a real `<h1>`, a skip-to-content link, and a visible `:focus-visible` state on every control. Icons are `currentColor` stroke so they inherit theme and semantic colors.
 
 ## Eight activity formats (all in the L4 workspace)
 

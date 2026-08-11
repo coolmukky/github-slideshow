@@ -431,6 +431,74 @@
   .heat .cell.plan{background:var(--surface-2);color:var(--ink-3)}
   .heat .cell.gap{background:var(--anno-weak);color:var(--anno);border-color:var(--anno);border-style:dashed}
 
+  /* ---- svg icon system ---- */
+  .gi{width:1.15em;height:1.15em;display:inline-block;vertical-align:-.15em;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+
+  /* ---- a11y ---- */
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  .skip{position:fixed;left:14px;top:-60px;z-index:100;background:var(--accent);color:var(--accent-ink);padding:9px 14px;border-radius:8px;font-size:13px;font-weight:600;transition:top .15s}
+  .skip:focus{top:14px}
+  a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:5px}
+
+  /* ---- engagement spine ---- */
+  .progress-strip{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:9px 13px;margin-bottom:12px;box-shadow:var(--shadow)}
+  .progress-strip .pts{display:flex;align-items:center;gap:7px;font-weight:800;font-variant-numeric:tabular-nums;font-size:15px;white-space:nowrap}
+  .progress-strip .pts .gi{color:var(--warn)}
+  .progress-strip .to{flex:1;min-width:150px;display:flex;flex-direction:column;gap:4px}
+  .progress-strip .to .lab{font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);display:flex;justify-content:space-between;gap:8px}
+  .progress-strip .to .track{height:6px;border-radius:99px;background:var(--inset);overflow:hidden}
+  .progress-strip .to .track i{display:block;height:100%;background:var(--warn);width:0;transition:width .5s ease}
+  .badge-shelf{display:flex;gap:6px;flex-wrap:wrap}
+  .bdg{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:11px;padding:4px 9px;border-radius:999px;border:1px solid var(--good);color:var(--good);background:var(--good-weak);white-space:nowrap}
+  .bdg .gi{width:.95em;height:.95em}
+
+  /* ---- flow-mode toggle ---- */
+  .flow-mode{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+  .flow-mode .hint{font-size:12px;color:var(--ink-2);display:flex;align-items:center;gap:6px}
+  .flow-mode .hint .gi{color:var(--ink-3)}
+  .act-btn:disabled{opacity:.42;cursor:not-allowed}
+
+  /* ---- recap (post-event) ---- */
+  .recap-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;align-items:start}
+  @media(max-width:900px){.recap-grid{grid-template-columns:1fr}}
+  .rec-video{position:relative;border-radius:9px;overflow:hidden;border:1px solid var(--line)}
+  .rec-video .ph{border:0;border-radius:0}
+  .rec-video .play{position:absolute;inset:0;display:grid;place-items:center;color:#fff}
+  .rec-video .play .circle{width:54px;height:54px;border-radius:50%;background:rgba(6,16,29,.5);display:grid;place-items:center}
+  .rec-chapters{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+  .rec-chapters .c{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;font-size:12.5px;padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:var(--surface);cursor:pointer;color:inherit}
+  .rec-chapters .c:hover{border-color:var(--accent)}
+  .rec-chapters .c .t{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+  .rec-chapters .c .gi{color:var(--accent)}
+  .summary-list{display:flex;flex-direction:column;gap:8px;margin:0;padding:0}
+  .summary-list li{display:grid;grid-template-columns:auto 1fr;gap:9px;font-size:13px;list-style:none}
+  .summary-list li .gi{color:var(--good);margin-top:2px}
+  .stars{display:inline-flex;gap:3px;cursor:pointer}
+  .stars .gi{color:var(--warn);width:1.3em;height:1.3em}
+  .stars .gi.off{color:var(--line-2)}
+  .survey-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+  .survey-row:last-of-type{border-bottom:0}
+  .nextup{display:flex;flex-direction:column;gap:8px}
+  .nextup .n{display:grid;grid-template-columns:auto 1fr auto;gap:11px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:9px 11px;background:var(--surface)}
+  .nextup .n .ic{width:30px;height:30px;border-radius:7px;display:grid;place-items:center;flex:none}
+
+  /* ---- content library ---- */
+  .tmpl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  @media(max-width:900px){.tmpl-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.tmpl-grid{grid-template-columns:1fr}}
+  .tmpl{border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);box-shadow:var(--shadow);padding:14px;display:flex;flex-direction:column;gap:10px;min-height:150px}
+  .tmpl h4{font-size:14px;letter-spacing:-.01em}
+  .tmpl .fmts{display:flex;gap:5px;flex-wrap:wrap}
+  .tmpl .meta{font-family:var(--mono);font-size:11px;color:var(--ink-3);display:flex;justify-content:space-between;margin-top:auto;padding-top:4px}
+  .cat{display:flex;flex-direction:column;gap:8px}
+  .cat .a{display:grid;grid-template-columns:34px 1fr auto auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--surface)}
+  @media(max-width:560px){.cat .a{grid-template-columns:34px 1fr;row-gap:6px}.cat .a .pill,.cat .a .btn{grid-column:2}}
+  .cat .a .ic{width:34px;height:34px;border-radius:8px;background:var(--inset);display:grid;place-items:center;flex:none}
+  .cat .a .mt{font-weight:600;font-size:13px}
+  .cat .a .ms{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+  .searchbar{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:9px 12px;margin-bottom:12px}
+  .searchbar input{border:0;background:transparent;color:var(--ink);font-size:13px;flex:1;outline:none;font-family:var(--font-body)}
+
   .footer-note{margin-top:18px;padding:14px;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-align:center;line-height:1.7}
 
   @media(max-width:760px){
@@ -446,6 +514,42 @@
   }
 </style>
 
+<a class="skip" href="#main">Skip to content</a>
+<h1 class="sr-only">Tech Elevate Delivery Platform — interactive multi-layer wireframe</h1>
+<svg class="sprite" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden"><defs>
+  <symbol id="i-lecture" viewBox="0 0 24 24"><path d="M4 5h16v10H4z"/><path d="M12 15v4M9 19h6"/></symbol>
+  <symbol id="i-lab" viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M7 10l2.5 2.5L7 15M12.5 15H16"/></symbol>
+  <symbol id="i-bof" viewBox="0 0 24 24"><path d="M4 5h16v10H9l-4 3z"/><path d="M8 10h.01M12 10h.01M16 10h.01"/></symbol>
+  <symbol id="i-ctf" viewBox="0 0 24 24"><path d="M6 21V3"/><path d="M6 4h11l-2 3 2 3H6"/></symbol>
+  <symbol id="i-escape" viewBox="0 0 24 24"><path d="M14 3h5v18h-5"/><path d="M11 12H3M7 8l-4 4 4 4"/></symbol>
+  <symbol id="i-whiteboard" viewBox="0 0 24 24"><path d="M4 20l1-4 11-11 3 3-11 11z"/><path d="M14 7l3 3"/></symbol>
+  <symbol id="i-poc" viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></symbol>
+  <symbol id="i-clinic" viewBox="0 0 24 24"><path d="M12 3a9 9 0 100 18 9 9 0 000-18z"/><path d="M12 8v8M8 12h8"/></symbol>
+  <symbol id="i-qr" viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"/><path d="M14 14h2v2h-2zM19 14v6M14 19h2"/></symbol>
+  <symbol id="i-circuit" viewBox="0 0 24 24"><path d="M12 3l1.7 5.3L19 10l-5.3 1.7L12 17l-1.7-5.3L5 10l5.3-1.7z"/></symbol>
+  <symbol id="i-webex" viewBox="0 0 24 24"><path d="M3 7h11v10H3z"/><path d="M14 10l6-3v10l-6-3"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 4a2.5 2.5 0 012.5 2.5v5a2.5 2.5 0 01-5 0v-5A2.5 2.5 0 0112 4z"/><path d="M6 11a6 6 0 0012 0M12 17v3"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M4 5h16v10H4z"/><path d="M9 19h6M12 12V8M9.5 10.5L12 8l2.5 2.5"/></symbol>
+  <symbol id="i-record" viewBox="0 0 24 24"><path d="M12 4a8 8 0 100 16 8 8 0 000-16z"/><path fill="currentColor" stroke="none" d="M12 8.5a3.5 3.5 0 100 7 3.5 3.5 0 000-7z"/></symbol>
+  <symbol id="i-breakout" viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></symbol>
+  <symbol id="i-endcall" viewBox="0 0 24 24"><path d="M5 10.5a12 12 0 0114 0l-1.5 2.5-3.5-1v-2a9 9 0 00-4 0v2l-3.5 1z"/></symbol>
+  <symbol id="i-hand" viewBox="0 0 24 24"><path d="M8 11V5.5a1.5 1.5 0 013 0V10M11 10V4.5a1.5 1.5 0 013 0V10M14 10.5V6.5a1.5 1.5 0 013 0V13a5 5 0 01-5 5 5 5 0 01-4.3-2.4L6 12l1-1 2.5 2"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><path d="M12 3a9 9 0 100 18 9 9 0 000-18z"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v10M8 11l4 4 4-4M5 19h14"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14A8.5 8.5 0 1110 3.5 6.5 6.5 0 0020.5 14z"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4 20l1-4 11-11 3 3-11 11z"/><path d="M14 7l3 3"/></symbol>
+  <symbol id="i-badge" viewBox="0 0 24 24"><path d="M12 3a4.5 4.5 0 100 9 4.5 4.5 0 000-9z"/><path d="M9.5 11.5L8 21l4-2.5L16 21l-1.5-9.5"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></symbol>
+  <symbol id="i-film" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16M4 15h16M9 4v16M15 4v16"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 17l-5.2 2.6 1-5.8L3.5 9.7l5.9-.9z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><path d="M11 4a7 7 0 100 14 7 7 0 000-14z"/><path d="M20 20l-4-4"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><path d="M7 11V8a5 5 0 0110 0v3"/><path d="M5 11h14v9H5z"/></symbol>
+  <symbol id="i-unlock" viewBox="0 0 24 24"><path d="M7 11V8a5 5 0 019.5-2"/><path d="M5 11h14v9H5z"/></symbol>
+</defs></svg>
+
 <div class="app">
   <!-- ============ TOP BAR ============ -->
   <header class="topbar">
@@ -460,8 +564,8 @@
         <button id="cadQ" aria-pressed="true" onclick="setCadence('Q')">Quarterly</button>
         <button id="cadM" aria-pressed="false" onclick="setCadence('M')">Monthly</button>
       </div>
-      <button class="icon-btn" id="notesBtn" title="Toggle spec annotations" onclick="toggleNotes()">✎</button>
-      <button class="icon-btn" id="themeBtn" title="Toggle theme" onclick="toggleTheme()">◑</button>
+      <button class="icon-btn" id="notesBtn" title="Toggle spec annotations" aria-label="Toggle spec annotations" onclick="toggleNotes()"><svg class="gi"><use href="#i-pencil"/></svg></button>
+      <button class="icon-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle theme" onclick="toggleTheme()"><svg class="gi"><use href="#i-moon"/></svg></button>
       <div class="avatar" title="Delivery team member">TE</div>
     </div>
   </header>
@@ -488,8 +592,10 @@
         <button class="layer" data-go="create" data-role="producer"><span class="lchip">L2</span><span class="lname">Create Event<small>producer view</small></span></button>
         <button class="layer" data-go="event" data-role="attendee"><span class="lchip">L3</span><span class="lname">Event / QR Signup<small>participant view</small></span></button>
         <button class="layer" data-go="activity" data-role="attendee"><span class="lchip">L4</span><span class="lname">Activity Workspace<small>+ Circuit · Webex</small></span></button>
+        <button class="layer" data-go="recap" data-role="attendee"><span class="lchip">L5</span><span class="lname">After the Session<small>recap · badges · next</small></span></button>
 
         <h4>Operate</h4>
+        <button class="layer" data-go="library" data-role="producer"><span class="lchip" style="background:var(--accent-weak);color:var(--accent);border-color:var(--accent)">LIB</span><span class="lname">Content Library<small>templates · catalog</small></span></button>
         <button class="layer" data-go="facilitator" data-role="facilitator"><span class="lchip" style="background:var(--warn-weak);color:var(--warn);border-color:var(--warn)">FAC</span><span class="lname">Facilitator Console<small>run-of-show · proctor</small></span></button>
         <button class="layer" data-go="admin" data-role="admin"><span class="lchip" style="background:var(--good-weak);color:var(--good);border-color:var(--good)">ADM</span><span class="lname">Admin &amp; Analytics<small>program dashboard</small></span></button>
       </div>
@@ -497,7 +603,7 @@
     </aside>
 
     <!-- ============ SCREENS ============ -->
-    <main class="screens">
+    <main class="screens" id="main">
 
       <!-- ---------- SITEMAP ---------- -->
       <section data-screen="map" class="on">
@@ -521,6 +627,8 @@
             <button class="flow-node" onclick="go('event')"><span class="num">L3</span><div><h4>Event &amp; QR Signup</h4><p>Scan → register → agenda</p></div></button>
             <span class="flow-arrow"></span>
             <button class="flow-node" onclick="go('activity')"><span class="num">L4</span><div><h4>Activity Workspace</h4><p>Run the activity · Circuit + Webex</p></div></button>
+            <span class="flow-arrow"></span>
+            <button class="flow-node" onclick="go('recap')"><span class="num">L5</span><div><h4>After the Session</h4><p>Recap · badges · what's next</p></div></button>
           </div>
 
           <div class="grid" style="gap:14px">
@@ -551,6 +659,15 @@
                 <span class="pill dot" style="color:var(--ai)">Circuit AI — voice/AI calls</span>
                 <span class="pill dot" style="color:var(--accent)">Webex — manage interaction</span>
                 <span class="pill dot" style="color:var(--good)">QR check-in</span>
+              </div>
+            </div>
+            <div class="card pad">
+              <div class="eyebrow" style="margin-bottom:10px">Also in the platform</div>
+              <div class="grid" style="gap:8px">
+                <button class="flow-node" style="padding:9px 11px" onclick="go('recap')"><span class="num" style="width:44px;height:36px">L5</span><div><h4 style="font-size:13px">After the Session</h4><p>recap · badges · next</p></div></button>
+                <button class="flow-node" style="padding:9px 11px" onclick="go('library')"><span class="num" style="width:44px;height:36px;font-size:12px">LIB</span><div><h4 style="font-size:13px">Content Library</h4><p>templates · catalog</p></div></button>
+                <button class="flow-node" style="padding:9px 11px" onclick="go('facilitator')"><span class="num" style="width:44px;height:36px;font-size:12px;background:var(--warn-weak);color:var(--warn)">FAC</span><div><h4 style="font-size:13px">Facilitator Console</h4><p>run-of-show · proctor</p></div></button>
+                <button class="flow-node" style="padding:9px 11px" onclick="go('admin')"><span class="num" style="width:44px;height:36px;font-size:12px;background:var(--good-weak);color:var(--good)">ADM</span><div><h4 style="font-size:13px">Admin &amp; Analytics</h4><p>program dashboard</p></div></button>
               </div>
             </div>
           </div>
@@ -802,6 +919,20 @@
           <span class="pill dot" style="color:var(--good)">● 18 in meeting</span>
         </div>
 
+        <div class="flow-mode">
+          <div class="seg" role="group" aria-label="Session flow mode">
+            <button id="flowLed" aria-pressed="true" onclick="setFlowMode('led')">Facilitator-led</button>
+            <button id="flowSelf" aria-pressed="false" onclick="setFlowMode('self')">Self-paced</button>
+          </div>
+          <span class="hint" id="flowHint"><svg class="gi"><use href="#i-lock"/></svg> Following the room — A. Rivera is on "Hands-on Lab".</span>
+        </div>
+
+        <div class="progress-strip">
+          <div class="pts"><svg class="gi"><use href="#i-star"/></svg><span id="ptsVal">200</span>&nbsp;pts</div>
+          <div class="to"><div class="lab"><span>Progress to next badge</span><span id="nbLab">Lab Master · 300</span></div><div class="track"><i id="ptsBar"></i></div></div>
+          <div class="badge-shelf" id="badgeShelf"></div>
+        </div>
+
         <div class="ws">
           <!-- activity switcher -->
           <div class="act-rail" role="group" aria-label="Activity">
@@ -923,17 +1054,131 @@
                 <div class="t"><span>+15</span></div>
               </div>
               <div class="wbx-ctrl">
-                <button class="b" title="mute" onclick="toast('Wireframe: toggles mic in Webex')">🎤</button>
-                <button class="b" title="video" onclick="toast('Wireframe: toggles camera in Webex')">📷</button>
-                <button class="b" title="share" onclick="toast('Wireframe: shares screen to the room')">⧉</button>
-                <button class="b" title="breakouts" onclick="toast('Wireframe: opens Webex breakout rooms')">◫</button>
-                <button class="b rec" title="record" onclick="toast('Wireframe: starts Webex recording')">●</button>
-                <button class="b end" title="leave" onclick="toast('Wireframe: leaves the Webex session')">⤫</button>
+                <button class="b" title="Mute" aria-label="Mute" onclick="toast('Wireframe: toggles mic in Webex')"><svg class="gi"><use href="#i-mic"/></svg></button>
+                <button class="b" title="Video" aria-label="Video" onclick="toast('Wireframe: toggles camera in Webex')"><svg class="gi"><use href="#i-webex"/></svg></button>
+                <button class="b" title="Share screen" aria-label="Share screen" onclick="toast('Wireframe: shares screen to the room')"><svg class="gi"><use href="#i-share"/></svg></button>
+                <button class="b" title="Breakouts" aria-label="Breakouts" onclick="toast('Wireframe: opens Webex breakout rooms')"><svg class="gi"><use href="#i-breakout"/></svg></button>
+                <button class="b rec" title="Record" aria-label="Record" onclick="toast('Wireframe: starts Webex recording')"><svg class="gi"><use href="#i-record"/></svg></button>
+                <button class="b end" title="Leave" aria-label="Leave" onclick="toast('Wireframe: leaves the Webex session')"><svg class="gi"><use href="#i-endcall"/></svg></button>
               </div>
             </div>
             <div class="anno"><span class="n">5</span><div><b>Always-on companions.</b> Circuit AI (make a call, ask, auto-grade) and Webex (roster, breakouts, recording) stay docked no matter which activity is open. Try <b>Start Circuit call</b> and the chat box.</div></div>
           </div>
         </div>
+      </section>
+
+      <!-- ---------- L5 · AFTER THE SESSION (post-event) ---------- -->
+      <section data-screen="recap">
+        <div class="screen-head">
+          <div>
+            <div class="eyebrow">Layer 5 · After the session</div>
+            <h2>Session recap — Zero-Trust Lab Day</h2>
+            <p>What every participant gets when the room closes: the recording, a Circuit-written summary, the badges they earned, and a nudge into what's next. This is the loop that makes a monthly / quarterly cadence compound.</p>
+          </div>
+          <span class="pill dot" style="color:var(--ink-3)">● Ended · Aug 14</span>
+        </div>
+
+        <div class="recap-grid">
+          <div class="grid" style="gap:14px">
+            <div class="card">
+              <div class="panel-h"><svg class="gi" style="color:var(--accent)"><use href="#i-film"/></svg><h4>Recording &amp; chapters</h4><span class="brandtag">WEBEX</span></div>
+              <div class="pad" style="padding-top:12px">
+                <div class="rec-video"><div class="ph" style="height:200px">session recording</div><div class="play"><span class="circle"><svg class="gi" style="width:22px;height:22px"><use href="#i-play"/></svg></span></div></div>
+                <div class="rec-chapters">
+                  <button class="c" onclick="toast('Wireframe: jumps to this chapter in the recording')"><svg class="gi"><use href="#i-play"/></svg><span>Zero-trust primer</span><span class="t">00:00</span></button>
+                  <button class="c" onclick="toast('Wireframe: jumps to this chapter')"><svg class="gi"><use href="#i-play"/></svg><span>Build a ZTNA policy (lab)</span><span class="t">20:10</span></button>
+                  <button class="c" onclick="toast('Wireframe: jumps to this chapter')"><svg class="gi"><use href="#i-play"/></svg><span>Break the tunnel (CTF)</span><span class="t">58:40</span></button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="panel-h"><svg class="gi" style="color:var(--ai)"><use href="#i-circuit"/></svg><h4>Circuit AI summary</h4><span class="brandtag">CIRCUIT</span></div>
+              <div class="pad" style="padding-top:12px">
+                <ul class="summary-list">
+                  <li><svg class="gi"><use href="#i-check"/></svg><span>Covered zero-trust identity, encryption and least-privilege access for meetings.</span></li>
+                  <li><svg class="gi"><use href="#i-check"/></svg><span>You built and verified a ZTNA policy for the <span class="mono">contractors</span> group.</span></li>
+                  <li><svg class="gi"><use href="#i-check"/></svg><span>Open follow-up: apply posture checks to BYOD — flagged for next session.</span></li>
+                </ul>
+                <button class="btn ghost sm" style="margin-top:12px" onclick="toast('Wireframe: emails the recap + transcript')"><svg class="gi"><use href="#i-download"/></svg> Email me the recap</button>
+              </div>
+            </div>
+
+            <div class="card pad">
+              <div class="block-h"><h3>Quick feedback</h3><span class="pill mono">30 sec</span></div>
+              <div class="survey-row"><span style="font-size:13px">Overall session</span><span class="stars" data-v="4"></span></div>
+              <div class="survey-row"><span style="font-size:13px">The hands-on lab</span><span class="stars" data-v="5"></span></div>
+              <div class="survey-row"><span style="font-size:13px">Would recommend</span><span class="stars" data-v="4"></span></div>
+              <div class="field" style="margin:12px 0 0"><textarea class="inp" rows="2" placeholder="Anything the delivery team should know?" aria-label="Feedback comments"></textarea></div>
+              <button class="btn sm" style="margin-top:10px" onclick="submitSurvey()">Submit feedback</button>
+            </div>
+          </div>
+
+          <div class="grid" style="gap:14px">
+            <div class="card pad">
+              <div class="block-h"><h3>Your outcome</h3></div>
+              <div class="row" style="justify-content:space-between;align-items:center">
+                <div class="pts" style="display:flex;align-items:center;gap:7px;font-weight:800;font-size:20px"><svg class="gi" style="color:var(--warn)"><use href="#i-star"/></svg><span id="recapPts">500</span>&nbsp;pts</div>
+                <span class="pill">Rank #2 · team-mesh</span>
+              </div>
+              <div class="mono" style="font-size:11px;color:var(--ink-3);margin:14px 0 7px">BADGES EARNED</div>
+              <div class="badge-shelf" id="recapBadges"></div>
+              <div class="mono" style="font-size:11px;color:var(--ink-3);margin:16px 0 7px">CERTIFICATION PROGRESS</div>
+              <div class="hbar"><span class="lab">ZTNA cert</span><div class="track"><i style="width:71%;background:var(--good)"></i></div><span class="n">71%</span></div>
+              <button class="btn ghost sm" style="width:100%;justify-content:center;margin-top:10px" onclick="toast('Wireframe: issues a shareable badge to Credly')"><svg class="gi"><use href="#i-badge"/></svg> Claim your ZTNA badge</button>
+            </div>
+
+            <div class="card pad">
+              <div class="block-h"><h3>What's next</h3><span class="pill mono">recommended</span></div>
+              <div class="nextup">
+                <div class="n"><span class="ic" style="background:color-mix(in srgb,var(--net) 15%,transparent);color:var(--net)"><svg class="gi"><use href="#i-poc"/></svg></span><div><b style="font-size:13px">Fabric Segmentation Deep-Dive</b><div style="font-size:12px;color:var(--ink-2)">Aug 21 · continues this track</div></div><button class="btn sm" onclick="openEventIdx(1)">Sign up</button></div>
+                <div class="n"><span class="ic" style="background:color-mix(in srgb,var(--cx) 15%,transparent);color:var(--cx)"><svg class="gi"><use href="#i-clinic"/></svg></span><div><b style="font-size:13px">Book a design clinic</b><div style="font-size:12px;color:var(--ink-2)">20 min 1:1 with an architect</div></div><button class="btn sm" onclick="gotoClinic()">Book</button></div>
+                <div class="n"><span class="ic" style="background:color-mix(in srgb,var(--ai) 15%,transparent);color:var(--ai)"><svg class="gi"><use href="#i-poc"/></svg></span><div><b style="font-size:13px">Start a POC in the sandbox</b><div style="font-size:12px;color:var(--ink-2)">Extend the lab into your own design</div></div><button class="btn sm" onclick="toast('Wireframe: spins up a dCloud POC pod')">Launch</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="anno"><span class="n">i</span><div><b>Closes the loop.</b> Recording + AI recap + badges + a next-step nudge turn a one-off session into a program — and feed the completion / NPS / badge numbers on the admin dashboard.</div></div>
+      </section>
+
+      <!-- ---------- CONTENT LIBRARY & TEMPLATES ---------- -->
+      <section data-screen="library">
+        <div class="screen-head">
+          <div>
+            <div class="eyebrow">Operate · Content library &amp; templates</div>
+            <h2>Reuse, don't rebuild</h2>
+            <p>The producer's shortcut for a monthly + quarterly cadence: start a new event from a proven template, or drop in a catalogued deck, lab or POC another team already vetted.</p>
+          </div>
+          <button class="btn ghost" onclick="go('create')"><svg class="gi"><use href="#i-plus"/></svg> Blank event</button>
+        </div>
+
+        <div class="seg" role="group" aria-label="Library section" style="margin-bottom:14px">
+          <button id="libT1" aria-pressed="true" onclick="setLibTab(this,'tmpl')">Session templates</button>
+          <button id="libT2" aria-pressed="false" onclick="setLibTab(this,'cat')">Material catalog</button>
+        </div>
+
+        <div id="libTmpl">
+          <div class="tmpl-grid">
+            <div class="tmpl"><div class="row" style="justify-content:space-between;align-items:flex-start"><h4>Zero-Trust Lab Day</h4><span class="pill mono">12×</span></div><div class="fmts"><span class="tag" style="background:var(--accent-weak);color:var(--accent)">Lecture</span><span class="tag" style="background:var(--accent-weak);color:var(--accent)">Lab</span><span class="tag" style="background:var(--anno-weak);color:var(--anno)">CTF</span></div><div class="meta"><span>~90 min</span><span>Secure Net</span></div><button class="btn sm" onclick="useTemplate('Zero-Trust Lab Day')">Use template</button></div>
+            <div class="tmpl"><div class="row" style="justify-content:space-between;align-items:flex-start"><h4>CTF Night</h4><span class="pill mono">8×</span></div><div class="fmts"><span class="tag" style="background:var(--anno-weak);color:var(--anno)">CTF</span><span class="tag" style="background:color-mix(in srgb,var(--sec) 15%,transparent);color:var(--sec)">Escape</span></div><div class="meta"><span>~75 min</span><span>any track</span></div><button class="btn sm" onclick="useTemplate('CTF Night')">Use template</button></div>
+            <div class="tmpl"><div class="row" style="justify-content:space-between;align-items:flex-start"><h4>BOF Hour</h4><span class="pill mono">15×</span></div><div class="fmts"><span class="tag" style="background:color-mix(in srgb,var(--ai) 15%,transparent);color:var(--ai)">BOF</span><span class="tag" style="background:color-mix(in srgb,var(--good) 15%,transparent);color:var(--good)">Whiteboard</span></div><div class="meta"><span>~60 min</span><span>any track</span></div><button class="btn sm" onclick="useTemplate('BOF Hour')">Use template</button></div>
+            <div class="tmpl"><div class="row" style="justify-content:space-between;align-items:flex-start"><h4>Design Clinic Block</h4><span class="pill mono">6×</span></div><div class="fmts"><span class="tag" style="background:color-mix(in srgb,var(--cx) 15%,transparent);color:var(--cx)">Design Clinic</span></div><div class="meta"><span>~2 hr slots</span><span>any track</span></div><button class="btn sm" onclick="useTemplate('Design Clinic Block')">Use template</button></div>
+            <div class="tmpl"><div class="row" style="justify-content:space-between;align-items:flex-start"><h4>AI Infra Lab</h4><span class="pill mono">9×</span></div><div class="fmts"><span class="tag" style="background:var(--accent-weak);color:var(--accent)">Lecture</span><span class="tag" style="background:var(--accent-weak);color:var(--accent)">Lab</span><span class="tag" style="background:color-mix(in srgb,var(--ai) 15%,transparent);color:var(--ai)">POC</span></div><div class="meta"><span>~90 min</span><span>AI Infra</span></div><button class="btn sm" onclick="useTemplate('AI Infra Lab')">Use template</button></div>
+            <div class="tmpl"><div class="row" style="justify-content:space-between;align-items:flex-start"><h4>Escape Room</h4><span class="pill mono">4×</span></div><div class="fmts"><span class="tag" style="background:color-mix(in srgb,var(--sec) 15%,transparent);color:var(--sec)">Escape</span></div><div class="meta"><span>~45 min</span><span>any track</span></div><button class="btn sm" onclick="useTemplate('Escape Room')">Use template</button></div>
+          </div>
+        </div>
+
+        <div id="libCat" style="display:none">
+          <div class="searchbar"><svg class="gi" style="color:var(--ink-3)"><use href="#i-search"/></svg><input placeholder="Search decks, labs, datasets, POCs…" aria-label="Search materials"></div>
+          <div class="cat">
+            <div class="a"><span class="ic"><svg class="gi"><use href="#i-lecture"/></svg></span><div><div class="mt">Zero-Trust deck</div><div class="ms">32 slides · Security</div></div><span class="pill mono">reused 9×</span><button class="btn sm" onclick="toast('Wireframe: links this material to an event')">Link</button></div>
+            <div class="a"><span class="ic"><svg class="gi"><use href="#i-lab"/></svg></span><div><div class="mt">ZTNA policy lab + sandbox</div><div class="ms">dcloud pod · Security</div></div><span class="pill mono">reused 12×</span><button class="btn sm" onclick="toast('Wireframe: links this material to an event')">Link</button></div>
+            <div class="a"><span class="ic"><svg class="gi"><use href="#i-poc"/></svg></span><div><div class="mt">Reference topology — ZTNA</div><div class="ms">repo · /designs/ztna</div></div><span class="pill mono">reused 7×</span><button class="btn sm" onclick="toast('Wireframe: links this material to an event')">Link</button></div>
+            <div class="a"><span class="ic"><svg class="gi"><use href="#i-circuit"/></svg></span><div><div class="mt">RAG eval dataset</div><div class="ms">1.2k prompts · CAI</div></div><span class="pill mono">reused 3×</span><button class="btn sm" onclick="toast('Wireframe: links this material to an event')">Link</button></div>
+            <div class="a"><span class="ic"><svg class="gi"><use href="#i-film"/></svg></span><div><div class="mt">Hybrid Rooms walkthrough</div><div class="ms">recording · Collaboration</div></div><span class="pill mono">reused 5×</span><button class="btn sm" onclick="toast('Wireframe: links this material to an event')">Link</button></div>
+          </div>
+        </div>
+        <div class="anno"><span class="n">i</span><div><b>Sustainability.</b> Templates + a shared catalog keep a quarterly/monthly cadence from becoming a content treadmill. "Use template" pre-fills the Create Event form.</div></div>
       </section>
 
       <!-- ---------- FACILITATOR / PROCTOR CONSOLE ---------- -->
@@ -950,7 +1195,7 @@
         <div class="webex-bar">
           <span class="wx">▣ Webex Embedded App</span><span class="mt">Meeting: Zero-Trust Lab Day · host controls active</span>
           <span class="spacer"></span>
-          <div class="mini"><button class="b" title="Mute all" onclick="toast('Wireframe: mutes the room in Webex')">🔇</button><button class="b" title="Breakouts" onclick="toast('Wireframe: opens Webex breakout rooms')">◫</button><button class="b" title="Record" onclick="toast('Wireframe: recording to Webex cloud')">●</button></div>
+          <div class="mini"><button class="b" title="Mute all" aria-label="Mute all" onclick="toast('Wireframe: mutes the room in Webex')"><svg class="gi"><use href="#i-mic"/></svg></button><button class="b" title="Breakouts" aria-label="Breakouts" onclick="toast('Wireframe: opens Webex breakout rooms')"><svg class="gi"><use href="#i-breakout"/></svg></button><button class="b" title="Record" aria-label="Record" onclick="toast('Wireframe: recording to Webex cloud')"><svg class="gi"><use href="#i-record"/></svg></button></div>
         </div>
 
         <div class="dash-kpis">
@@ -1112,6 +1357,11 @@
   "use strict";
   var root=document.documentElement, body=document.body;
 
+  /* ---- icons ---- */
+  var GI_MAP={'▤':'lecture','⌨':'lab','◎':'bof','⚑':'ctf','⧉':'escape','✎':'whiteboard','◈':'poc','✚':'clinic','◉':'circuit','▣':'webex','▦':'qr','✋':'hand','🔒':'lock','🔓':'unlock','🔐':'lock'};
+  function svgi(id){return '<svg class="gi" aria-hidden="true"><use href="#i-'+id+'"/></svg>';}
+  function paintIcons(rootEl){ (rootEl||document).querySelectorAll('.ic,.ci,.lockic').forEach(function(el){ var g=(el.textContent||'').trim(); if(GI_MAP[g]) el.innerHTML=svgi(GI_MAP[g]); }); }
+
   /* ---- theme ---- */
   window.toggleTheme=function(){
     var cur=root.getAttribute('data-theme');
@@ -1136,6 +1386,8 @@
     create:['Portal','#ARCH','Create event'],
     event:['Portal','#ARCH','#EVENT'],
     activity:['Portal','#ARCH','#EVENT','Workspace'],
+    recap:['Portal','#ARCH','#EVENT','Recap'],
+    library:['Operate','Content library'],
     facilitator:['Operate','#EVENT','Run of show'],
     admin:['Manage','Program dashboard']
   };
@@ -1262,6 +1514,7 @@
     set('eventTrackTag',function(el){el.textContent=ev.track; el.style.background=col;});
     set('eventFmtTags',function(el){el.innerHTML=ev.fmts.map(function(f){var c=FCOLOR[f]||'var(--accent)';return '<span class="tag" style="background:color-mix(in srgb,'+c+' 16%,transparent);color:'+c+'">'+f+'</span>';}).join('');});
     set('eventAgenda',function(el){var t0=600; el.innerHTML=ev.fmts.map(function(f){var hh=Math.floor(t0/60),mm=t0%60; t0+=(FDUR[f]||20); return '<div class="ag"><span class="ic">'+(FICON[f]||'▤')+'</span><div><div style="font-weight:600">'+f+'</div><div class="t">'+(FDUR[f]||20)+' min</div></div><span class="t">'+hh+':'+(mm<10?'0':'')+mm+'</span></div>';}).join('');});
+    paintIcons(document.getElementById('eventAgenda'));
     resetSignup();
     go('event');
   };
@@ -1292,7 +1545,7 @@
   var REGHTML='', MATLOCKHTML='';
   function resetSignup(){
     var b=document.getElementById('regBox'); if(b&&REGHTML) b.innerHTML=REGHTML;
-    var ml=document.getElementById('matLock'); if(ml){ if(MATLOCKHTML) ml.innerHTML=MATLOCKHTML; ml.style.opacity='.5'; }
+    var ml=document.getElementById('matLock'); if(ml){ if(MATLOCKHTML) ml.innerHTML=MATLOCKHTML; ml.style.opacity='.5'; paintIcons(ml); }
   }
   window.signup=function(){
     var box=document.getElementById('regBox');
@@ -1318,6 +1571,7 @@
     var step=ck.closest('.lab-step'); step.classList.toggle('done');
     var n=document.querySelectorAll('#labSteps .lab-step.done').length;
     document.getElementById('labProg').textContent=n+' / 4 steps';
+    if(n===4 && !progress.caps.lab){ progress.caps.lab=true; award(100,'Lab Master'); toast('Badge earned — Lab Master · +100 pts'); }
   };
   var flagged=false;
   window.submitFlag=function(){
@@ -1328,14 +1582,16 @@
     var c=document.getElementById('ctf3'); c.classList.add('solved');
     document.getElementById('ctfScore').textContent='Your score: 500';
     document.getElementById('lbMe').textContent='500';
-    toast('✓ Flag accepted · +300 · you took the lead');
+    if(!progress.caps.ctf){ progress.caps.ctf=true; award(300,'Tunnel Breaker'); }
+    toast('Flag accepted · +300 · Tunnel Breaker badge earned');
   };
   window.unlockEsc=function(){
     var v=(document.getElementById('escIn').value||'').trim();
     if(v==='23'||v.toLowerCase()==='telnet'){
-      var s=document.getElementById('esc2'); s.classList.remove(); s.classList.add('st','open'); s.querySelector('.lockic').textContent='🔓';
-      var vault=document.querySelector('#escList .st.locked'); if(vault){vault.classList.remove('locked'); vault.querySelector('.lockic').textContent='🔐';}
-      toast('✓ Stage 2 unlocked — vault is now reachable');
+      var s=document.getElementById('esc2'); s.classList.add('open'); s.querySelector('.lockic').innerHTML=svgi('unlock');
+      var vault=document.querySelector('#escList .st.locked'); if(vault){vault.classList.remove('locked'); vault.querySelector('.lockic').innerHTML=svgi('lock');}
+      if(!progress.caps.esc){ progress.caps.esc=true; award(150,'Escape Artist'); }
+      toast('Stage 2 unlocked · +150 · Escape Artist badge earned');
     } else { toast('Not quite — think legacy remote access'); }
   };
   window.bookSlot=function(b){ var s=b.closest('.slot'); s.classList.add('booked'); b.outerHTML='<span class="pill" style="color:var(--good)">✓ Booked</span>'; toast('Design-clinic slot booked · Webex invite sent'); };
@@ -1350,6 +1606,7 @@
         if(i+1<steps.length){
           steps[i+1].classList.add('now');
           var nb=steps[i+1].querySelectorAll('.badge'); if(nb.length) nb[nb.length-1].textContent='LIVE';
+          roomActivity=ROOMSEQ[i+1]||roomActivity; if(flowMode==='led') setFlowMode('led');
           toast('Advanced the room → '+steps[i+1].querySelector('.st').textContent);
         } else { toast('Session complete — Circuit is drafting the recap'); }
         return;
@@ -1358,6 +1615,60 @@
   };
   window.resolveAlert=function(btn){ var a=btn.closest('.alert'); a.style.opacity='.55'; btn.outerHTML='<span class="pill" style="color:var(--good)">✓ handled</span>'; toast('Marked as handled'); };
   function updateAdmin(){ var t=document.getElementById('adminTitle'); if(t) t.textContent='Program overview — '+(cadence==='Q'?'Q3 CY26':'August CY26'); }
+
+  /* ---- engagement spine (points + badges) ---- */
+  var progress={points:200,badges:['Recon','Enumerate'],caps:{lab:false,ctf:false,esc:false}};
+  var BADGE_NEXT=[{at:300,name:'Lab Master'},{at:500,name:'Tunnel Breaker'},{at:650,name:'Escape Artist'}];
+  function renderProgress(){
+    var pv=document.getElementById('ptsVal'); if(pv) pv.textContent=progress.points;
+    var rp=document.getElementById('recapPts'); if(rp) rp.textContent=progress.points;
+    var nb=null; for(var i=0;i<BADGE_NEXT.length;i++){ if(progress.points<BADGE_NEXT[i].at){ nb=BADGE_NEXT[i]; break; } }
+    var bar=document.getElementById('ptsBar'), lab=document.getElementById('nbLab');
+    if(nb){ if(lab) lab.textContent=nb.name+' · '+nb.at; if(bar) bar.style.width=Math.min(100,Math.round(progress.points/nb.at*100))+'%'; }
+    else { if(lab) lab.textContent='All badges earned'; if(bar) bar.style.width='100%'; }
+    var chips=progress.badges.map(function(b){return '<span class="bdg">'+svgi('badge')+b+'</span>';}).join('');
+    var s1=document.getElementById('badgeShelf'); if(s1) s1.innerHTML=chips;
+    var s2=document.getElementById('recapBadges'); if(s2) s2.innerHTML=chips;
+  }
+  function award(pts,badge){ progress.points+=pts; if(badge&&progress.badges.indexOf(badge)<0) progress.badges.push(badge); renderProgress(); }
+
+  /* ---- flow mode: facilitator-led vs self-paced ---- */
+  var flowMode='led', roomActivity='lab', ROOMSEQ=['lecture','lab','ctf','clinic'];
+  window.setFlowMode=function(m){
+    flowMode=m;
+    var led=document.getElementById('flowLed'), self=document.getElementById('flowSelf'), hint=document.getElementById('flowHint');
+    if(led) led.setAttribute('aria-pressed', m==='led'); if(self) self.setAttribute('aria-pressed', m==='self');
+    var acts=document.querySelectorAll('.act-btn');
+    if(m==='led'){
+      if(hint) hint.innerHTML=svgi('lock')+' Following the room — A. Rivera is on "'+ACTNAME[roomActivity]+'".';
+      acts.forEach(function(b){ b.disabled = b.getAttribute('data-act')!==roomActivity; });
+      var cur=document.querySelector('.act-btn[data-act="'+roomActivity+'"]'); if(cur) setAct(cur);
+    } else {
+      if(hint) hint.innerHTML=svgi('unlock')+' Self-paced — explore any activity at your own pace.';
+      acts.forEach(function(b){ b.disabled=false; });
+    }
+  };
+
+  /* ---- recap (post-event) ---- */
+  function initStars(){
+    document.querySelectorAll('.stars').forEach(function(st){
+      var v=parseInt(st.getAttribute('data-v')||'0',10);
+      var html=''; for(var i=1;i<=5;i++){ html+='<svg class="gi'+(i<=v?'':' off')+'" data-i="'+i+'"><use href="#i-star"/></svg>'; }
+      st.innerHTML=html;
+      st.onclick=function(e){ var t=e.target.closest('svg'); if(!t)return; st.setAttribute('data-v', t.getAttribute('data-i')); initStars(); };
+    });
+  }
+  window.submitSurvey=function(){ toast('Thanks — feedback sent to the delivery team'); };
+  window.gotoClinic=function(){ go('activity'); setTimeout(function(){ setFlowMode('self'); var b=document.querySelector('.act-btn[data-act="clinic"]'); if(b) setAct(b); },60); };
+
+  /* ---- content library ---- */
+  window.setLibTab=function(btn,which){
+    document.getElementById('libT1').setAttribute('aria-pressed', which==='tmpl');
+    document.getElementById('libT2').setAttribute('aria-pressed', which==='cat');
+    document.getElementById('libTmpl').style.display = which==='tmpl'?'':'none';
+    document.getElementById('libCat').style.display = which==='cat'?'':'none';
+  };
+  window.useTemplate=function(name){ toast('Create Event pre-filled from template: '+name); go('create'); };
 
   /* ---- Circuit ---- */
   function addMsg(txt,who){
@@ -1414,10 +1725,13 @@
   }
 
   /* ---- init ---- */
+  paintIcons(document);
   var _reg=document.getElementById('regBox'); if(_reg) REGHTML=_reg.innerHTML;
   var _ml=document.getElementById('matLock'); if(_ml) MATLOCKHTML=_ml.innerHTML;
   makeQR(document.getElementById('qrCreate'));
+  initStars(); renderProgress();
   updateFmtCount(); renderCad(); renderTimeline(); renderCrumb('map'); updateAdmin();
+  setFlowMode('led');
 })();
 </script>
 
