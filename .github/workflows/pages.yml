@@ -30,6 +30,8 @@ jobs:
           if [ -f offline/ZTA-Design-Clinic-Package.zip ]; then
             cp offline/ZTA-Design-Clinic-Package.zip _site/
           fi
+          touch _site/.nojekyll
+          ls -la _site
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
@@ -38,6 +40,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site
+          retention-days: 90
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
