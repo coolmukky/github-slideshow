@@ -1,20 +1,13 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Firebase project configuration.
-//
-// 1. Create a project at https://console.firebase.google.com
-// 2. Add a Web App (</>), then copy its config values below.
-// 3. In the console: Build → Authentication → Sign-in method → enable "Anonymous".
-// 4. Build → Firestore Database → Create database (Production mode).
-// 5. Deploy (see DEPLOY.md).
-//
+// Firebase project configuration for "zta-clinic".
 // These values are NOT secrets — Firebase web config is meant to ship in the
 // client. Access is controlled by Firestore security rules (see firestore.rules).
 // ─────────────────────────────────────────────────────────────────────────────
 window.FIREBASE_CONFIG = {
-  apiKey: "REPLACE_ME",
-  authDomain: "REPLACE_ME.firebaseapp.com",
-  projectId: "REPLACE_ME",
-  storageBucket: "REPLACE_ME.appspot.com",
-  messagingSenderId: "REPLACE_ME",
-  appId: "REPLACE_ME"
+  apiKey: "AIzaSyDgWqoJCNiUOMMD7Nyz9pNSvZ9kdBGJV9Q",
+  authDomain: "zta-clinic.firebaseapp.com",
+  projectId: "zta-clinic",
+  storageBucket: "zta-clinic.firebasestorage.app",
+  messagingSenderId: "67347824062",
+  appId: "1:67347824062:web:0593746ab75fad21c2cdef"
 };
