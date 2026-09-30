@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ZTA Design Clinic — Live</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="top">
+  <div class="row">
+    <div>
+      <div class="eyebrow">Zero Trust Access · Design Clinic</div>
+      <h1 id="topTitle">Live Workshop</h1>
+      <div class="sub" id="topSub">Create an event, or join with a code.</div>
+    </div>
+    <div class="spacer"></div>
+    <div id="topInfo" class="row-btns" style="align-items:center"></div>
+    <button class="themebtn" id="themeBtn" title="Toggle light / dark" aria-label="Toggle theme">
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 1.5 A6.5 6.5 0 0 1 8 14.5 Z" fill="currentColor"/></svg>
+    </button>
+  </div>
+</div>
+
+<div class="wrap">
+  <section id="app" class="view"><div class="card"><p class="muted">Loading…</p></div></section>
+  <footer id="foot">ZTA Design Clinic · live workshop</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase config (edit config.js) + activity content -->
+<script src="config.js"></script>
+<script src="activity.js"></script>
+<!-- App (Firebase modular SDK is imported inside app.js) -->
+<script type="module" src="app.js"></script>
+</body>
+</html>
