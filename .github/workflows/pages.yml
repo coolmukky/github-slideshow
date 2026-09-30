@@ -30,8 +30,11 @@ jobs:
           if [ -f offline/ZTA-Design-Clinic-Package.zip ]; then
             cp offline/ZTA-Design-Clinic-Package.zip _site/
           fi
+          # Live multi-user workshop app (Firebase backend) at /app/
+          mkdir -p _site/app
+          cp -r live-app/public/. _site/app/
           touch _site/.nojekyll
-          ls -la _site
+          ls -la _site _site/app
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
