@@ -76,7 +76,7 @@ Everyone signs in **anonymously**, so there is no verified identity. Proctor sta
 ```
 events/{CODE}                      title, status(lobby|running|closed), pinHash,
                                    proctorUids[], startedAt, endsAtMillis
-events/{CODE}/teams/{teamId}       name, progress{uc:bool}, submission{link,note}
+events/{CODE}/teams/{teamId}       name, progress{uc:bool}, answers{uc:text}, submission{link,note}
 events/{CODE}/members/{uid}        name, teamId            (each writes only their own)
 events/{CODE}/scores/{teamId}      uc{n:{m,p,d,total}}, core, full, level, all5
                                    (proctor-only write; everyone reads → leaderboard)

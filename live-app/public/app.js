@@ -265,6 +265,12 @@ function runnerCard(team){
       el("div", {}, el("h3", {}, "Customer requirements"), list(u.req)),
       el("div", {}, el("h3", {}, "Pain points"), list(u.pains))),
     el("div", {style:"margin-top:16px"}, el("h3", {}, "Your group's tasks"), list(u.tasks)),
+    el("div", {style:"margin-top:18px"},
+      el("h3", {}, "Your team's answer for UC"+u.n),
+      el("p", {class:"note", style:"margin:0 0 8px"}, "Proposed Cisco solution and products (how & why), and how it addresses each requirement and pain point."),
+      el("textarea", {id:"ans-"+u.n, rows:"5", placeholder:"e.g. Use ISE + SGTs instead of VLANs because…",
+        value:(team?.answers?.[u.n])||""}),
+      el("button", {class:"primary", style:"margin-top:8px", onclick:()=>saveAnswer(u.n)}, "Save answer")),
     el("div", {style:"display:flex;gap:10px;margin-top:18px;flex-wrap:wrap"},
       el("button", {class:done?"":"primary", onclick:()=>toggleProgress(u.n)}, done?"✓ Marked done":"Mark this use case done"),
       el("button", {class:"ghost", onclick:()=>{S.ucIdx=(S.ucIdx+1)%ACT.uc.length;renderParticipant();}}, "Next →")));
@@ -290,6 +296,13 @@ async function toggleProgress(n){
   const team = S.teams.find(t => t.id === S.myMember.teamId); if (!team) return;
   const prog = { ...(team.progress||{}) }; prog[n] = !prog[n];
   await updateDoc(doc(db,"events",S.code,"teams",team.id), { progress: prog });
+}
+async function saveAnswer(n){
+  const team = S.teams.find(t => t.id === S.myMember.teamId); if (!team) return;
+  const val = (document.getElementById("ans-"+n).value||"").trim();
+  const answers = { ...(team.answers||{}) }; answers[n] = val;
+  await updateDoc(doc(db,"events",S.code,"teams",team.id), { answers });
+  toast("Answer saved for UC"+n);
 }
 async function saveSubmission(){
   const team = S.teams.find(t => t.id === S.myMember.teamId); if (!team) return;
@@ -428,13 +441,20 @@ function evaluateCard(){
     el("button",{class:"primary",onclick:()=>saveScore(t.id)},"Save score"),
     el("button",{class:"ghost",onclick:()=>{S.scoreTeam=null;renderProctor();}},"Done"));
 
+  const answers = t.answers || {};
+  const answerBlock = el("div",{style:"margin:6px 0 14px"},
+    ACT.uc.map(u => answers[u.n]
+      ? el("details",{}, el("summary",{}, "UC"+u.n+" — "+u.title+" · team's answer"), el("p",{}, answers[u.n]))
+      : null));
+
   const card = el("div",{class:"card"},
     el("h2",{}, "Scoring: "+t.name),
     (t.submission&&(t.submission.link||t.submission.note)
-      ? el("p",{class:"note",style:"margin:2px 0 12px"}, "Submission: ",
+      ? el("p",{class:"note",style:"margin:2px 0 8px"}, "Submission: ",
           t.submission.link?el("a",{href:t.submission.link,target:"_blank",rel:"noopener"},"diagram link"):"(no link) ",
           t.submission.note?(" — "+t.submission.note):"")
-      : el("p",{class:"note",style:"margin:2px 0 12px"},"No submission recorded.")),
+      : el("p",{class:"note",style:"margin:2px 0 8px"},"No diagram link submitted.")),
+    answerBlock,
     grid, totalsLine, save);
   setTimeout(()=>updateTotals(t.id),0);
   return el("div",{}, pick, card);
