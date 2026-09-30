@@ -329,10 +329,15 @@ function renderProctor(){
         e.status!=="running"
           ? el("button",{class:"primary",onclick:startWorkshop}, e.status==="closed"?"Restart":"Start workshop")
           : el("button",{class:"danger",onclick:closeWorkshop},"Close workshop"))),
+    el("details",{style:"margin-top:12px"},
+      el("summary",{},"Show join QR"),
+      el("div",{id:"qrbox",class:"qr"}),
+      el("p",{class:"note",style:"text-align:center;margin:6px 0 0"},"Attendees scan to join event ",el("b",{},e.code))),
     el("p",{class:"note",style:"margin:12px 0 0"},
       e.status==="lobby"?"Teams can join now. Press Start to begin the 60-minute clock.":
       e.status==="running"?"Workshop is live. Participants see the runner and timer.":
       "Workshop is closed. Scores are final; you can still adjust them below."));
+  setTimeout(renderQR, 0);
 
   const tabs = tabbar(["roster","leaderboard","evaluate"], {roster:"Teams & roster", leaderboard:"Leaderboard", evaluate:"Evaluate & score"});
   let panel;
@@ -342,9 +347,16 @@ function renderProctor(){
 
   render(el("div", {}, controls, tabs, panel));
 }
+function joinUrl(){ return location.origin + location.pathname + "#/e/" + S.code; }
 function copyJoin(){
-  const url = location.origin + location.pathname + "#/e/" + S.code;
+  const url = joinUrl();
   navigator.clipboard?.writeText(url).then(()=>toast("Join link copied"), ()=>toast(url));
+}
+function renderQR(){
+  const box = document.getElementById("qrbox");
+  if (!box || !window.QRCode) return;
+  box.innerHTML = "";
+  try { new QRCode(box, { text: joinUrl(), width:160, height:160, correctLevel: QRCode.CorrectLevel.M }); } catch(e){}
 }
 async function startWorkshop(){
   await updateDoc(doc(db,"events",S.code), { status:"running", startedAt:serverTimestamp(), endsAtMillis: Date.now()+TOTAL*1000 });
